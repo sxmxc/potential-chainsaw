@@ -16,7 +16,7 @@ The interface retains the dark teal/mint direction. Its visual definitions live 
 | Rotate the selection / preview | R |
 | Duplicate the selection into placement | Ctrl+D |
 | Delete the selection | Delete |
-| Cancel placement or dragging | Escape; right-click cancels placement |
+| Cancel placement or dragging | Escape |
 | Clear selection | Click empty space or Escape when no operation is active |
 | Undo / redo | Ctrl+Z / Ctrl+Y or Ctrl+Shift+Z |
 | Choose attachment alternatives | Tab; R also cycles attachment orientations |
@@ -48,20 +48,18 @@ Press **Ctrl+Shift+P** to enter the developer Puzzle Editor. Build with the sand
 
 See [Puzzle authoring](docs/PUZZLE_AUTHORING.md), [architecture rules](docs/ARCHITECTURE.md), and [UI design rules](docs/UI_DESIGN.md).
 
-Run every regression and all ten positive/negative campaign cases with:
+## Tests
+
+Use the installed GUT plugin in Godot's bottom panel. `.gutconfig.json` discovers `tests/test_*.gd`; individual suites and cases can be selected in the panel.
+
+Run the same tests from the command line:
 
 ```powershell
-./tools/verify_campaign.ps1
+godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit
 ```
 
-## Sandbox verification
+To run just settings and input regressions, add `-gselect=settings_and_input`. GUT reports assertions, engine errors, and exit status. Physics integration tests use the project's 120 Hz simulation. Test saves live in unique `user://gut-tests/` fixture directories and are removed during teardown; player tracks, progress, drafts, and settings are isolated. Tests never publish content or rewrite bundled solutions.
 
-```powershell
-$env:APPDATA = "$PWD/.local-user"
-godot --headless --path . --fixed-fps 120 --script tests/run.gd
-godot --headless --path . --script tools/benchmark_snapping.gd
-```
+`tools/import_campaign.py` remains the utility for importing published campaign bundles. The custom verification runner, warning-forcing checker, and one-off benchmark have been removed.
 
-Test saves and verification logs stay in the ignored `.local-user` directory. Edit the shared Theme and saved scenes directly in Godot.
-
-The maintained utilities in `tools/` are the regression runner (`verify_campaign.ps1`), compiler warning check (`check_gdscript.gd`), snapping benchmark (`benchmark_snapping.gd`) and published campaign importer (`import_campaign.py`). One-off generation, inspection and screenshot scripts have been removed.
+Settings include audio bus volumes, window mode and size, VSync, frame limits, MSAA, 3D render resolution, camera sensitivity and axis inversion, and keyboard rebinding. Changes save automatically; Restore defaults resets settings and bindings. Escape cancels placement or clears selection; right drag always controls the camera.

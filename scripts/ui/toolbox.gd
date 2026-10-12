@@ -59,6 +59,7 @@ func refresh() -> void:
 	%Pieces.columns=1 if buttons.size()==1 and build and build.rules else 2
 	custom_minimum_size.x=164 if buttons.size()==1 and build and build.rules else 312
 	var small_inventory: bool=build!=null and build.rules!=null and build.rules.puzzle.inventory.size()<=6
+	size_flags_vertical = Control.SIZE_SHRINK_BEGIN if small_inventory else Control.SIZE_EXPAND_FILL
 	%Search.visible=not small_inventory
 	%Category.visible=not small_inventory
 	fit_content.call_deferred()

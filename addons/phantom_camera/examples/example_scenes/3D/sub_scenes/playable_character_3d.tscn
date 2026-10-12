@@ -9,22 +9,22 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3ldp"]
 albedo_color = Color(0.988235, 0.498039, 0.498039, 1)
 
-[node name="PlayerCharacterBody3D" type="CharacterBody3D" unique_id=1202590518]
+[node name="PlayerCharacterBody3D" type="CharacterBody3D" unique_id=1543506642]
 script = ExtResource("1_pl87s")
 metadata/_edit_group_ = true
 
-[node name="PlayerArea3D" type="Area3D" parent="." unique_id=265716871]
+[node name="PlayerArea3D" type="Area3D" parent="." unique_id=759420900]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerArea3D" unique_id=1624091054]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerArea3D" unique_id=1873141956]
 shape = SubResource("CapsuleShape3D_8efyg")
 
-[node name="PlayerCollisionShape3D" type="CollisionShape3D" parent="." unique_id=1738821301]
+[node name="PlayerCollisionShape3D" type="CollisionShape3D" parent="." unique_id=1774255277]
 shape = SubResource("CapsuleShape3D_8efyg")
 
-[node name="PlayerVisual" type="Node3D" parent="." unique_id=580200377]
+[node name="PlayerVisual" type="Node3D" parent="." unique_id=487878802]
 unique_name_in_owner = true
 
-[node name="PlayerModel" type="MeshInstance3D" parent="PlayerVisual" unique_id=2010460507]
+[node name="PlayerModel" type="MeshInstance3D" parent="PlayerVisual" unique_id=1105885189]
 mesh = SubResource("CapsuleMesh_2cfaw")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_r3ldp")

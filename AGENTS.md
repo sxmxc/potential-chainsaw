@@ -120,3 +120,7 @@ For each substantive task:
 - Hide missing functionality behind visual polish or claim completion based only on successful parsing.
 
 **Core standard:** players should spend their time designing and testing marble machines—not fighting the editor. Agents should spend their time validating that experience—not generating plausible-looking code or content.
+
+## Test framework
+
+Use the installed GUT plugin and `tests/test_*.gd` suites for automated tests. Run through the GUT panel or its standard CLI. Do not add custom verification runners, force compiler warnings, create one-off test scripts, or publish/modify campaign fixtures as a test side effect. Preserve player saves with isolated GUT fixtures.

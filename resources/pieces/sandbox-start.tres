@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://b86mn3lilapry"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_65t0g"]
-[ext_resource type="PackedScene" uid="uid://nj1mshutedu8" path="res://assets/models/GLB format/end-square.glb" id="2_65t0g"]
+[ext_resource type="PackedScene" uid="uid://nj1mshutedu8" path="res://assets/models/build_pieces/GLB format/end-square.glb" id="2_65t0g"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_hp88a"]
-[ext_resource type="Texture2D" uid="uid://d2ltn13hnohm7" path="res://assets/models/previews/end-square.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://d2ltn13hnohm7" path="res://assets/models/build_pieces/previews/end-square.png" id="Preview"]
 
 [sub_resource type="Resource" id="Resource_3wh56"]
 script = ExtResource("1_65t0g")

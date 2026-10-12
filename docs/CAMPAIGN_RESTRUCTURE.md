@@ -32,7 +32,7 @@ There is no Chapter 1 Level 1 yet. Skip Introduction therefore opens Chapter 1's
 
 ## Verification
 
-Run `tools/verify_campaign.ps1`. It includes the existing construction, mechanisms, authoring, and all ten reference-solution physics checks, plus `tests/campaign_chapters.gd` for migration, choice, skipping, chapter grouping, independence, future chapter discovery, unlocks, resume, and editor metadata. It also runs each introductory starting layout as a negative test. Verification never republishes puzzle files unless `-PublishVerified` is explicitly supplied.
+Use the GUT panel or `godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit`. Campaign suites cover stable IDs, migration, Introduction choice and skipping, chapter grouping, unlocks, resume, authoring metadata, and all ten positive/negative physics cases. Fixtures isolate player saves; tests never republish puzzle files.
 
 The revised runner redirects only application saves through `SavePaths` and `MARBLE_ENGINEER_TEST_DATA`. Logs go into the same uniquely named OS temporary directory. Its `finally` block verifies the cleanup path, removes that invocation's files, and reports their size. `APPDATA` is unchanged; `.local-user` is never created. No project, Godot installation, model imports, or asset caches are copied.
 

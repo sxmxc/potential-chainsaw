@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://blbttp8rrula7"]
 
-[ext_resource type="Script" uid="uid://bud8t5vaoqlyh" path="res://scripts/ui/settings_dialog.gd" id="Script"]
-[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Script" path="res://scripts/ui/settings_dialog.gd" id="Script"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="SettingsDialog" type="Window" unique_id=1448131814]
+[node name="SettingsDialog" type="Window"]
 transparent_bg = true
 title = "Settings"
-size = Vector2i(620, 280)
+size = Vector2i(720, 480)
 visible = false
 transient = true
 exclusive = true
@@ -16,7 +16,7 @@ min_size = Vector2i(500, 240)
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Surface" type="PanelContainer" parent="." unique_id=859819998]
+[node name="Surface" type="PanelContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,299 +24,435 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SurfacePanel"
 
-[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=2104704908]
+[node name="Contents" type="VBoxContainer" parent="Surface"]
 layout_mode = 2
 
-[node name="Header" type="HBoxContainer" parent="Surface/Contents" unique_id=1590991244]
+[node name="Header" type="HBoxContainer" parent="Surface/Contents"]
 layout_mode = 2
 
-[node name="Heading" type="Label" parent="Surface/Contents/Header" unique_id=1229167418]
-unique_name_in_owner = true
+[node name="Heading" type="Label" parent="Surface/Contents/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"DialogTitle"
 text = "Settings"
 
-[node name="Close" type="Button" parent="Surface/Contents/Header" unique_id=556638704]
+[node name="Close" type="Button" parent="Surface/Contents/Header"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Close settings · Esc"
-mouse_default_cursor_shape = 2
 theme_type_variation = &"QuietButton"
 text = "×"
+tooltip_text = "Close settings · Esc"
 
-[node name="Tabs" type="TabContainer" parent="Surface/Contents" unique_id=1849397916]
+[node name="Tabs" type="TabContainer" parent="Surface/Contents"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"SettingsTabs"
 current_tab = 0
 
-[node name="Camera" type="VBoxContainer" parent="Surface/Contents/Tabs" unique_id=836848175]
+[node name="Camera" type="ScrollContainer" parent="Surface/Contents/Tabs"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 360)
+horizontal_scroll_mode = 0
+
+[node name="CameraContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Camera"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"MenuVBox"
-metadata/_tab_index = 0
 
-[node name="SensitivityLabel" type="Label" parent="Surface/Contents/Tabs/Camera" unique_id=70689373]
+[node name="SensitivityRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Camera/CameraContents"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"PanelTitle"
-text = "Camera sensitivity"
 
-[node name="Sensitivity" type="HSlider" parent="Surface/Contents/Tabs/Camera" unique_id=1537398195]
+
+[node name="SensitivityLabel" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/SensitivityRow"]
 unique_name_in_owner = true
+layout_mode = 2
+text = "Orbit and pan sensitivity"
+size_flags_horizontal = 3
+
+[node name="SensitivityValue" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/SensitivityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.0×"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="Sensitivity" type="HSlider" parent="Surface/Contents/Tabs/Camera/CameraContents"]
+unique_name_in_owner = true
+layout_mode = 2
 custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
 min_value = 0.3
 max_value = 2.5
 step = 0.1
 value = 1.0
 
-[node name="ResetCamera" type="Button" parent="Surface/Contents/Tabs/Camera" unique_id=286255158]
+[node name="ZoomSensitivityRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Camera/CameraContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="ZoomSensitivityLabel" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/ZoomSensitivityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Zoom sensitivity"
+size_flags_horizontal = 3
+
+[node name="ZoomSensitivityValue" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/ZoomSensitivityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.0×"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="ZoomSensitivity" type="HSlider" parent="Surface/Contents/Tabs/Camera/CameraContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.3
+max_value = 2.5
+step = 0.1
+value = 1.0
+
+[node name="InvertX" type="CheckBox" parent="Surface/Contents/Tabs/Camera/CameraContents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Invert horizontal orbit"
+
+[node name="InvertY" type="CheckBox" parent="Surface/Contents/Tabs/Camera/CameraContents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Invert vertical orbit"
+
+[node name="ResetCamera" type="Button" parent="Surface/Contents/Tabs/Camera/CameraContents"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
-mouse_default_cursor_shape = 2
+text = "Reset camera view"
 theme_type_variation = &"ToolbarButton"
-text = "Reset camera"
 
-[node name="CameraHint" type="Label" parent="Surface/Contents/Tabs/Camera" unique_id=189040474]
-unique_name_in_owner = true
-visible = false
+[node name="Audio" type="ScrollContainer" parent="Surface/Contents/Tabs"]
 layout_mode = 2
-theme_type_variation = &"MutedLabel"
-text = "Orbit to inspect every height. Frame your selection with F."
+custom_minimum_size = Vector2(0, 340)
+horizontal_scroll_mode = 0
+visible = false
+
+[node name="AudioContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Audio"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuVBox"
+
+[node name="MasterRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="MasterLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MasterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Master volume"
+size_flags_horizontal = 3
+
+[node name="MasterValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MasterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="Master" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="MusicLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Music"
+size_flags_horizontal = 3
+
+[node name="MusicValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="Music" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SFXRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="SFXLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/SFXRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Sound effects"
+size_flags_horizontal = 3
+
+[node name="SFXValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/SFXRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="SFX" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="UIRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="UILabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/UIRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Interface sounds"
+size_flags_horizontal = 3
+
+[node name="UIValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/UIRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="UI" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Display" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 340)
+horizontal_scroll_mode = 0
+visible = false
+
+[node name="DisplayContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Display"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuVBox"
+
+[node name="WindowModeRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="WindowModeLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/WindowModeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Window mode"
+size_flags_horizontal = 3
+
+[node name="WindowMode" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/WindowModeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+item_count = 3
+selected = 0
+popup/item_0/text = "Windowed"
+popup/item_0/id = 0
+popup/item_1/text = "Borderless fullscreen"
+popup/item_1/id = 1
+popup/item_2/text = "Exclusive fullscreen"
+popup/item_2/id = 2
+
+
+[node name="ResolutionRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="ResolutionLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/ResolutionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Window size"
+size_flags_horizontal = 3
+
+[node name="Resolution" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/ResolutionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+item_count = 4
+selected = 0
+popup/item_0/text = "1280 × 720"
+popup/item_0/id = 0
+popup/item_1/text = "1600 × 900"
+popup/item_1/id = 1
+popup/item_2/text = "1920 × 1080"
+popup/item_2/id = 2
+popup/item_3/text = "2560 × 1440"
+popup/item_3/id = 3
+
+
+[node name="VSync" type="CheckBox" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VSync"
+button_pressed = true
+
+[node name="FrameLimitRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="FrameLimitLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/FrameLimitRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Frame rate limit"
+size_flags_horizontal = 3
+
+[node name="FrameLimit" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/FrameLimitRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+item_count = 6
+selected = 0
+popup/item_0/text = "Unlimited"
+popup/item_0/id = 0
+popup/item_1/text = "30 FPS"
+popup/item_1/id = 1
+popup/item_2/text = "60 FPS"
+popup/item_2/id = 2
+popup/item_3/text = "120 FPS"
+popup/item_3/id = 3
+popup/item_4/text = "144 FPS"
+popup/item_4/id = 4
+popup/item_5/text = "240 FPS"
+popup/item_5/id = 5
+
+
+[node name="AntiAliasingRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="AntiAliasingLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/AntiAliasingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Anti-aliasing"
+size_flags_horizontal = 3
+
+[node name="AntiAliasing" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/AntiAliasingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 40)
+item_count = 4
+selected = 0
+popup/item_0/text = "Off"
+popup/item_0/id = 0
+popup/item_1/text = "MSAA 2×"
+popup/item_1/id = 1
+popup/item_2/text = "MSAA 4×"
+popup/item_2/id = 2
+popup/item_3/text = "MSAA 8×"
+popup/item_3/id = 3
+
+
+[node name="RenderScaleRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="RenderScaleLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/RenderScaleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "3D render resolution"
+size_flags_horizontal = 3
+
+[node name="RenderScaleValue" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/RenderScaleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+custom_minimum_size = Vector2(64, 0)
+horizontal_alignment = 2
+
+[node name="RenderScale" type="HSlider" parent="Surface/Contents/Tabs/Display/DisplayContents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+min_value = 0.5
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Controls" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 390)
+horizontal_scroll_mode = 0
+visible = false
+
+[node name="ControlsContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuVBox"
+
+[node name="MouseControls" type="Label" parent="Surface/Contents/Tabs/Controls/ControlsContents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Click / drag to select and move · Shift-click to add
+Right drag to orbit · Middle drag to pan · Wheel to zoom
+Shift + middle drag to pan vertically · Double-click for connected tracks"
 autowrap_mode = 3
 
-[node name="Building controls" type="GridContainer" parent="Surface/Contents/Tabs" unique_id=1049064211]
-visible = false
-layout_mode = 2
-columns = 2
-metadata/_tab_index = 1
-
-[node name="BuildAction0" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=197278564]
+[node name="BindingStatus" type="Label" parent="Surface/Contents/Tabs/Controls/ControlsContents"]
 unique_name_in_owner = true
 layout_mode = 2
+text = "Click a shortcut to change it. Escape always cancels."
+autowrap_mode = 3
+theme_type_variation = &"MutedLabel"
+
+[node name="Bindings" type="VBoxContainer" parent="Surface/Contents/Tabs/Controls/ControlsContents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="Footer" type="HBoxContainer" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="SavedNotice" type="Label" parent="Surface/Contents/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Changes save automatically."
 size_flags_horizontal = 3
 theme_type_variation = &"MutedLabel"
-text = "Select / move"
 
-[node name="BuildKey0" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=482730786]
+[node name="Defaults" type="Button" parent="Surface/Contents/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"Label"
-text = "Click / drag a piece"
-
-[node name="BuildAction1" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=1642721183]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Select together"
-
-[node name="BuildKey1" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=1599989884]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Shift-click / drag empty space"
-
-[node name="BuildAction2" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=1010782275]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Connected assembly"
-
-[node name="BuildKey2" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=633929527]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Double-click a piece"
-
-[node name="BuildAction3" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=355994239]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Rotate / duplicate"
-
-[node name="BuildKey3" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=872259895]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "R / Ctrl+D"
-
-[node name="BuildAction4" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=1500867889]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Remove / select all"
-
-[node name="BuildKey4" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=377750107]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Delete / Ctrl+A"
-
-[node name="BuildAction5" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=85864762]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Attachment alternatives"
-
-[node name="BuildKey5" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=1516842312]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Tab"
-
-[node name="BuildAction6" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=2070247401]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Build elevation"
-
-[node name="BuildKey6" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=332457258]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "PgUp / PgDn · Shift: fine"
-
-[node name="BuildAction7" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=951309326]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Undo / redo"
-
-[node name="BuildKey7" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=577107242]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Ctrl+Z / Ctrl+Y"
-
-[node name="BuildAction8" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=905190781]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Cancel placement"
-
-[node name="BuildKey8" type="Label" parent="Surface/Contents/Tabs/Building controls" unique_id=388468987]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Escape / right-click"
-
-[node name="Camera & testing" type="GridContainer" parent="Surface/Contents/Tabs" unique_id=780401802]
-visible = false
-layout_mode = 2
-columns = 2
-metadata/_tab_index = 2
-
-[node name="NavigateAction0" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=7229475]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Orbit"
-
-[node name="NavigateKey0" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1979164293]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Right drag"
-
-[node name="NavigateAction1" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=830212875]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Pan"
-
-[node name="NavigateKey1" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=838230450]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Middle drag / WASD"
-
-[node name="NavigateAction2" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=97777391]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Vertical pan"
-
-[node name="NavigateKey2" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1136048438]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Shift + middle drag"
-
-[node name="NavigateAction3" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1337593867]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Zoom"
-
-[node name="NavigateKey3" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=17964200]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Mouse wheel"
-
-[node name="NavigateAction4" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=546210844]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Frame selection / all"
-
-[node name="NavigateKey4" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1931706574]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "F / Home"
-
-[node name="NavigateAction5" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=238407596]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Grid / magnetic snap"
-
-[node name="NavigateKey5" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=567609961]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "G / C"
-
-[node name="NavigateAction6" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1770097367]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Save"
-
-[node name="NavigateKey6" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=108822964]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Ctrl+S"
-
-[node name="NavigateAction7" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1363574813]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
-text = "Test / pause"
-
-[node name="NavigateKey7" type="Label" parent="Surface/Contents/Tabs/Camera & testing" unique_id=1125108042]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Label"
-text = "Space"
+text = "Restore defaults"
+theme_type_variation = &"QuietButton"

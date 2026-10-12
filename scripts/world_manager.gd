@@ -18,6 +18,8 @@ func configure(catalog: PieceCatalog) -> void:
 	simulation.build=build
 
 func load_construction(pieces: Array) -> void:
+	# Reset callbacks must not treat the incoming puzzle as a dirty old build.
+	build.dirty=false
 	simulation.reset()
 	build.restore(pieces)
 	build.history.clear()

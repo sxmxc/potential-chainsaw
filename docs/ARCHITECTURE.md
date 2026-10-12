@@ -31,6 +31,6 @@
 
 ## Checks and generated output
 
-Run `./tools/verify_campaign.ps1` after construction, mechanism or campaign changes. It checks enabled compiler warnings, regression suites and positive/negative campaign cases. `SavePaths` redirects only application saves through `MARBLE_ENGINEER_TEST_DATA`; saves and logs use an automatically cleaned OS temporary directory. Never redirect `APPDATA` or copy Godot/project caches for tests. Generated evidence does not belong in `docs/`.
+Use GUT from the Godot bottom panel or `godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit`. `.gutconfig.json` discovers native GUT suites in `tests/`. Fixtures isolate tracks, puzzles, campaign progress, and settings in unique `user://gut-tests/` directories and clean them during teardown. Tests assert behavior; they do not force compiler warnings, publish levels, or rewrite bundled resources. Never redirect `APPDATA` or copy project caches for tests. Generated evidence does not belong in `docs/`.
 
 Use the existing Godot editor for scene changes and live checks. Keep one editor per project. Review UI changes at small and large viewport sizes and exercise the affected interaction, rather than relying on source inspection alone.

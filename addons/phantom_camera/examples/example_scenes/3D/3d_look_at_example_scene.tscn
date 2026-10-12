@@ -27,24 +27,24 @@ albedo_texture = ExtResource("7_0dyt0")
 uv1_triplanar = true
 uv1_world_triplanar = true
 
-[node name="Root" type="Node3D" unique_id=1665745213]
+[node name="Root" type="Node3D" unique_id=1226926093]
 
-[node name="MainCamera3D" type="Camera3D" parent="." unique_id=2021431465]
+[node name="MainCamera3D" type="Camera3D" parent="." unique_id=676633911]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
 transform = Transform3D(0.999765, 0.01052809, -0.018931821, -4.6566112e-10, 0.8739531, 0.48601085, 0.021662261, -0.48589647, 0.87374866, -0.137901, 4.03222, 6.36446)
 top_level = true
 
-[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=2092566877]
+[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=31234024]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("1_jbmnd")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1313729227]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=349504210]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 8, 0)
 metadata/_edit_lock_ = true
 
-[node name="PhantomCamera3D" type="Node3D" parent="." unique_id=565655249 node_paths=PackedStringArray("look_at_target")]
+[node name="PhantomCamera3D" type="Node3D" parent="." unique_id=1560654937 node_paths=PackedStringArray("look_at_target")]
 transform = Transform3D(0.999765, 0.01052809, -0.018931821, -4.6566112e-10, 0.8739531, 0.48601085, 0.021662261, -0.48589647, 0.87374866, -0.137901, 4.03222, 6.36446)
 script = ExtResource("2_t3gk2")
 priority = 10
@@ -57,88 +57,88 @@ look_at_damping = true
 align_transform_with_view = Callable()
 align_rotation_with_view = Callable()
 
-[node name="PlayerCharacterBody3D" parent="." unique_id=93630592 instance=ExtResource("5_pxkua")]
+[node name="PlayerCharacterBody3D" parent="." unique_id=2039030063 instance=ExtResource("5_pxkua")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="NPCs" type="Node" parent="." unique_id=534289837]
+[node name="NPCs" type="Node" parent="." unique_id=521074393]
 
-[node name="PlayerMeshInstance3D" type="MeshInstance3D" parent="NPCs" unique_id=1731544018]
+[node name="PlayerMeshInstance3D" type="MeshInstance3D" parent="NPCs" unique_id=122863629]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.96028, 0.519002, -1.52506)
 mesh = SubResource("CapsuleMesh_2h36r")
 surface_material_override/0 = SubResource("StandardMaterial3D_w3olp")
 
-[node name="PlayerMeshInstance3D2" type="MeshInstance3D" parent="NPCs" unique_id=1882761393]
+[node name="PlayerMeshInstance3D2" type="MeshInstance3D" parent="NPCs" unique_id=1148870761]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.59952, 0.519, 4.06618)
 mesh = SubResource("CapsuleMesh_2h36r")
 surface_material_override/0 = SubResource("StandardMaterial3D_cw102")
 
-[node name="Environment" type="Node" parent="." unique_id=1353596044]
+[node name="Environment" type="Node" parent="." unique_id=1657766914]
 
-[node name="Floor" parent="Environment" unique_id=2025103728 instance=ExtResource("6_uuxs3")]
+[node name="Floor" parent="Environment" unique_id=878015928 instance=ExtResource("6_uuxs3")]
 transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
 metadata/_edit_lock_ = true
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Environment" unique_id=1892724637]
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Environment" unique_id=1926062278]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.00548, 0.805455, -6.37532)
 use_collision = true
 radius = 1.71971
 height = 2.61091
 sides = 32
 
-[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="Environment" unique_id=37267676]
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="Environment" unique_id=1683960908]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5597, 0.31181, -5.46661)
 use_collision = true
 radius = 2.77591
 height = 1.62362
 sides = 32
 
-[node name="CSGCylinder3D6" type="CSGCylinder3D" parent="Environment" unique_id=2076601039]
+[node name="CSGCylinder3D6" type="CSGCylinder3D" parent="Environment" unique_id=72097510]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.96428, 0.31181, 6.6322)
 use_collision = true
 radius = 1.57419
 height = 3.47475
 sides = 32
 
-[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Environment" unique_id=748631921]
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Environment" unique_id=1482377307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3959, 0.201103, 2.71259)
 use_collision = true
 radius = 1.41311
 height = 1.40221
 sides = 32
 
-[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Environment" unique_id=270705737]
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Environment" unique_id=1917429232]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.02677, 0.201101, 11.6804)
 use_collision = true
 radius = 2.21673
 height = 7.88261
 sides = 32
 
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Environment" unique_id=697777119]
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Environment" unique_id=1752729279]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.8316, 0.805455, -8.78984)
 use_collision = true
 radius = 0.956285
 height = 2.61091
 sides = 32
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="Environment" unique_id=980072533]
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Environment" unique_id=665900771]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5989, -1.69814, -6.51262)
 use_collision = true
 radius = 3.34732
 rings = 32
 
-[node name="CSGSphere3D2" type="CSGSphere3D" parent="Environment" unique_id=823093316]
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="Environment" unique_id=21515892]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.17742, -0.599204, 8.81048)
 use_collision = true
 radius = 2.65844
 rings = 32
 
-[node name="CSGSphere3D3" type="CSGSphere3D" parent="Environment" unique_id=583664356]
+[node name="CSGSphere3D3" type="CSGSphere3D" parent="Environment" unique_id=171966251]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4392, -0.599204, -2.42244)
 use_collision = true
 radius = 2.14606
 rings = 32
 
-[node name="CSGTorus3D" type="CSGTorus3D" parent="Environment" unique_id=909610356]
+[node name="CSGTorus3D" type="CSGTorus3D" parent="Environment" unique_id=418039617]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.58998, -1.90735e-06, 0.346393)
 use_collision = true
 inner_radius = 1.3
@@ -146,7 +146,7 @@ outer_radius = 2.0
 sides = 32
 ring_sides = 18
 
-[node name="CSGTorus3D2" type="CSGTorus3D" parent="Environment" unique_id=1890767870]
+[node name="CSGTorus3D2" type="CSGTorus3D" parent="Environment" unique_id=46942334]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5502, -1.90735e-06, 7.89765)
 use_collision = true
 inner_radius = 0.971543
@@ -154,33 +154,33 @@ outer_radius = 2.15226
 sides = 32
 ring_sides = 18
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Environment" unique_id=1699591362]
+[node name="CSGBox3D" type="CSGBox3D" parent="Environment" unique_id=799567677]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1202, 6.53866, -12.6331)
 use_collision = true
 size = Vector3(178.429, 14.0773, 1)
 material = SubResource("StandardMaterial3D_auy8m")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="Environment" unique_id=1861293050]
+[node name="CSGBox3D2" type="CSGBox3D" parent="Environment" unique_id=208742585]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.53078, 0.760708, -6.1376)
 use_collision = true
 size = Vector3(2.64182, 2.52142, 2.30997)
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="Environment" unique_id=556980192]
+[node name="CSGBox3D5" type="CSGBox3D" parent="Environment" unique_id=853394531]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.9646, 0.335247, 8.22829)
 use_collision = true
 size = Vector3(3.80964, 1.67049, 0.932048)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="Environment" unique_id=1715157830]
+[node name="CSGBox3D3" type="CSGBox3D" parent="Environment" unique_id=1327901727]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.70216, 0.138478, -4.36159)
 use_collision = true
 size = Vector3(1.53893, 1.27695, 1.80814)
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="Environment" unique_id=1282736204]
+[node name="CSGBox3D6" type="CSGBox3D" parent="Environment" unique_id=863853740]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1529, 0.138478, 5.20734)
 use_collision = true
 size = Vector3(4.03502, 1.27695, 5.2198)
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="Environment" unique_id=637344601]
+[node name="CSGBox3D4" type="CSGBox3D" parent="Environment" unique_id=1698341295]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.7692, 1.78638, -1.60318)
 use_collision = true
 size = Vector3(4.57784, 4.57276, 3.11285)

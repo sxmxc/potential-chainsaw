@@ -7,7 +7,7 @@
 [ext_resource type="FontFile" uid="uid://dve7mgsjik4dg" path="res://addons/phantom_camera/fonts/Nunito-Regular.ttf" id="5_4jhax"]
 [ext_resource type="Texture2D" uid="uid://dy8eifa6aw2en" path="res://addons/phantom_camera/icons/misc/PriorityOverride.svg" id="6_ptuth"]
 [ext_resource type="Script" uid="uid://c84cxry3t35ny" path="res://addons/phantom_camera/scripts/panel/viewfinder/host_list.gd" id="7_kpij0"]
-[ext_resource type="Theme" uid="uid://b2mirnwdb1gqg" path="res://addons/phantom_camera/themes/theme.tres" id="8_b4akn"]
+[ext_resource type="Theme" uid="uid://bhppejri5dbsf" path="res://addons/phantom_camera/themes/theme.tres" id="8_b4akn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fle8t"]
 bg_color = Color(0.227451, 0.72549, 0.603922, 0.2)

@@ -1,6 +1,13 @@
 [gd_scene format=3 uid="uid://bxo0prqjwsv8i"]
 
 [ext_resource type="Texture2D" uid="uid://c51nm6qenlph7" path="res://assets/ui/icons/rotate.svg" id="3_2yj2p"]
+[ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="5_tapjn"]
+[ext_resource type="Texture2D" uid="uid://8ckag0e4j8fi" path="res://assets/ui/icons/grid.svg" id="6_em0ps"]
+[ext_resource type="Texture2D" uid="uid://b5yyyv6d87ynr" path="res://assets/ui/icons/snap.svg" id="7_jjtym"]
+[ext_resource type="Texture2D" uid="uid://dnwyfaa7mykyy" path="res://assets/ui/icons/lower.svg" id="8_7qm3r"]
+[ext_resource type="Texture2D" uid="uid://qhb7mybcy267" path="res://assets/ui/icons/raise.svg" id="9_islu6"]
+[ext_resource type="Texture2D" uid="uid://drq7krlx6234a" path="res://assets/ui/icons/ground.svg" id="10_48cqi"]
+[ext_resource type="Texture2D" uid="uid://cqs0f25u7u4kv" path="res://assets/ui/icons/frame.svg" id="11_3xug4"]
 [ext_resource type="Script" uid="uid://buakbbyctigdy" path="res://scripts/ui/icon_button.gd" id="IconScript"]
 [ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
@@ -12,7 +19,6 @@ script = ExtResource("Script")
 
 [node name="Placement" type="VBoxContainer" parent="." unique_id=547327049]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 mouse_filter = 2
@@ -69,6 +75,7 @@ tooltip_text = "Collapse pieces"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
 toggle_mode = true
+icon = ExtResource("5_tapjn")
 script = ExtResource("IconScript")
 icon_name = &"pieces"
 
@@ -80,6 +87,7 @@ tooltip_text = "Construction grid Â· G"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
 toggle_mode = true
+icon = ExtResource("6_em0ps")
 script = ExtResource("IconScript")
 icon_name = &"grid"
 
@@ -91,6 +99,7 @@ tooltip_text = "Magnetic connectors Â· C"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
 toggle_mode = true
+icon = ExtResource("7_jjtym")
 script = ExtResource("IconScript")
 icon_name = &"snap"
 
@@ -104,6 +113,7 @@ layout_mode = 2
 tooltip_text = "Lower 0.5 m Â· PgDn Â· hold Shift for 0.125 m"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
+icon = ExtResource("8_7qm3r")
 script = ExtResource("IconScript")
 icon_name = &"lower"
 
@@ -121,6 +131,7 @@ layout_mode = 2
 tooltip_text = "Raise 0.5 m Â· PgUp Â· hold Shift for 0.125 m"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
+icon = ExtResource("9_islu6")
 script = ExtResource("IconScript")
 icon_name = &"raise"
 
@@ -131,6 +142,7 @@ layout_mode = 2
 tooltip_text = "Reset placement height"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
+icon = ExtResource("10_48cqi")
 script = ExtResource("IconScript")
 icon_name = &"ground"
 
@@ -141,5 +153,6 @@ layout_mode = 2
 tooltip_text = "Fit view Â· Home"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
+icon = ExtResource("11_3xug4")
 script = ExtResource("IconScript")
 icon_name = &"frame"

@@ -1,7 +1,7 @@
 """Stage a bundle exported by the visual Puzzle Editor before a Godot export.
 
 Usage: python tools/import_campaign.py path/to/campaign.zip
-Then run tests/campaign.gd to verify all reference solutions in the target engine.
+Then run the GUT campaign suites in the target engine.
 """
 import json
 import pathlib
@@ -63,4 +63,4 @@ def import_bundle(bundle_path, destination):
 if __name__ == "__main__":
     destination = pathlib.Path(__file__).resolve().parents[1] / "resources" / "campaign"
     count = import_bundle(sys.argv[1], destination)
-    print(f"Staged {count} puzzles. Run tests/campaign.gd before exporting the game.")
+    print(f"Staged {count} puzzles. Run the GUT campaign tests before exporting the game.")

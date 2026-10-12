@@ -15,6 +15,9 @@ var target_pitch: float = 0.65
 var distance: float = 15
 var target_distance: float = 15
 var sensitivity: float = 1.0
+var zoom_sensitivity: float = 1.0
+var invert_x: bool = false
+var invert_y: bool = false
 var drag_button: int = 0
 var enabled: bool = true
 
@@ -29,12 +32,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if chase_active: return
-	if enabled and not ConstructionInput.typing(get_viewport()) and not Input.is_key_pressed(KEY_CTRL):
+	if enabled and not ConstructionInput.typing(get_viewport()):
 		var direction = Vector3.ZERO
-		if Input.is_physical_key_pressed(KEY_W): direction -= global_basis.z
-		if Input.is_physical_key_pressed(KEY_S) and not Input.is_key_pressed(KEY_CTRL): direction += global_basis.z
-		if Input.is_physical_key_pressed(KEY_A): direction -= global_basis.x
-		if Input.is_physical_key_pressed(KEY_D) and not Input.is_key_pressed(KEY_CTRL): direction += global_basis.x
+		if Input.is_action_pressed("camera_forward", true): direction -= global_basis.z
+		if Input.is_action_pressed("camera_back", true): direction += global_basis.z
+		if Input.is_action_pressed("camera_left", true): direction -= global_basis.x
+		if Input.is_action_pressed("camera_right", true): direction += global_basis.x
 		direction.y = 0
 		if direction.length_squared()>0: target_focus += direction.normalized()*delta*target_distance*0.5*sensitivity
 	_update(1-exp(-delta*14))
@@ -67,12 +70,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_RIGHT,MOUSE_BUTTON_MIDDLE]:
 			drag_button = event.button_index if event.pressed else 0
-		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP: target_distance = maxf(1.2,target_distance*0.88)
-		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN: target_distance = minf(100,target_distance/0.88)
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP: target_distance = maxf(1.2,target_distance*pow(0.88,zoom_sensitivity))
+		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN: target_distance = minf(100,target_distance/pow(0.88,zoom_sensitivity))
 	if event is InputEventMouseMotion:
 		if drag_button == MOUSE_BUTTON_RIGHT:
-			target_yaw -= event.relative.x*0.006*sensitivity
-			target_pitch = clampf(target_pitch+event.relative.y*0.006*sensitivity,-0.3,1.48)
+			target_yaw -= event.relative.x*0.006*sensitivity*(-1.0 if invert_x else 1.0)
+			target_pitch = clampf(target_pitch+event.relative.y*0.006*sensitivity*(-1.0 if invert_y else 1.0),-0.3,1.48)
 		elif drag_button == MOUSE_BUTTON_MIDDLE:
 			var up = global_basis.y if event.shift_pressed else Vector3(global_basis.z.x,0,global_basis.z.z).normalized()
 			target_focus += (-global_basis.x*event.relative.x+up*event.relative.y)*target_distance*0.0018*sensitivity

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://0pofwpa56dpl"]
+[gd_scene format=3 uid="uid://cs82gsc8c1xb6"]
 
 [ext_resource type="Script" uid="uid://fkkb1prwl36n" path="res://scripts/camera/menu_camera_director.gd" id="Director"]
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="Lens"]
@@ -153,25 +153,17 @@ camera_3d_resource = SubResource("Resource_ttlna")
 [node name="SimulationCamera" parent="World/Track" index="8" unique_id=655534682]
 player_selection = false
 
-[node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2"]
+[node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2" unique_id=1700862802]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
 tween_resource = SubResource("Resource_dxudb")
 host_layers = 2
 camera_3d_resource = SubResource("Resource_lgn12")
-follow_distance = 2.8
-align_transform_with_view = Callable()
-align_position_with_view = Callable()
-align_rotation_with_view = Callable()
 
-[node name="ChaseB" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="3"]
+[node name="ChaseB" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="3" unique_id=2129149687]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
 tween_resource = SubResource("Resource_dxudb")
 host_layers = 2
 camera_3d_resource = SubResource("Resource_lgn12")
-follow_distance = 2.8
-align_transform_with_view = Callable()
-align_position_with_view = Callable()
-align_rotation_with_view = Callable()
 
 [node name="CameraMotion" type="AnimationPlayer" parent="World" unique_id=800896303]
 libraries/ = SubResource("Library")

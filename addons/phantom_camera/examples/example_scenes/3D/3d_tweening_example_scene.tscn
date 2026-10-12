@@ -54,32 +54,32 @@ transition = 10
 [sub_resource type="Resource" id="Resource_rexf8"]
 script = ExtResource("5_1sgnu")
 
-[node name="Root" type="Node3D" unique_id=1867574344]
+[node name="Root" type="Node3D" unique_id=1906661594]
 
-[node name="Environment" type="Node" parent="." unique_id=1911091494]
+[node name="Environment" type="Node" parent="." unique_id=1289693712]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=1571677659]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=1960093512]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 8, 0)
 metadata/_edit_lock_ = true
 
-[node name="Floor" parent="Environment" unique_id=1775816921 instance=ExtResource("1_d55xf")]
+[node name="Floor" parent="Environment" unique_id=501951490 instance=ExtResource("1_d55xf")]
 transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
 metadata/_edit_lock_ = true
 
-[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1095833130]
+[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1977882783]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
 transform = Transform3D(0.999889, 0, 0, 0, 0.707092, 0.707088, 0, -0.707092, 0.707088, 0, 2.5, 3.19136)
 top_level = true
 
-[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=1295542402]
+[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=2017241000]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("2_d1opf")
 
-[node name="------------------" type="Node" parent="." unique_id=1831685024]
+[node name="------------------" type="Node" parent="." unique_id=1860143449]
 
-[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=2035647993 node_paths=PackedStringArray("follow_target")]
+[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=997194033 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
 transform = Transform3D(0.999889, 0, 0, 0, 0.707092, 0.707088, 0, -0.707092, 0.707088, 0, 2.5, 3.19136)
 top_level = true
@@ -95,38 +95,38 @@ follow_damping = true
 align_transform_with_view = Callable()
 align_position_with_view = Callable()
 
-[node name="PlayerCharacterBody3D" parent="." unique_id=1402429746 instance=ExtResource("6_lr46m")]
+[node name="PlayerCharacterBody3D" parent="." unique_id=2071374242 instance=ExtResource("6_lr46m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.19136)
 
-[node name="-------------------" type="Node" parent="." unique_id=729818340]
+[node name="-------------------" type="Node" parent="." unique_id=855615022]
 
-[node name="Tweening Example" type="Node3D" parent="." unique_id=840164368]
+[node name="Tweening Example" type="Node3D" parent="." unique_id=463356703]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.97)
 
-[node name="Linear" type="Node3D" parent="Tweening Example" unique_id=167520218]
+[node name="Linear" type="Node3D" parent="Tweening Example" unique_id=1503499158]
 
-[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Linear" unique_id=889310632 node_paths=PackedStringArray("area_pcam")]
+[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Linear" unique_id=822813091 node_paths=PackedStringArray("area_pcam")]
 priority = 5
 script = ExtResource("7_istoq")
 area_pcam = NodePath("../PhantomCamera3D")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Linear/EntryRoomTrigger" unique_id=411949660]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Linear/EntryRoomTrigger" unique_id=1873933226]
 shape = SubResource("BoxShape3D_j6fha")
 
-[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Linear/EntryRoomTrigger" unique_id=1351466567]
+[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Linear/EntryRoomTrigger" unique_id=628088444]
 mesh = SubResource("BoxMesh_xg4en")
 skeleton = NodePath("../../../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_2dct5")
 metadata/_edit_group_ = true
 
-[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Linear" unique_id=1838735344]
+[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Linear" unique_id=1216192496]
 transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 4.8, 3.3)
 script = ExtResource("3_4whss")
 tween_resource = SubResource("Resource_v8ndi")
 camera_3d_resource = SubResource("Resource_kmep1")
 
-[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Linear" unique_id=2021073025]
+[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Linear" unique_id=546617242]
 transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, -1.8, 0.5, 0)
 text = "Transition Type:
 Linear
@@ -136,31 +136,31 @@ Duration:
 font = ExtResource("9_ptb3h")
 font_size = 48
 
-[node name="Sine" type="Node3D" parent="Tweening Example" unique_id=693902189]
+[node name="Sine" type="Node3D" parent="Tweening Example" unique_id=28929322]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.4)
 
-[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Sine" unique_id=1981043960 node_paths=PackedStringArray("area_pcam")]
+[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Sine" unique_id=468943898 node_paths=PackedStringArray("area_pcam")]
 priority = 5
 script = ExtResource("7_istoq")
 area_pcam = NodePath("../PhantomCamera3D")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Sine/EntryRoomTrigger" unique_id=112439387]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Sine/EntryRoomTrigger" unique_id=1091604133]
 shape = SubResource("BoxShape3D_j6fha")
 
-[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Sine/EntryRoomTrigger" unique_id=1143386585]
+[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Sine/EntryRoomTrigger" unique_id=1822470347]
 mesh = SubResource("BoxMesh_xg4en")
 skeleton = NodePath("../../../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_2dct5")
 metadata/_edit_group_ = true
 
-[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Sine" unique_id=1184344172]
+[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Sine" unique_id=1249534707]
 transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 4.8, 3.3)
 script = ExtResource("3_4whss")
 tween_resource = SubResource("Resource_uxg44")
 camera_3d_resource = SubResource("Resource_eu3bc")
 
-[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Sine" unique_id=1705635360]
+[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Sine" unique_id=1446025528]
 transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, 1.7, 0.5, 0)
 text = "Transition Type:
 Sine
@@ -170,31 +170,31 @@ Duration:
 font = ExtResource("9_ptb3h")
 font_size = 72
 
-[node name="Circ" type="Node3D" parent="Tweening Example" unique_id=1894381352]
+[node name="Circ" type="Node3D" parent="Tweening Example" unique_id=862588286]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14.1)
 
-[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Circ" unique_id=1015019379 node_paths=PackedStringArray("area_pcam")]
+[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Circ" unique_id=837221747 node_paths=PackedStringArray("area_pcam")]
 priority = 5
 script = ExtResource("7_istoq")
 area_pcam = NodePath("../PhantomCamera3D")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Circ/EntryRoomTrigger" unique_id=416771634]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Circ/EntryRoomTrigger" unique_id=1011117005]
 shape = SubResource("BoxShape3D_j6fha")
 
-[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Circ/EntryRoomTrigger" unique_id=1655308536]
+[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Circ/EntryRoomTrigger" unique_id=1609144623]
 mesh = SubResource("BoxMesh_xg4en")
 skeleton = NodePath("../../../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_2dct5")
 metadata/_edit_group_ = true
 
-[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Circ" unique_id=494431980]
+[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Circ" unique_id=1854561056]
 transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 4.8, 3.3)
 script = ExtResource("3_4whss")
 tween_resource = SubResource("Resource_0nci0")
 camera_3d_resource = SubResource("Resource_u0lff")
 
-[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Circ" unique_id=653868933]
+[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Circ" unique_id=1634121170]
 transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, -1.8, 0.5, 0)
 text = "Transition Type:
 Circ
@@ -204,31 +204,31 @@ Duration:
 font = ExtResource("9_ptb3h")
 font_size = 72
 
-[node name="Back" type="Node3D" parent="Tweening Example" unique_id=466669406]
+[node name="Back" type="Node3D" parent="Tweening Example" unique_id=1644466032]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -21)
 
-[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Back" unique_id=838796492 node_paths=PackedStringArray("area_pcam")]
+[node name="EntryRoomTrigger" type="Area3D" parent="Tweening Example/Back" unique_id=1453416423 node_paths=PackedStringArray("area_pcam")]
 priority = 5
 script = ExtResource("7_istoq")
 area_pcam = NodePath("../PhantomCamera3D")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Back/EntryRoomTrigger" unique_id=1790316092]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tweening Example/Back/EntryRoomTrigger" unique_id=1982608051]
 shape = SubResource("BoxShape3D_j6fha")
 
-[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Back/EntryRoomTrigger" unique_id=1818213623]
+[node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Back/EntryRoomTrigger" unique_id=864229824]
 mesh = SubResource("BoxMesh_xg4en")
 skeleton = NodePath("../../../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_2dct5")
 metadata/_edit_group_ = true
 
-[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Back" unique_id=1058845211]
+[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Back" unique_id=1428078741]
 transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, -0.8, 4.8, 3.3)
 script = ExtResource("3_4whss")
 tween_resource = SubResource("Resource_50m5g")
 camera_3d_resource = SubResource("Resource_rexf8")
 
-[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Back" unique_id=1802777377]
+[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Back" unique_id=410603378]
 transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, 1.7, 0.5, 0)
 text = "Transition Type:
 Back

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://jy44vlwwfc4c"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_n3xe3"]
-[ext_resource type="PackedScene" uid="uid://bmkvjiysddjnf" path="res://assets/models/GLB format/ramp-long-c.glb" id="2_y1ahv"]
+[ext_resource type="PackedScene" uid="uid://bmkvjiysddjnf" path="res://assets/models/build_pieces/GLB format/ramp-long-c.glb" id="2_y1ahv"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_uboub"]
-[ext_resource type="Texture2D" uid="uid://76fob4jnif18" path="res://assets/models/previews/ramp-long-c.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://76fob4jnif18" path="res://assets/models/build_pieces/previews/ramp-long-c.png" id="Preview"]
 
 [sub_resource type="Resource" id="Resource_rivw7"]
 script = ExtResource("1_n3xe3")

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_m5uog"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
 [ext_resource type="PackedScene" uid="uid://dcs47jpmoxqo3" path="res://scenes/mechanisms/support-color-four.tscn" id="Model"]
-[ext_resource type="Texture2D" uid="uid://byg4wy85iyojd" path="res://assets/models/previews/support-color-four-top.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://byg4wy85iyojd" path="res://assets/models/build_pieces/previews/support-color-four-top.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")

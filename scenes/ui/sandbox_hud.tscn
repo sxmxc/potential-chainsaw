@@ -60,7 +60,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(272, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 3
 
 [node name="Workspace" type="VBoxContainer" parent="Margin/Layout/Body" unique_id=1424723866]
 layout_mode = 2

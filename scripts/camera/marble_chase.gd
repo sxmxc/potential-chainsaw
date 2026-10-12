@@ -50,10 +50,11 @@ func stop() -> void:
 	changed.emit()
 
 func _process(delta: float) -> void:
-	if marble == null: return
-	if not suitable(marble):
-		stop()
-		target_lost.emit()
+	if not is_instance_valid(marble) or not suitable(marble):
+		# A freed Object can compare equal to null while its chase view is active.
+		if views[0].priority > 0 or views[1].priority > 0:
+			stop()
+			target_lost.emit()
 		return
 	var point = marble.get_global_transform_interpolated().origin
 	var velocity = (point - previous_position) / maxf(delta, 0.001)

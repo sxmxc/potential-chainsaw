@@ -50,7 +50,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.227451, 0.72549, 0.603922, 1)
 
-[node name="UpdateButton" type="Button" unique_id=1588103874]
+[node name="UpdateButton" type="Button" unique_id=1657876095]
 visible = false
 offset_left = 1.0
 offset_right = 149.0
@@ -69,10 +69,10 @@ text = "Update available"
 icon = ExtResource("2_c4d83")
 script = ExtResource("1_xtaw5")
 
-[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=938206511]
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1557182262]
 unique_name_in_owner = true
 
-[node name="DownloadDialog" type="AcceptDialog" parent="." unique_id=238722394]
+[node name="DownloadDialog" type="AcceptDialog" parent="." unique_id=346362017]
 unique_name_in_owner = true
 transparent_bg = true
 title = "New Update"
@@ -87,15 +87,15 @@ theme_override_constants/buttons_separation = 30
 theme_override_styles/panel = SubResource("StyleBoxFlat_dr4n4")
 ok_button_text = "Close"
 
-[node name="DownloadUpdatePanel" parent="DownloadDialog" unique_id=902539629 instance=ExtResource("2_vtgcx")]
+[node name="DownloadUpdatePanel" parent="DownloadDialog" unique_id=2077440175 instance=ExtResource("2_vtgcx")]
 unique_name_in_owner = true
 offset_left = 2.0
 offset_top = 2.0
 offset_right = -2.0
 offset_bottom = -80.0
 
-[node name="NeedsReloadDialog" type="ConfirmationDialog" parent="." unique_id=1934405518]
+[node name="NeedsReloadDialog" type="ConfirmationDialog" parent="." unique_id=605882331]
 unique_name_in_owner = true
 
-[node name="UpdateFailedDialog" type="AcceptDialog" parent="." unique_id=298931689]
+[node name="UpdateFailedDialog" type="AcceptDialog" parent="." unique_id=677245097]
 unique_name_in_owner = true

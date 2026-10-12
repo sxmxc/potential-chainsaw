@@ -8,7 +8,7 @@ Select a piece to edit its settings in the inspector. Settings and event links a
 | --- | --- |
 | Shrouded fans (`fan-two`, `fan-four`, standing variants) | Finite airflow with power, range, reverse and initial enabled state. Standing fans push along local −Z; flat fans along local +Y. Arrows show the direction. |
 | Exposed fans (`fan-simple-two`, `fan-simple-four`) | Physical rotating paddles. Angular speed can be negative. These pieces do not produce airflow. |
-| Gate | Starts open or closed, with optional delayed opening and automatic closing. An occupied opening prevents it from closing on a marble. |
+| Gate | Starts open or closed, with optional delayed opening and automatic closing. Once raised, it gently nudges a stalled marble through. An occupied opening prevents it from closing on a marble. |
 | Diverter | Guides the marble left or right. Linked actions can change direction; optional alternation switches after each marble clears the junction. |
 | Launcher | Strength and elevation control the impulse. External mode holds an arriving marble until Fire. Disable auto-rearm for single-shot use. |
 | Sensor | Emits Entered and optional Exited events without blocking the lane. |

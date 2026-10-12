@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bw8jul55wwoqs"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_rfpeg"]
-[ext_resource type="PackedScene" uid="uid://bar5ivue4vnme" path="res://assets/models/GLB format/bump-solid-b.glb" id="2_vn4ad"]
+[ext_resource type="PackedScene" uid="uid://bar5ivue4vnme" path="res://assets/models/build_pieces/GLB format/bump-solid-b.glb" id="2_vn4ad"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_jx7q7"]
-[ext_resource type="Texture2D" uid="uid://cw0gjsokyi4dn" path="res://assets/models/previews/bump-solid-b.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://cw0gjsokyi4dn" path="res://assets/models/build_pieces/previews/bump-solid-b.png" id="Preview"]
 
 [sub_resource type="Resource" id="Resource_gc8pk"]
 script = ExtResource("1_rfpeg")

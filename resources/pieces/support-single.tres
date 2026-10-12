@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_j2put"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
 [ext_resource type="PackedScene" uid="uid://mi4xa7gp5bxw" path="res://scenes/mechanisms/support-single.tscn" id="Model"]
-[ext_resource type="Texture2D" uid="uid://ch1x5p5h3di8r" path="res://assets/models/previews/support-single-top.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://ch1x5p5h3di8r" path="res://assets/models/build_pieces/previews/support-single-top.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")

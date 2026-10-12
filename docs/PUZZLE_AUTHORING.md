@@ -37,11 +37,9 @@ In **Publish**, export a campaign ZIP through the native file dialog. To include
 
 ```powershell
 python tools/import_campaign.py path/to/campaign.zip
-./tools/verify_campaign.ps1
+godot --headless --path . --script addons/gut/gut_cmdln.gd -gselect=campaign -gexit
 ```
 
 The bundle includes chapter metadata; import stages published JSON into `resources/campaign/`, matching existing IDs and filenames, and merges `resources/campaign_chapters.json`. Test the staged campaign in the target engine before export. In Godot's export preset, select all resources and add **`resources/campaign/*.json, resources/campaign_chapters.json`** to the non-resource inclusion filter. JSON is essential campaign data; user-directory saves are not shipped. Keep imported model assets and the native scene/resource dependencies in the export. Then export through Godot with the matching platform templates installed.
 
-Verification uses a uniquely named OS temporary directory for application save files and logs, removes it on exit, and leaves `APPDATA` unchanged. `-VisualReview` opens the chapter regression scene for Hera inspection with the same isolated saves and a three-minute automatic exit. It does not copy the project, Godot, or asset caches.
-
-For intentional fixture refresh after engine/physics changes, `./tools/verify_campaign.ps1 -PublishVerified` replaces bundled validation records only after all campaign cases pass. It is a developer verification command, not the authoring workflow. Future puzzle layouts and rules can be created entirely through the visual editor.
+GUT campaign tests exercise the reference solution and incomplete starting layout for each preserved Introduction puzzle. Fixtures use isolated save directories and remove them during teardown. Tests never rewrite validation records or publish levels. Refresh authored solutions and validation through the visual Puzzle Editor after engine or physics changes.

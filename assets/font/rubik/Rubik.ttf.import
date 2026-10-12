@@ -3,12 +3,11 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://habj4h07igaw"
-path="res://.godot/imported/Rubik.ttf-ea039f6cb9580d96477e898f98f5829b.fontdata"
+valid=false
 
 [deps]
 
 source_file="res://assets/font/rubik/Rubik.ttf"
-dest_files=["res://.godot/imported/Rubik.ttf-ea039f6cb9580d96477e898f98f5829b.fontdata"]
 
 [params]
 

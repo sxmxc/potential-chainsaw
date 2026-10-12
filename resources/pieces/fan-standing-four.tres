@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://citkwk0mjah7k"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_epgod"]
-[ext_resource type="PackedScene" uid="uid://le0sb5d541u0" path="res://assets/models/GLB format/fan-standing-four.glb" id="2_khtix"]
+[ext_resource type="PackedScene" uid="uid://le0sb5d541u0" path="res://assets/models/build_pieces/GLB format/fan-standing-four.glb" id="2_khtix"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_ktuve"]
-[ext_resource type="Texture2D" uid="uid://86von0y6mmkg" path="res://assets/models/previews/fan-standing-four.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://86von0y6mmkg" path="res://assets/models/build_pieces/previews/fan-standing-four.png" id="Preview"]
 
 [resource]
 script = ExtResource("3_ktuve")

@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[node name="KeyBinding" type="HBoxContainer"]
+
+[node name="Caption" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Action"
+
+[node name="Binding" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(230, 40)
+clip_text = true
+theme_type_variation = &"QuietButton"
+text = "Shortcut"

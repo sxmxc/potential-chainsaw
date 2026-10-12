@@ -20,6 +20,7 @@ var save_as: bool = false
 var pending_action: Callable
 var after_save: Callable
 var music_context: String = ""
+var settings = preload("res://scripts/game_settings.gd").new()
 
 func _ready() -> void:
 	ConstructionInput.install()
@@ -86,7 +87,8 @@ func create_dialogs() -> void:
 	menu_dialog.closed.connect(modal_closed)
 	settings_dialog.closed.connect(modal_closed)
 	settings_dialog.reset_camera.connect(sandbox.camera.reset_view)
-	settings_dialog.sensitivity_changed.connect(func(value):sandbox.camera.sensitivity=value; save_settings())
+	settings_dialog.configure(settings)
+	settings_dialog.settings_changed.connect(func(window_changed): settings.apply(self, window_changed); save_settings())
 	message_dialog.closed.connect(modal_closed)
 func handle_action(action: String) -> void:
 	match action:
@@ -164,9 +166,13 @@ func new_track(enter_world: bool = true) -> void:
 
 func load_track(id: String, example: bool) -> void:
 	if puzzle_session: puzzle_session.sandbox()
-	var data=serializer.decode(FileAccess.get_file_as_string("res://resources/examples/"+id+".json")) if example else serializer.load_track(id)
+	var example_path = "res://resources/menu_machine.json" if id == "menu-machine" else "res://resources/examples/"+id+".json"
+	var data=serializer.decode(FileAccess.get_file_as_string(example_path)) if example else serializer.load_track(id)
 	if data.is_empty(): show_message(serializer.last_error); return
 	sandbox.load_construction(data.pieces)
+	if example and id == "menu-machine":
+		# Use the same open-ended physical circulation as the menu showcase.
+		sandbox.simulation.puzzle = {"objectives": [], "time_limit": 3600}
 	track_name=data.name
 	track_id="" if example else id
 	enter_sandbox()
@@ -260,15 +266,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			else: sandbox.simulation.start()
 
 func save_settings() -> void:
-	var config=ConfigFile.new()
-	config.set_value("camera","sensitivity",sandbox.camera.sensitivity)
-	config.save(SavePaths.resolve("user://settings.cfg"))
+	if settings.save() != OK: show_message("Couldn't save settings.")
 
 func load_settings() -> void:
-	var config=ConfigFile.new()
-	if config.load(SavePaths.resolve("user://settings.cfg"))==OK:
-		sandbox.camera.sensitivity=clampf(float(config.get_value("camera","sensitivity",1)),0.3,2.5)
-		settings_dialog.set_sensitivity(sandbox.camera.sensitivity)
+	settings.load_saved()
+	settings.apply(self)
+	settings_dialog.refresh_values()
 
 func qa_summary() -> Dictionary:
 	var hovered=get_viewport().gui_get_hovered_control()

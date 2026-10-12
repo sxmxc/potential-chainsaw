@@ -50,7 +50,7 @@ border_width_right = 2
 border_color = Color(0.227451, 0.72549, 0.603922, 1)
 corner_radius_top_right = 10
 
-[node name="PCamHostList" type="VBoxContainer" unique_id=27800930]
+[node name="PCamHostList" type="VBoxContainer" unique_id=437997369]
 anchors_preset = 9
 anchor_bottom = 1.0
 size_flags_horizontal = 0
@@ -59,7 +59,7 @@ theme_override_constants/separation = -2
 alignment = 2
 script = ExtResource("1_h6ayt")
 
-[node name="HostListButton" type="Button" parent="." unique_id=1125643302]
+[node name="HostListButton" type="Button" parent="." unique_id=183208260]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
@@ -74,14 +74,14 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_w002y")
 icon = ExtResource("1_xlgqb")
 expand_icon = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=169716967]
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1888607856]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_e0jvt")
 horizontal_scroll_mode = 0
 
-[node name="HostListContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=156638557]
+[node name="HostListContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=2040724950]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8

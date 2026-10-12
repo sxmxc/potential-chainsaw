@@ -1,6 +1,7 @@
 extends PanelContainer
 var build: BuildManager
 var refreshing: bool = false
+var displayed_piece: TrackPiece
 func has_properties() -> bool:
 	if not build.selected: return false
 	var piece: TrackPiece=build.selected
@@ -30,6 +31,8 @@ func configure(manager: BuildManager) -> void:
 	build.selection_changed.connect(refresh)
 	refresh(null)
 func refresh(piece: TrackPiece) -> void:
+	var selection_changed: bool = piece != displayed_piece
+	displayed_piece = piece
 	visible=piece!=null
 	if not piece: return
 	refreshing=true
@@ -54,10 +57,10 @@ func refresh(piece: TrackPiece) -> void:
 	var editable: bool=not build.rules or build.rules.permits(piece.instance_id,"configure")
 	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
 	%SupportTop.disabled=not editable
-	%LinkSettings.hide()
+	if selection_changed: %LinkSettings.hide()
 	%LinksToggle.visible=count==1 and not piece.supported_events().is_empty()
 	refreshing=false
-	fit_content.call_deferred()
+	if selection_changed: fit_content.call_deferred()
 
 func fit_content() -> void:
 	if not is_inside_tree(): return

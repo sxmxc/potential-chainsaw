@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dlyb5fvu1qy02"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_d4c4u"]
-[ext_resource type="PackedScene" uid="uid://bndxb1exvupcu" path="res://assets/models/GLB format/helix-quarter-left.glb" id="2_yxhlr"]
+[ext_resource type="PackedScene" uid="uid://bndxb1exvupcu" path="res://assets/models/build_pieces/GLB format/helix-quarter-left.glb" id="2_yxhlr"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_qrkjd"]
-[ext_resource type="Texture2D" uid="uid://dl05ab62bpwbx" path="res://assets/models/previews/helix-quarter-left.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://dl05ab62bpwbx" path="res://assets/models/build_pieces/previews/helix-quarter-left.png" id="Preview"]
 
 [sub_resource type="Resource" id="Resource_gdbdo"]
 script = ExtResource("1_d4c4u")

@@ -8,7 +8,7 @@ bg_color = Color(0.470588, 0.6, 0.45098, 1)
 corner_radius_top_right = 47
 corner_radius_bottom_left = 40
 
-[node name="Control" type="Control" unique_id=68406636]
+[node name="Control" type="Control" unique_id=1505334907]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,7 +18,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=970446146]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1222133619]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -31,7 +31,7 @@ grow_horizontal = 2
 texture = ExtResource("1_tftrk")
 metadata/_edit_group_ = true
 
-[node name="Label" type="Label" parent="TextureRect" unique_id=1605602926]
+[node name="Label" type="Label" parent="TextureRect" unique_id=681954614]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,7 +51,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 
-[node name="Panel" type="Panel" parent="." unique_id=1149455309]
+[node name="Panel" type="Panel" parent="." unique_id=1154067180]
 visible = false
 layout_mode = 1
 anchors_preset = 5
@@ -66,7 +66,7 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_r4h3u")
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1396748233]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=354120157]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,7 +75,7 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Label2" type="Label" parent="Panel/VBoxContainer" unique_id=2112806599]
+[node name="Label2" type="Label" parent="Panel/VBoxContainer" unique_id=107842525]
 layout_mode = 2
 text = "Example Textsdadassa
 "

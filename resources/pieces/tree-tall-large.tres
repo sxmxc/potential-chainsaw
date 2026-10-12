@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://21bxoflrksvg"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_1vml3"]
-[ext_resource type="PackedScene" uid="uid://chntoahf7fg6i" path="res://assets/models/GLB format/tree-tall-large.glb" id="2_r3wb5"]
+[ext_resource type="PackedScene" uid="uid://chntoahf7fg6i" path="res://assets/models/build_pieces/GLB format/tree-tall-large.glb" id="2_r3wb5"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_cvn0y"]
-[ext_resource type="Texture2D" uid="uid://bm1kwgkkseu44" path="res://assets/models/previews/tree-tall-large.png" id="Preview"]
+[ext_resource type="Texture2D" uid="uid://bm1kwgkkseu44" path="res://assets/models/build_pieces/previews/tree-tall-large.png" id="Preview"]
 
 [resource]
 script = ExtResource("3_cvn0y")

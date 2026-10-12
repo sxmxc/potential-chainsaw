@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dcs47jpmoxqo3"]
 
-[ext_resource type="PackedScene" uid="uid://11vk7yq0vid5" path="res://assets/models/GLB format/support-color-four-bottom.glb" id="Bottom"]
-[ext_resource type="PackedScene" uid="uid://ceeilo20n46vo" path="res://assets/models/GLB format/support-color-four-middle.glb" id="Middle"]
+[ext_resource type="PackedScene" uid="uid://11vk7yq0vid5" path="res://assets/models/build_pieces/GLB format/support-color-four-bottom.glb" id="Bottom"]
+[ext_resource type="PackedScene" uid="uid://ceeilo20n46vo" path="res://assets/models/build_pieces/GLB format/support-color-four-middle.glb" id="Middle"]
 [ext_resource type="Script" uid="uid://d3ma337kim6us" path="res://scripts/construction/resizable_support.gd" id="Script"]
-[ext_resource type="PackedScene" uid="uid://cfiih8hdi0vic" path="res://assets/models/GLB format/support-color-four-top.glb" id="Top"]
+[ext_resource type="PackedScene" uid="uid://cfiih8hdi0vic" path="res://assets/models/build_pieces/GLB format/support-color-four-top.glb" id="Top"]
 
 [node name="SupportAssembly" type="Node3D" unique_id=146821465]
 script = ExtResource("Script")

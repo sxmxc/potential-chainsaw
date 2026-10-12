@@ -55,39 +55,39 @@ border_color = Color(0.227451, 0.72549, 0.603922, 1)
 corner_radius_bottom_right = 20
 expand_margin_bottom = 6.0
 
-[node name="Root" type="Node3D" unique_id=461265228]
+[node name="Root" type="Node3D" unique_id=360626779]
 
-[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1298773245]
+[node name="MainCamera3D" type="Camera3D" parent="." unique_id=583648622]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
-transform = Transform3D(-0.09815385, 0.0065703206, 0.9951496, 0, 0.9999782, -0.006602201, -0.9951713, -0.0006480314, -0.09815171, -16.46, 0.5, 4.249)
+transform = Transform3D(-0.028310489, 0.002621368, 0.99959576, 0, 0.99999654, -0.0026224188, -0.9995992, -7.424196e-05, -0.028310392, -16.46, 0.5, 4.249)
 top_level = true
 
-[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=1550617937]
+[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=979839652]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("1_25rmy")
 
-[node name="PlayerCharacterBody3D" type="CharacterBody3D" parent="." unique_id=2146139817]
+[node name="PlayerCharacterBody3D" type="CharacterBody3D" parent="." unique_id=1004983780]
 unique_name_in_owner = true
 transform = Transform3D(0.999897, 0.0143636, 0, -0.0143636, 0.999897, 0, 0, 0, 1, -16.46, 0.5, 4.249)
 script = ExtResource("2_7nd2u")
 
-[node name="PlayerVisual" type="MeshInstance3D" parent="PlayerCharacterBody3D" unique_id=1102551115]
+[node name="PlayerVisual" type="MeshInstance3D" parent="PlayerCharacterBody3D" unique_id=1716605590]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76837e-05, 0.00331134, 0)
 mesh = SubResource("CapsuleMesh_yvgu3")
 surface_material_override/0 = SubResource("StandardMaterial3D_vc6km")
 
-[node name="PlayerArea3D" type="Area3D" parent="PlayerCharacterBody3D" unique_id=1180492996]
+[node name="PlayerArea3D" type="Area3D" parent="PlayerCharacterBody3D" unique_id=1805728822]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerCharacterBody3D/PlayerArea3D" unique_id=1937740266]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerCharacterBody3D/PlayerArea3D" unique_id=806972542]
 shape = SubResource("CapsuleShape3D_lsrh7")
 
-[node name="PlayerCollisionShape3D" type="CollisionShape3D" parent="PlayerCharacterBody3D" unique_id=1794456032]
+[node name="PlayerCollisionShape3D" type="CollisionShape3D" parent="PlayerCharacterBody3D" unique_id=720195441]
 shape = SubResource("CapsuleShape3D_lsrh7")
 
-[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=407392824 node_paths=PackedStringArray("follow_target")]
+[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1197569782 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
 transform = Transform3D(0.00441533, 0, 0.999915, 0, 0.999995, 0, -0.999923, 0, 0.00441529, -16.46, 0.5, 4.249)
 top_level = true
@@ -103,7 +103,7 @@ noise_emitter_layer = 1
 align_transform_with_view = Callable()
 align_position_with_view = Callable()
 
-[node name="PlayerPhantomCameraNoiseEmitter3D" type="Node3D" parent="." unique_id=1946134773]
+[node name="PlayerPhantomCameraNoiseEmitter3D" type="Node3D" parent="." unique_id=1144277746]
 unique_name_in_owner = true
 transform = Transform3D(-4.37085e-08, 0, 0.999925, 0, 0.999995, 0, -0.999933, 0, -4.37081e-08, -16.46, 0.503767, 4.249)
 script = ExtResource("7_2vtho")
@@ -111,41 +111,41 @@ noise = SubResource("Resource_6tnhy")
 duration = 0.1
 decay_time = 0.1
 
-[node name="Environment" type="Node" parent="." unique_id=863002404]
+[node name="Environment" type="Node" parent="." unique_id=551769034]
 
-[node name="Floor" parent="Environment" unique_id=793305368 instance=ExtResource("8_bw5oq")]
+[node name="Floor" parent="Environment" unique_id=431225028 instance=ExtResource("8_bw5oq")]
 transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
 metadata/_edit_lock_ = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Environment" unique_id=737193682]
+[node name="CSGBox3D" type="CSGBox3D" parent="Environment" unique_id=1429424358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.525, 6.539, 2.5)
 use_collision = true
 size = Vector3(178.429, 14.0773, 1)
 material = SubResource("StandardMaterial3D_qi01t")
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="Environment" unique_id=1040598513]
+[node name="CSGBox3D3" type="CSGBox3D" parent="Environment" unique_id=655436400]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 8.83707, 6.53866, -1.80739)
 use_collision = true
 size = Vector3(178.429, 14.0773, 1)
 material = SubResource("StandardMaterial3D_qi01t")
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="Environment" unique_id=2054627432]
+[node name="CSGBox3D4" type="CSGBox3D" parent="Environment" unique_id=1369826949]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -38.9392, 6.53866, -1.80739)
 use_collision = true
 size = Vector3(178.429, 14.0773, 1)
 material = SubResource("StandardMaterial3D_qi01t")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="Environment" unique_id=1634234875]
+[node name="CSGBox3D2" type="CSGBox3D" parent="Environment" unique_id=409104216]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.525, 6.539, 6)
 use_collision = true
 size = Vector3(178.429, 14.0773, 1)
 material = SubResource("StandardMaterial3D_qi01t")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=1398870746]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=273324150]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 8, 0)
 metadata/_edit_lock_ = true
 
-[node name="EmitterTip" type="Panel" parent="." unique_id=682883233]
+[node name="EmitterTip" type="Panel" parent="." unique_id=2051912858]
 unique_name_in_owner = true
 visible = false
 anchors_preset = -1
@@ -153,7 +153,7 @@ anchor_right = 0.3
 anchor_bottom = 0.1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ey47a")
 
-[node name="Guidance" type="RichTextLabel" parent="EmitterTip" unique_id=1421825819]
+[node name="Guidance" type="RichTextLabel" parent="EmitterTip" unique_id=1683952604]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5

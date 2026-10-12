@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://by73jrkgx6buy" path="res://scenes/mechanisms/elevator_bucket.tscn" id="Bucket"]
 [ext_resource type="PackedScene" uid="uid://cghhhdxrb2jla" path="res://scenes/mechanisms/elevator_frame_section.tscn" id="Frame"]
 [ext_resource type="Script" uid="uid://d022ucstm25w8" path="res://scripts/mechanisms/bucket_elevator.gd" id="Script"]
-[ext_resource type="PackedScene" path="res://scenes/mechanisms/elevator_track_station.tscn" id="Station"]
+[ext_resource type="PackedScene" uid="uid://2s3jaqmhhfgy" path="res://scenes/mechanisms/elevator_track_station.tscn" id="Station"]
 
 [sub_resource type="StandardMaterial3D" id="FrameMaterial"]
 albedo_color = Color(0.4, 0.24, 0.63, 1)

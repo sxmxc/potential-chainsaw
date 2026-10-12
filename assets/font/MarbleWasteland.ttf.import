@@ -3,12 +3,11 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://dvs4ytn2m1c1i"
-path="res://.godot/imported/MarbleWasteland.ttf-2eeac8518bb8bf3e6142b1250792717a.fontdata"
+valid=false
 
 [deps]
 
 source_file="res://assets/font/MarbleWasteland.ttf"
-dest_files=["res://.godot/imported/MarbleWasteland.ttf-2eeac8518bb8bf3e6142b1250792717a.fontdata"]
 
 [params]
 

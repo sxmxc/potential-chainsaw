@@ -569,11 +569,6 @@ func finish_pointer(screen: Vector2, over_ui: bool = false) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not enabled or ConstructionInput.typing(get_viewport()): return
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index==MOUSE_BUTTON_RIGHT and chosen:
-			cancel()
-			camera.drag_button=0
-			get_viewport().set_input_as_handled()
-			return
 		if event.button_index==MOUSE_BUTTON_LEFT and camera.drag_button==0:
 			if chosen:
 				update_preview()

@@ -12,11 +12,15 @@ const SHORTCUTS = {
 	"select_all": [KEY_A, true], "cycle_snap": [KEY_TAB]
 }
 
-static func install() -> void:
+const CAMERA_SHORTCUTS = {"camera_forward": KEY_W, "camera_back": KEY_S, "camera_left": KEY_A, "camera_right": KEY_D}
+
+static func install(reset: bool = false) -> void:
 	for action in SHORTCUTS:
 		var name = "build_" + action
-		if InputMap.has_action(name): continue
-		InputMap.add_action(name)
+		if InputMap.has_action(name):
+			if not reset: continue
+			InputMap.action_erase_events(name)
+		else: InputMap.add_action(name)
 		var data: Array = SHORTCUTS[action]
 		var event = InputEventKey.new()
 		event.keycode = data[0]
@@ -27,7 +31,15 @@ static func install() -> void:
 	shift_redo.keycode = KEY_Z
 	shift_redo.ctrl_pressed = true
 	shift_redo.shift_pressed = true
-	InputMap.action_add_event("build_redo",shift_redo)
+	if not InputMap.action_has_event("build_redo", shift_redo): InputMap.action_add_event("build_redo",shift_redo)
+	for action in CAMERA_SHORTCUTS:
+		if InputMap.has_action(action):
+			if not reset: continue
+			InputMap.action_erase_events(action)
+		else: InputMap.add_action(action)
+		var event = InputEventKey.new()
+		event.physical_keycode = CAMERA_SHORTCUTS[action]
+		InputMap.action_add_event(action, event)
 
 static func typing(viewport: Viewport) -> bool:
 	var focus = viewport.gui_get_focus_owner()

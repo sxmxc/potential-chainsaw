@@ -70,9 +70,9 @@ albedo_texture = ExtResource("8_rjcgw")
 uv1_scale = Vector3(1.91, 1.91, 1.91)
 uv1_offset = Vector3(0.025, -0.927, 0)
 
-[node name="Root" type="Node3D" unique_id=906782608]
+[node name="Root" type="Node3D" unique_id=1876585258]
 
-[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=135415271 node_paths=PackedStringArray("follow_target")]
+[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1529174912 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
 transform = Transform3D(0.99990255, 0.013962194, 0, -0.013962194, 0.99990255, 0, 0, 0, 1, -0.019, 0.5, 8.769)
 script = ExtResource("1_s26cy")
@@ -90,7 +90,7 @@ align_transform_with_view = Callable()
 align_position_with_view = Callable()
 align_rotation_with_view = Callable()
 
-[node name="PlayerAimPhantomCamera3D" type="Node3D" parent="." unique_id=729588819 node_paths=PackedStringArray("follow_target")]
+[node name="PlayerAimPhantomCamera3D" type="Node3D" parent="." unique_id=234054285 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
 transform = Transform3D(0.99990255, 0.013962194, 0, -0.013962194, 0.99990255, 0, 0, 0, 1, -0.019, 1.47, 6.37)
 script = ExtResource("1_s26cy")
@@ -108,60 +108,60 @@ align_transform_with_view = Callable()
 align_position_with_view = Callable()
 align_rotation_with_view = Callable()
 
-[node name="PlayerCharacterBody3D" parent="." unique_id=1515266742 instance=ExtResource("4_qcyfd")]
+[node name="PlayerCharacterBody3D" parent="." unique_id=997363535 instance=ExtResource("4_qcyfd")]
 unique_name_in_owner = true
 transform = Transform3D(0.999903, 0.0139622, 0, -0.0139622, 0.999903, 0, 0, 0, 1, -0.019, 0.5, 5.269)
 
-[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1062960119]
+[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1789010068]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
 transform = Transform3D(0.99990255, 0.013962194, 0, -0.013962194, 0.99990255, 0, 0, 0, 1, -0.019, 0.5, 8.769)
 top_level = true
 attributes = SubResource("CameraAttributesPractical_pst8q")
 
-[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=156954983]
+[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=1169456252]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("5_8von1")
 
-[node name="Environment" type="Node" parent="." unique_id=1218302120]
+[node name="Environment" type="Node" parent="." unique_id=1384168340]
 
-[node name="Floor" parent="Environment" unique_id=1556334408 instance=ExtResource("6_o1fj6")]
+[node name="Floor" parent="Environment" unique_id=814151678 instance=ExtResource("6_o1fj6")]
 transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
 metadata/_edit_lock_ = true
 
-[node name="Wall" parent="Environment" unique_id=1557560467 instance=ExtResource("6_o1fj6")]
+[node name="Wall" parent="Environment" unique_id=2130433947 instance=ExtResource("6_o1fj6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 4.5, 0)
 mesh = SubResource("BoxMesh_wsigl")
 metadata/_edit_lock_ = true
 
-[node name="Wall2" parent="Environment" unique_id=1732727747 instance=ExtResource("6_o1fj6")]
+[node name="Wall2" parent="Environment" unique_id=619981970 instance=ExtResource("6_o1fj6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 4.5, 0)
 mesh = SubResource("BoxMesh_wsigl")
 metadata/_edit_lock_ = true
 
-[node name="Wall3" parent="Environment" unique_id=1529942364 instance=ExtResource("6_o1fj6")]
+[node name="Wall3" parent="Environment" unique_id=2060433752 instance=ExtResource("6_o1fj6")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 4.5, 10.5)
 mesh = SubResource("BoxMesh_wsigl")
 metadata/_edit_lock_ = true
 
-[node name="Wall4" parent="Environment" unique_id=1049113843 instance=ExtResource("6_o1fj6")]
+[node name="Wall4" parent="Environment" unique_id=711473943 instance=ExtResource("6_o1fj6")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 4.5, -9.5)
 mesh = SubResource("BoxMesh_wsigl")
 metadata/_edit_lock_ = true
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=325225421]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=852160727]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 8, 0)
 metadata/_edit_lock_ = true
 
-[node name="CeilingPhantomCamera3D" type="Node3D" parent="." unique_id=1155423003]
+[node name="CeilingPhantomCamera3D" type="Node3D" parent="." unique_id=1439998632]
 unique_name_in_owner = true
 transform = Transform3D(-4.37114e-08, -1, 2.98023e-08, 0, 2.98023e-08, 1, -1, 4.37114e-08, -1.3027e-15, -0.200665, 13.366, -0.162648)
 script = ExtResource("1_s26cy")
 tween_resource = SubResource("Resource_afrr1")
 camera_3d_resource = SubResource("Resource_unpfd")
 
-[node name="MovementInstructionsLabel" type="Label3D" parent="." unique_id=984934580]
+[node name="MovementInstructionsLabel" type="Label3D" parent="." unique_id=2136391651]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.0505604, -0.484909, 1.44357)
 visible = false
 modulate = Color(0.294118, 1, 0.631373, 1)
@@ -169,7 +169,7 @@ text = "[WASD] to move"
 font = ExtResource("7_amcmx")
 font_size = 48
 
-[node name="MovementInstructionsLabel3" type="Label3D" parent="." unique_id=1211792860]
+[node name="MovementInstructionsLabel3" type="Label3D" parent="." unique_id=1706477296]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.0505604, -0.484909, 0.817134)
 visible = false
 modulate = Color(0.294118, 1, 0.631373, 1)
@@ -177,7 +177,7 @@ text = "[Right Mouse Click] to \"aim\""
 font = ExtResource("7_amcmx")
 font_size = 48
 
-[node name="MovementInstructionsLabel2" type="Label3D" parent="." unique_id=2084780227]
+[node name="MovementInstructionsLabel2" type="Label3D" parent="." unique_id=1980149508]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.0440154, -0.490478, -6.30248)
 visible = false
 modulate = Color(0.294118, 1, 0.631373, 1)
@@ -185,12 +185,12 @@ text = "[Space] to toggle PCam"
 font = ExtResource("7_amcmx")
 font_size = 48
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1722361508]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1196827015]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.260217, 1.60477, -9.07797)
 mesh = SubResource("CylinderMesh_sm466")
 surface_material_override/0 = SubResource("StandardMaterial3D_hp48l")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=1500131870]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=1416548368]
 transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0.0525861, 1.60477, 9.98156)
 mesh = SubResource("CylinderMesh_sm466")
 surface_material_override/0 = SubResource("StandardMaterial3D_hp48l")

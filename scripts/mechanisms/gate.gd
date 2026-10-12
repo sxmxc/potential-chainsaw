@@ -7,6 +7,7 @@ var opened_at: float = -1
 var timer_fired: bool = false
 var clearance: Area3D
 var pending_close: bool = false
+var waiting_release: Array[RigidBody3D] = []
 
 func _ready() -> void:
 	barrier = moving_box(Vector3(0.48, 0.55, 0.1), Vector3(0, 0.525, 0), Color("ffc66d"))
@@ -24,12 +25,28 @@ func set_open(value: bool) -> void:
 	pending_close = false
 	if open == value: return
 	open = value
+	waiting_release.clear()
+	if value:
+		for body in clearance.get_overlapping_bodies():
+			if is_marble(body): waiting_release.append(body)
 	opened_at = elapsed if value else -1.0
 	event_raised.emit("opened" if value else "closed", null)
 
 func _physics_process(delta: float) -> void:
 	if not active: return
 	elapsed += delta
+	# Wait for the physics server to commit a clear opening before nudging.
+	if open and barrier.position.y >= 1.0:
+		for body in waiting_release:
+			if not is_instance_valid(body) or body.freeze or not is_marble(body): continue
+			var point = to_local(body.global_position)
+			if absf(point.z) > 0.45 or absf(point.x) > 0.45: continue
+			var direction = global_basis * Vector3(0, 0, -signf(point.z))
+			var speed = body.linear_velocity.dot(direction)
+			if speed >= 0.4 or direction.is_zero_approx(): continue
+			body.sleeping = false
+			body.apply_central_impulse(direction * body.mass * (0.8 - speed))
+		waiting_release.clear()
 	if pending_close: set_open(false)
 	var delay = float(config.get("delay", 0))
 	if delay > 0 and not timer_fired and elapsed >= delay:
@@ -45,5 +62,6 @@ func reset() -> void:
 	opened_at = 0
 	timer_fired = false
 	pending_close = false
+	waiting_release.clear()
 	open = bool(config.get("open", false))
 	if barrier: barrier.position.y = 1.25 if open else 0.525

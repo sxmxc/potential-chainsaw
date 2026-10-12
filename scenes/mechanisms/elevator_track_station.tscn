@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://2s3jaqmhhfgy"]
 
-[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/GLB format/straight.glb" id="Model"]
-[ext_resource type="Shape3D" path="res://scenes/mechanisms/straight_track_collision.tres" id="Shape"]
+[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
+[ext_resource type="Shape3D" uid="uid://30hegummlwsl" path="res://scenes/mechanisms/straight_track_collision.tres" id="Shape"]
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
