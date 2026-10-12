@@ -2,7 +2,7 @@
 
 [ext_resource type="AudioStream" uid="uid://dy2f265g2gfsg" path="res://assets/audio/songs/menu_song_loop.mp3" id="3_m1kxf"]
 [ext_resource type="Script" uid="uid://ottibv50h24e" path="res://scripts/ui/main_menu.gd" id="Script"]
-[ext_resource type="PackedScene" uid="uid://cs82gsc8c1xb6" path="res://scenes/showcase.tscn" id="Showcase"]
+[ext_resource type="PackedScene" uid="uid://0pofwpa56dpl" path="res://scenes/showcase.tscn" id="Showcase"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_1g8jr"]
@@ -36,14 +36,13 @@ layout_mode = 0
 anchor_left = 0.08
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 76.0
 offset_right = -24.0
 offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_type_variation = &"MenuCompositionMargin"
-offset_top = 76.0
-
 
 [node name="Composition" type="HBoxContainer" parent="Margin" unique_id=113436970]
 layout_mode = 2
@@ -93,69 +92,63 @@ layout_mode = 2
 
 [node name="Campaign" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1007912784]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Campaign"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="Sandbox" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1306160118]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Sandbox"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="Load" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=967771133]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Saved tracks"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="Examples" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=663403546]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Example tracks"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="PuzzleEditor" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1770515664]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Puzzle Editor"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="Settings" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=186515730]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Settings"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="QuitSpace" type="Control" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=480321599]
 custom_minimum_size = Vector2(0, 20)
@@ -164,14 +157,13 @@ mouse_filter = 2
 
 [node name="Quit" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1680328876]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuNavigation"
 text = "Quit"
 alignment = 0
-custom_minimum_size = Vector2(236, 44)
-theme_type_variation = &"MenuNavigation"
-mouse_default_cursor_shape = 2
-
 
 [node name="Secondary" type="HBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1749837447]
 visible = false

@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://c4if8edlanmt2"]
 
 [ext_resource type="PackedScene" uid="uid://bxo0prqjwsv8i" path="res://scenes/ui/toolbars/build_toolbar.tscn" id="Build"]
-[ext_resource type="PackedScene" uid="uid://cklb7w7086xys" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
+[ext_resource type="PackedScene" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
 [ext_resource type="PackedScene" uid="uid://cmd14munkq5gg" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
-[ext_resource type="PackedScene" path="res://scenes/ui/inspector.tscn" id="Inspector"]
+[ext_resource type="PackedScene" uid="uid://khlp72i5rsq2" path="res://scenes/ui/inspector.tscn" id="Inspector"]
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]

@@ -218,4 +218,22 @@ shape = SubResource("BoxShape3D_j6fha")
 
 [node name="NPCInteractionZoneMesh" type="MeshInstance3D" parent="Tweening Example/Back/EntryRoomTrigger" unique_id=1818213623]
 mesh = SubResource("BoxMesh_xg4en")
-skeleton = NodeP
+skeleton = NodePath("../../../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_2dct5")
+metadata/_edit_group_ = true
+
+[node name="PhantomCamera3D" type="Node3D" parent="Tweening Example/Back" unique_id=1058845211]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, -0.8, 4.8, 3.3)
+script = ExtResource("3_4whss")
+tween_resource = SubResource("Resource_50m5g")
+camera_3d_resource = SubResource("Resource_rexf8")
+
+[node name="TweenNameLabel" type="Label3D" parent="Tweening Example/Back" unique_id=1802777377]
+transform = Transform3D(1, 0, 0, 0, 0.695913, 0.718126, 0, -0.718126, 0.695913, 1.7, 0.5, 0)
+text = "Transition Type:
+Back
+
+Duration:
+1.2s"
+font = ExtResource("9_ptb3h")
+font_size = 48

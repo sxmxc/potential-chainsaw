@@ -4,18 +4,17 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="SettingsDialog" type="Window" unique_id=1448131814]
+transparent_bg = true
 title = "Settings"
 size = Vector2i(620, 280)
 visible = false
 transient = true
 exclusive = true
 borderless = true
+transparent = true
 min_size = Vector2i(500, 240)
 theme = ExtResource("Theme")
 script = ExtResource("Script")
-transparent = true
-transparent_bg = true
-
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=859819998]
 anchors_preset = 15
@@ -50,9 +49,8 @@ text = "×"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
 theme_type_variation = &"SettingsTabs"
-
+current_tab = 0
 
 [node name="Camera" type="VBoxContainer" parent="Surface/Contents/Tabs" unique_id=836848175]
 layout_mode = 2

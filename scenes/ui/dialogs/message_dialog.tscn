@@ -4,6 +4,7 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="MessageDialog" type="Window" unique_id=960107417]
+transparent_bg = true
 title = "Marble Engineer"
 size = Vector2i(500, 220)
 visible = false
@@ -11,11 +12,9 @@ transient = true
 exclusive = true
 unresizable = true
 borderless = true
+transparent = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
-transparent = true
-transparent_bg = true
-
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=2146464390]
 anchors_preset = 15

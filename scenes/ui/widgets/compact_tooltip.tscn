@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b8g63fbm3eicy"]
 
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="Tooltip" type="Label"]
+[node name="Tooltip" type="Label" unique_id=129981831]
 custom_minimum_size = Vector2(220, 0)
 theme = ExtResource("Theme")
 theme_type_variation = &"TooltipLabel"

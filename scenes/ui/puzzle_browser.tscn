@@ -4,18 +4,17 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PuzzleBrowser" type="Window" unique_id=335018945]
+transparent_bg = true
 title = "Campaign"
 size = Vector2i(920, 560)
 visible = false
 transient = true
 exclusive = true
 borderless = true
+transparent = true
 min_size = Vector2i(800, 300)
 theme = ExtResource("Theme")
 script = ExtResource("Script")
-transparent = true
-transparent_bg = true
-
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=497165524]
 anchors_preset = 15

@@ -4,15 +4,14 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PuzzleCompletion" type="Window" unique_id=1581572229]
+transparent_bg = true
 title = "Puzzle complete"
 size = Vector2i(480, 360)
 visible = false
 borderless = true
+transparent = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
-transparent = true
-transparent_bg = true
-
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=1593453148]
 unique_name_in_owner = true
