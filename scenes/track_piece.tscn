@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://o3wxya735e6p"]
+
+[ext_resource type="Script" uid="uid://q0bx2wvocltw" path="res://scripts/construction/track_piece.gd" id="1"]
+
+[node name="TrackPiece" type="Node3D" unique_id=1465264880]
+script = ExtResource("1")

@@ -1,0 +1,128 @@
+[gd_scene format=3 uid="uid://cghhhdxrb2jla"]
+
+[sub_resource type="StandardMaterial3D" id="FrameMaterial"]
+albedo_color = Color(0.4, 0.24, 0.63, 1)
+
+[sub_resource type="BoxMesh" id="MeshPost0_"]
+material = SubResource("FrameMaterial")
+size = Vector3(0.12, 1, 0.12)
+
+[sub_resource type="BoxShape3D" id="ShapePost0_"]
+size = Vector3(0.12, 1, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="ChainMaterial"]
+albedo_color = Color(0.26, 0.31, 0.36, 1)
+
+[sub_resource type="BoxMesh" id="MeshUpChain0_"]
+material = SubResource("ChainMaterial")
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxShape3D" id="ShapeUpChain0_"]
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxMesh" id="MeshReturnChain0_"]
+material = SubResource("ChainMaterial")
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxShape3D" id="ShapeReturnChain0_"]
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxMesh" id="MeshPost1_"]
+material = SubResource("FrameMaterial")
+size = Vector3(0.12, 1, 0.12)
+
+[sub_resource type="BoxShape3D" id="ShapePost1_"]
+size = Vector3(0.12, 1, 0.12)
+
+[sub_resource type="BoxMesh" id="MeshUpChain1_"]
+material = SubResource("ChainMaterial")
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxShape3D" id="ShapeUpChain1_"]
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxMesh" id="MeshReturnChain1_"]
+material = SubResource("ChainMaterial")
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxShape3D" id="ShapeReturnChain1_"]
+size = Vector3(0.07, 1, 0.07)
+
+[sub_resource type="BoxMesh" id="MeshBrace_"]
+material = SubResource("FrameMaterial")
+size = Vector3(1.48, 0.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="ShapeBrace_"]
+size = Vector3(1.48, 0.1, 0.1)
+
+[node name="FrameSection" type="Node3D" unique_id=873509365]
+
+[node name="Post0" type="MeshInstance3D" parent="." unique_id=1194274105]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 0.5, 0.75)
+mesh = SubResource("MeshPost0_")
+
+[node name="Body" type="StaticBody3D" parent="Post0" unique_id=1365067744]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="Post0/Body" unique_id=684434629]
+shape = SubResource("ShapePost0_")
+
+[node name="UpChain0" type="MeshInstance3D" parent="." unique_id=161123375]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 0.5, 0)
+mesh = SubResource("MeshUpChain0_")
+
+[node name="Body" type="StaticBody3D" parent="UpChain0" unique_id=1035228957]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="UpChain0/Body" unique_id=1364109252]
+shape = SubResource("ShapeUpChain0_")
+
+[node name="ReturnChain0" type="MeshInstance3D" parent="." unique_id=94958148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 0.5, 1.5)
+mesh = SubResource("MeshReturnChain0_")
+
+[node name="Body" type="StaticBody3D" parent="ReturnChain0" unique_id=1369703427]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="ReturnChain0/Body" unique_id=584170297]
+shape = SubResource("ShapeReturnChain0_")
+
+[node name="Post1" type="MeshInstance3D" parent="." unique_id=1324473150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68, 0.5, 0.75)
+mesh = SubResource("MeshPost1_")
+
+[node name="Body" type="StaticBody3D" parent="Post1" unique_id=893865325]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="Post1/Body" unique_id=935464891]
+shape = SubResource("ShapePost1_")
+
+[node name="UpChain1" type="MeshInstance3D" parent="." unique_id=159419630]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68, 0.5, 0)
+mesh = SubResource("MeshUpChain1_")
+
+[node name="Body" type="StaticBody3D" parent="UpChain1" unique_id=1610888937]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="UpChain1/Body" unique_id=839733355]
+shape = SubResource("ShapeUpChain1_")
+
+[node name="ReturnChain1" type="MeshInstance3D" parent="." unique_id=301672354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68, 0.5, 1.5)
+mesh = SubResource("MeshReturnChain1_")
+
+[node name="Body" type="StaticBody3D" parent="ReturnChain1" unique_id=676229922]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="ReturnChain1/Body" unique_id=946074385]
+shape = SubResource("ShapeReturnChain1_")
+
+[node name="Brace" type="MeshInstance3D" parent="." unique_id=649351891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.75)
+mesh = SubResource("MeshBrace_")
+
+[node name="Body" type="StaticBody3D" parent="Brace" unique_id=1525439454]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="Brace/Body" unique_id=791911893]
+shape = SubResource("ShapeBrace_")

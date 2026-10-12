@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://koyrdojdabnc"]
+
+[ext_resource type="Script" uid="uid://cbcapvfh7h4i" path="res://scripts/ui/toolbox.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="Toolbox" type="PanelContainer" unique_id=166850842]
+custom_minimum_size = Vector2(272, 0)
+offset_right = 272.0
+offset_bottom = 332.0
+theme = ExtResource("Theme")
+theme_type_variation = &"SurfacePanel"
+script = ExtResource("Script")
+
+[node name="Contents" type="VBoxContainer" parent="." unique_id=1011925404]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Contents" unique_id=446883190]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PanelTitle"
+text = "Toolbox"
+
+[node name="Search" type="LineEdit" parent="Contents" unique_id=954027145]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Find a piece…"
+clear_button_enabled = true
+
+[node name="Category" type="OptionButton" parent="Contents" unique_id=859933044]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="Count" type="Label" parent="Contents" unique_id=1766624284]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Pieces"
+
+[node name="Scroll" type="ScrollContainer" parent="Contents" unique_id=1108768129]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 112)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Pieces" type="GridContainer" parent="Contents/Scroll" unique_id=774890040]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2

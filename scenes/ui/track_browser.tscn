@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://csmksfq1onevj"]
+
+[ext_resource type="Script" uid="uid://bvyb82d60j2pq" path="res://scripts/ui/track_browser.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="TrackBrowser" type="Window" unique_id=1612074212]
+title = "Your tracks"
+size = Vector2i(660, 500)
+visible = false
+transient = true
+exclusive = true
+unresizable = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=791295942]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1506092021]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=99441519]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "YOUR TRACKS"
+
+[node name="List" type="ItemList" parent="Surface/Contents" unique_id=1044851652]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Info" type="Label" parent="Surface/Contents" unique_id=1471563570]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Saved locally. Choose a track to continue building."
+autowrap_mode = 3
+
+[node name="Rename" type="LineEdit" parent="Surface/Contents" unique_id=1518568215]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "New name for selected track"
+max_length = 80
+
+[node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=638252602]
+layout_mode = 2
+
+[node name="Load" type="Button" parent="Surface/Contents/Actions" unique_id=261662297]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Load track"
+
+[node name="RenameButton" type="Button" parent="Surface/Contents/Actions" unique_id=1802703739]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Rename"
+
+[node name="Delete" type="Button" parent="Surface/Contents/Actions" unique_id=418114350]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"DangerButton"
+text = "Delete"
+
+[node name="Spacer" type="Control" parent="Surface/Contents/Actions" unique_id=1393936274]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Close" type="Button" parent="Surface/Contents/Actions" unique_id=1142817370]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Close"
+
+[node name="DeleteConfirmation" type="ConfirmationDialog" parent="." unique_id=2085168469]
+unique_name_in_owner = true
+title = "Delete track"

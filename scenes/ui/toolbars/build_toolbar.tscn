@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://bxo0prqjwsv8i"]
+
+[ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="BuildToolbar" type="HBoxContainer" unique_id=1199303520]
+mouse_filter = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Library" type="Button" parent="." unique_id=114523809]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+toggle_mode = true
+text = "Pieces"
+
+[node name="Select" type="Button" parent="." unique_id=960823933]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Cancel"
+
+[node name="Grid" type="Button" parent="." unique_id=2052622115]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Construction grid · G"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+toggle_mode = true
+
+[node name="Snap" type="Button" parent="." unique_id=1382665893]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Magnetic connectors · C"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+toggle_mode = true
+
+[node name="Lower" type="Button" parent="." unique_id=258019263]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Lower 0.5 m · PgDn · hold Shift for 0.125 m"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "−"
+
+[node name="Height" type="Label" parent="." unique_id=628266016]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Level 0 m"
+
+[node name="Raise" type="Button" parent="." unique_id=186077859]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Raise 0.5 m · PgUp · hold Shift for 0.125 m"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "+"
+
+[node name="Ground" type="Button" parent="." unique_id=2014397895]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset the free-placement plane to ground level (0 m)"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Ground"
+
+[node name="FrameAll" type="Button" parent="." unique_id=1379863851]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Show the whole track · Home"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Frame all"

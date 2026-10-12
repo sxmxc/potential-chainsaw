@@ -1,0 +1,188 @@
+[gd_scene format=3 uid="uid://khlp72i5rsq2"]
+
+[ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="Inspector" type="PanelContainer" unique_id=462449109]
+custom_minimum_size = Vector2(240, 0)
+theme = ExtResource("Theme")
+theme_type_variation = &"ContextPanel"
+script = ExtResource("Script")
+
+[node name="Scroll" type="ScrollContainer" parent="." unique_id=1364269164]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Contents" type="VBoxContainer" parent="Scroll" unique_id=341407]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="Scroll/Contents" unique_id=58178029]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+text = "YOUR SELECTION"
+
+[node name="PieceName" type="Label" parent="Scroll/Contents" unique_id=1027218377]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InspectorTitle"
+text = "Selected piece"
+autowrap_mode = 3
+
+[node name="Details" type="Label" parent="Scroll/Contents" unique_id=2030164512]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Piece properties"
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="Scroll/Contents" unique_id=1384570987]
+layout_mode = 2
+
+[node name="Move" type="Button" parent="Scroll/Contents/Actions" unique_id=2044015536]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Move"
+
+[node name="Rotate" type="Button" parent="Scroll/Contents/Actions" unique_id=263542338]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Rotate"
+
+[node name="Duplicate" type="Button" parent="Scroll/Contents/Actions" unique_id=2010360153]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Duplicate"
+
+[node name="Lower" type="Button" parent="Scroll/Contents/Actions" unique_id=832779949]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Lower selection 0.5 m; hold Shift for 0.125 m"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Lower"
+
+[node name="Raise" type="Button" parent="Scroll/Contents/Actions" unique_id=162146298]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Raise selection 0.5 m; hold Shift for 0.125 m"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Raise"
+
+[node name="Delete" type="Button" parent="Scroll/Contents/Actions" unique_id=228917619]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Delete"
+
+[node name="SpeedLabel" type="Label" parent="Scroll/Contents" unique_id=1341065408]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Marble launch speed"
+
+[node name="Speed" type="SpinBox" parent="Scroll/Contents" unique_id=786022461]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 6.0
+step = 0.1
+value = 1.4
+
+[node name="ElevatorSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=987620442]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="Scroll/Contents/ElevatorSettings" unique_id=517139208]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Elevator rise"
+
+[node name="ElevatorHeight" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Height difference between the input and output; 2–12 m in 0.5 m steps"
+min_value = 2.0
+max_value = 12.0
+step = 0.5
+value = 4.0
+suffix = "m"
+
+[node name="SpeedLabel" type="Label" parent="Scroll/Contents/ElevatorSettings" unique_id=1217794640]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Bucket travel speed"
+
+[node name="ElevatorSpeed" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Continuous conveyor speed; edit in Build mode"
+min_value = 0.25
+max_value = 2.0
+step = 0.05
+value = 0.8
+suffix = "m/s"
+
+[node name="SupportSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=2139975683]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="Scroll/Contents/SupportSettings" unique_id=1465431699]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Support bearing height"
+
+[node name="SupportHeight" type="SpinBox" parent="Scroll/Contents/SupportSettings" unique_id=1096130528]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Bottom and top retain their shape; matching middle sections fill the height"
+min_value = 1.0
+max_value = 30.0
+step = 0.125
+value = 2.0
+suffix = "m"
+
+[node name="TopLabel" type="Label" parent="Scroll/Contents/SupportSettings" unique_id=2126349642]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Top style"
+
+[node name="SupportTop" type="OptionButton" parent="Scroll/Contents/SupportSettings" unique_id=972456820]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Single"
+popup/item_0/id = 0
+popup/item_1/text = "Double"
+popup/item_1/id = 1
+
+[node name="Description" type="Label" parent="Scroll/Contents" unique_id=667827958]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Drag to move"
+autowrap_mode = 3

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://difl7wbmf8sy8"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_olbdg"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://d1b528jsm2hqi" path="res://scenes/mechanisms/support-color-single.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://s1xl5b3kktf2" path="res://assets/models/previews/support-color-single-top.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"support-color-single"
+display_name = "Support Color Single"
+category = "Supports"
+description = "Complete height-adjustable support using its matching bottom, middle and top."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.6, 0, -0.3, 1.2, 2.2, 0.6)
+behavior = "resizable_support"

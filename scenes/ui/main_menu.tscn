@@ -1,0 +1,151 @@
+[gd_scene format=3 uid="uid://bj4isw11fl00d"]
+
+[ext_resource type="Script" uid="uid://ottibv50h24e" path="res://scripts/ui/main_menu.gd" id="Script"]
+[ext_resource type="PackedScene" uid="uid://cs82gsc8c1xb6" path="res://scenes/showcase.tscn" id="Showcase"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[sub_resource type="SystemFont" id="SystemFont_ar1b5"]
+font_names = PackedStringArray("Cascadia Code PL")
+
+[sub_resource type="LabelSettings" id="LabelSettings_ldhhn"]
+font = SubResource("SystemFont_ar1b5")
+
+[node name="MainMenu" type="Control" unique_id=1601964916]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Showcase" parent="." unique_id=1581905672 instance=ExtResource("Showcase")]
+layout_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=317578351]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuMargin"
+
+[node name="Composition" type="HBoxContainer" parent="Margin" unique_id=113436970]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Left" type="VBoxContainer" parent="Margin/Composition" unique_id=1094415198]
+custom_minimum_size = Vector2(370, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopSpace" type="Control" parent="Margin/Composition/Left" unique_id=1892516678]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="Margin/Composition/Left" unique_id=270619634]
+layout_mode = 2
+theme_type_variation = &"MenuPanel"
+
+[node name="Contents" type="VBoxContainer" parent="Margin/Composition/Left/Card" unique_id=173998887]
+layout_mode = 2
+theme_type_variation = &"MenuVBox"
+
+[node name="Eyebrow" type="Label" parent="Margin/Composition/Left/Card/Contents" unique_id=405865518]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+text = "A LITTLE GRAVITY. A LOT OF POSSIBILITIES."
+
+[node name="Title" type="Label" parent="Margin/Composition/Left/Card/Contents" unique_id=1312775314]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"BrandTitle"
+text = "Marble
+Engineer"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="Margin/Composition/Left/Card/Contents" unique_id=1913153386]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Dream it. Build it. Let it roll."
+horizontal_alignment = 1
+
+[node name="Actions" type="VBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1790030367]
+layout_mode = 2
+
+[node name="Sandbox" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1306160118]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Start building"
+
+[node name="Load" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=967771133]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"QuietButton"
+text = "My constructions"
+
+[node name="Examples" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=663403546]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"QuietButton"
+text = "Try an example"
+
+[node name="Secondary" type="HBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1749837447]
+layout_mode = 2
+
+[node name="Settings" type="Button" parent="Margin/Composition/Left/Card/Contents/Secondary" unique_id=186515730]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"QuietButton"
+text = "Settings"
+
+[node name="Quit" type="Button" parent="Margin/Composition/Left/Card/Contents/Secondary" unique_id=1680328876]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"QuietButton"
+text = "Quit"
+
+[node name="BottomSpace" type="Control" parent="Margin/Composition/Left" unique_id=184645858]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Stage" type="Control" parent="Margin/Composition" unique_id=5242842]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="VersionLabel" type="Label" parent="Margin/Composition/Stage" unique_id=2093786749]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.9276224
+anchor_top = 0.981
+anchor_right = 1.0066434
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"SmallMutedLabel"
+text = "v0.0.1-alpha"
+label_settings = SubResource("LabelSettings_ldhhn")
+horizontal_alignment = 2
+metadata/_edit_use_anchors_ = true

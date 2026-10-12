@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+Elevator route H=2.0 q=0 state=3 captures=1 exits=1 marble=(-0.0009, 2.449964, -2.454957)
+Elevator route H=4.0 q=1 state=3 captures=1 exits=1 marble=(-2.456828, 4.449967, 0.000978)
+Elevator route H=12.0 q=2 state=3 captures=1 exits=1 marble=(0.001208, 12.44997, 2.455761)
+ELEVATOR RESULT: 60 checks; 0 failures

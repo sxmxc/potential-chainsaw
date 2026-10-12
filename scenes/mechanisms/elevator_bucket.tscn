@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://by73jrkgx6buy"]
+
+[ext_resource type="PackedScene" uid="uid://nj1mshutedu8" path="res://assets/models/GLB format/end-square.glb" id="Model"]
+[ext_resource type="Script" uid="uid://dt4hn66bn0pys" path="res://scripts/mechanisms/elevator_bucket.gd" id="Script"]
+
+[sub_resource type="BoxShape3D" id="SelectionShape"]
+size = Vector3(1, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="MountMaterial"]
+albedo_color = Color(0.25, 0.31, 0.38, 1)
+
+[sub_resource type="BoxMesh" id="LipMesh"]
+material = SubResource("MountMaterial")
+size = Vector3(0.19999999, 0.06, 0.06)
+
+[sub_resource type="BoxMesh" id="MountMesh"]
+material = SubResource("MountMaterial")
+size = Vector3(1.15, 0.1, 0.15)
+
+[node name="ElevatorBucket" type="Node3D" unique_id=1206369199]
+script = ExtResource("Script")
+
+[node name="Tray" type="Node3D" parent="." unique_id=1196978913]
+
+[node name="EndSquare" parent="Tray" unique_id=1231426908 instance=ExtResource("Model")]
+
+[node name="SelectionBody" type="StaticBody3D" parent="Tray" unique_id=1485511794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Tray/SelectionBody" unique_id=2034061064]
+shape = SubResource("SelectionShape")
+
+[node name="RetainingLip" type="MeshInstance3D" parent="Tray" unique_id=145018223]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021826178, 0.28, -0.47)
+mesh = SubResource("LipMesh")
+
+[node name="Mount" type="MeshInstance3D" parent="." unique_id=1410426257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0.58)
+mesh = SubResource("MountMesh")

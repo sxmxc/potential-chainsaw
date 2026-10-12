@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://cmd14munkq5gg"]
+
+[ext_resource type="Script" uid="uid://bc0luytdo7dg5" path="res://scripts/ui/file_toolbar.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="FileToolbar" type="HBoxContainer" unique_id=21099837]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 72.0
+grow_horizontal = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Identity" type="VBoxContainer" parent="." unique_id=1064597816]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="TrackName" type="Label" parent="Identity" unique_id=1959782406]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TrackTitle"
+text = "Untitled track"
+text_overrun_behavior = 3
+
+[node name="SaveStatus" type="Label" parent="Identity" unique_id=1194057294]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "All changes saved"
+
+[node name="Save" type="Button" parent="." unique_id=1705256878]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Save"
+
+[node name="SaveAs" type="Button" parent="." unique_id=1358927054]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Save as"
+
+[node name="Undo" type="Button" parent="." unique_id=1339793646]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Undo · Ctrl+Z"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+
+[node name="Redo" type="Button" parent="." unique_id=1761474023]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Redo · Ctrl+Y / Ctrl+Shift+Z"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+
+[node name="Test" type="Button" parent="." unique_id=392098965]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Test track"
+
+[node name="Pause" type="Button" parent="." unique_id=928829240]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Pause"
+
+[node name="Reset" type="Button" parent="." unique_id=1288103880]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Build"
+
+[node name="Menu" type="Button" parent="." unique_id=292477012]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Menu"

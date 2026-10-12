@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://o65ibuvr48jy"]
+
+[ext_resource type="PackedScene" uid="uid://bi13v413h3aho" path="res://assets/models/GLB format/support-color-two-bottom.glb" id="Bottom"]
+[ext_resource type="PackedScene" uid="uid://dn66g1wbq2ome" path="res://assets/models/GLB format/support-color-two-middle.glb" id="Middle"]
+[ext_resource type="Script" uid="uid://d3ma337kim6us" path="res://scripts/construction/resizable_support.gd" id="Script"]
+[ext_resource type="PackedScene" uid="uid://0oo1mftht02r" path="res://assets/models/GLB format/support-color-two-top.glb" id="Top"]
+
+[node name="SupportAssembly" type="Node3D" unique_id=2059675316]
+script = ExtResource("Script")
+family = "support-color-two"
+
+[node name="Bottom" parent="." unique_id=980894527 instance=ExtResource("Bottom")]
+
+[node name="Middle0" parent="." unique_id=589094239 instance=ExtResource("Middle")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Middle1" parent="." unique_id=1461260579 instance=ExtResource("Middle")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Top" parent="." unique_id=936322672 instance=ExtResource("Top")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

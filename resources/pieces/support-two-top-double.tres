@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://belcrdj63uuav"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_4dnyg"]
+[ext_resource type="PackedScene" uid="uid://diinvk04u81xr" path="res://assets/models/GLB format/support-two-top-double.glb" id="2_vaq0k"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_380jc"]
+[ext_resource type="Texture2D" uid="uid://cds3u8jly07lr" path="res://assets/models/previews/support-two-top-double.png" id="Preview"]
+
+[resource]
+script = ExtResource("3_380jc")
+id = &"support-two-top-double"
+display_name = "Support Two Top Double"
+category = "Supports"
+description = "Supports · 1.20 × 0.60 m footprint · 0.70 m tall. Stack structural sections beneath raised tracks. Supports are optional in free build."
+model = ExtResource("2_vaq0k")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.6, 4e-17, -0.3, 1.2, 0.70000005, 0.6)
+behavior = "support"
+library_visible = false
+surface_cells = PackedVector3Array(-0.35, 0.05, -0.05, 0.35, 0.05, -0.05, -0.35, 0.05, 0.05, 0.35, 0.05, 0.05, -0.35, 0.15, -0.05, 0.35, 0.15, -0.05, -0.35, 0.15, 0.05, 0.35, 0.15, 0.05, -0.35, 0.25, -0.05, 0.35, 0.25, -0.05, -0.35, 0.25, 0.05, 0.35, 0.25, 0.05, -0.35, 0.35, -0.05, 0.35, 0.35, -0.05, -0.35, 0.35, 0.05, 0.35, 0.35, 0.05, -0.55, 0.45, -0.25, -0.45, 0.45, -0.25, -0.35, 0.45, -0.25, -0.25, 0.45, -0.25, -0.15, 0.45, -0.25, -0.05, 0.45, -0.25, 0.05, 0.45, -0.25, 0.15, 0.45, -0.25, 0.25, 0.45, -0.25, 0.35, 0.45, -0.25, 0.45, 0.45, -0.25, 0.55, 0.45, -0.25, -0.55, 0.45, -0.15, -0.45, 0.45, -0.15, -0.35, 0.45, -0.15, -0.25, 0.45, -0.15, -0.15, 0.45, -0.15, -0.05, 0.45, -0.15, 0.05, 0.45, -0.15, 0.15, 0.45, -0.15, 0.25, 0.45, -0.15, 0.35, 0.45, -0.15, 0.45, 0.45, -0.15, 0.55, 0.45, -0.15, -0.55, 0.45, 0.15, -0.45, 0.45, 0.15, -0.35, 0.45, 0.15, -0.25, 0.45, 0.15, -0.15, 0.45, 0.15, -0.05, 0.45, 0.15, 0.05, 0.45, 0.15, 0.15, 0.45, 0.15, 0.25, 0.45, 0.15, 0.35, 0.45, 0.15, 0.45, 0.45, 0.15, 0.55, 0.45, 0.15, -0.55, 0.45, 0.25, -0.45, 0.45, 0.25, -0.35, 0.45, 0.25, -0.25, 0.45, 0.25, -0.15, 0.45, 0.25, -0.05, 0.45, 0.25, 0.05, 0.45, 0.25, 0.15, 0.45, 0.25, 0.25, 0.45, 0.25, 0.35, 0.45, 0.25, 0.45, 0.45, 0.25, 0.55, 0.45, 0.25, -0.55, 0.55, -0.25, 0.55, 0.55, -0.25, -0.55, 0.55, -0.15, 0.55, 0.55, -0.15, -0.55, 0.55, 0.15, 0.55, 0.55, 0.15, -0.55, 0.55, 0.25, 0.55, 0.55, 0.25, -0.55, 0.65, -0.25, 0.55, 0.65, -0.25, -0.55, 0.65, -0.15, 0.55, 0.65, -0.15, -0.55, 0.65, 0.15, 0.55, 0.65, 0.15, -0.55, 0.65, 0.25, 0.55, 0.65, 0.25)

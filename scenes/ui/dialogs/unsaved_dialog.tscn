@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c00rd135nmp83"]
+
+[ext_resource type="Script" uid="uid://b7xwje7d5h8gj" path="res://scripts/ui/unsaved_dialog.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="UnsavedDialog" type="Window" unique_id=2143401033]
+title = "Keep your construction?"
+size = Vector2i(490, 180)
+visible = false
+transient = true
+exclusive = true
+unresizable = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=780426744]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1811068670]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=1340122798]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Keep your construction?"
+
+[node name="Message" type="Label" parent="Surface/Contents" unique_id=472636761]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Save your changes before continuing?"
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=2065050542]
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="Surface/Contents/Actions" unique_id=1006601776]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Cancel"
+
+[node name="Discard" type="Button" parent="Surface/Contents/Actions" unique_id=1226041077]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"DangerButton"
+text = "Discard"
+
+[node name="Save" type="Button" parent="Surface/Contents/Actions" unique_id=1824163611]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Save and continue"

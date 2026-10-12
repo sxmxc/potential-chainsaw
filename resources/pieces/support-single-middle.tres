@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bvx57oi7af2ad"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_xrbbj"]
+[ext_resource type="PackedScene" uid="uid://d3s0mqmq7p0vs" path="res://assets/models/GLB format/support-single-middle.glb" id="2_5rbi4"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_xv7ea"]
+[ext_resource type="Texture2D" uid="uid://dfc2ntw65amyn" path="res://assets/models/previews/support-single-middle.png" id="Preview"]
+
+[resource]
+script = ExtResource("3_xv7ea")
+id = &"support-single-middle"
+display_name = "Support Single Middle"
+category = "Supports"
+description = "Supports · 0.40 × 0.40 m footprint · 0.50 m tall. Stack structural sections beneath raised tracks. Supports are optional in free build."
+model = ExtResource("2_5rbi4")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.2, 0, -0.2, 0.4, 0.5, 0.4)
+behavior = "support"
+library_visible = false
+surface_cells = PackedVector3Array(-0.05, 0.05, -0.15, 0.05, 0.05, -0.15, -0.15, 0.05, -0.05, -0.05, 0.05, -0.05, 0.05, 0.05, -0.05, 0.15, 0.05, -0.05, -0.15, 0.05, 0.05, -0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.15, 0.05, 0.05, -0.05, 0.05, 0.15, 0.05, 0.05, 0.15, -0.05, 0.15, -0.15, 0.05, 0.15, -0.15, -0.15, 0.15, -0.05, -0.05, 0.15, -0.05, 0.05, 0.15, -0.05, 0.15, 0.15, -0.05, -0.15, 0.15, 0.05, -0.05, 0.15, 0.05, 0.05, 0.15, 0.05, 0.15, 0.15, 0.05, -0.05, 0.15, 0.15, 0.05, 0.15, 0.15, -0.05, 0.25, -0.15, 0.05, 0.25, -0.15, -0.15, 0.25, -0.05, -0.05, 0.25, -0.05, 0.05, 0.25, -0.05, 0.15, 0.25, -0.05, -0.15, 0.25, 0.05, -0.05, 0.25, 0.05, 0.05, 0.25, 0.05, 0.15, 0.25, 0.05, -0.05, 0.25, 0.15, 0.05, 0.25, 0.15, -0.05, 0.35, -0.15, 0.05, 0.35, -0.15, -0.15, 0.35, -0.05, -0.05, 0.35, -0.05, 0.05, 0.35, -0.05, 0.15, 0.35, -0.05, -0.15, 0.35, 0.05, -0.05, 0.35, 0.05, 0.05, 0.35, 0.05, 0.15, 0.35, 0.05, -0.05, 0.35, 0.15, 0.05, 0.35, 0.15, -0.05, 0.45, -0.15, 0.05, 0.45, -0.15, -0.15, 0.45, -0.05, -0.05, 0.45, -0.05, 0.05, 0.45, -0.05, 0.15, 0.45, -0.05, -0.15, 0.45, 0.05, -0.05, 0.45, 0.05, 0.05, 0.45, 0.05, 0.15, 0.45, 0.05, -0.05, 0.45, 0.15, 0.05, 0.45, 0.15)

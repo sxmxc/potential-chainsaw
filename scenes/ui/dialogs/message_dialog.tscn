@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://ce7dqmegd1bsg"]
+
+[ext_resource type="Script" uid="uid://c21fg5uyau58u" path="res://scripts/ui/message_dialog.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="MessageDialog" type="Window" unique_id=960107417]
+title = "Marble Engineer"
+size = Vector2i(500, 220)
+visible = false
+transient = true
+exclusive = true
+unresizable = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=2146464390]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1860196305]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=1870519829]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Marble Engineer"
+
+[node name="Message" type="Label" parent="Surface/Contents" unique_id=1372830457]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Label"
+text = "Message"
+autowrap_mode = 3
+
+[node name="Close" type="Button" parent="Surface/Contents" unique_id=623433239]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "OK"

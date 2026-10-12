@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://c4h7v78lk35tn"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_pnsuq"]
+[ext_resource type="PackedScene" uid="uid://b2mu4rilqkl2c" path="res://assets/models/GLB format/banner-hanging.glb" id="2_xjyhq"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_ai45y"]
+[ext_resource type="Texture2D" uid="uid://r4y8kn2nyy1d" path="res://assets/models/previews/banner-hanging.png" id="Preview"]
+
+[resource]
+script = ExtResource("3_ai45y")
+id = &"banner-hanging"
+display_name = "Banner Hanging"
+category = "Scenery"
+description = "Scenery · 0.93 × 0.08 m footprint · 0.50 m tall. Physical scenery. Tunnel arches can surround an existing channel."
+model = ExtResource("2_xjyhq")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.4625, 0, -0.0375, 0.925, 0.5, 0.075)
+behavior = "decoration"

@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cklb7w7086xys"]
+
+[ext_resource type="Script" uid="uid://2dbm0hnss0ga" path="res://scripts/ui/edit_toolbar.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="EditToolbar" type="HBoxContainer" unique_id=19964803]
+mouse_filter = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="SelectionCount" type="Label" parent="." unique_id=794560325]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PanelTitle"
+text = "Selection"
+
+[node name="Move" type="Button" parent="." unique_id=761048867]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Move"
+
+[node name="Rotate" type="Button" parent="." unique_id=572319849]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Rotate the selection about its first piece · R"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Rotate"
+
+[node name="Duplicate" type="Button" parent="." unique_id=1993783733]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Duplicate the assembly · Ctrl+D"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"ToolbarButton"
+text = "Duplicate"
+
+[node name="Delete" type="Button" parent="." unique_id=160112303]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Delete selection · Del"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"DangerButton"
+text = "Delete"

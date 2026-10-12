@@ -1,0 +1,65 @@
+[
+	{
+		"path": "res://docs/qa/elevator-build-1280x720.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-build-1600x900.png",
+		"size": [
+			1600,
+			900
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-build-1920x1080.png",
+		"size": [
+			1920,
+			1080
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-loading.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-ascent.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-tipping.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-discharge.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-finish.png",
+		"size": [
+			1280,
+			720
+		]
+	},
+	{
+		"path": "res://docs/qa/elevator-maximum-height.png",
+		"size": [
+			1280,
+			720
+		]
+	}
+]

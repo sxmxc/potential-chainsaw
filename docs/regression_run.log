@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+Physics example first-roll state 3 time 5.10833333333338 marble (3.467155, 1.700004, -1.050474)
+Physics example spiral-crossing state 3 time 10.4000000000001 marble (-3.462101, 2.200004, 7.015364)
+TEST RESULT: 169 checks, 0 failures

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://cck30t4kgec2h"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_o6kdj"]
+[ext_resource type="PackedScene" uid="uid://c7f0p3xip6hrj" path="res://assets/models/GLB format/support-two-bottom.glb" id="2_mkfbc"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_4qmft"]
+[ext_resource type="Texture2D" uid="uid://n2pqgv8l8nhg" path="res://assets/models/previews/support-two-bottom.png" id="Preview"]
+
+[resource]
+script = ExtResource("3_4qmft")
+id = &"support-two-bottom"
+display_name = "Support Two Bottom"
+category = "Supports"
+description = "Supports · 1.00 × 0.30 m footprint · 0.50 m tall. Stack structural sections beneath raised tracks. Supports are optional in free build."
+model = ExtResource("2_mkfbc")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.5, 0, -0.15, 0.99687684, 0.5, 0.3)
+behavior = "support"
+library_visible = false
+surface_cells = PackedVector3Array(-0.45, 0.05, -0.05, -0.35, 0.05, -0.05, -0.25, 0.05, -0.05, 0.25, 0.05, -0.05, 0.35, 0.05, -0.05, 0.45, 0.05, -0.05, -0.45, 0.05, 0.05, -0.35, 0.05, 0.05, -0.25, 0.05, 0.05, 0.25, 0.05, 0.05, 0.35, 0.05, 0.05, 0.45, 0.05, 0.05, -0.45, 0.15, -0.05, -0.35, 0.15, -0.05, -0.25, 0.15, -0.05, 0.25, 0.15, -0.05, 0.35, 0.15, -0.05, 0.45, 0.15, -0.05, -0.45, 0.15, 0.05, -0.35, 0.15, 0.05, -0.25, 0.15, 0.05, 0.25, 0.15, 0.05, 0.35, 0.15, 0.05, 0.45, 0.15, 0.05, -0.35, 0.25, -0.05, 0.35, 0.25, -0.05, -0.35, 0.25, 0.05, 0.35, 0.25, 0.05, -0.35, 0.35, -0.05, 0.35, 0.35, -0.05, -0.35, 0.35, 0.05, 0.35, 0.35, 0.05, -0.35, 0.45, -0.05, 0.35, 0.45, -0.05, -0.35, 0.45, 0.05, 0.35, 0.45, 0.05)

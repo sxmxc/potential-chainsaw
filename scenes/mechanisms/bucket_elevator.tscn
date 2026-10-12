@@ -1,0 +1,182 @@
+[gd_scene format=3 uid="uid://uqy81fgdwkxh"]
+
+[ext_resource type="PackedScene" uid="uid://by73jrkgx6buy" path="res://scenes/mechanisms/elevator_bucket.tscn" id="Bucket"]
+[ext_resource type="PackedScene" uid="uid://cghhhdxrb2jla" path="res://scenes/mechanisms/elevator_frame_section.tscn" id="Frame"]
+[ext_resource type="Script" uid="uid://d022ucstm25w8" path="res://scripts/mechanisms/bucket_elevator.gd" id="Script"]
+[ext_resource type="PackedScene" path="res://scenes/mechanisms/elevator_track_station.tscn" id="Station"]
+
+[sub_resource type="StandardMaterial3D" id="FrameMaterial"]
+albedo_color = Color(0.4, 0.24, 0.63, 1)
+
+[sub_resource type="BoxMesh" id="MeshStopLoading"]
+material = SubResource("FrameMaterial")
+size = Vector3(0.8, 0.3, 0.12)
+
+[sub_resource type="BoxShape3D" id="ShapeStopLoading"]
+size = Vector3(0.8, 0.3, 0.12)
+
+[sub_resource type="BoxMesh" id="MeshMotor_"]
+material = SubResource("FrameMaterial")
+size = Vector3(0.35, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="ShapeMotor_"]
+size = Vector3(0.35, 0.5, 0.5)
+
+[sub_resource type="CylinderMesh" id="PulleyMesh"]
+material = SubResource("FrameMaterial")
+top_radius = 0.75
+bottom_radius = 0.75
+height = 0.12
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="TrackMaterial"]
+albedo_color = Color(1, 0.78, 0.27, 1)
+
+[sub_resource type="BoxMesh" id="MeshSpoke0BottomDrive"]
+material = SubResource("TrackMaterial")
+size = Vector3(0.14, 0.08, 1.25)
+
+[sub_resource type="BoxMesh" id="MeshSpoke1BottomDrive"]
+material = SubResource("TrackMaterial")
+size = Vector3(0.14, 0.08, 1.25)
+
+[sub_resource type="BoxMesh" id="MeshSpoke0TopDrive"]
+material = SubResource("TrackMaterial")
+size = Vector3(0.14, 0.08, 1.25)
+
+[sub_resource type="BoxMesh" id="MeshSpoke1TopDrive"]
+material = SubResource("TrackMaterial")
+size = Vector3(0.14, 0.08, 1.25)
+
+[sub_resource type="BoxShape3D" id="SensorShape"]
+size = Vector3(0.6, 0.65, 0.8)
+
+[node name="BucketElevator" type="Node3D" unique_id=1749542883]
+script = ExtResource("Script")
+
+[node name="Frames" type="Node3D" parent="." unique_id=542194085]
+
+[node name="Frame0" parent="Frames" unique_id=1501446585 instance=ExtResource("Frame")]
+
+[node name="Frame1" parent="Frames" unique_id=1113575458 instance=ExtResource("Frame")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Frame2" parent="Frames" unique_id=17595939 instance=ExtResource("Frame")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Frame3" parent="Frames" unique_id=126196762 instance=ExtResource("Frame")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="Frame4" parent="Frames" unique_id=501866744 instance=ExtResource("Frame")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+
+[node name="Frame5" parent="Frames" unique_id=1729644183 instance=ExtResource("Frame")]
+transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="Buckets" type="Node3D" parent="." unique_id=659909476]
+
+[node name="Bucket0" parent="Buckets" unique_id=1029183268 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="Bucket1" parent="Buckets" unique_id=1304173159 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1847098, 0)
+
+[node name="Bucket2" parent="Buckets" unique_id=1605070003 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6194198, 0)
+
+[node name="Bucket3" parent="Buckets" unique_id=1401945937 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0516186, 0.0276082)
+
+[node name="Bucket4" parent="Buckets" unique_id=1536062946 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.462873, 1.1823041)
+
+[node name="Bucket5" parent="Buckets" unique_id=296983734 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.132645, 1.5)
+
+[node name="Bucket6" parent="Buckets" unique_id=1134968682 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.697935, 1.5)
+
+[node name="Bucket7" parent="Buckets" unique_id=951286930 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2632253, 1.5)
+
+[node name="Bucket8" parent="Buckets" unique_id=853000695 instance=ExtResource("Bucket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0434734, 1.0016351)
+
+[node name="Loading" type="Node3D" parent="." unique_id=411410108]
+
+[node name="Stop" type="MeshInstance3D" parent="Loading" unique_id=1515382742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0.4)
+mesh = SubResource("MeshStopLoading")
+
+[node name="Body" type="StaticBody3D" parent="Loading/Stop" unique_id=1193917972]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="Loading/Stop/Body" unique_id=1820552686]
+shape = SubResource("ShapeStopLoading")
+
+[node name="Approach" parent="Loading" unique_id=272739265 instance=ExtResource("Station")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="Pocket" parent="Loading" unique_id=430939611 instance=ExtResource("Station")]
+
+[node name="Output" type="Node3D" parent="." unique_id=1185091773]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+
+[node name="Track" parent="Output" unique_id=1577733746 instance=ExtResource("Station")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="Motor" type="MeshInstance3D" parent="." unique_id=1048288481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.27, 1.85)
+mesh = SubResource("MeshMotor_")
+
+[node name="Body" type="StaticBody3D" parent="Motor" unique_id=927173744]
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="Motor/Body" unique_id=1905920617]
+shape = SubResource("ShapeMotor_")
+
+[node name="BottomDrive" type="Node3D" parent="." unique_id=322625902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0.75)
+
+[node name="Wheel0" type="MeshInstance3D" parent="BottomDrive" unique_id=1981490588]
+transform = Transform3D(7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0, 1, -0.7, 0, 0)
+mesh = SubResource("PulleyMesh")
+
+[node name="Spoke0" type="MeshInstance3D" parent="BottomDrive" unique_id=735758336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0, 0)
+mesh = SubResource("MeshSpoke0BottomDrive")
+
+[node name="Wheel1" type="MeshInstance3D" parent="BottomDrive" unique_id=743307039]
+transform = Transform3D(7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0, 1, 0.7, 0, 0)
+mesh = SubResource("PulleyMesh")
+
+[node name="Spoke1" type="MeshInstance3D" parent="BottomDrive" unique_id=573170923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, 0)
+mesh = SubResource("MeshSpoke1BottomDrive")
+
+[node name="TopDrive" type="Node3D" parent="." unique_id=819388909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.85, 0.75)
+
+[node name="Wheel0" type="MeshInstance3D" parent="TopDrive" unique_id=2116666432]
+transform = Transform3D(7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0, 1, -0.7, 0, 0)
+mesh = SubResource("PulleyMesh")
+
+[node name="Spoke0" type="MeshInstance3D" parent="TopDrive" unique_id=358961289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0, 0)
+mesh = SubResource("MeshSpoke0TopDrive")
+
+[node name="Wheel1" type="MeshInstance3D" parent="TopDrive" unique_id=303257057]
+transform = Transform3D(7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0, 1, 0.7, 0, 0)
+mesh = SubResource("PulleyMesh")
+
+[node name="Spoke1" type="MeshInstance3D" parent="TopDrive" unique_id=167375823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, 0)
+mesh = SubResource("MeshSpoke1TopDrive")
+
+[node name="LoadingSensor" type="Area3D" parent="." unique_id=2132275095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.08)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Shape" type="CollisionShape3D" parent="LoadingSensor" unique_id=975242897]
+shape = SubResource("SensorShape")

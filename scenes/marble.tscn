@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://du7qoi00w1j1f"]
+
+[ext_resource type="PackedScene" uid="uid://wgbq42kevblw" path="res://assets/models/GLB format/marble-center-butterfly-high.glb" id="1_il0lc"]
+
+[sub_resource type="PhysicsMaterial" id="Physics"]
+friction = 0.2
+bounce = 0.04
+
+[sub_resource type="SphereShape3D" id="Sphere"]
+radius = 0.2
+
+[node name="Marble" type="RigidBody3D" unique_id=1282411599]
+physics_interpolation_mode = 1
+collision_layer = 2
+mass = 0.08
+physics_material_override = SubResource("Physics")
+continuous_cd = true
+linear_damp = 0.01
+angular_damp = 0.025
+
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=495954486]
+shape = SubResource("Sphere")
+
+[node name="Model" parent="." unique_id=1031836589 instance=ExtResource("1_il0lc")]

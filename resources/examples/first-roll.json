@@ -1,0 +1,84 @@
+{
+	"id": "first-roll",
+	"name": "First Roll",
+	"pieces": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				1.5,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "sample-1"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-a",
+			"position": [
+				-0.0000000149011611938477,
+				1.25,
+				2.5
+			],
+			"rotation": 0,
+			"uid": "sample-2"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.0000000149011611938477,
+				1.25000381469727,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "sample-3"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				0.499992281198502,
+				1.25000381469727,
+				-0.5
+			],
+			"rotation": -2,
+			"uid": "sample-4"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				1.99999225139618,
+				1.25000381469727,
+				-0.999992489814758
+			],
+			"rotation": -1,
+			"uid": "sample-5"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				2.99999237060547,
+				1.25000381469727,
+				-0.999992430210114
+			],
+			"rotation": -1,
+			"uid": "sample-6"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				3.99999237060547,
+				1.25000381469727,
+				-0.999992370605469
+			],
+			"rotation": 1,
+			"uid": "sample-7"
+		}
+	],
+	"version": 1
+}

@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://4pjsxw6jdy1t"]
+
+[ext_resource type="Script" uid="uid://c8grfj4cp5exw" path="res://scripts/ui/extension_picker.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="ExtensionPicker" type="PopupPanel" unique_id=1533679963]
+oversampling_override = 1.0
+size = Vector2i(390, 1772)
+visible = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=2118268741]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = 18.0
+offset_right = -21.0
+offset_bottom = -24.0
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1938164431]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Surface/Contents" unique_id=354631027]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Surface/Contents/Header" unique_id=376462189]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PanelTitle"
+text = "Extend this track"
+
+[node name="Close" type="Button" parent="Surface/Contents/Header" unique_id=1242728948]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ToolbarButton"
+text = "×"
+
+[node name="Search" type="LineEdit" parent="Surface/Contents" unique_id=1709763892]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Find a compatible piece…"
+
+[node name="Hint" type="Label" parent="Surface/Contents" unique_id=1075084823]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Choose a piece, then click to attach. Tab for alternatives."
+autowrap_mode = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Surface/Contents" unique_id=537255215]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Pieces" type="GridContainer" parent="Surface/Contents/Scroll" unique_id=1669701242]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 3

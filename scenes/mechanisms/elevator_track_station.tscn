@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://2s3jaqmhhfgy"]
+
+[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/GLB format/straight.glb" id="Model"]
+[ext_resource type="Shape3D" path="res://scenes/mechanisms/straight_track_collision.tres" id="Shape"]
+
+[sub_resource type="PhysicsMaterial" id="TrackPhysics"]
+friction = 0.18
+bounce = 0.02
+
+[node name="TrackStation" type="Node3D" unique_id=96770940]
+
+[node name="Straight" parent="." unique_id=1070267148 instance=ExtResource("Model")]
+
+[node name="Body" type="StaticBody3D" parent="." unique_id=1446982008]
+collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
+
+[node name="Shape" type="CollisionShape3D" parent="Body" unique_id=1123589212]
+shape = ExtResource("Shape")

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "id": "bucket-elevator-demo",
+  "name": "Bucket Elevator",
+  "pieces": [
+    {
+      "uid": "elevator-demo-0",
+      "piece": "bucket-elevator",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "config": {
+        "elevator_height": 4,
+        "elevator_speed": 0.8
+      }
+    },
+    {
+      "uid": "elevator-demo-1",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        0,
+        -2
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "elevator-demo-2",
+      "piece": "straight",
+      "position": [
+        0,
+        4,
+        -2
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "elevator-demo-3",
+      "piece": "sandbox-finish",
+      "position": [
+        0,
+        4,
+        -3
+      ],
+      "rotation": 2,
+      "config": {}
+    }
+  ]
+}

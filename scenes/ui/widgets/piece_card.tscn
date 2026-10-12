@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://d17ymu65bfyc2"]
+
+[ext_resource type="Script" uid="uid://ccbla0lpm2i3o" path="res://scripts/ui/piece_card.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PieceCard" type="Button" unique_id=1331294216]
+custom_minimum_size = Vector2(105, 112)
+size_flags_horizontal = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("Theme")
+theme_type_variation = &"ToolboxButton"
+toggle_mode = true
+script = ExtResource("Script")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=2027628211]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"CardMargin"
+
+[node name="Contents" type="VBoxContainer" parent="Margin" unique_id=854977329]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="Thumbnail" type="TextureRect" parent="Margin/Contents" unique_id=1084310799]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 64)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PieceName" type="Label" parent="Margin/Contents" unique_id=261569428]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(94, 32)
+layout_mode = 2
+theme_type_variation = &"CardLabel"
+text = "Track piece"
+horizontal_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2

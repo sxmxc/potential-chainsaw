@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://c1vx4521f13vd"]
+
+[ext_resource type="Script" uid="uid://culcg8op1eyuj" path="res://scripts/ui/sandbox_menu.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="SandboxMenu" type="Window" unique_id=761489703]
+title = "Sandbox menu"
+size = Vector2i(350, 465)
+visible = false
+transient = true
+exclusive = true
+unresizable = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=1438031961]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1291689542]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=1062002240]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Sandbox menu"
+
+[node name="New" type="Button" parent="Surface/Contents" unique_id=1474127607]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "New empty track"
+
+[node name="Rename" type="Button" parent="Surface/Contents" unique_id=1621951666]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Rename current track"
+
+[node name="Load" type="Button" parent="Surface/Contents" unique_id=1255335136]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Load a track"
+
+[node name="Examples" type="Button" parent="Surface/Contents" unique_id=2008493860]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Example tracks"
+
+[node name="Settings" type="Button" parent="Surface/Contents" unique_id=235832359]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Settings & controls"
+
+[node name="Main" type="Button" parent="Surface/Contents" unique_id=485842196]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Main menu"
+
+[node name="Quit" type="Button" parent="Surface/Contents" unique_id=704808486]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Quit"
+
+[node name="Resume" type="Button" parent="Surface/Contents" unique_id=1106932896]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Resume building"

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cnkottri2d7gv"]
+
+[ext_resource type="Script" uid="uid://dcs6s2ik8qs64" path="res://scripts/ui/selection_overlay.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="SelectionOverlay" type="Control" unique_id=669948595]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")

@@ -1,0 +1,161 @@
+{
+	"id": "spiral-crossing",
+	"name": "Spiral Crossing",
+	"pieces": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				-5.0,
+				4.0,
+				2.0
+			],
+			"rotation": -1,
+			"uid": "sample-1"
+		},
+		{
+			"config": {},
+			"piece": "helix-left",
+			"position": [
+				-4.5,
+				2.0,
+				3.5
+			],
+			"rotation": -2,
+			"uid": "sample-2"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.0,
+				2.00000381469727,
+				2.0
+			],
+			"rotation": -1,
+			"uid": "sample-3"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-2.5,
+				1.75,
+				2.0
+			],
+			"rotation": -1,
+			"uid": "sample-4"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-0.5,
+				1.75000381469727,
+				2.49999237060547
+			],
+			"rotation": 1,
+			"uid": "sample-5"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.00000754097982280655,
+				1.75000381469727,
+				3.99999237060547
+			],
+			"rotation": -2,
+			"uid": "sample-6"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.00000745355737308273,
+				1.75000381469727,
+				4.99999237060547
+			],
+			"rotation": -2,
+			"uid": "sample-7"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-0.499999791383743,
+				1.75000381469727,
+				6.49999237060547
+			],
+			"rotation": 0,
+			"uid": "sample-8"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-1.99999976158142,
+				1.75000381469727,
+				6.99998474121094
+			],
+			"rotation": 1,
+			"uid": "sample-9"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-2.99999976158142,
+				1.75000381469727,
+				6.99998474121094
+			],
+			"rotation": 1,
+			"uid": "sample-10"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				-3.99999976158142,
+				1.75000381469727,
+				6.99998474121094
+			],
+			"rotation": -1,
+			"uid": "sample-11"
+		},
+		{
+			"config": {},
+			"piece": "support-single-middle",
+			"position": [
+				-4.0,
+				0.75,
+				7.0
+			],
+			"rotation": 0,
+			"uid": "sample-13"
+		},
+		{
+			"config": {},
+			"piece": "support-color-single-top-double",
+			"position": [
+				-4.0,
+				1.25,
+				7.0
+			],
+			"rotation": 1,
+			"uid": "piece-85685559-15"
+		},
+		{
+			"config": {},
+			"piece": "support-single-bottom",
+			"position": [
+				-4.0,
+				0.25,
+				7.0
+			],
+			"rotation": 0,
+			"uid": "piece-203658922-17"
+		}
+	],
+	"version": 1
+}

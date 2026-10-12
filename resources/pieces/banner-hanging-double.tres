@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://yivivfj06k2q"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_gq38h"]
+[ext_resource type="PackedScene" uid="uid://bkq5iq5grbvxu" path="res://assets/models/GLB format/banner-hanging-double.glb" id="2_s58h0"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_m7fsv"]
+[ext_resource type="Texture2D" uid="uid://d111u0vrk8gvh" path="res://assets/models/previews/banner-hanging-double.png" id="Preview"]
+
+[resource]
+script = ExtResource("3_m7fsv")
+id = &"banner-hanging-double"
+display_name = "Banner Hanging Double"
+category = "Scenery"
+description = "Scenery · 0.93 × 0.93 m footprint · 0.50 m tall. Physical scenery. Tunnel arches can surround an existing channel."
+model = ExtResource("2_s58h0")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.4625, 0, -0.4625, 0.925, 0.5, 0.925)
+behavior = "decoration"
+surface_cells = PackedVector3Array(-0.45, 0.05, -0.45, 0.45, 0.05, -0.45, -0.45, 0.05, 0.45, 0.45, 0.05, 0.45, -0.45, 0.15, -0.45, 0.45, 0.15, -0.45, -0.45, 0.15, 0.45, 0.45, 0.15, 0.45, -0.45, 0.25, -0.45, 0.45, 0.25, -0.45, -0.45, 0.25, 0.45, 0.45, 0.25, 0.45, -0.45, 0.35, -0.45, 0.45, 0.35, -0.45, -0.45, 0.35, 0.45, 0.45, 0.35, 0.45, -0.45, 0.45, -0.45, 0.45, 0.45, -0.45, -0.45, 0.45, 0.45, 0.45, 0.45, 0.45)

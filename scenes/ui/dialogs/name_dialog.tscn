@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://bmym4mtcvags0"]
+
+[ext_resource type="Script" uid="uid://b0spflkpw5o2i" path="res://scripts/ui/name_dialog.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="NameDialog" type="Window" unique_id=1314276917]
+title = "Name your track"
+size = Vector2i(440, 188)
+visible = false
+transient = true
+exclusive = true
+unresizable = true
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=1610062824]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SurfacePanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=274130932]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=2082510253]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Name your track"
+
+[node name="Name" type="LineEdit" parent="Surface/Contents" unique_id=98272630]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Track name"
+max_length = 80
+
+[node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=892949449]
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="Surface/Contents/Actions" unique_id=739290541]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"SecondaryButton"
+text = "Cancel"
+
+[node name="Save" type="Button" parent="Surface/Contents/Actions" unique_id=1025287237]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Save"

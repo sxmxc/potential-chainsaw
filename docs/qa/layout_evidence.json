@@ -1,0 +1,704 @@
+[
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "menu"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-9-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "menu-9"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-27-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "menu-27"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/empty-sandbox-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "empty-sandbox"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/inspector-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "inspector"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/multiselection-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "multiselection"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-drag-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "group-drag"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/placement-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "placement"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/substantial-construction-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "substantial-construction"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/elevated-snap-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "elevated-snap"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-placement-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "group-placement"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-snap-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "group-snap"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/simulation-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "simulation"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/track-browser-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "track-browser"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/save-dialog-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "save-dialog"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "settings"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-build-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "settings-build"
+	},
+	{
+		"actual": [
+			1280,
+			720
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-camera-1280x720.png",
+		"requested": [
+			1280,
+			720
+		],
+		"state": "settings-camera"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "menu"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-9-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "menu-9"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-27-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "menu-27"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/empty-sandbox-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "empty-sandbox"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/inspector-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "inspector"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/multiselection-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "multiselection"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-drag-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "group-drag"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/placement-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "placement"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/substantial-construction-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "substantial-construction"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/elevated-snap-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "elevated-snap"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-placement-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "group-placement"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-snap-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "group-snap"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/simulation-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "simulation"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/track-browser-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "track-browser"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/save-dialog-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "save-dialog"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "settings"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-build-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "settings-build"
+	},
+	{
+		"actual": [
+			1600,
+			900
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-camera-1600x900.png",
+		"requested": [
+			1600,
+			900
+		],
+		"state": "settings-camera"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "menu"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-9-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "menu-9"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/menu-27-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "menu-27"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/empty-sandbox-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "empty-sandbox"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/inspector-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "inspector"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/multiselection-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "multiselection"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-drag-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "group-drag"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/placement-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "placement"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/substantial-construction-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "substantial-construction"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/elevated-snap-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "elevated-snap"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-placement-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "group-placement"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/group-snap-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "group-snap"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/simulation-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "simulation"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/track-browser-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "track-browser"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/save-dialog-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "save-dialog"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "settings"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-build-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "settings-build"
+	},
+	{
+		"actual": [
+			1920,
+			1080
+		],
+		"findings": [],
+		"path": "res://docs/qa/settings-camera-1920x1080.png",
+		"requested": [
+			1920,
+			1080
+		],
+		"state": "settings-camera"
+	}
+]

@@ -1,0 +1,30 @@
+extends RefCounted
+
+const MIN_HEIGHT = 2.0
+const MAX_HEIGHT = 12.0
+const HEIGHT_STEP = 0.5
+const DEFAULT_HEIGHT = 4.0
+const MIN_SPEED = 0.25
+const MAX_SPEED = 2.0
+const DEFAULT_SPEED = 0.8
+
+static func normalized(config: Dictionary) -> Dictionary:
+	var result = config.duplicate(true)
+	var lift_height = config.get("elevator_height", DEFAULT_HEIGHT)
+	var travel_speed = config.get("elevator_speed", DEFAULT_SPEED)
+	if not (lift_height is float or lift_height is int) or not is_finite(float(lift_height)): lift_height = DEFAULT_HEIGHT
+	if not (travel_speed is float or travel_speed is int) or not is_finite(float(travel_speed)): travel_speed = DEFAULT_SPEED
+	result.elevator_height = clampf(snappedf(float(lift_height), HEIGHT_STEP), MIN_HEIGHT, MAX_HEIGHT)
+	result.elevator_speed = clampf(float(travel_speed), MIN_SPEED, MAX_SPEED)
+	return result
+
+static func configured(source: PieceDefinition, config: Dictionary) -> PieceDefinition:
+	var result = source.duplicate(false) as PieceDefinition
+	var lift_height: float = normalized(config).elevator_height
+	result.bounds = AABB(Vector3(-0.85, 0, -1.5), Vector3(1.7, lift_height + 2.1, 3.65))
+	result.connectors = source.connectors.duplicate()
+	for index in source.connectors.size():
+		var port = source.connectors[index].duplicate() as TrackConnector
+		if index == 1: port.position.y = lift_height + 0.25
+		result.connectors[index] = port
+	return result
