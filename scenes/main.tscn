@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d324pk1183t74"]
 
 [ext_resource type="Script" uid="uid://8q7fcsp880eh" path="res://scripts/game_manager.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/sandbox.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/world.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://bj4isw11fl00d" path="res://scenes/ui/main_menu.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://c4if8edlanmt2" path="res://scenes/ui/sandbox_hud.tscn" id="4"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="5"]
@@ -15,7 +15,7 @@
 [node name="MarbleEngineer" type="Node" unique_id=673644068]
 script = ExtResource("1")
 
-[node name="Sandbox" parent="." unique_id=301595691 instance=ExtResource("2")]
+[node name="World" parent="." unique_id=301595691 instance=ExtResource("2")]
 
 [node name="Interface" type="CanvasLayer" parent="." unique_id=1394294467]
 

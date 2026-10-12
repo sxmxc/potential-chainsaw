@@ -341,11 +341,11 @@ func commit() -> void:
 			var piece=spawn(item.definition,placement,"",item.config)
 			edited.append(piece)
 	if mode == "duplicate":
-		var remap: Dictionary = {}
-		for index in edited.size(): remap[preview_items[index].get("uid", "")] = edited[index].instance_id
+		var duplicated_ids: Dictionary = {}
+		for index in edited.size(): duplicated_ids[preview_items[index].get("uid", "")] = edited[index].instance_id
 		for piece in edited:
 			for link in piece.configuration.get("links", []):
-				if remap.has(link.target): link.target = remap[link.target]
+				if duplicated_ids.has(link.target): link.target = duplicated_ids[link.target]
 	if mode!="place":
 		cancel()
 		set_selection(edited)

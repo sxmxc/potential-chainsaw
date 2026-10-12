@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 var failures: Array[String] = []
 var checks: int = 0
 var game: Node
@@ -108,8 +110,7 @@ func run() -> void:
 	session.store.progress.erase(data.id)
 	session.store.write(PuzzleStore.PROGRESS, session.store.progress)
 	print("PUZZLE WORKFLOW: ", checks, " checks, ", failures.size(), " failures")
-	var report = FileAccess.open("res://docs/puzzle_workflow_results.txt", FileAccess.WRITE)
-	report.store_string("%d checks; %d failures\n%s" % [checks, failures.size(), "\n".join(failures)])
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)

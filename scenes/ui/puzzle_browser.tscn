@@ -1,53 +1,52 @@
-[gd_scene format=3]
-[ext_resource type="Script" path="res://scripts/ui/puzzle_browser.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[gd_scene format=3 uid="uid://px6kesj8ilb"]
 
-[node name="PuzzleBrowser" type="Window"]
-theme = ExtResource("Theme")
-script = ExtResource("Script")
+[ext_resource type="Script" uid="uid://dx0eii85w1adc" path="res://scripts/ui/puzzle_browser.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PuzzleBrowser" type="Window" unique_id=1442832892]
 size = Vector2i(560, 640)
 visible = false
 min_size = Vector2i(480, 520)
-wrap_controls = false
+theme = ExtResource("Theme")
+script = ExtResource("Script")
 
-[node name="Surface" type="PanelContainer" parent="."]
-layout_mode = 2
+[node name="Surface" type="PanelContainer" parent="." unique_id=1125445899]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_type_variation = &"ContextPanel"
 
-[node name="Contents" type="VBoxContainer" parent="Surface"]
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1493203292]
 layout_mode = 2
 
-[node name="Heading" type="Label" parent="Surface/Contents"]
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=888428531]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "CAMPAIGN · build a working marble machine"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Levels" type="ItemList" parent="Surface/Contents"]
+[node name="Levels" type="ItemList" parent="Surface/Contents" unique_id=1239105248]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 340)
+layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Details" type="Label" parent="Surface/Contents"]
+[node name="Details" type="Label" parent="Surface/Contents" unique_id=383383115]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Select a level"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Open" type="Button" parent="Surface/Contents"]
+[node name="Open" type="Button" parent="Surface/Contents" unique_id=936855828]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Play selected puzzle"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Back" type="Button" parent="Surface/Contents"]
+[node name="Back" type="Button" parent="Surface/Contents" unique_id=1630731207]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Back"
 theme_type_variation = &"SecondaryButton"
+text = "Back"

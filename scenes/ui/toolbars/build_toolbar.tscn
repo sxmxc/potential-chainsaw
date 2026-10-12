@@ -9,8 +9,8 @@ theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 [node name="Library" type="Button" parent="." unique_id=114523809]
-custom_minimum_size = Vector2(96, 0)
 unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 focus_mode = 0
 mouse_default_cursor_shape = 2
@@ -55,8 +55,8 @@ theme_type_variation = &"ToolbarButton"
 text = "−"
 
 [node name="Height" type="Label" parent="." unique_id=628266016]
-custom_minimum_size = Vector2(120, 0)
 unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Level 0 m"

@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 var failures: Array[String] = []
 var checks: int = 0
 var game: Node
@@ -140,10 +142,9 @@ func run() -> void:
 	game.new_track()
 	check(not game.qa_test(),"Missing release/finish fails without leaving build mode")
 	print("TEST RESULT: ",checks," checks, ",failures.size()," failures")
-	var file=FileAccess.open("res://docs/test_results.txt",FileAccess.WRITE)
-	file.store_string("%d checks; %d failures\n%s" % [checks,failures.size(),"\n".join(failures)])
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)
 
 func check_connected_chain(pieces: Array[TrackPiece], title: String) -> void:

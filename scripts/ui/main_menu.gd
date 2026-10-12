@@ -1,5 +1,8 @@
 extends Control
 signal action_requested(action: String)
+
+@export var main_menu_playlist: AudioStreamPlaylist
+
 @onready var showcase=$Showcase
 
 func _ready() -> void:
@@ -9,3 +12,7 @@ func _ready() -> void:
 	%Examples.pressed.connect(func():action_requested.emit("examples"))
 	%Settings.pressed.connect(func():action_requested.emit("settings"))
 	%Quit.pressed.connect(func():action_requested.emit("quit"))
+
+func play_music() -> void:
+	if main_menu_playlist != null:
+		SoundManager.play_music_queue(main_menu_playlist)

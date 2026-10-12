@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cs82gsc8c1xb6"]
 
 [ext_resource type="Script" uid="uid://nl08es1dojw8" path="res://scripts/showcase.gd" id="Script"]
-[ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/sandbox.tscn" id="Track"]
+[ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/world.tscn" id="Track"]
 
 [sub_resource type="Animation" id="Reset"]
 length = 0.001

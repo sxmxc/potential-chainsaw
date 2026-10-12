@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 const Geometry=preload("res://scripts/construction/support_geometry.gd")
 const FAMILIES=["support-single","support-two","support-four","support-color-single","support-color-two","support-color-four"]
 var failures: Array[String]=[]
@@ -82,8 +84,7 @@ func run() -> void:
 	check(build.ghost.configuration.support_height==5.0 and build.proposed.origin.y==0,"Hovering an elevated level track sizes the support to it with its base on ground")
 	check(build.valid,"A fitted support can sit below the matching track without false overlap")
 	print("SUPPORT RESULT: %d checks; %d failures" % [checks,failures.size()])
-	var file=FileAccess.open("res://docs/support_test_results.txt",FileAccess.WRITE)
-	file.store_string("%d checks; %d failures\n%s" % [checks,failures.size(),"\n".join(failures)])
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)

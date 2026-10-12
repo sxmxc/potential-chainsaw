@@ -1,80 +1,81 @@
-[gd_scene format=3]
-[ext_resource type="Script" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[gd_scene format=3 uid="uid://cla2de6nd36p7"]
 
-[node name="PuzzleBar" type="PanelContainer"]
+[ext_resource type="Script" uid="uid://dsjtodkys2qvo" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PuzzleBar" type="PanelContainer" unique_id=223460734]
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Contents" type="VBoxContainer" parent="."]
+[node name="Contents" type="VBoxContainer" parent="." unique_id=2057856055]
 layout_mode = 2
 
-[node name="Objective" type="Label" parent="Contents"]
+[node name="Objective" type="Label" parent="Contents" unique_id=150683822]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Puzzle objective"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Hint" type="Label" parent="Contents"]
+[node name="Hint" type="Label" parent="Contents" unique_id=1071808669]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Guidance"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Actions" type="HFlowContainer" parent="Contents"]
+[node name="Actions" type="HFlowContainer" parent="Contents" unique_id=1063786482]
 layout_mode = 2
 
-[node name="Counters" type="Label" parent="Contents"]
+[node name="Author" type="Button" parent="Contents/Actions" unique_id=225476015]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"AccentSmallLabel"
-autowrap_mode = 3
-
-[node name="Author" type="Button" parent="Contents/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Authoring tools"
-theme_type_variation = &"SecondaryButton"
 
-[node name="TestPlayer" type="Button" parent="Contents/Actions"]
+[node name="TestPlayer" type="Button" parent="Contents/Actions" unique_id=1059598128]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Test as Player"
-theme_type_variation = &"SecondaryButton"
 
-[node name="ReturnEditor" type="Button" parent="Contents/Actions"]
+[node name="ReturnEditor" type="Button" parent="Contents/Actions" unique_id=2005915677]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Return to Editor"
 theme_type_variation = &"SecondaryButton"
+text = "Return to Editor"
 
-[node name="Preserve" type="Button" parent="Contents/Actions"]
+[node name="Preserve" type="Button" parent="Contents/Actions" unique_id=261910764]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Preserve solution"
 
-[node name="Reference" type="Button" parent="Contents/Actions"]
+[node name="Reference" type="Button" parent="Contents/Actions" unique_id=1571643929]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Load reference"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Levels" type="Button" parent="Contents/Actions"]
+[node name="Levels" type="Button" parent="Contents/Actions" unique_id=1536823087]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Level selection"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Restart" type="Button" parent="Contents/Actions"]
+[node name="Restart" type="Button" parent="Contents/Actions" unique_id=1140928208]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Restart puzzle"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Next" type="Button" parent="Contents/Actions"]
+[node name="Next" type="Button" parent="Contents/Actions" unique_id=1622562231]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Next puzzle"
 theme_type_variation = &"SecondaryButton"
+text = "Next puzzle"
+
+[node name="Counters" type="Label" parent="Contents" unique_id=1475144196]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+autowrap_mode = 3

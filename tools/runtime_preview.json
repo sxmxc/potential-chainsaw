@@ -1,5 +1,0 @@
-[
- {"tool":"game","params":{"pid":24712,"action":"call","path":"/root/MarbleEngineer","method":"qa_choose","args":["straight"]}},
- {"tool":"game","params":{"pid":24712,"action":"input","kind":"mouse","mode":"move","x":950,"y":600}},
- {"tool":"game","params":{"pid":24712,"action":"call","path":"/root/MarbleEngineer","method":"qa_summary"}}
-]

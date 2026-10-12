@@ -4,7 +4,7 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
-	var sandbox=load("res://scenes/sandbox.tscn").instantiate()
+	var sandbox=load("res://scenes/world.tscn").instantiate()
 	root.add_child(sandbox)
 	sandbox.configure(PieceCatalog.new())
 	var build: BuildManager=sandbox.build
@@ -29,7 +29,7 @@ func run() -> void:
 		candidate_count=candidates.size()
 		await process_frame
 	times.sort()
-	var result={"group_pieces":100,"boundary_ports":build.preview_ports.size(),"external_targets":build.targets.size(),"validated_candidates":candidate_count,"samples":times.size(),"median_ms":times[times.size()/2],"max_ms":times.back(),"renderer":"headless","note":"CPU solver sample; not a whole-game GPU frame-rate claim"}
-	FileAccess.open("res://docs/qa/snapping-performance.json",FileAccess.WRITE).store_string(JSON.stringify(result,"\t"))
+	var median_index = floori(times.size() / 2.0)
+	var result={"group_pieces":100,"boundary_ports":build.preview_ports.size(),"external_targets":build.targets.size(),"validated_candidates":candidate_count,"samples":times.size(),"median_ms":times[median_index],"max_ms":times.back(),"renderer":"headless","note":"CPU solver sample; not a whole-game GPU frame-rate claim"}
 	print(JSON.stringify(result))
 	quit()

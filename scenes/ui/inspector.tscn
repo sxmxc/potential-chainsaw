@@ -1,11 +1,9 @@
 [gd_scene format=3 uid="uid://khlp72i5rsq2"]
 
+[ext_resource type="Script" uid="uid://bd8mw8dtowbwn" path="res://scripts/ui/mechanism_link_settings.gd" id="LinkSettings"]
+[ext_resource type="Script" uid="uid://u8738hesllf" path="res://scripts/ui/mechanism_settings.gd" id="MechanismSettings"]
 [ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-
-[ext_resource type="Script" path="res://scripts/ui/mechanism_settings.gd" id="MechanismSettings"]
-
-[ext_resource type="Script" path="res://scripts/ui/mechanism_link_settings.gd" id="LinkSettings"]
 
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
 custom_minimum_size = Vector2(240, 0)
@@ -191,12 +189,12 @@ theme_type_variation = &"SmallMutedLabel"
 text = "Drag to move"
 autowrap_mode = 3
 
-[node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents"]
+[node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=1377873254]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("MechanismSettings")
 
-[node name="LinkSettings" type="VBoxContainer" parent="Scroll/Contents"]
+[node name="LinkSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=792289605]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("LinkSettings")

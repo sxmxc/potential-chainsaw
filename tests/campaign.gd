@@ -1,8 +1,9 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 var game: Node
 var failures: Array[String] = []
-var report: Array[String] = []
 var verified: Array[Dictionary] = []
 
 func _initialize() -> void:
@@ -58,7 +59,6 @@ func run() -> void:
 		var line = "%02d %s: %s at %.2fs, marble %s" % [data.order, data.name, "PASS" if success else "FAIL", game.sandbox.simulation.elapsed, str(game.sandbox.simulation.marble.position)]
 		print(line)
 		if data.order == 10: print("ACTIVATIONS ",game.sandbox.simulation.objectives.activations)
-		report.append(line)
 		if success:
 			data.pieces = session.puzzle.pieces
 			data.solution = solution
@@ -82,9 +82,8 @@ func run() -> void:
 	if failures.is_empty():
 		for entry in verified:
 			if not session.store.write(entry.path, entry.data): failures.append("Could not publish " + entry.path)
-	var file = FileAccess.open("res://docs/campaign_results.txt", FileAccess.WRITE)
-	file.store_string("\n".join(report) + "\nFailures: " + str(failures.size()) + "\n" + "\n".join(failures))
 	print("CAMPAIGN FAILURES: ", failures.size())
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)

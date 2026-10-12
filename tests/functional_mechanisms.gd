@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 var failures: Array[String] = []
 var checks: int = 0
 var game: Node
@@ -23,6 +25,7 @@ func ball(at: Vector3, velocity: Vector3 = Vector3.ZERO) -> RigidBody3D:
 	return body
 
 func run() -> void:
+	var body: RigidBody3D
 	game = load("res://scenes/main.tscn").instantiate()
 	root.add_child(game)
 	await process_frame
@@ -32,7 +35,7 @@ func run() -> void:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY, "", {"power": 0.2, "range": 2})
 		var airflow = piece.mechanism_component
 		check(airflow != null and piece.rotor_component == null, id + " uses airflow without moving blade collision")
-		var body = ball(Vector3(0, 0.7, -0.8) if id.contains("standing") else Vector3(0, 0.8, 0))
+		body = ball(Vector3(0, 0.7, -0.8) if id.contains("standing") else Vector3(0, 0.8, 0))
 		body.gravity_scale = 0
 		airflow.active = true
 		await ticks(20)
@@ -56,7 +59,7 @@ func run() -> void:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY)
 		var paddle = piece.rotor_component
 		check(paddle != null and piece.mechanism_component == null, id + " is exclusively physical")
-		var body = ball(Vector3(0.38, 0.4, 0.0))
+		body = ball(Vector3(0.38, 0.4, 0.0))
 		body.gravity_scale = 0
 		paddle.active = true
 		var peak_speed = 0.0
@@ -71,7 +74,7 @@ func run() -> void:
 		await process_frame
 	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D.IDENTITY)
 	build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)))
-	var body = ball(Vector3(0, 0.46, 0.8), Vector3(0, 0, -1))
+	body = ball(Vector3(0, 0.46, 0.8), Vector3(0, 0, -1))
 	gate.mechanism_component.active = true
 	await ticks(120)
 	check(body.position.z > 0.15, "Closed gate physically stops marble")
@@ -158,8 +161,7 @@ func run() -> void:
 		body.queue_free()
 		await ticks(4)
 	print("MECHANISM TESTS: ", checks, " checks, ", failures.size(), " failures")
-	var report = FileAccess.open("res://docs/mechanism_results.txt", FileAccess.WRITE)
-	report.store_string("%d checks; %d failures\n%s" % [checks, failures.size(), "\n".join(failures)])
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)

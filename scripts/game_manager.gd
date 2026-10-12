@@ -1,6 +1,6 @@
 extends Node
 
-@onready var sandbox = $Sandbox
+@onready var sandbox = $World
 var puzzle_session: PuzzleSession
 var authoring: Window
 var puzzle_browser: Window
@@ -19,6 +19,7 @@ var message_dialog
 var save_as: bool = false
 var pending_action: Callable
 var after_save: Callable
+var music_context: String = ""
 
 func _ready() -> void:
 	ConstructionInput.install()
@@ -54,7 +55,7 @@ func _ready() -> void:
 	puzzle_session.mode_changed.connect(func():
 		%HUD.get_node("%Toolbox").refresh()
 		%HUD.get_node("%FileToolbar").refresh())
-	new_track()
+	new_track(false)
 	show_main_menu()
 	load_settings()
 
@@ -109,6 +110,9 @@ func handle_action(action: String) -> void:
 		"quit": guard(func():get_tree().quit())
 
 func enter_sandbox() -> void:
+	if music_context != "world":
+		sandbox.play_music()
+		music_context = "world"
 	%MainMenu.showcase.set_active(false)
 	sandbox.show()
 	%MainMenu.hide()
@@ -120,6 +124,9 @@ func enter_sandbox() -> void:
 	update_name()
 
 func show_main_menu() -> void:
+	if music_context != "menu":
+		%MainMenu.play_music()
+		music_context = "menu"
 	sandbox.simulation.reset()
 	sandbox.build.cancel()
 	sandbox.build.enabled=false
@@ -131,12 +138,13 @@ func show_main_menu() -> void:
 	sandbox.hide()
 	%MainMenu.showcase.set_active(true)
 
-func new_track() -> void:
+func new_track(enter_world: bool = true) -> void:
 	if puzzle_session: puzzle_session.sandbox()
 	sandbox.load_construction([])
 	track_name="Untitled track"
 	track_id=""
-	enter_sandbox()
+	if enter_world:
+		enter_sandbox()
 
 func load_track(id: String, example: bool) -> void:
 	if puzzle_session: puzzle_session.sandbox()

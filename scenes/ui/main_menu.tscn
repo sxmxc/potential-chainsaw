@@ -1,8 +1,14 @@
 [gd_scene format=3 uid="uid://bj4isw11fl00d"]
 
+[ext_resource type="AudioStream" uid="uid://dy2f265g2gfsg" path="res://assets/audio/songs/menu_song_loop.mp3" id="3_m1kxf"]
 [ext_resource type="Script" uid="uid://ottibv50h24e" path="res://scripts/ui/main_menu.gd" id="Script"]
 [ext_resource type="PackedScene" uid="uid://cs82gsc8c1xb6" path="res://scenes/showcase.tscn" id="Showcase"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_1g8jr"]
+shuffle = true
+stream_count = 1
+stream_0 = ExtResource("3_m1kxf")
 
 [sub_resource type="SystemFont" id="SystemFont_ar1b5"]
 font_names = PackedStringArray("Cascadia Code PL")
@@ -20,6 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+main_menu_playlist = SubResource("AudioStreamPlaylist_1g8jr")
 
 [node name="Showcase" parent="." unique_id=1581905672 instance=ExtResource("Showcase")]
 layout_mode = 1

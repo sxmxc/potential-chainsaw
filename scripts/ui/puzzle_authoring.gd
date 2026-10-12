@@ -7,8 +7,8 @@ var source_ids: Array[String] = []
 var target_ids: Array[String] = []
 var refreshing: bool = false
 
-func configure(value: PuzzleSession) -> void:
-	session = value
+func configure(puzzle_session: PuzzleSession) -> void:
+	session = puzzle_session
 	close_requested.connect(hide)
 	%PuzzleName.text_changed.connect(func(text): if not refreshing: session.puzzle.name = text)
 	%Description.text_changed.connect(func(): if not refreshing: session.puzzle.description = %Description.text)
@@ -186,19 +186,19 @@ func refresh_objects() -> void:
 	%LinkSource.clear()
 	%LinkTarget.clear()
 	for piece in session.game.sandbox.build.pieces:
-		var title = piece.definition.display_name + " · " + piece.instance_id.right(6)
+		var object_label = piece.definition.display_name + " · " + piece.instance_id.right(6)
 		if (piece.definition.behavior == "finish" and %ObjectiveType.selected == 0) or (not piece.supported_events().is_empty() and %ObjectiveType.selected == 1):
 			object_ids.append(piece.instance_id)
-			%ObjectiveTarget.add_item(title)
+			%ObjectiveTarget.add_item(object_label)
 		if piece.definition.behavior == "start":
-			%MarbleSource.add_item(title)
+			%MarbleSource.add_item(object_label)
 			%MarbleSource.set_item_metadata(%MarbleSource.item_count - 1, piece.instance_id)
 		if not piece.supported_events().is_empty():
 			source_ids.append(piece.instance_id)
-			%LinkSource.add_item(title)
+			%LinkSource.add_item(object_label)
 		if not piece.supported_actions().is_empty():
 			target_ids.append(piece.instance_id)
-			%LinkTarget.add_item(title)
+			%LinkTarget.add_item(object_label)
 	refresh_events()
 	refresh_actions()
 	refresh_objective_events()

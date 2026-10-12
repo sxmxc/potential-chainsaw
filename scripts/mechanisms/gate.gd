@@ -24,7 +24,7 @@ func set_open(value: bool) -> void:
 	pending_close = false
 	if open == value: return
 	open = value
-	opened_at = elapsed if value else -1
+	opened_at = elapsed if value else -1.0
 	event_raised.emit("opened" if value else "closed", null)
 
 func _physics_process(delta: float) -> void:

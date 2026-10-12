@@ -143,9 +143,11 @@ func supported_events() -> Array:
 
 func perform_action(action: String) -> bool:
 	if mechanism_component: return mechanism_component.perform(action)
-	var component = elevator_component if elevator_component else rotor_component
+	var component: Node = elevator_component
+	if not component:
+		component = rotor_component
 	if not component or action not in supported_actions(): return false
 	mechanism_enabled = not mechanism_enabled if action == "toggle" else action == "activate"
-	component.active = mechanism_enabled
+	component.set("active", mechanism_enabled)
 	mechanism_event.emit("activated", null)
 	return true

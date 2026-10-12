@@ -224,10 +224,10 @@ func run(app: Node, assertion: Callable) -> void:
 				build.camera.target_pitch=0.65
 				build.camera.target_distance=distance
 				build.camera._update(1)
-				var available=build.snap.exposed(build.pieces)
+				var elevated_targets=build.snap.exposed(build.pieces)
 				var solutions: Array[Dictionary]=[]
-				for target in available:
-					solutions=build.snap.screen_candidates(sources,ports,available,build.camera,build.camera.unproject_position(target.point),build.pieces,[])
+				for target in elevated_targets:
+					solutions=build.snap.screen_candidates(sources,ports,elevated_targets,build.camera,build.camera.unproject_position(target.point),build.pieces,[])
 					if not solutions.is_empty() and solutions[0].error.is_empty(): break
 				check.call(not solutions.is_empty() and solutions[0].error.is_empty(),"Rotated connector alignment at elevation %.0f / yaw %.1f / distance %.0f" % [elevation,angle,distance])
 	# A slope attaches by measured elevation differences, not rounded coordinates.
@@ -291,30 +291,30 @@ func run(app: Node, assertion: Callable) -> void:
 	var user_snapshot=build.snapshot()
 	game.show_main_menu()
 	var showcase=game.get_node("Interface/Root/MainMenu/Showcase")
-	check.call(showcase.sandbox.get_world_3d()!=game.sandbox.get_world_3d(),"Showcase physics uses an isolated 3D world")
-	check.call(showcase.sandbox.simulation.marble is RigidBody3D,"Showcase marble uses the existing real physics simulation")
-	var initial=showcase.sandbox.simulation.marble.position
+	check.call(showcase.world_manager.get_world_3d()!=game.sandbox.get_world_3d(),"Showcase physics uses an isolated 3D world")
+	check.call(showcase.world_manager.simulation.marble is RigidBody3D,"Showcase marble uses the existing real physics simulation")
+	var initial=showcase.world_manager.simulation.marble.position
 	var successes=0
 	for frame in 1700:
 		await game.get_tree().physics_frame
-		if showcase.sandbox.simulation.state==SimulationManager.State.SUCCESS: successes+=1
+		if showcase.world_manager.simulation.state==SimulationManager.State.SUCCESS: successes+=1
 	check.call(successes>0 and showcase.loops>=2,"Physical showcase reaches the finish and restarts gracefully")
-	check.call(showcase.sandbox.simulation.marble.position.distance_to(initial)>0.1,"Showcase marble actually moves through the track")
+	check.call(showcase.world_manager.simulation.marble.position.distance_to(initial)>0.1,"Showcase marble actually moves through the track")
 	check.call(build.snapshot()==user_snapshot and not build.dirty,"Showcase loop leaves sandbox construction and dirty state untouched")
 	showcase.animation.seek(9,true)
-	showcase.sandbox.camera._update(1)
-	var pose=showcase.sandbox.camera.transform
+	showcase.world_manager.camera._update(1)
+	var pose=showcase.world_manager.camera.transform
 	showcase.animation.seek(27,true)
-	showcase.sandbox.camera._update(1)
-	check.call(not showcase.sandbox.camera.transform.is_equal_approx(pose),"Authored animation changes camera angle, dolly and elevation")
+	showcase.world_manager.camera._update(1)
+	check.call(not showcase.world_manager.camera.transform.is_equal_approx(pose),"Authored animation changes camera angle, dolly and elevation")
 	showcase.animation.seek(0,true)
-	showcase.sandbox.camera._update(1)
-	pose=showcase.sandbox.camera.transform
+	showcase.world_manager.camera._update(1)
+	pose=showcase.world_manager.camera.transform
 	showcase.animation.seek(36,true)
-	showcase.sandbox.camera._update(1)
-	check.call(showcase.sandbox.camera.transform.is_equal_approx(pose),"Cinematic camera loop has matching endpoint poses")
+	showcase.world_manager.camera._update(1)
+	check.call(showcase.world_manager.camera.transform.is_equal_approx(pose),"Cinematic camera loop has matching endpoint poses")
 	game.enter_sandbox()
-	check.call(not showcase.active and showcase.sandbox.simulation.marble==null,"Entering the sandbox stops showcase simulation")
+	check.call(not showcase.active and showcase.world_manager.simulation.marble==null,"Entering the sandbox stops showcase simulation")
 
 func motion(point: Vector2) -> void:
 	var event=InputEventMouseMotion.new()

@@ -1,17 +1,16 @@
-[gd_scene format=3]
-[ext_resource type="Script" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[gd_scene format=3 uid="uid://816wp88y5yxp"]
 
-[node name="PuzzleAuthoring" type="Window"]
-theme = ExtResource("Theme")
-script = ExtResource("Script")
+[ext_resource type="Script" uid="uid://d2s5cf04l5n1y" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PuzzleAuthoring" type="Window" unique_id=1619636925]
 size = Vector2i(560, 640)
 visible = false
 min_size = Vector2i(480, 520)
-wrap_controls = false
+theme = ExtResource("Theme")
+script = ExtResource("Script")
 
-[node name="Surface" type="PanelContainer" parent="."]
-layout_mode = 2
+[node name="Surface" type="PanelContainer" parent="." unique_id=224087152]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,86 +18,88 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"ContextPanel"
 
-[node name="Contents" type="VBoxContainer" parent="Surface"]
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1570093750]
 layout_mode = 2
 
-[node name="Heading" type="Label" parent="Surface/Contents"]
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=1130178342]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "PUZZLE EDITOR · build in the world, author here"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Tabs" type="TabContainer" parent="Surface/Contents"]
+[node name="Tabs" type="TabContainer" parent="Surface/Contents" unique_id=1307822684]
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
-[node name="Settings" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="Settings" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=1424370597]
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 0
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Settings"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Settings" unique_id=29071606]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NameLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="NameLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=730021121]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Puzzle name"
 autowrap_mode = 3
+
+[node name="PuzzleName" type="LineEdit" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=114837070]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=499543416]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-
-[node name="PuzzleName" type="LineEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="DescriptionLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
 text = "Player objective / description"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Description" type="TextEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="Description" type="TextEdit" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=360013938]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
 wrap_mode = 1
 
-[node name="HintLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="HintLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=744687803]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Tutorial guidance"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Hint" type="TextEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="Hint" type="TextEdit" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1298895389]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
 wrap_mode = 1
 
-[node name="OrderLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="OrderLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1771759475]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Campaign order"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Order" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="Order" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=865590472]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 1
-max_value = 999
-step = 1
+min_value = 1.0
+max_value = 999.0
+value = 1.0
 
-[node name="Difficulty" type="OptionButton" parent="Surface/Contents/Tabs/Settings/Fields"]
-fit_to_longest_item = false
+[node name="Difficulty" type="OptionButton" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1735917422]
+unique_name_in_owner = true
+layout_mode = 2
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 3
 selected = 0
+fit_to_longest_item = false
+item_count = 3
 popup/item_0/text = "Introduction"
 popup/item_0/id = 0
 popup/item_1/text = "Workshop"
@@ -106,95 +107,106 @@ popup/item_1/id = 1
 popup/item_2/text = "Machine"
 popup/item_2/id = 2
 
-[node name="TimeLimitLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="TimeLimitLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=532423166]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Failure timeout (seconds)"
 autowrap_mode = 3
+
+[node name="TimeLimit" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1633161861]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 5.0
+max_value = 300.0
+value = 5.0
+
+[node name="AwardTimeLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1584571164]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-
-[node name="TimeLimit" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = 5
-max_value = 300
-step = 1
-
-[node name="AwardTimeLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
 text = "Optional time award (0 = none)"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="AwardTime" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="AwardTime" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=685066608]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 0
-max_value = 300
+max_value = 300.0
 step = 0.5
 
-[node name="AwardPiecesLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="AwardPiecesLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1703913713]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Optional piece budget award (0 = none)"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="AwardPieces" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="AwardPieces" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=462418633]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 0
-max_value = 999
-step = 1
+max_value = 999.0
 
-[node name="CaptureCamera" type="Button" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="CaptureCamera" type="Button" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1421320143]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Use current camera as opening view"
 theme_type_variation = &"SecondaryButton"
+text = "Use current camera as opening view"
 
-[node name="CameraStatus" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="CameraStatus" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1158161579]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Camera will frame construction by default"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="NewPuzzle" type="Button" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="NewPuzzle" type="Button" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=240866479]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Create new puzzle"
-theme_type_variation = &"SecondaryButton"
 
-[node name="OpenPuzzle" type="Button" parent="Surface/Contents/Tabs/Settings/Fields"]
+[node name="OpenPuzzle" type="Button" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=781854088]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Open draft or published puzzle"
 theme_type_variation = &"SecondaryButton"
+text = "Open draft or published puzzle"
 
-[node name="Permissions" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="PrerequisiteLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=957307808]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Prerequisites (select completed puzzles required to unlock)"
+autowrap_mode = 3
+
+[node name="Prerequisites" type="ItemList" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1294607599]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+select_mode = 1
+
+[node name="Permissions" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=98491790]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 1
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Permissions"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Permissions" unique_id=1894095581]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SelectionSummary" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="SelectionSummary" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1220504273]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Select pieces in the 3D world"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Preset" type="OptionButton" parent="Surface/Contents/Tabs/Permissions/Fields"]
-fit_to_longest_item = false
-clip_text = true
+[node name="Preset" type="OptionButton" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=147602235]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 5
+clip_text = true
 selected = 0
+fit_to_longest_item = false
+item_count = 5
 popup/item_0/text = "Fixed"
 popup/item_0/id = 0
 popup/item_1/text = "Move Only"
@@ -206,491 +218,462 @@ popup/item_3/id = 3
 popup/item_4/text = "Fully Editable"
 popup/item_4/id = 4
 
-[node name="Move" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="Move" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1727848063]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Move"
 
-[node name="Rotate" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="Rotate" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=536535483]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Rotate"
 
-[node name="Configure" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="Configure" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1812365343]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Configure"
 
-[node name="Remove" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="Remove" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1900433264]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Remove"
 
-[node name="Duplicate" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="Duplicate" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=413555304]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Duplicate"
 
-[node name="RestrictSetting" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="RestrictSetting" type="CheckBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1739899086]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Allow only the selected setting"
 
-[node name="ConfigKeys" type="OptionButton" parent="Surface/Contents/Tabs/Permissions/Fields"]
-fit_to_longest_item = false
+[node name="ConfigKeys" type="OptionButton" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=2087016980]
+unique_name_in_owner = true
+layout_mode = 2
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
+fit_to_longest_item = false
 
-[node name="SettingMinLabel" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="SettingMinLabel" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1296357318]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Minimum allowed value"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="SettingMin" type="SpinBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="SettingMin" type="SpinBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1838434882]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = -30
-max_value = 100
+min_value = -30.0
 step = 0.1
 
-[node name="SettingMaxLabel" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="SettingMaxLabel" type="Label" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1660143117]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Maximum allowed value"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="SettingMax" type="SpinBox" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="SettingMax" type="SpinBox" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=1249445637]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = -30
-max_value = 100
+min_value = -30.0
 step = 0.1
 
-[node name="ApplyPermissions" type="Button" parent="Surface/Contents/Tabs/Permissions/Fields"]
+[node name="ApplyPermissions" type="Button" parent="Surface/Contents/Tabs/Permissions/Fields" unique_id=133982662]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Apply permissions to selected pieces"
 theme_type_variation = &"SecondaryButton"
+text = "Apply permissions to selected pieces"
 
-[node name="Inventory" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="Inventory" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=590665169]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 2
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Inventory"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Inventory" unique_id=589676644]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="InventoryHelp" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="InventoryHelp" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1505045245]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Choose catalog pieces and quantities. Zero removes an entry."
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="InventoryPiece" type="OptionButton" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="InventoryPiece" type="OptionButton" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1775862054]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"CatalogOption"
-fit_to_longest_item = false
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
+fit_to_longest_item = false
 
-[node name="QuantityLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="QuantityLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1258759531]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Player quantity"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Quantity" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="Quantity" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=56614891]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 0
-max_value = 100
-step = 1
 
-[node name="SetQuantity" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="SetQuantity" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1590509086]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Set quantity"
 theme_type_variation = &"SecondaryButton"
+text = "Set quantity"
 
-[node name="InventoryList" type="ItemList" parent="Surface/Contents/Tabs/Inventory/Fields"]
+[node name="InventoryList" type="ItemList" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1023858971]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
 fixed_icon_size = Vector2i(48, 48)
+
+[node name="InventorySetting" type="OptionButton" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=3068067]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 220)
-size_flags_vertical = 3
+clip_text = true
+fit_to_longest_item = false
 
-[node name="Boundaries" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="InventoryMinLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=904579323]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Minimum mechanism setting for supplied pieces"
+autowrap_mode = 3
+
+[node name="InventoryMin" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1824415187]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -30.0
+step = 0.1
+
+[node name="InventoryMaxLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1385210238]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Maximum mechanism setting for supplied pieces"
+autowrap_mode = 3
+
+[node name="InventoryMax" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=111564916]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -30.0
+step = 0.1
+
+[node name="SetInventoryLimit" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=1674363995]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Limit selected inventory setting"
+
+[node name="ClearInventoryLimits" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields" unique_id=234766387]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Remove inventory setting limits"
+
+[node name="Boundaries" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=980557070]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 3
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Boundaries"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Boundaries" unique_id=291626821]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BoundaryHelp" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="BoundaryHelp" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=1496063231]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Click two opposite corners in the 3D world to draw or replace a region. The green cage shows its height."
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="DrawBuild" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="DrawBuild" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=478174631]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Draw build region in the world"
 theme_type_variation = &"SecondaryButton"
+text = "Draw build region in the world"
 
-[node name="MinHeightLabel" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="MinHeightLabel" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=1997980899]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Minimum elevation (m)"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="MinHeight" type="SpinBox" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="MinHeight" type="SpinBox" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=294145505]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 0
-max_value = 30
+max_value = 30.0
 step = 0.125
 
-[node name="MaxHeightLabel" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="MaxHeightLabel" type="Label" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=500112179]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Maximum elevation (m)"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="MaxHeight" type="SpinBox" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="MaxHeight" type="SpinBox" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=25930948]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 0.5
-max_value = 40
+max_value = 40.0
 step = 0.125
+value = 0.5
 
-[node name="DrawZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="DrawZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=41872508]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Draw restricted region"
-theme_type_variation = &"SecondaryButton"
 
-[node name="ClearZones" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields"]
+[node name="ClearZones" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=1404660171]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Remove restricted regions"
 theme_type_variation = &"SecondaryButton"
+text = "Remove restricted regions"
 
-[node name="Objectives" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="RestrictedList" type="ItemList" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=1298652702]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="ModifyZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=925823303]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Redraw selected restricted region"
+
+[node name="RemoveZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields" unique_id=509377831]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Remove selected restricted region"
+
+[node name="Objectives" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=368207551]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 4
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Objectives"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Objectives" unique_id=514147123]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ObjectiveType" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields"]
-fit_to_longest_item = false
-clip_text = true
+[node name="ObjectiveType" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1932406357]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
+clip_text = true
 selected = 0
+fit_to_longest_item = false
+item_count = 2
 popup/item_0/text = "Deliver marbles to collector"
 popup/item_0/id = 0
 popup/item_1/text = "Activate mechanism"
 popup/item_1/id = 1
 
-[node name="TargetLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="TargetLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=843385048]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Scene target"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="ObjectiveTarget" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields"]
-fit_to_longest_item = false
+[node name="ObjectiveTarget" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=548102714]
+unique_name_in_owner = true
+layout_mode = 2
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
+fit_to_longest_item = false
 
-[node name="MarbleSourceLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="MarbleSourceLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=133504219]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Required marble source"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="MarbleSource" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields"]
-fit_to_longest_item = false
+[node name="MarbleSource" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=751861812]
+unique_name_in_owner = true
+layout_mode = 2
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
-
-[node name="ObjectiveEvent" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields"]
 fit_to_longest_item = false
-clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
 
-[node name="AllMarbles" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="ObjectiveEvent" type="OptionButton" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1848707104]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Require all released marbles"
+clip_text = true
+fit_to_longest_item = false
+
+[node name="AllMarbles" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1728354015]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"SecondaryButton"
+text = "Require all released marbles"
 
-[node name="RequiredCountLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="RequiredCountLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1499929496]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Required deliveries"
 autowrap_mode = 3
+
+[node name="RequiredCount" type="SpinBox" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=201399134]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+
+[node name="ObjectiveTimeLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1196601311]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-
-[node name="RequiredCount" type="SpinBox" parent="Surface/Contents/Tabs/Objectives/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = 1
-max_value = 100
-step = 1
-
-[node name="ObjectiveTimeLabel" type="Label" parent="Surface/Contents/Tabs/Objectives/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
 text = "Complete before (0 = no limit)"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="ObjectiveTime" type="SpinBox" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="ObjectiveTime" type="SpinBox" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=343476040]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 0
-max_value = 300
+max_value = 300.0
 step = 0.5
 
-[node name="AddObjective" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="AddObjective" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=282480943]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Add objective"
 theme_type_variation = &"SecondaryButton"
+text = "Add objective"
 
-[node name="ObjectiveList" type="ItemList" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="ObjectiveList" type="ItemList" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=1140400992]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RemoveObjective" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields"]
+[node name="RemoveObjective" type="Button" parent="Surface/Contents/Tabs/Objectives/Fields" unique_id=557957017]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Remove selected objective"
 theme_type_variation = &"SecondaryButton"
+text = "Remove selected objective"
 
-[node name="Links" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="Links" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=1913687308]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 5
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Links"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Links" unique_id=1850854713]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LinkHelp" type="Label" parent="Surface/Contents/Tabs/Links/Fields"]
+[node name="LinkHelp" type="Label" parent="Surface/Contents/Tabs/Links/Fields" unique_id=2066916447]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Source event → supported target action"
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="LinkSource" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields"]
-fit_to_longest_item = false
+[node name="LinkSource" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields" unique_id=1339008474]
+unique_name_in_owner = true
+layout_mode = 2
 clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
-
-[node name="LinkEvent" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields"]
 fit_to_longest_item = false
-clip_text = true
+
+[node name="LinkEvent" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields" unique_id=51657714]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 0
-selected = 0
-
-[node name="LinkTarget" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields"]
+clip_text = true
 fit_to_longest_item = false
-clip_text = true
+
+[node name="LinkTarget" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields" unique_id=1210811572]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 0
-selected = 0
-
-[node name="LinkAction" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields"]
+clip_text = true
 fit_to_longest_item = false
-clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-item_count = 0
-selected = 0
 
-[node name="AddLink" type="Button" parent="Surface/Contents/Tabs/Links/Fields"]
+[node name="LinkAction" type="OptionButton" parent="Surface/Contents/Tabs/Links/Fields" unique_id=602956163]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Connect event to action"
+clip_text = true
+fit_to_longest_item = false
+
+[node name="AddLink" type="Button" parent="Surface/Contents/Tabs/Links/Fields" unique_id=39323025]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"SecondaryButton"
+text = "Connect event to action"
 
-[node name="LinkList" type="ItemList" parent="Surface/Contents/Tabs/Links/Fields"]
+[node name="LinkList" type="ItemList" parent="Surface/Contents/Tabs/Links/Fields" unique_id=1758010365]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RemoveLink" type="Button" parent="Surface/Contents/Tabs/Links/Fields"]
+[node name="RemoveLink" type="Button" parent="Surface/Contents/Tabs/Links/Fields" unique_id=2011145514]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Remove selected link"
 theme_type_variation = &"SecondaryButton"
+text = "Remove selected link"
 
-[node name="Publish" type="ScrollContainer" parent="Surface/Contents/Tabs"]
+[node name="Publish" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=166026776]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 6
 
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Publish"]
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Tabs/Publish" unique_id=2059793005]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LifecycleHelp" type="Label" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="LifecycleHelp" type="Label" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=218967212]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "Save draft → Test as Player → preserve successful solution → return here → Validate → Publish. Editing any starting content invalidates the prior proof."
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="SaveDraft" type="Button" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="SaveDraft" type="Button" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=1320476830]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Save draft"
-theme_type_variation = &"SecondaryButton"
 
-[node name="TestPlayer" type="Button" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="TestPlayer" type="Button" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=341756373]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Test as Player"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Validate" type="Button" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="Validate" type="Button" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=1776158633]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Validate current revision"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Publish" type="Button" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="Publish" type="Button" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=1105060493]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Publish validated puzzle"
-theme_type_variation = &"SecondaryButton"
 
-[node name="Validation" type="Label" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="Validation" type="Label" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=1656023111]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
 text = "A successful player test is required."
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="Export" type="Button" parent="Surface/Contents/Tabs/Publish/Fields"]
+[node name="Export" type="Button" parent="Surface/Contents/Tabs/Publish/Fields" unique_id=403388515]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Export published campaign bundle"
 theme_type_variation = &"SecondaryButton"
+text = "Export published campaign bundle"
 
-[node name="ExportDialog" type="FileDialog" parent="."]
+[node name="ExportDialog" type="FileDialog" parent="." unique_id=1808200639]
 unique_name_in_owner = true
-file_mode = 4
 access = 2
 filters = PackedStringArray("*.zip ; Campaign content bundle")
-current_file = "campaign.zip"
-
-[node name="PrerequisiteLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
-layout_mode = 2
-text = "Prerequisites (select completed puzzles required to unlock)"
-autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="Prerequisites" type="ItemList" parent="Surface/Contents/Tabs/Settings/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(0, 120)
-select_mode = 1
-
-[node name="RestrictedList" type="ItemList" parent="Surface/Contents/Tabs/Boundaries/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(0, 120)
-
-[node name="ModifyZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Redraw selected restricted region"
-theme_type_variation = &"SecondaryButton"
-
-[node name="RemoveZone" type="Button" parent="Surface/Contents/Tabs/Boundaries/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove selected restricted region"
-theme_type_variation = &"SecondaryButton"
-
-[node name="InventorySetting" type="OptionButton" parent="Surface/Contents/Tabs/Inventory/Fields"]
-fit_to_longest_item = false
-clip_text = true
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="InventoryMinLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields"]
-layout_mode = 2
-text = "Minimum mechanism setting for supplied pieces"
-autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="InventoryMin" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = -30.0
-max_value = 100.0
-step = 0.1
-
-[node name="InventoryMaxLabel" type="Label" parent="Surface/Contents/Tabs/Inventory/Fields"]
-layout_mode = 2
-text = "Maximum mechanism setting for supplied pieces"
-autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="InventoryMax" type="SpinBox" parent="Surface/Contents/Tabs/Inventory/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = -30.0
-max_value = 100.0
-step = 0.1
-
-[node name="SetInventoryLimit" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Limit selected inventory setting"
-theme_type_variation = &"SecondaryButton"
-
-[node name="ClearInventoryLimits" type="Button" parent="Surface/Contents/Tabs/Inventory/Fields"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove inventory setting limits"
-theme_type_variation = &"SecondaryButton"

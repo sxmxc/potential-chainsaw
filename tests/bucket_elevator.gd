@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Cleanup = preload("res://tests/cleanup.gd")
+
 const Geometry = preload("res://scripts/mechanisms/elevator_geometry.gd")
 const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
 var checks: int = 0
@@ -85,10 +87,9 @@ func run() -> void:
 	await test_route(12.0, 2.0, 2)
 	await test_multiple()
 	print("ELEVATOR RESULT: %d checks; %d failures" % [checks,failures.size()])
-	var file=FileAccess.open("res://docs/elevator_test_results.txt",FileAccess.WRITE)
-	file.store_string("%d checks; %d failures\n%s" % [checks,failures.size(),"\n".join(failures)])
 	game.queue_free()
 	await process_frame
+	await Cleanup.stop_audio(self)
 	quit(0 if failures.is_empty() else 1)
 
 func test_route(lift_height: float, conveyor_speed: float, quarter: int) -> void:
@@ -107,15 +108,15 @@ func test_route(lift_height: float, conveyor_speed: float, quarter: int) -> void
 	var max_rise=0.0
 	var previous_position=sim.marble.position
 	var biggest_step=0.0
-	var paused=false
+	var pause_tested=false
 	for frame in 2400:
 		await physics_frame
 		if Capture.is_carried(sim.marble):
 			saw_capture=true
 			biggest_step=maxf(biggest_step,sim.marble.position.distance_to(previous_position))
 			max_rise=maxf(max_rise,sim.marble.position.y)
-			if not paused:
-				paused=true
+			if not pause_tested:
+				pause_tested=true
 				var pose=sim.marble.global_transform
 				var phase=component.phase
 				sim.toggle_pause()

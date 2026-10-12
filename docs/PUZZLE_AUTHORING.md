@@ -27,6 +27,8 @@ Permission checks apply to complete group edits, duplicates, removal, settings, 
 
 Open a published puzzle to revise it. Its stable ID remains; publication increments the revision when content changes. The old working published copy remains playable while the revised draft is being tested.
 
+Construction and mechanism edits support undo/redo. Authoring metadata uses explicit draft saves and has no separate undo history. The permission form currently supports one restricted configuration key per starting piece; inventory limits can cover several keys. Tune difficulty and optional awards through playtesting after the physical checks pass.
+
 ## Saves and shipping content
 
 Godot's ordinary user data directory contains `puzzles/drafts`, `puzzles/published`, and `campaign_progress.json`. Local publication affects this installation. It does not automatically modify bundled project resources.

@@ -1,73 +1,73 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bi8u26xkl55hb"]
 
-[ext_resource type="Script" path="res://scripts/ui/puzzle_completion.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Script" uid="uid://dp7yyhbn46wts" path="res://scripts/ui/puzzle_completion.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="PuzzleCompletion" type="Window"]
+[node name="PuzzleCompletion" type="Window" unique_id=1581572229]
 title = "Machine complete"
 size = Vector2i(480, 360)
 visible = false
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Surface" type="PanelContainer" parent="."]
+[node name="Surface" type="PanelContainer" parent="." unique_id=1593453148]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_type_variation = &"ContextPanel"
 
-[node name="Contents" type="VBoxContainer" parent="Surface"]
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1834624199]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Surface/Contents"]
+[node name="Title" type="Label" parent="Surface/Contents" unique_id=966304359]
 layout_mode = 2
 theme_type_variation = &"AccentLabel"
 text = "MACHINE COMPLETE"
 
-[node name="Name" type="Label" parent="Surface/Contents"]
+[node name="Name" type="Label" parent="Surface/Contents" unique_id=1462470442]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"InspectorTitle"
 autowrap_mode = 3
 
-[node name="Result" type="Label" parent="Surface/Contents"]
+[node name="Result" type="Label" parent="Surface/Contents" unique_id=1824852314]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
 
-[node name="Awards" type="Label" parent="Surface/Contents"]
+[node name="Awards" type="Label" parent="Surface/Contents" unique_id=1368142062]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SuccessLabel"
 autowrap_mode = 3
 
-[node name="Next" type="Button" parent="Surface/Contents"]
+[node name="Next" type="Button" parent="Surface/Contents" unique_id=1850249896]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "Next puzzle"
 
-[node name="Preserve" type="Button" parent="Surface/Contents"]
+[node name="Preserve" type="Button" parent="Surface/Contents" unique_id=1474019438]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "Preserve validated solution"
 
-[node name="ReturnEditor" type="Button" parent="Surface/Contents"]
+[node name="ReturnEditor" type="Button" parent="Surface/Contents" unique_id=965861855]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Return to Puzzle Editor"
 
-[node name="LevelSelection" type="Button" parent="Surface/Contents"]
+[node name="LevelSelection" type="Button" parent="Surface/Contents" unique_id=799094580]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Level selection"
 
-[node name="KeepBuilding" type="Button" parent="Surface/Contents"]
+[node name="KeepBuilding" type="Button" parent="Surface/Contents" unique_id=1234625956]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"

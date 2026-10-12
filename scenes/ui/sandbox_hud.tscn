@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://c4if8edlanmt2"]
 
 [ext_resource type="PackedScene" uid="uid://bxo0prqjwsv8i" path="res://scenes/ui/toolbars/build_toolbar.tscn" id="Build"]
-[ext_resource type="PackedScene" uid="uid://cklb7w7086xys" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
-[ext_resource type="PackedScene" uid="uid://4pjsxw6jdy1t" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
-[ext_resource type="PackedScene" uid="uid://cmd14munkq5gg" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
+[ext_resource type="PackedScene" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
+[ext_resource type="PackedScene" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
 [ext_resource type="PackedScene" uid="uid://khlp72i5rsq2" path="res://scenes/ui/inspector.tscn" id="Inspector"]
-[ext_resource type="PackedScene" uid="uid://cnkottri2d7gv" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://koyrdojdabnc" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
@@ -62,12 +62,10 @@ mouse_filter = 2
 [node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 1
 
 [node name="EditToolbar" parent="Margin/Layout/Body/Workspace" unique_id=646885837 instance=ExtResource("Edit")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 1
 
 [node name="WorldInput" type="Control" parent="Margin/Layout/Body/Workspace" unique_id=1491741143]
 layout_mode = 2
