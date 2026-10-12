@@ -10,8 +10,12 @@ visible = false
 transient = true
 exclusive = true
 unresizable = true
+borderless = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
+
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=1610062824]
 anchors_preset = 15
@@ -43,7 +47,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Cancel"
@@ -52,7 +55,6 @@ text = "Cancel"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "Save"

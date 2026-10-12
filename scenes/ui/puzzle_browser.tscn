@@ -3,78 +3,129 @@
 [ext_resource type="Script" uid="uid://dx0eii85w1adc" path="res://scripts/ui/puzzle_browser.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="PuzzleBrowser" type="Window" unique_id=1442832892]
-size = Vector2i(560, 640)
+[node name="PuzzleBrowser" type="Window" unique_id=335018945]
+title = "Campaign"
+size = Vector2i(920, 560)
 visible = false
-min_size = Vector2i(480, 520)
+transient = true
+exclusive = true
+borderless = true
+min_size = Vector2i(800, 300)
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
 
-[node name="Surface" type="PanelContainer" parent="." unique_id=1125445899]
+
+[node name="Surface" type="PanelContainer" parent="." unique_id=497165524]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_type_variation = &"ContextPanel"
+theme_type_variation = &"SurfacePanel"
 
-[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1493203292]
+[node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1569012700]
 layout_mode = 2
 
-[node name="Heading" type="Label" parent="Surface/Contents" unique_id=888428531]
+[node name="Heading" type="Label" parent="Surface/Contents" unique_id=305143330]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "CAMPAIGN · build a working marble machine"
-autowrap_mode = 3
+theme_type_variation = &"DialogTitle"
+text = "Campaign"
 
-[node name="StartChoice" type="VBoxContainer" parent="Surface/Contents"]
+[node name="StartChoice" type="HBoxContainer" parent="Surface/Contents" unique_id=626814548]
 unique_name_in_owner = true
-layout_mode = 2
 visible = false
+layout_mode = 2
 
-[node name="PlayIntroduction" type="Button" parent="Surface/Contents/StartChoice"]
+[node name="IntroductionNote" type="Label" parent="Surface/Contents/StartChoice" unique_id=700215908]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SmallMutedLabel"
+text = "Introduction is optional."
+
+[node name="PlayIntroduction" type="Button" parent="Surface/Contents/StartChoice" unique_id=249169329]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Play Introduction"
 
-[node name="SkipIntroduction" type="Button" parent="Surface/Contents/StartChoice"]
+[node name="SkipIntroduction" type="Button" parent="Surface/Contents/StartChoice" unique_id=1892517512]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Skip Introduction"
 
-[node name="Chapters" type="OptionButton" parent="Surface/Contents"]
-unique_name_in_owner = true
-layout_mode = 2
-fit_to_longest_item = false
-
-[node name="Resume" type="Button" parent="Surface/Contents"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Resume campaign"
-
-[node name="Levels" type="ItemList" parent="Surface/Contents" unique_id=1239105248]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 200)
+[node name="Browse" type="VBoxContainer" parent="Surface/Contents" unique_id=2055071129]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Details" type="Label" parent="Surface/Contents" unique_id=383383115]
+[node name="ChapterScroll" type="ScrollContainer" parent="Surface/Contents/Browse" unique_id=982691246]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Chapters" type="HBoxContainer" parent="Surface/Contents/Browse/ChapterScroll" unique_id=1733232487]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Select a level"
+
+[node name="LevelColumn" type="VBoxContainer" parent="Surface/Contents/Browse" unique_id=1137941793]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChapterName" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=658361185]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PanelTitle"
+text = "Introduction"
+
+[node name="Levels" type="ItemList" parent="Surface/Contents/Browse/LevelColumn" unique_id=1912233115]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
+max_columns = 2
+same_column_width = true
+fixed_column_width = 408
+fixed_icon_size = Vector2i(20, 32)
+
+[node name="Empty" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=1676400485]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 6
+theme_type_variation = &"MutedLabel"
+text = "No levels available yet."
+
+[node name="Details" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=1308003168]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Select a level."
 autowrap_mode = 3
 
-[node name="Open" type="Button" parent="Surface/Contents" unique_id=936855828]
-unique_name_in_owner = true
+[node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=815224222]
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Play selected puzzle"
 
-[node name="Back" type="Button" parent="Surface/Contents" unique_id=1630731207]
+[node name="Back" type="Button" parent="Surface/Contents/Actions" unique_id=82387416]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Back"
+
+[node name="Spacer" type="Control" parent="Surface/Contents/Actions" unique_id=202467506]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Resume" type="Button" parent="Surface/Contents/Actions" unique_id=52226823]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Continue"
+
+[node name="Open" type="Button" parent="Surface/Contents/Actions" unique_id=1426315025]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Play"

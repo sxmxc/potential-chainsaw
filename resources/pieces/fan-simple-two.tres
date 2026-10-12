@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("3_sjo58")
 id = &"fan-simple-two"
-display_name = "Fan Simple Two"
+display_name = "Paddle fan (2 blades)"
 category = "Mechanisms"
 description = "Mechanisms · 0.68 × 0.30 m footprint · 0.50 m tall. Rotating obstacle; operates during simulation. Place on a channel or as a freestanding obstacle."
 model = ExtResource("2_5rkdv")

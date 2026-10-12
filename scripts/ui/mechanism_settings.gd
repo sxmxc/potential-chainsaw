@@ -3,6 +3,9 @@ extends VBoxContainer
 const Schema = preload("res://scripts/mechanisms/settings_schema.gd")
 const NUMBERS = Schema.NUMBERS
 const FLAGS = Schema.FLAGS
+const NUMBER = preload("res://scenes/ui/widgets/mechanism_number.tscn")
+const CAPTIONS={"power":"Air power","range":"Range","angular_speed":"Paddle speed","delay":"Open after","auto_close":"Close after","strength":"Added speed","angle":"Launch angle","quantity":"Marbles","interval":"Release interval","start_delay":"First release"}
+const UNITS={"power":"N","range":"m","angular_speed":"rad/s","delay":"s","auto_close":"s","strength":"m/s","angle":"°","interval":"s","start_delay":"s"}
 var build: BuildManager
 
 func configure(manager: BuildManager) -> void:
@@ -16,18 +19,17 @@ func refresh(piece: TrackPiece) -> void:
 	var behavior = piece.definition.behavior
 	for key in NUMBERS.get(behavior, {}):
 		var field: Array = NUMBERS[behavior][key]
-		var label = Label.new()
-		label.text = field[0]
-		label.theme_type_variation = "SmallMutedLabel"
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		add_child(label)
-		var input = SpinBox.new()
+		var row=NUMBER.instantiate()
+		add_child(row)
+		row.get_node("%Caption").text=CAPTIONS.get(key,field[0])
+		var input: SpinBox=row.get_node("%Value")
+		input.suffix=UNITS.get(key,"")
+		input.tooltip_text="0 waits for a linked Open action." if key=="delay" else ("0 keeps the gate open." if key=="auto_close" else field[0])
 		input.min_value = field[2]
 		input.max_value = field[3]
 		input.step = field[4]
 		input.value = piece.configuration.get(key, field[1])
 		input.editable = not build.rules or build.rules.permits(piece.instance_id, "configure")
-		add_child(input)
 		input.value_changed.connect(change.bind(key))
 	for key in FLAGS.get(behavior, {}):
 		var field: Array = FLAGS[behavior][key]

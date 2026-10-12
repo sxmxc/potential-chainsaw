@@ -5,6 +5,12 @@
 [ext_resource type="AudioStream" uid="uid://dkxvrhepgeq1l" path="res://assets/audio/songs/build_song_loop.mp3" id="2_71j4m"]
 [ext_resource type="Script" uid="uid://e6mltjx8dm12" path="res://scripts/construction/build_manager.gd" id="3"]
 [ext_resource type="Script" uid="uid://bej5vd0fbyqnm" path="res://scripts/simulation/simulation_manager.gd" id="4"]
+[ext_resource type="Script" uid="uid://ovweg5s3aqqm" path="res://scripts/camera/simulation_camera.gd" id="CameraController"]
+[ext_resource type="PackedScene" path="res://scenes/camera/marble_chase.tscn" id="Chase"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="Host"]
+[ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="Lens"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_m1kxf"]
 stream_count = 1
@@ -25,6 +31,18 @@ roughness = 0.9
 
 [sub_resource type="PlaneMesh" id="Floor"]
 size = Vector2(600, 600)
+
+[sub_resource type="Resource" id="FreeTransition"]
+resource_local_to_scene = true
+script = ExtResource("Tween")
+duration = 0.85
+transition = 1
+
+[sub_resource type="Resource" id="FreeLens"]
+resource_local_to_scene = true
+script = ExtResource("Lens")
+fov = 48.0
+far = 300.0
 
 [node name="World" type="Node3D" unique_id=977763081]
 script = ExtResource("1")
@@ -51,13 +69,32 @@ material_override = SubResource("FloorMaterial")
 mesh = SubResource("Floor")
 
 [node name="Camera" type="Camera3D" parent="." unique_id=1687008952]
-physics_interpolation_mode = 2
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5020037, -2.6021395)
+top_level = true
+fov = 48.0
+far = 300.0
 script = ExtResource("2")
 composition_offset = Vector2(0.08, 0.08)
+
+[node name="PhantomCameraHost" type="Node" parent="Camera" unique_id=384233019]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("Host")
 
 [node name="BuildManager" type="Node3D" parent="." unique_id=587075082]
 script = ExtResource("3")
 
 [node name="SimulationManager" type="Node3D" parent="." unique_id=366871744]
 script = ExtResource("4")
+
+[node name="FreeView" type="Node3D" parent="." unique_id=1419629802]
+physics_interpolation_mode = 2
+script = ExtResource("PCam")
+priority = 10
+tween_resource = SubResource("FreeTransition")
+tween_on_load = false
+camera_3d_resource = SubResource("FreeLens")
+
+[node name="SimulationCamera" type="Node" parent="." unique_id=655534682]
+script = ExtResource("CameraController")
+
+[node name="MarbleChase" parent="SimulationCamera" unique_id=1781605180 instance=ExtResource("Chase")]

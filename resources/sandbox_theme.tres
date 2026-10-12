@@ -10,7 +10,20 @@
 [ext_resource type="Texture2D" uid="uid://c51nm6qenlph7" path="res://assets/ui/icons/rotate.svg" id="7_pqwce"]
 [ext_resource type="Texture2D" uid="uid://b5yyyv6d87ynr" path="res://assets/ui/icons/snap.svg" id="8_yh70q"]
 [ext_resource type="Texture2D" uid="uid://bfeabh60a4uqs" path="res://assets/ui/icons/undo.svg" id="9_qgxrt"]
-[ext_resource type="FontFile" uid="uid://b8ujm8c8jhh0m" path="res://assets/font/Engplot.TTF" id="11_cqjf2"]
+[ext_resource type="FontVariation" uid="uid://cjn1xwbbi552l" path="res://assets/font/nunito-sans/regular.tres" id="11_cqjf2"]
+[ext_resource type="FontVariation" uid="uid://d36eupm0ycdkj" path="res://assets/font/nunito-sans/bold.tres" id="Bold"]
+[ext_resource type="Texture2D" uid="uid://b05gflfkgdaxw" path="res://assets/ui/icons/cancel.svg" id="Icon_cancel"]
+[ext_resource type="Texture2D" uid="uid://vpqn7wneiebj" path="res://assets/ui/icons/collapse.svg" id="Icon_collapse"]
+[ext_resource type="Texture2D" uid="uid://8gayhn8crogy" path="res://assets/ui/icons/duplicate.svg" id="Icon_duplicate"]
+[ext_resource type="Texture2D" uid="uid://cqs0f25u7u4kv" path="res://assets/ui/icons/frame.svg" id="Icon_frame"]
+[ext_resource type="Texture2D" uid="uid://drq7krlx6234a" path="res://assets/ui/icons/ground.svg" id="Icon_ground"]
+[ext_resource type="Texture2D" uid="uid://dnwyfaa7mykyy" path="res://assets/ui/icons/lower.svg" id="Icon_lower"]
+[ext_resource type="Texture2D" uid="uid://cdsb0kd6lxcu2" path="res://assets/ui/icons/menu.svg" id="Icon_menu"]
+[ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="Icon_pieces"]
+[ext_resource type="Texture2D" uid="uid://qhb7mybcy267" path="res://assets/ui/icons/raise.svg" id="Icon_raise"]
+[ext_resource type="Texture2D" uid="uid://bxui4xoxv2gxo" path="res://assets/ui/icons/save.svg" id="Icon_save"]
+[ext_resource type="Texture2D" uid="uid://chmbtvye6c8wg" path="res://assets/ui/icons/stop.svg" id="Icon_stop"]
+[ext_resource type="FontVariation" uid="uid://di626pcgos8u2" path="res://assets/font/nunito-sans/semibold.tres" id="Semibold"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cqjf2"]
 content_margin_left = 16.0
@@ -28,9 +41,9 @@ shadow_offset = Vector2(0, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ga0a"]
 content_margin_left = 12.0
-content_margin_top = 12.0
+content_margin_top = 9.0
 content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_bottom = 9.0
 bg_color = Color(0.11372549, 0.1882353, 0.21568628, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
@@ -55,9 +68,9 @@ corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_puc0v"]
 content_margin_left = 12.0
-content_margin_top = 12.0
+content_margin_top = 9.0
 content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_bottom = 9.0
 bg_color = Color(0.20784314, 0.32941177, 0.35686275, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
@@ -65,10 +78,10 @@ corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqwce"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
 bg_color = Color(0.13333334, 0.21960784, 0.2509804, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
@@ -77,14 +90,25 @@ corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh70q"]
 content_margin_left = 12.0
-content_margin_top = 12.0
+content_margin_top = 9.0
 content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_bottom = 9.0
 bg_color = Color(0.19607843, 0.48235294, 0.44313726, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="InventoryCard"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.12, 0.21, 0.24, 0.35)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgxrt"]
 content_margin_left = 12.0
@@ -438,6 +462,8 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
+[sub_resource type="StyleBoxEmpty" id="Unframed"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oq0dp"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -540,46 +566,32 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ojx4"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.13333334, 0.21960784, 0.2509804, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ucfao"]
+[sub_resource type="StyleBoxFlat" id="InventorySelected"]
 content_margin_left = 6.0
 content_margin_top = 6.0
 content_margin_right = 6.0
 content_margin_bottom = 6.0
-bg_color = Color(0.15686275, 0.33333334, 0.30980393, 1)
+bg_color = Color(0.26, 0.3, 0.23, 0.7)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.3372549, 0.8392157, 0.6392157, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(0.973, 0.855, 0.439, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68gvi"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
-bg_color = Color(0.07058824, 0.14901961, 0.18039216, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-shadow_color = Color(0, 0, 0, 0.18)
-shadow_size = 5
-shadow_offset = Vector2(0, 3)
+[sub_resource type="StyleBoxFlat" id="CompactTooltip"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.055, 0.11, 0.14, 0.98)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [resource]
 default_font = ExtResource("11_cqjf2")
@@ -591,14 +603,17 @@ AccentSmallLabel/base_type = &"Label"
 AccentSmallLabel/colors/font_color = Color(0.4745098, 0.9098039, 0.7372549, 1)
 AccentSmallLabel/font_sizes/font_size = 14
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_cqjf2")
+BrandMenuVBox/base_type = &"VBoxContainer"
+BrandMenuVBox/constants/separation = 32
 BrandTitle/base_type = &"Label"
-BrandTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
+BrandTitle/colors/font_color = Color(0.973, 0.855, 0.439, 1)
 BrandTitle/font_sizes/font_size = 54
 BrandTitle/fonts/font = ExtResource("1_41tqm")
 Button/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-Button/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+Button/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 Button/colors/font_hover_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 Button/colors/font_pressed_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
+Button/fonts/font = ExtResource("Semibold")
 Button/styles/disabled = SubResource("StyleBoxFlat_1ga0a")
 Button/styles/focus = SubResource("StyleBoxFlat_r5doh")
 Button/styles/hover = SubResource("StyleBoxFlat_puc0v")
@@ -606,16 +621,21 @@ Button/styles/normal = SubResource("StyleBoxFlat_pqwce")
 Button/styles/pressed = SubResource("StyleBoxFlat_yh70q")
 CardLabel/base_type = &"Label"
 CardLabel/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-CardLabel/font_sizes/font_size = 13
+CardLabel/font_sizes/font_size = 16
+CardLabel/fonts/font = ExtResource("Semibold")
 CardMargin/base_type = &"MarginContainer"
 CardMargin/constants/margin_bottom = 6
 CardMargin/constants/margin_left = 6
 CardMargin/constants/margin_right = 6
 CardMargin/constants/margin_top = 6
+CatalogFilter/base_type = &"OptionButton"
+CatalogFilter/styles/normal = SubResource("InventoryCard")
 CatalogOption/base_type = &"OptionButton"
 CatalogOption/constants/icon_max_width = 48
+CatalogSearch/base_type = &"LineEdit"
+CatalogSearch/styles/normal = SubResource("InventoryCard")
 CheckButton/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-CheckButton/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+CheckButton/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 CompactVBox/base_type = &"VBoxContainer"
 CompactVBox/constants/separation = 4
 ConstructionOverlay/colors/connector_active = Color(0.3372549, 0.8392157, 0.6392157, 1)
@@ -633,13 +653,16 @@ DangerButton/styles/normal = SubResource("StyleBoxFlat_fvjs3")
 DangerButton/styles/pressed = SubResource("StyleBoxFlat_vf6no")
 DialogTitle/base_type = &"Label"
 DialogTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-DialogTitle/font_sizes/font_size = 26
+DialogTitle/font_sizes/font_size = 28
+DialogTitle/fonts/font = ExtResource("Bold")
 ErrorLabel/base_type = &"Label"
 ErrorLabel/colors/font_color = Color(1, 0.5294118, 0.5647059, 1)
 ErrorLabel/font_sizes/font_size = 16
 GridContainer/constants/h_separation = 8
 GridContainer/constants/v_separation = 8
 HBoxContainer/constants/separation = 8
+HFlowContainer/constants/h_separation = 8
+HFlowContainer/constants/v_separation = 8
 HSlider/styles/grabber_area = SubResource("StyleBoxFlat_sckdx")
 HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_uugwb")
 HSlider/styles/slider = SubResource("StyleBoxFlat_umcpx")
@@ -652,38 +675,56 @@ HUDMargin/constants/margin_right = 20
 HUDMargin/constants/margin_top = 20
 HUDVBox/base_type = &"VBoxContainer"
 HUDVBox/constants/separation = 16
+IconButton/base_type = &"QuietButton"
+IconButton/constants/h_separation = 0
+IconButton/constants/icon_max_width = 24
 InspectorTitle/base_type = &"Label"
 InspectorTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-InspectorTitle/font_sizes/font_size = 21
+InspectorTitle/font_sizes/font_size = 20
+InspectorTitle/fonts/font = ExtResource("Bold")
 ItemList/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-ItemList/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+ItemList/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 ItemList/colors/font_selected_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-ItemList/constants/v_separation = 16
+ItemList/constants/v_separation = 8
 ItemList/styles/panel = SubResource("StyleBoxFlat_3p7le")
 ItemList/styles/selected = SubResource("StyleBoxFlat_57blg")
 ItemList/styles/selected_focus = SubResource("StyleBoxFlat_p75l6")
 Label/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-Label/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+Label/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 LineEdit/colors/caret_color = Color(0.5019608, 0.8039216, 0.73333335, 1)
 LineEdit/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-LineEdit/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+LineEdit/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 LineEdit/colors/font_placeholder_color = Color(0.6117647, 0.73333335, 0.7411765, 1)
 LineEdit/styles/focus = SubResource("StyleBoxFlat_qtils")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_aaywg")
+MenuCompositionMargin/base_type = &"MarginContainer"
+MenuCompositionMargin/constants/margin_bottom = 0
+MenuCompositionMargin/constants/margin_left = 0
+MenuCompositionMargin/constants/margin_right = 0
+MenuCompositionMargin/constants/margin_top = 0
 MenuMargin/base_type = &"MarginContainer"
 MenuMargin/constants/margin_bottom = 40
 MenuMargin/constants/margin_left = 40
 MenuMargin/constants/margin_right = 40
 MenuMargin/constants/margin_top = 40
+MenuNavigation/base_type = &"QuietButton"
+MenuNavigation/font_sizes/font_size = 18
+MenuNavigation/fonts/font = ExtResource("Semibold")
 MenuPanel/base_type = &"PanelContainer"
 MenuPanel/styles/panel = SubResource("StyleBoxFlat_1ahlm")
+MenuPrimary/base_type = &"PrimaryButton"
+MenuPrimary/font_sizes/font_size = 18
+MenuPrimary/fonts/font = ExtResource("Semibold")
+MenuSecondary/base_type = &"SecondaryButton"
+MenuSecondary/font_sizes/font_size = 18
+MenuSecondary/fonts/font = ExtResource("Semibold")
 MenuVBox/base_type = &"VBoxContainer"
-MenuVBox/constants/separation = 24
+MenuVBox/constants/separation = 16
 MutedLabel/base_type = &"Label"
 MutedLabel/colors/font_color = Color(0.6117647, 0.73333335, 0.7411765, 1)
 MutedLabel/font_sizes/font_size = 16
 OptionButton/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-OptionButton/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+OptionButton/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 OptionButton/colors/font_hover_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 OptionButton/colors/font_pressed_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 OptionButton/styles/disabled = SubResource("StyleBoxFlat_44b57")
@@ -695,6 +736,7 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_kjx3d")
 PanelHeading/base_type = &"Label"
 PanelHeading/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 PanelHeading/font_sizes/font_size = 18
+PanelHeading/fonts/font = ExtResource("Bold")
 PanelMargin/base_type = &"MarginContainer"
 PanelMargin/constants/margin_bottom = 16
 PanelMargin/constants/margin_left = 16
@@ -702,13 +744,14 @@ PanelMargin/constants/margin_right = 16
 PanelMargin/constants/margin_top = 16
 PanelTitle/base_type = &"Label"
 PanelTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-PanelTitle/font_sizes/font_size = 18
+PanelTitle/font_sizes/font_size = 20
+PanelTitle/fonts/font = ExtResource("Bold")
 PieceCard/base_type = &"Button"
 PieceCard/styles/hover = SubResource("StyleBoxFlat_rljr1")
 PieceCard/styles/normal = SubResource("StyleBoxFlat_36266")
 PieceCard/styles/pressed = SubResource("StyleBoxFlat_7qjdt")
 PopupMenu/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-PopupMenu/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+PopupMenu/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_ybwfg")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_c46ru")
 PopupPanel/styles/panel = SubResource("StyleBoxFlat_mhtux")
@@ -719,28 +762,41 @@ PrimaryButton/colors/font_pressed_color = Color(0.03529412, 0.16470589, 0.152941
 PrimaryButton/colors/icon_hover_color = Color(0.03529412, 0.16470589, 0.15294118, 1)
 PrimaryButton/colors/icon_normal_color = Color(0.03529412, 0.16470589, 0.15294118, 1)
 PrimaryButton/colors/icon_pressed_color = Color(0.03529412, 0.16470589, 0.15294118, 1)
-PrimaryButton/font_sizes/font_size = 17
+PrimaryButton/font_sizes/font_size = 16
 PrimaryButton/styles/hover = SubResource("StyleBoxFlat_5kv1b")
 PrimaryButton/styles/normal = SubResource("StyleBoxFlat_2e2yn")
 PrimaryButton/styles/pressed = SubResource("StyleBoxFlat_bv5ml")
 QuietButton/base_type = &"Button"
 QuietButton/styles/hover = SubResource("StyleBoxFlat_ckdv7")
 QuietButton/styles/normal = SubResource("StyleBoxFlat_md3ju")
+SandboxIcons/icons/cancel = ExtResource("Icon_cancel")
+SandboxIcons/icons/collapse = ExtResource("Icon_collapse")
 SandboxIcons/icons/delete = ExtResource("1_cabvc")
+SandboxIcons/icons/duplicate = ExtResource("Icon_duplicate")
+SandboxIcons/icons/frame = ExtResource("Icon_frame")
 SandboxIcons/icons/grid = ExtResource("2_41tqm")
+SandboxIcons/icons/ground = ExtResource("Icon_ground")
+SandboxIcons/icons/lower = ExtResource("Icon_lower")
+SandboxIcons/icons/menu = ExtResource("Icon_menu")
 SandboxIcons/icons/move = ExtResource("3_cqjf2")
 SandboxIcons/icons/pause = ExtResource("4_1ga0a")
+SandboxIcons/icons/pieces = ExtResource("Icon_pieces")
 SandboxIcons/icons/play = ExtResource("5_r5doh")
+SandboxIcons/icons/raise = ExtResource("Icon_raise")
 SandboxIcons/icons/redo = ExtResource("6_puc0v")
 SandboxIcons/icons/rotate = ExtResource("7_pqwce")
+SandboxIcons/icons/save = ExtResource("Icon_save")
 SandboxIcons/icons/snap = ExtResource("8_yh70q")
+SandboxIcons/icons/stop = ExtResource("Icon_stop")
 SandboxIcons/icons/undo = ExtResource("9_qgxrt")
 SecondaryButton/base_type = &"Button"
+SettingsTabs/base_type = &"TabContainer"
+SettingsTabs/styles/panel = SubResource("Unframed")
 SmallMutedLabel/base_type = &"Label"
 SmallMutedLabel/colors/font_color = Color(0.6117647, 0.73333335, 0.7411765, 1)
 SmallMutedLabel/font_sizes/font_size = 14
 SpinBox/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-SpinBox/colors/font_disabled_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
+SpinBox/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 SuccessLabel/base_type = &"Label"
 SuccessLabel/colors/font_color = Color(0.4745098, 0.9098039, 0.7372549, 1)
 SuccessLabel/font_sizes/font_size = 17
@@ -758,16 +814,24 @@ TabContainer/styles/panel = SubResource("StyleBoxFlat_nldv5")
 TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_1pggd")
 TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_hrqki")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_xce4k")
+TestIconButton/base_type = &"PrimaryButton"
+TestIconButton/constants/icon_max_width = 24
 ToolbarButton/base_type = &"Button"
 ToolbarPanel/base_type = &"PanelContainer"
 ToolbarPanel/styles/panel = SubResource("StyleBoxFlat_8gmgf")
 ToolboxButton/base_type = &"Button"
 ToolboxButton/styles/hover = SubResource("StyleBoxFlat_64qq3")
-ToolboxButton/styles/normal = SubResource("StyleBoxFlat_3ojx4")
-ToolboxButton/styles/pressed = SubResource("StyleBoxFlat_ucfao")
+ToolboxButton/styles/normal = SubResource("InventoryCard")
+ToolboxButton/styles/pressed = SubResource("InventorySelected")
+TooltipLabel/colors/font_color = Color(0.9, 0.95, 0.93, 1)
+TooltipLabel/font_sizes/font_size = 14
+TooltipPanel/styles/panel = SubResource("CompactTooltip")
 TrackTitle/base_type = &"Label"
 TrackTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 TrackTitle/font_sizes/font_size = 18
+TrackTitle/fonts/font = ExtResource("Bold")
+UnframedPanel/base_type = &"PanelContainer"
+UnframedPanel/styles/panel = SubResource("Unframed")
 VBoxContainer/constants/separation = 8
 Window/colors/title_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
-Window/styles/embedded_border = SubResource("StyleBoxFlat_68gvi")
+Window/styles/embedded_border = SubResource("Unframed")

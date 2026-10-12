@@ -4,25 +4,13 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PuzzleBar" type="PanelContainer" unique_id=223460734]
+size_flags_horizontal = 0
 theme = ExtResource("Theme")
+theme_type_variation = &"UnframedPanel"
 script = ExtResource("Script")
 
 [node name="Contents" type="VBoxContainer" parent="." unique_id=2057856055]
 layout_mode = 2
-
-[node name="Objective" type="Label" parent="Contents" unique_id=150683822]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Puzzle objective"
-autowrap_mode = 3
-
-[node name="Hint" type="Label" parent="Contents" unique_id=1071808669]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Guidance"
-autowrap_mode = 3
 
 [node name="Actions" type="HFlowContainer" parent="Contents" unique_id=1063786482]
 layout_mode = 2
@@ -37,45 +25,21 @@ text = "Authoring tools"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Test as Player"
+text = "Test as player"
 
 [node name="ReturnEditor" type="Button" parent="Contents/Actions" unique_id=2005915677]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Return to Editor"
+text = "Return to editor"
 
 [node name="Preserve" type="Button" parent="Contents/Actions" unique_id=261910764]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Preserve solution"
+text = "Save solution"
 
 [node name="Reference" type="Button" parent="Contents/Actions" unique_id=1571643929]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Load reference"
-
-[node name="Levels" type="Button" parent="Contents/Actions" unique_id=1536823087]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Level selection"
-
-[node name="Restart" type="Button" parent="Contents/Actions" unique_id=1140928208]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Restart puzzle"
-
-[node name="Next" type="Button" parent="Contents/Actions" unique_id=1622562231]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Next puzzle"
-
-[node name="Counters" type="Label" parent="Contents" unique_id=1475144196]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"AccentSmallLabel"
-autowrap_mode = 3
+text = "Load solution"

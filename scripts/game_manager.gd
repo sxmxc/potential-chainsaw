@@ -2,7 +2,7 @@ extends Node
 
 @onready var sandbox = $World
 var puzzle_session: PuzzleSession
-var authoring: Window
+var authoring: Control
 var puzzle_browser: Window
 var puzzle_bar: PanelContainer
 var completion: Window
@@ -40,7 +40,7 @@ func _ready() -> void:
 	puzzle_session.configure(self)
 	authoring = preload("res://scenes/ui/puzzle_authoring.tscn").instantiate()
 	puzzle_browser = preload("res://scenes/ui/puzzle_browser.tscn").instantiate()
-	add_child(authoring)
+	%HUD.get_node("Margin/Layout/Body").add_child(authoring)
 	add_child(puzzle_browser)
 	authoring.configure(puzzle_session)
 	puzzle_browser.configure(puzzle_session)
@@ -53,8 +53,10 @@ func _ready() -> void:
 	add_child(completion)
 	completion.configure(puzzle_session)
 	puzzle_session.mode_changed.connect(func():
+		if puzzle_session.mode != "editor": authoring.hide()
 		%HUD.get_node("%Toolbox").refresh()
-		%HUD.get_node("%FileToolbar").refresh())
+		%HUD.refresh())
+	%HUD.configure_session(puzzle_session)
 	new_track(false)
 	show_main_menu()
 	load_settings()
@@ -95,7 +97,7 @@ func handle_action(action: String) -> void:
 			elif not %HUD.visible: enter_sandbox()
 		"save":
 			if puzzle_session.mode == "editor": puzzle_session.save(); return
-			if puzzle_session.mode in ["campaign", "test"]: %HUD.show_status("Use Test / Reset to retry your solution"); return
+			if puzzle_session.mode in ["campaign", "test"]: return
 			if track_id.is_empty(): prompt_save(false)
 			else: save_current(); modal_closed()
 		"save_as":
@@ -103,8 +105,22 @@ func handle_action(action: String) -> void:
 			elif puzzle_session.mode == "sandbox": prompt_save(true)
 		"rename": prompt_save(false)
 		"load", "examples": open_modal(); %TrackBrowser.open(action=="examples")
-		"menu": open_modal(); menu_dialog.popup_centered()
-		"settings": open_modal(); settings_dialog.popup_centered()
+		"menu": open_modal(); menu_dialog.configure_mode(puzzle_session); menu_dialog.popup_centered()
+		"restart_puzzle": puzzle_session.player(puzzle_session.puzzle, puzzle_session.mode == "test"); modal_closed()
+		"levels": puzzle_browser.open()
+		"author": authoring.open()
+		"test_player": puzzle_session.test_player(); modal_closed()
+		"return_editor": puzzle_session.return_editor(); modal_closed()
+		"preserve_solution":
+			if puzzle_session.preserve_solution(): %HUD.show_status("Solution saved")
+			modal_closed()
+		"reference": puzzle_session.restore_reference(); modal_closed()
+		"settings":
+			# Preserve an active modal rather than opening a second exclusive Window.
+			for dialog in [puzzle_browser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog]:
+				if dialog and dialog.visible and dialog.exclusive: return
+			open_modal()
+			settings_dialog.popup_centered()
 		"new": guard(new_track)
 		"main": guard(show_main_menu)
 		"quit": guard(func():get_tree().quit())
@@ -134,7 +150,7 @@ func show_main_menu() -> void:
 	sandbox.build.refresh_grid()
 	%HUD.hide()
 	%MainMenu.show()
-	%MainMenu.get_node("%Sandbox").text="Continue building" if not sandbox.build.pieces.is_empty() else "Start building"
+	%MainMenu.get_node("%Sandbox").text="Continue building" if not sandbox.build.pieces.is_empty() else "Sandbox"
 	sandbox.hide()
 	%MainMenu.showcase.set_active(true)
 
@@ -196,7 +212,7 @@ func save_current() -> bool:
 	track_id=id
 	sandbox.build.dirty=false
 	update_name()
-	%HUD.show_status("Saved ‘%s’ · %d pieces" % [track_name,sandbox.build.pieces.size()])
+	%HUD.show_status("Track saved")
 	return true
 
 func run_after_save() -> void:
@@ -215,7 +231,7 @@ func open_modal() -> void:
 	if sandbox.build.ghost: sandbox.build.ghost.visible=false
 
 func modal_closed() -> void:
-	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser]:
+	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,puzzle_browser]:
 		if dialog and dialog.visible: return
 	sandbox.build.enabled=%HUD.visible and sandbox.simulation.state==SimulationManager.State.BUILD
 	sandbox.camera.enabled=%HUD.visible
@@ -239,7 +255,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("build_save_track",false,true): handle_action("save")
 	elif event.is_action_pressed("build_test_track",false,true):
 		if sandbox.simulation.state in [SimulationManager.State.RUNNING,SimulationManager.State.PAUSED]: sandbox.simulation.toggle_pause()
-		elif sandbox.camera.enabled: sandbox.simulation.start()
+		elif sandbox.camera.enabled:
+			if puzzle_session.mode=="editor": puzzle_session.test_player()
+			else: sandbox.simulation.start()
 
 func save_settings() -> void:
 	var config=ConfigFile.new()
@@ -264,6 +282,11 @@ func qa_test() -> bool:
 
 func qa_resolution(width: int, height: int) -> Dictionary:
 	get_window().size=Vector2i(width,height)
+	# Embedded play can pin the native window size. Set the actual render viewport
+	# as well so UI evidence uses the requested dimensions, without another game.
+	get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
+	get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_IGNORE
+	get_window().content_scale_size=Vector2i(width,height)
 	return {"window":str(get_window().size),"viewport":str(get_viewport().get_visible_rect().size)}
 
 func qa_choose(id: String) -> void:
@@ -274,7 +297,7 @@ func qa_select(index: int) -> void:
 
 func qa_showcase() -> Dictionary:
 	var showcase=%MainMenu.showcase
-	return {"active":showcase.active,"loops":showcase.loops,"state":showcase.sandbox.simulation.state,"elapsed":showcase.sandbox.simulation.elapsed,"camera_time":showcase.animation.current_animation_position,"separate_world":showcase.sandbox.get_world_3d()!=sandbox.get_world_3d(),"position":str(showcase.sandbox.simulation.marble.position) if showcase.sandbox.simulation.marble else "none"}
+	return {"active":showcase.active,"loops":showcase.loops,"state":showcase.world_manager.simulation.state,"elapsed":showcase.world_manager.simulation.elapsed,"camera_time":showcase.animation.current_animation_position,"separate_world":showcase.world_manager.get_world_3d()!=sandbox.get_world_3d(),"position":str(showcase.world_manager.simulation.marble.position) if showcase.world_manager.simulation.marble else "none"}
 
 func qa_screen(index: int) -> Dictionary:
 	var piece=sandbox.build.pieces[index]

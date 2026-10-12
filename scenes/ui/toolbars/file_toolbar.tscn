@@ -1,113 +1,198 @@
 [gd_scene format=3 uid="uid://cmd14munkq5gg"]
 
+[ext_resource type="Texture2D" uid="uid://dbkbhq1kyfp3y" path="res://assets/ui/icons/play.svg" id="4_fuglx"]
+[ext_resource type="Texture2D" uid="uid://bl2c8ubwrjdfl" path="res://assets/ui/icons/pause.svg" id="7_jiiw6"]
+[ext_resource type="Texture2D" uid="uid://ducsujldyyuh5" path="res://assets/ui/icons/follow.svg" id="FollowIcon"]
+[ext_resource type="Script" uid="uid://buakbbyctigdy" path="res://scripts/ui/icon_button.gd" id="IconScript"]
+[ext_resource type="Texture2D" uid="uid://b8e0wtmi6l0cv" path="res://assets/ui/icons/next_marble.svg" id="NextIcon"]
 [ext_resource type="Script" uid="uid://bc0luytdo7dg5" path="res://scripts/ui/file_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="FileToolbar" type="HBoxContainer" unique_id=21099837]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 72.0
 grow_horizontal = 2
+mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Identity" type="VBoxContainer" parent="." unique_id=1064597816]
+[node name="LeftIsland" type="PanelContainer" parent="." unique_id=156665232]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_type_variation = &"ContextPanel"
+
+[node name="Controls" type="HBoxContainer" parent="LeftIsland" unique_id=654497589]
+layout_mode = 2
+
+[node name="Identity" type="VBoxContainer" parent="LeftIsland/Controls" unique_id=1064597816]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
 size_flags_vertical = 4
 
-[node name="TrackName" type="Label" parent="Identity" unique_id=1959782406]
+[node name="Heading" type="HBoxContainer" parent="LeftIsland/Controls/Identity" unique_id=1577970611]
+layout_mode = 2
+
+[node name="TrackName" type="Label" parent="LeftIsland/Controls/Identity/Heading" unique_id=1959782406]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"TrackTitle"
 text = "Untitled track"
+clip_text = true
 text_overrun_behavior = 3
 
-[node name="SaveStatus" type="Label" parent="Identity" unique_id=1194057294]
+[node name="SaveStatus" type="Label" parent="LeftIsland/Controls/Identity" unique_id=1194057294]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "All changes saved"
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
 
-[node name="Save" type="Button" parent="." unique_id=1705256878]
+[node name="Save" type="Button" parent="LeftIsland/Controls" unique_id=1705256878]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-focus_mode = 0
+tooltip_text = "Save track Â· Ctrl+S"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Save"
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"save"
 
-[node name="SaveAs" type="Button" parent="." unique_id=1358927054]
+[node name="SaveAs" type="Button" parent="LeftIsland/Controls" unique_id=1358927054]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Save as"
 
-[node name="Undo" type="Button" parent="." unique_id=1339793646]
+[node name="Undo" type="Button" parent="LeftIsland/Controls" unique_id=1339793646]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-tooltip_text = "Undo · Ctrl+Z"
-focus_mode = 0
+tooltip_text = "Undo Â· Ctrl+Z"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"undo"
 
-[node name="Redo" type="Button" parent="." unique_id=1761474023]
+[node name="Redo" type="Button" parent="LeftIsland/Controls" unique_id=1761474023]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-tooltip_text = "Redo · Ctrl+Y / Ctrl+Shift+Z"
-focus_mode = 0
+tooltip_text = "Redo Â· Ctrl+Y / Ctrl+Shift+Z"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"redo"
 
-[node name="Test" type="Button" parent="." unique_id=392098965]
-unique_name_in_owner = true
+[node name="Spacer" type="Control" parent="." unique_id=1547557852]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"PrimaryButton"
-text = "Test track"
+size_flags_horizontal = 3
+mouse_filter = 2
 
-[node name="Pause" type="Button" parent="." unique_id=928829240]
+[node name="RightIsland" type="PanelContainer" parent="." unique_id=525268371]
+layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"ContextPanel"
+
+[node name="Controls" type="HBoxContainer" parent="RightIsland" unique_id=485909918]
+layout_mode = 2
+
+[node name="Progress" type="Label" parent="RightIsland/Controls" unique_id=868086827]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Pause"
+theme_type_variation = &"AccentSmallLabel"
 
-[node name="Reset" type="Button" parent="." unique_id=1288103880]
+[node name="Author" type="Button" parent="RightIsland/Controls" unique_id=1454071156]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-focus_mode = 0
-mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
-text = "Build"
+text = "Authoring tools"
 
-[node name="Menu" type="Button" parent="." unique_id=292477012]
+[node name="Test" type="Button" parent="RightIsland/Controls" unique_id=392098965]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 44)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-focus_mode = 0
+tooltip_text = "Test track Â· Space"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Menu"
+theme_type_variation = &"TestIconButton"
+icon = ExtResource("4_fuglx")
+script = ExtResource("IconScript")
+icon_name = &"play"
+
+[node name="Pause" type="Button" parent="RightIsland/Controls" unique_id=928829240]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Pause Â· Space"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"pause"
+
+[node name="Reset" type="Button" parent="RightIsland/Controls" unique_id=1288103880]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Return to build"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"stop"
+
+[node name="FollowMarble" type="Button" parent="RightIsland/Controls" unique_id=1401630332]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Follow marble"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+toggle_mode = true
+icon = ExtResource("FollowIcon")
+script = ExtResource("IconScript")
+
+[node name="NextMarble" type="Button" parent="RightIsland/Controls" unique_id=1112840945]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Next marble"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+icon = ExtResource("NextIcon")
+script = ExtResource("IconScript")
+
+[node name="Menu" type="Button" parent="RightIsland/Controls" unique_id=292477012]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Menu Â· Esc"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+icon = ExtResource("7_jiiw6")
+script = ExtResource("IconScript")
+icon_name = &"menu"

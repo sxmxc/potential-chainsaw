@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://2dbm0hnss0ga" path="res://scripts/ui/edit_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[ext_resource type="Script" path="res://scripts/ui/icon_button.gd" id="IconScript"]
+
 [node name="EditToolbar" type="HFlowContainer" unique_id=19964803]
 mouse_filter = 2
 theme = ExtResource("Theme")
@@ -18,7 +20,6 @@ text = "Selection"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Move"
@@ -26,26 +27,51 @@ text = "Move"
 [node name="Rotate" type="Button" parent="." unique_id=572319849]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Rotate the selection about its first piece · R"
-focus_mode = 0
+tooltip_text = "Rotate the selection about its first piece Â· R"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Rotate"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"rotate"
+
 
 [node name="Duplicate" type="Button" parent="." unique_id=1993783733]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Duplicate the assembly · Ctrl+D"
-focus_mode = 0
+tooltip_text = "Duplicate the assembly Â· Ctrl+D"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Duplicate"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"duplicate"
+
 
 [node name="Delete" type="Button" parent="." unique_id=160112303]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Delete selection · Del"
-focus_mode = 0
+tooltip_text = "Delete selection Â· Del"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"DangerButton"
-text = "Delete"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"delete"
+
+
+[node name="Lower" type="Button" parent="." unique_id=92215658]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Lower selection Â· PgDn"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"lower"
+
+
+[node name="Raise" type="Button" parent="." unique_id=188613552]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Raise selection Â· PgUp"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"raise"

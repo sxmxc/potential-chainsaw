@@ -10,6 +10,7 @@ func _ready() -> void:
 	%Sandbox.pressed.connect(func():action_requested.emit("sandbox"))
 	%Load.pressed.connect(func():action_requested.emit("load"))
 	%Examples.pressed.connect(func():action_requested.emit("examples"))
+	%PuzzleEditor.pressed.connect(func():action_requested.emit("puzzle_editor"))
 	%Settings.pressed.connect(func():action_requested.emit("settings"))
 	%Quit.pressed.connect(func():action_requested.emit("quit"))
 

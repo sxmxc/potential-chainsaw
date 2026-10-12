@@ -3,6 +3,10 @@ signal action_requested(action: String)
 var build: BuildManager
 var simulation: SimulationManager
 var library_open: bool = true
+var session: PuzzleSession
+var guidance_done: Dictionary = {}
+var notification_until: int = 0
+const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build=manager
 	simulation=simulator
@@ -13,10 +17,16 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%EditToolbar.configure(build)
 	%Toolbox.configure(build.catalog,build)
 	%Toolbox.piece_chosen.connect(build.choose)
+	%Toolbox.collapsed.connect(func():library_open=false; refresh())
+	%DismissGuidance.pressed.connect(func():
+		if session: guidance_done[session.puzzle.get("id","")]=true
+		refresh())
 	%Inspector.configure(build)
 	%SelectionOverlay.set_marquee(Rect2(),false)
 	%SelectionOverlay.build=build
-	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar,%EditToolbar,%Bottom])
+	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar.get_node("%Placement"),%EditToolbar,%Bottom])
+	for control in %BuildToolbar.get_node("%Common").get_children():
+		%SelectionOverlay.exclusions.append(control)
 	build.marquee_changed.connect(%SelectionOverlay.set_marquee)
 	%ExtensionPicker.configure(build)
 	build.status_changed.connect(show_status)
@@ -27,22 +37,75 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build.selection_changed.connect(func(_piece):refresh())
 	simulation.state_changed.connect(_state_changed)
 	refresh()
+func configure_session(value: PuzzleSession) -> void:
+	session=value
+	%FileToolbar.session=value
+	simulation.objective_progress.connect(func():%FileToolbar.refresh())
+	refresh()
+
+func _process(_delta: float) -> void:
+	if not build: return
+	if notification_until > 0 and Time.get_ticks_msec() >= notification_until:
+		notification_until=0
+		refresh()
+
 func refresh() -> void:
 	%FileToolbar.refresh()
 	%BuildToolbar.refresh(library_open)
 	%EditToolbar.refresh()
 	%Toolbox.visible=library_open and simulation.state==SimulationManager.State.BUILD
-	%Status.text="Drag pieces to move · Shift-click or draw a box to select together" if not build.chosen else "Placing "+build.chosen.display_name+" · point at a connector to attach"
-	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen
+	if notification_until==0:
+		%Status.text=""
+		if build.operation in ["move","duplicate"]:
+			%Status.text="Click to place · Esc cancels"
+		elif build.chosen:
+			%Status.text="Point at a connector to attach" if build.snapping else "Free placement · R rotates · Esc cancels"
+		%Status.theme_type_variation=&"MutedLabel"
+	%Bottom.visible=not %Status.text.is_empty()
+	if build.chosen: %Bottom.hide()
+	%Inspector.visible=build.selection.size()==1 and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
+	if session and session.game.authoring and session.game.authoring.visible: %Inspector.hide()
 	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()
 	else: %Toolbox.set_choice(build.chosen.id)
+	refresh_guidance()
+
+func refresh_guidance() -> void:
+	%Guidance.hide()
+	if not session or session.mode != "campaign" or session.puzzle.is_empty(): return
+	if simulation.state != SimulationManager.State.BUILD: return
+	var id: String = session.puzzle.id
+	if session.store.completed(id) or guidance_done.has(id): return
+	var copy: Dictionary=Copy.introduction(session.puzzle)
+	if copy.is_empty() and not session.store.chapter_for(session.puzzle).get("introduction",false): return
+	if build.dirty:
+		guidance_done[id]=true
+		return
+	var hint: String=copy.get("begin","")
+	if build.chosen: hint=copy.get("placing",hint)
+	elif build.selected and build.selected.definition.behavior==copy.get("behavior",""):
+		hint=copy.get("selected",hint)
+	if hint.is_empty():
+		var hints: Array=session.puzzle.get("hints",[])
+		if not hints.is_empty(): hint=str(hints[0])
+	%GuidanceText.text=hint
+	%Guidance.visible=not hint.is_empty()
+
 func show_status(text: String) -> void:
+	if build.chosen:
+		notification_until=0
+		%Bottom.hide()
+		%BuildToolbar.refresh_placement()
+		return
 	%Status.text=text
+	%Bottom.visible=not text.is_empty()
+	notification_until=Time.get_ticks_msec()+4000 if build.operation.is_empty() else 0
 	%Status.theme_type_variation=&"ErrorLabel" if text.begins_with("✕") else &"AccentLabel"
 func _state_changed(state: SimulationManager.State, message: String) -> void:
+	notification_until=0
 	refresh()
 	%Status.text=message
+	%Bottom.visible=not %Status.text.is_empty()
 	%Status.theme_type_variation=&"SuccessLabel" if state==SimulationManager.State.SUCCESS else (&"ErrorLabel" if state==SimulationManager.State.FAILED else &"AccentLabel")
 func set_track_name(value: String, saved: bool = false) -> void:
 	%FileToolbar.has_saved_track=saved

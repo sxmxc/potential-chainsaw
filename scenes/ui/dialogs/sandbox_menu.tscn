@@ -7,11 +7,16 @@
 title = "Sandbox menu"
 size = Vector2i(350, 465)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 unresizable = true
+borderless = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
+
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=1438031961]
 anchors_preset = 15
@@ -30,34 +35,93 @@ layout_mode = 2
 theme_type_variation = &"DialogTitle"
 text = "Sandbox menu"
 
+[node name="Resume" type="Button" parent="Surface/Contents" unique_id=1106932896]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PrimaryButton"
+text = "Resume"
+
+[node name="Restart" type="Button" parent="Surface/Contents" unique_id=971778576]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Restart puzzle"
+
+[node name="Levels" type="Button" parent="Surface/Contents" unique_id=905573888]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Level select"
+
+[node name="Author" type="Button" parent="Surface/Contents" unique_id=553369340]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Authoring tools"
+
+[node name="SaveDraft" type="Button" parent="Surface/Contents" unique_id=876304218]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Save draft"
+
+[node name="TestPlayer" type="Button" parent="Surface/Contents" unique_id=1147373248]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Test as player"
+
+[node name="ReturnEditor" type="Button" parent="Surface/Contents" unique_id=1303066240]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Return to editor"
+
+[node name="Preserve" type="Button" parent="Surface/Contents" unique_id=751762462]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Save solution"
+
+[node name="Reference" type="Button" parent="Surface/Contents" unique_id=1272298558]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Load solution"
+
 [node name="New" type="Button" parent="Surface/Contents" unique_id=1474127607]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
-text = "New empty track"
+text = "New track"
 
 [node name="Rename" type="Button" parent="Surface/Contents" unique_id=1621951666]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
-text = "Rename current track"
+text = "Rename track"
 
 [node name="Load" type="Button" parent="Surface/Contents" unique_id=1255335136]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
-text = "Load a track"
+text = "Saved tracks"
 
 [node name="Examples" type="Button" parent="Surface/Contents" unique_id=2008493860]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Example tracks"
@@ -65,15 +129,13 @@ text = "Example tracks"
 [node name="Settings" type="Button" parent="Surface/Contents" unique_id=235832359]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
-text = "Settings & controls"
+text = "Settings"
 
 [node name="Main" type="Button" parent="Surface/Contents" unique_id=485842196]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Main menu"
@@ -81,15 +143,6 @@ text = "Main menu"
 [node name="Quit" type="Button" parent="Surface/Contents" unique_id=704808486]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Quit"
-
-[node name="Resume" type="Button" parent="Surface/Contents" unique_id=1106932896]
-unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"PrimaryButton"
-text = "Resume building"

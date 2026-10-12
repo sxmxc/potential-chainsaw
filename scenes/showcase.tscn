@@ -1,7 +1,37 @@
-[gd_scene format=3 uid="uid://cs82gsc8c1xb6"]
+[gd_scene format=3 uid="uid://0pofwpa56dpl"]
 
+[ext_resource type="Script" uid="uid://fkkb1prwl36n" path="res://scripts/camera/menu_camera_director.gd" id="Director"]
+[ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="Lens"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
 [ext_resource type="Script" uid="uid://nl08es1dojw8" path="res://scripts/showcase.gd" id="Script"]
 [ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/world.tscn" id="Track"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
+
+[sub_resource type="Resource" id="Resource_xq7gy"]
+resource_local_to_scene = true
+script = ExtResource("Tween")
+duration = 0.85
+transition = 1
+
+[sub_resource type="Resource" id="Resource_ttlna"]
+resource_local_to_scene = true
+script = ExtResource("Lens")
+fov = 48.0
+far = 300.0
+
+[sub_resource type="Resource" id="Resource_dxudb"]
+resource_local_to_scene = true
+script = ExtResource("Tween")
+duration = 0.65
+transition = 1
+
+[sub_resource type="Resource" id="Resource_lgn12"]
+resource_local_to_scene = true
+script = ExtResource("Lens")
+h_offset = -0.55
+fov = 65.0
+near = 0.04
+far = 300.0
 
 [sub_resource type="Animation" id="Reset"]
 length = 0.001
@@ -15,7 +45,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(-2.4, 2.2, 4.4)]
+"values": [Vector3(2.5, 3, -0.5)]
 }
 
 [sub_resource type="Animation" id="Cinematic"]
@@ -32,7 +62,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 9, 18, 27, 36),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(-2.4, 2.2, 4.4), Vector3(-2.8, 2.4, 4.1), Vector3(-2.4, 2.2, 4.4), Vector3(-2, 2, 4.7), Vector3(-2.4, 2.2, 4.4)]
+"values": [Vector3(2.5, 3, -0.5), Vector3(2.5, 3, -0.5), Vector3(2.5, 3, -0.5), Vector3(2.5, 3, -0.5), Vector3(2.5, 3, -0.5)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -44,7 +74,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 9, 18, 27, 36),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.62, 0.94, 0.62, 0.3, 0.62]
+"values": [0.48, 0.56, 0.48, 0.4, 0.48]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -56,7 +86,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 9, 18, 27, 36),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.58, 0.65, 0.58, 0.51, 0.58]
+"values": [0.65, 0.65, 0.65, 0.65, 0.65]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -68,7 +98,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 9, 18, 27, 36),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [18.0, 17.0, 18.0, 19.0, 18.0]
+"values": [34.0, 34.0, 34.0, 34.0, 34.0]
 }
 
 [sub_resource type="AnimationLibrary" id="Library"]
@@ -76,6 +106,19 @@ _data = {
 &"RESET": SubResource("Reset"),
 &"showcase": SubResource("Cinematic")
 }
+
+[sub_resource type="Resource" id="DetailTransition"]
+resource_local_to_scene = true
+script = ExtResource("Tween")
+duration = 1.4
+transition = 1
+
+[sub_resource type="Resource" id="DetailLens"]
+resource_local_to_scene = true
+script = ExtResource("Lens")
+h_offset = -3.5
+fov = 48.0
+far = 300.0
 
 [node name="Showcase" type="SubViewportContainer" unique_id=1931018989]
 anchors_preset = 15
@@ -97,10 +140,51 @@ render_target_update_mode = 4
 [node name="Track" parent="World" unique_id=1565659221 instance=ExtResource("Track")]
 
 [node name="Camera" parent="World/Track" index="4" unique_id=1687008952]
-h_offset = -3.0
 automatic_composition = false
+
+[node name="PhantomCameraHost" parent="World/Track/Camera" index="0" unique_id=384233019]
+host_layers = 2
+
+[node name="FreeView" parent="World/Track" index="7" unique_id=1419629802]
+tween_resource = SubResource("Resource_xq7gy")
+host_layers = 2
+camera_3d_resource = SubResource("Resource_ttlna")
+
+[node name="SimulationCamera" parent="World/Track" index="8" unique_id=655534682]
+player_selection = false
+
+[node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
+tween_resource = SubResource("Resource_dxudb")
+host_layers = 2
+camera_3d_resource = SubResource("Resource_lgn12")
+follow_distance = 2.8
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+align_rotation_with_view = Callable()
+
+[node name="ChaseB" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
+tween_resource = SubResource("Resource_dxudb")
+host_layers = 2
+camera_3d_resource = SubResource("Resource_lgn12")
+follow_distance = 2.8
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+align_rotation_with_view = Callable()
 
 [node name="CameraMotion" type="AnimationPlayer" parent="World" unique_id=800896303]
 libraries/ = SubResource("Library")
 
+[node name="CameraDirector" type="Node3D" parent="World" unique_id=1277881662]
+script = ExtResource("Director")
+
+[node name="Detail" type="Node3D" parent="World/CameraDirector" unique_id=137297726]
+physics_interpolation_mode = 2
+script = ExtResource("PCam")
+tween_resource = SubResource("DetailTransition")
+host_layers = 2
+camera_3d_resource = SubResource("DetailLens")
+
 [editable path="World/Track"]
+[editable path="World/Track/SimulationCamera/MarbleChase"]

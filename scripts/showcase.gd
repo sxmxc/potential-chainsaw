@@ -2,16 +2,19 @@ extends SubViewportContainer
 
 @onready var world_manager: WorldManager =$World/Track
 @onready var animation=$World/CameraMotion
+@onready var director=$World/CameraDirector
 var active: bool = false
-var restart_delay: float = 0.0
 var loops: int = 0
+const MACHINE_PATH = "res://resources/menu_machine.json"
 
 func _ready() -> void:
 	var catalog=PieceCatalog.new()
 	var serializer=TrackSerializer.new(catalog)
 	world_manager.configure(catalog)
-	var data=serializer.decode(FileAccess.get_file_as_string("res://resources/examples/spiral-crossing.json"))
+	var data=serializer.decode(FileAccess.get_file_as_string(MACHINE_PATH))
 	world_manager.load_construction(data.pieces)
+	# No completion objective: this is a closed physical circulation machine.
+	world_manager.simulation.puzzle={"objectives":[],"time_limit":3600}
 	world_manager.build.enabled=false
 	world_manager.build.grid_visible=false
 	world_manager.build.refresh_grid()
@@ -25,7 +28,9 @@ func set_active(value: bool) -> void:
 	if active:
 		animation.play("showcase")
 		start_roll()
+		director.set_active(true)
 	else:
+		director.set_active(false)
 		animation.pause()
 		world_manager.simulation.reset()
 		world_manager.build.enabled=false
@@ -34,11 +39,9 @@ func set_active(value: bool) -> void:
 func start_roll() -> void:
 	world_manager.simulation.start()
 	world_manager.build.enabled=false
-	restart_delay=0
 	loops+=1
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not active: return
 	if world_manager.simulation.state in [SimulationManager.State.SUCCESS,SimulationManager.State.FAILED]:
-		restart_delay+=delta
-		if restart_delay>1.8: start_roll()
+		start_roll()

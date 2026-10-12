@@ -14,7 +14,7 @@ func refresh(piece: TrackPiece) -> void:
 	for child in get_children(): remove_child(child); child.queue_free()
 	if not piece or build.selection.size() != 1 or piece.supported_events().is_empty(): return
 	var label = Label.new()
-	label.text = "EVENT → ACTION"
+	label.text = "When → Then"
 	label.theme_type_variation = "AccentSmallLabel"
 	add_child(label)
 	event_choice = OptionButton.new()

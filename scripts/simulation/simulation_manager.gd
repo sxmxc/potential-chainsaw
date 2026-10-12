@@ -30,10 +30,10 @@ func start() -> bool:
 		if piece.definition.behavior == "start": starts.append(piece)
 		if piece.definition.behavior == "finish": finishes.append(piece)
 	if starts.is_empty() or (puzzle.is_empty() and starts.size()!=1):
-		state_changed.emit(State.BUILD,"Place exactly one Marble release from Start & finish")
+		state_changed.emit(State.BUILD,"Add one marble release to test the track.")
 		return false
 	if finishes.is_empty() and (puzzle.is_empty() or puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver")):
-		state_changed.emit(State.BUILD,"Place a Finish catcher from Start & finish")
+		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
 		return false
 	build.cancel()
 	build.select(null)
@@ -74,7 +74,7 @@ func start() -> bool:
 	links.bind(build.pieces, func(): return state == State.RUNNING)
 	elapsed = 0
 	state = State.RUNNING
-	state_changed.emit(state,"Marble released Â· test in progress")
+	state_changed.emit(state,"Testing")
 	return true
 
 func spawn_marble(release: Dictionary) -> void:
@@ -105,13 +105,13 @@ func _physics_process(delta: float) -> void:
 	for body in marbles:
 		if body.get_meta("delivered", false): continue
 		if body.position.y < -4 or abs(body.position.x) > build.snap.boundary + 4 or abs(body.position.z) > build.snap.boundary + 4:
-			_end(State.FAILED, "Off the track · reset to try again")
+			_end(State.FAILED, "Marble lost · return to building or roll again")
 			return
 	if not puzzle.is_empty() and objectives.satisfied(elapsed):
-		_end(State.SUCCESS, "Puzzle complete in %.1f seconds!" % elapsed)
+		_end(State.SUCCESS, "Puzzle complete")
 		arrived.emit()
 	elif elapsed > float(puzzle.get("time_limit", 90)):
-		_end(State.FAILED, "Time limit reached · reset to try again")
+		_end(State.FAILED, "Time ran out · return to building or roll again")
 
 func _on_finish(body: Node3D, collector: String) -> void:
 	if body not in marbles or state != State.RUNNING or body.get_meta("delivered", false): return
@@ -123,7 +123,7 @@ func _on_finish(body: Node3D, collector: String) -> void:
 	body.set_deferred("collision_mask", 0)
 	body.hide()
 	if puzzle.is_empty():
-		_end(State.SUCCESS, "Destination reached in %.1f seconds!" % elapsed)
+		_end(State.SUCCESS, "Finish reached in %.1f seconds" % elapsed)
 		arrived.emit()
 
 func _end(result: State, message: String) -> void:
@@ -154,7 +154,7 @@ func toggle_pause() -> void:
 		if piece.mechanism_component: piece.mechanism_component.active = state == State.RUNNING
 		if piece.rotor_component: piece.rotor_component.active = state == State.RUNNING and piece.mechanism_enabled
 		if piece.elevator_component: piece.elevator_component.active = state == State.RUNNING and piece.mechanism_enabled
-	state_changed.emit(state, "Simulation paused" if state == State.PAUSED else "Simulation resumed")
+	state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
 
 func reset() -> void:
 	if build:
@@ -180,6 +180,6 @@ func reset() -> void:
 	state = State.BUILD
 	elapsed = 0
 	objectives.reset(puzzle.get("objectives", []))
-	state_changed.emit(state,"Build mode Â· ready to construct")
+	state_changed.emit(state,"")
 
 

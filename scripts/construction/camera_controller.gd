@@ -3,6 +3,8 @@ extends Camera3D
 
 @export var composition_offset: Vector2 = Vector2.ZERO
 @export var automatic_composition: bool = true
+@onready var free_view: PhantomCamera3D = get_node_or_null("../FreeView")
+var chase_active: bool = false
 
 var focus_point: Vector3 = Vector3(0,1,0)
 var target_focus: Vector3 = Vector3(0,1,0)
@@ -21,9 +23,12 @@ func _ready() -> void:
 	near = 0.05
 	far = 300
 	fov = 48
+	if free_view and not automatic_composition:
+		free_view.camera_3d_resource.h_offset = h_offset
 	_update(1)
 
 func _process(delta: float) -> void:
+	if chase_active: return
 	if enabled and not ConstructionInput.typing(get_viewport()) and not Input.is_key_pressed(KEY_CTRL):
 		var direction = Vector3.ZERO
 		if Input.is_physical_key_pressed(KEY_W): direction -= global_basis.z
@@ -39,16 +44,26 @@ func _update(weight: float) -> void:
 	yaw = lerp(yaw,target_yaw,weight)
 	pitch = lerp(pitch,target_pitch,weight)
 	distance = lerp(distance,target_distance,weight)
-	position = focus_point + Vector3(sin(yaw)*cos(pitch),sin(pitch),cos(yaw)*cos(pitch))*distance
-	look_at(focus_point,Vector3.UP)
+	var pose = Transform3D(Basis.IDENTITY, focus_point + Vector3(sin(yaw)*cos(pitch),sin(pitch),cos(yaw)*cos(pitch))*distance)
+	pose = pose.looking_at(focus_point, Vector3.UP)
+	if free_view:
+		free_view.global_transform = pose
+	else:
+		transform = pose
 	if automatic_composition:
 		var viewport_size=get_viewport().get_visible_rect().size
-		var span=2.0*distance*tan(deg_to_rad(fov*0.5))
-		h_offset=-span*composition_offset.x*viewport_size.x/maxf(1,viewport_size.y)
-		v_offset=span*composition_offset.y
+		var span=2.0*distance*tan(deg_to_rad(48.0*0.5))
+		var horizontal=-span*composition_offset.x*viewport_size.x/maxf(1,viewport_size.y)
+		var vertical=span*composition_offset.y
+		if free_view:
+			free_view.camera_3d_resource.h_offset=horizontal
+			free_view.camera_3d_resource.v_offset=vertical
+		else:
+			h_offset=horizontal
+			v_offset=vertical
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not enabled or ConstructionInput.typing(get_viewport()): return
+	if not enabled or chase_active or ConstructionInput.typing(get_viewport()): return
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_RIGHT,MOUSE_BUTTON_MIDDLE]:
 			drag_button = event.button_index if event.pressed else 0

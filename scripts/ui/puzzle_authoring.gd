@@ -1,4 +1,4 @@
-extends Window
+extends PanelContainer
 
 var session: PuzzleSession
 var object_ids: Array[String] = []
@@ -9,7 +9,13 @@ var refreshing: bool = false
 
 func configure(puzzle_session: PuzzleSession) -> void:
 	session = puzzle_session
-	close_requested.connect(hide)
+	%Close.pressed.connect(func(): hide(); session.game.get_node("%HUD").refresh())
+	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
+	%Tabs.tab_changed.connect(func(index):
+		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
+		if index==6: refresh_publish())
+	for button in %Navigation.get_children(): button.pressed.connect(func(): %Tabs.current_tab=int(button.get_meta("page")))
+	session.mode_changed.connect(func(): if visible: refresh_publish())
 	%ChapterId.text_changed.connect(select_chapter)
 	%ChapterName.text_changed.connect(func(_text): update_chapter())
 	%ChapterOrder.value_changed.connect(func(_value): update_chapter())
@@ -81,7 +87,8 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%TestPlayer.pressed.connect(func(): hide(); session.test_player())
 	%Validate.pressed.connect(validate_puzzle)
 	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Published to Campaign")
-	%Export.pressed.connect(func(): %ExportDialog.popup_centered(Vector2i(700, 500)))
+	%Export.pressed.connect(func(): session.game.open_modal(); %ExportDialog.popup_centered(Vector2i(700, 500)))
+	%ExportDialog.canceled.connect(session.game.modal_closed)
 	%ExportDialog.file_selected.connect(export_package)
 	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
 	%OpenPuzzle.pressed.connect(func(): session.game.puzzle_browser.open(true))
@@ -125,7 +132,28 @@ func open() -> void:
 		%Prerequisites.set_item_metadata(index, level.id)
 		if level.id in data.get("prerequisites", []): %Prerequisites.select(index, false)
 	refreshing = false
-	popup_centered(Vector2i(560, 640))
+	show()
+	refresh_publish()
+	session.game.get_node("%HUD").refresh()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("ui_cancel"):
+		hide()
+		session.game.get_node("%HUD").refresh()
+		get_viewport().set_input_as_handled()
+
+func refresh_publish() -> void:
+	if not session or session.mode!="editor": return
+	var data: Dictionary=session.capture()
+	var validation: Dictionary=data.get("validation",{})
+	var tested: bool=validation.get("physics_success",false)
+	var solved: bool=not data.get("solution",[]).is_empty()
+	var current: bool=validation.get("fingerprint","")==session.store.fingerprint(data)
+	%TestStatus.text=("✓" if tested else "○")+" Player test completed"
+	%SolutionStatus.text=("✓" if solved else "○")+" Solution saved"
+	%RevisionStatus.text=("✓" if current else "○")+" Current draft verified"
+	%Publish.disabled=not (tested and solved and current) or not session.store.validate(data).is_empty() or not MechanismLinks.validate(session.game.sandbox.build.pieces).is_empty()
+	%Publish.tooltip_text="Complete a player test and validate this draft to publish." if %Publish.disabled else "Publish this verified puzzle"
 
 func show_chapter(chapter: Dictionary) -> void:
 	%ChapterId.text = chapter.get("id", "")
@@ -322,8 +350,10 @@ func validate_puzzle() -> void:
 	errors.append_array(MechanismLinks.validate(session.game.sandbox.build.pieces))
 	if data.get("validation", {}).get("fingerprint", "") != session.store.fingerprint(data): errors.append("This revision needs a successful Test as Player solution")
 	%Validation.text = "Ready to publish" if errors.is_empty() else "\n".join(errors)
+	refresh_publish()
 
 func export_package(path: String) -> void:
+	session.game.modal_closed()
 	var zip = ZIPPacker.new()
 	if zip.open(path) != OK: %Validation.text = "Could not open export file"; return
 	var count = 0

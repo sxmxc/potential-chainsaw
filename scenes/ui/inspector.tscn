@@ -6,12 +6,13 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(280, 0)
 theme = ExtResource("Theme")
 theme_type_variation = &"ContextPanel"
 script = ExtResource("Script")
 
 [node name="Scroll" type="ScrollContainer" parent="." unique_id=1364269164]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 horizontal_scroll_mode = 0
@@ -22,6 +23,7 @@ size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="Scroll/Contents" unique_id=58178029]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"AccentSmallLabel"
 text = "YOUR SELECTION"
@@ -47,7 +49,6 @@ layout_mode = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Move"
@@ -56,7 +57,6 @@ text = "Move"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Rotate"
@@ -65,7 +65,6 @@ text = "Rotate"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Duplicate"
@@ -75,7 +74,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Lower selection 0.5 m; hold Shift for 0.125 m"
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Lower"
@@ -85,7 +83,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Raise selection 0.5 m; hold Shift for 0.125 m"
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Raise"
@@ -94,7 +91,6 @@ text = "Raise"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ToolbarButton"
 text = "Delete"
@@ -103,7 +99,7 @@ text = "Delete"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-text = "Marble launch speed"
+text = "Launch speed"
 
 [node name="Speed" type="SpinBox" parent="Scroll/Contents" unique_id=786022461]
 unique_name_in_owner = true
@@ -111,6 +107,7 @@ layout_mode = 2
 max_value = 6.0
 step = 0.1
 value = 1.4
+suffix = "m/s"
 
 [node name="ElevatorSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=987620442]
 unique_name_in_owner = true
@@ -193,6 +190,12 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("MechanismSettings")
+
+[node name="LinksToggle" type="Button" parent="Scroll/Contents" unique_id=414533236]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Mechanism links ▾"
 
 [node name="LinkSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=792289605]
 unique_name_in_owner = true

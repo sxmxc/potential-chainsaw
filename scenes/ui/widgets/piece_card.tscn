@@ -1,19 +1,20 @@
 [gd_scene format=3 uid="uid://d17ymu65bfyc2"]
 
 [ext_resource type="Script" uid="uid://ccbla0lpm2i3o" path="res://scripts/ui/piece_card.gd" id="Script"]
+[ext_resource type="Texture2D" uid="uid://bfmx2ioef2t3r" path="res://assets/ui/icons/complete.svg" id="Selected"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PieceCard" type="Button" unique_id=1331294216]
-custom_minimum_size = Vector2(130, 130)
 offset_right = 105.0
 offset_bottom = 122.0
-size_flags_horizontal = 3
-focus_mode = 0
+size_flags_horizontal = 0
 mouse_default_cursor_shape = 2
 theme = ExtResource("Theme")
 theme_type_variation = &"ToolboxButton"
 toggle_mode = true
 script = ExtResource("Script")
+custom_minimum_size = Vector2(132, 160)
+
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=2027628211]
 layout_mode = 0
@@ -31,15 +32,15 @@ theme_type_variation = &"CompactVBox"
 
 [node name="Thumbnail" type="TextureRect" parent="Margin/Contents" unique_id=1084310799]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(90, 90)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+custom_minimum_size = Vector2(112, 100)
+
 
 [node name="PieceName" type="Label" parent="Margin/Contents" unique_id=261569428]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(94, 32)
 layout_mode = 2
 theme_type_variation = &"CardLabel"
 text = "Track piece"
@@ -47,3 +48,30 @@ horizontal_alignment = 1
 autowrap_mode = 3
 text_overrun_behavior = 3
 max_lines_visible = 2
+custom_minimum_size = Vector2(112, 44)
+
+
+[node name="SelectedMark" type="TextureRect" parent="." unique_id=255669556]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 28.0
+mouse_filter = 2
+texture = ExtResource("Selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 52.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_type_variation = &"AccentSmallLabel"

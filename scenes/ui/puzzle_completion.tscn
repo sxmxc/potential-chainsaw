@@ -4,11 +4,15 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PuzzleCompletion" type="Window" unique_id=1581572229]
-title = "Machine complete"
+title = "Puzzle complete"
 size = Vector2i(480, 360)
 visible = false
+borderless = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
+
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=1593453148]
 unique_name_in_owner = true
@@ -21,24 +25,28 @@ theme_type_variation = &"ContextPanel"
 layout_mode = 2
 
 [node name="Title" type="Label" parent="Surface/Contents" unique_id=966304359]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"AccentLabel"
-text = "MACHINE COMPLETE"
+text = "Puzzle complete"
 
 [node name="Name" type="Label" parent="Surface/Contents" unique_id=1462470442]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_type_variation = &"InspectorTitle"
 autowrap_mode = 3
 
 [node name="Result" type="Label" parent="Surface/Contents" unique_id=1824852314]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
 
 [node name="Awards" type="Label" parent="Surface/Contents" unique_id=1368142062]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_type_variation = &"SuccessLabel"
 autowrap_mode = 3
@@ -53,22 +61,22 @@ text = "Next puzzle"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
-text = "Preserve validated solution"
+text = "Save solution"
 
 [node name="ReturnEditor" type="Button" parent="Surface/Contents" unique_id=965861855]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Return to Puzzle Editor"
+text = "Return to editor"
 
 [node name="LevelSelection" type="Button" parent="Surface/Contents" unique_id=799094580]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Level selection"
+text = "Level select"
 
 [node name="KeepBuilding" type="Button" parent="Surface/Contents" unique_id=1234625956]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
-text = "Inspect the machine"
+text = "Keep building"

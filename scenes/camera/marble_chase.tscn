@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/camera/marble_chase.gd" id="Rig"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="Lens"]
+
+[sub_resource type="Resource" id="Transition"]
+resource_local_to_scene = true
+script = ExtResource("Tween")
+duration = 0.65
+transition = 1
+ease = 2
+
+[sub_resource type="Resource" id="Lens"]
+resource_local_to_scene = true
+script = ExtResource("Lens")
+fov = 65.0
+near = 0.04
+far = 300.0
+
+[sub_resource type="SphereShape3D" id="Clearance"]
+radius = 0.12
+
+[node name="MarbleChase" type="Node3D"]
+physics_interpolation_mode = 2
+script = ExtResource("Rig")
+
+; StaticBody targets supply the RID expected by the addon's spring-arm exclusion.
+; No shapes or collision layers: these targets have no effect on simulation.
+[node name="TargetA" type="StaticBody3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="TargetB" type="StaticBody3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="ChaseA" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
+script = ExtResource("PCam")
+priority = 0
+follow_mode = 6
+follow_target = NodePath("../TargetA")
+spring_length = 2.8
+collision_mask = 1
+shape = SubResource("Clearance")
+margin = 0.08
+tween_resource = SubResource("Transition")
+camera_3d_resource = SubResource("Lens")
+
+[node name="ChaseB" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
+script = ExtResource("PCam")
+priority = 0
+follow_mode = 6
+follow_target = NodePath("../TargetB")
+spring_length = 2.8
+collision_mask = 1
+shape = SubResource("Clearance")
+margin = 0.08
+tween_resource = SubResource("Transition")
+camera_3d_resource = SubResource("Lens")

@@ -1,10 +1,17 @@
 extends PanelContainer
 var build: BuildManager
 var refreshing: bool = false
+func has_properties() -> bool:
+	if not build.selected: return false
+	var piece: TrackPiece=build.selected
+	return piece.definition.behavior in ["start","elevator","resizable_support"] or not piece.supported_events().is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(piece.definition.behavior,{}).is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").FLAGS.get(piece.definition.behavior,{}).is_empty()
 func configure(manager: BuildManager) -> void:
 	build=manager
 	%MechanismSettings.configure(manager)
 	%LinkSettings.configure(manager)
+	%LinksToggle.pressed.connect(func(): %LinkSettings.visible=not %LinkSettings.visible; fit_content.call_deferred())
+	get_viewport().size_changed.connect(fit_content)
+	%Scroll.get_child(0).minimum_size_changed.connect(func():fit_content.call_deferred())
 	%Move.pressed.connect(build.move_selected)
 	%Rotate.pressed.connect(build.rotate_piece)
 	%Duplicate.pressed.connect(func():build.move_selected(true))
@@ -28,11 +35,9 @@ func refresh(piece: TrackPiece) -> void:
 	refreshing=true
 	var count=build.selection.size()
 	%PieceName.text=piece.definition.display_name if count==1 else "%d-piece assembly" % count
-	%Details.text=piece.definition.category+"\nElevation %s m" % ConstructionInput.height_text(piece.position.y) if count==1 else "Move, rotate or duplicate together.\nRelative heights stay connected."
-	%Description.text="Drag to move · double-click to select connected tracks" if count==1 else "First selected piece is the rotation anchor."
-	%Description.visible = count != 1 or piece.mechanism_component == null
-	if count==1 and piece.support_component: %Description.text="Height changes extend the middle. The bottom stays anchored."
-	elif count==1 and piece.elevator_component: %Description.text="Connect the lower input and upper output, then Test track to run the buckets."
+	%Details.text="Height: %s m" % ConstructionInput.height_text(piece.position.y) if count==1 else "Heights stay together"
+	%Description.text="Rotates around the first selected piece."
+	%Description.visible = count > 1
 	%Speed.visible=count==1 and piece.definition.behavior=="start"
 	%SpeedLabel.visible=%Speed.visible
 	%Speed.value=piece.configuration.get("release_speed",1.4)
@@ -42,7 +47,21 @@ func refresh(piece: TrackPiece) -> void:
 	%SupportSettings.visible=count==1 and piece.definition.behavior=="resizable_support"
 	%SupportHeight.value=piece.configuration.get("support_height",2.0)
 	%SupportTop.select(1 if piece.configuration.get("support_double_top",false) else 0)
+	%Details.hide()
+	%Description.hide()
+	%Lower.hide()
+	%Raise.hide()
+	var editable: bool=not build.rules or build.rules.permits(piece.instance_id,"configure")
+	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
+	%SupportTop.disabled=not editable
+	%LinkSettings.hide()
+	%LinksToggle.visible=count==1 and not piece.supported_events().is_empty()
 	refreshing=false
+	fit_content.call_deferred()
+
+func fit_content() -> void:
+	if not is_inside_tree(): return
+	%Scroll.custom_minimum_size.y=minf(%Scroll.get_child(0).get_combined_minimum_size().y,get_viewport().get_visible_rect().size.y*0.65)
 
 func change_elevator(key: String, value: float, label: String) -> void:
 	if refreshing or not build.selected or not build.enabled: return

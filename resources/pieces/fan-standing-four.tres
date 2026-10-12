@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("3_ktuve")
 id = &"fan-standing-four"
-display_name = "Fan Standing Four"
+display_name = "Standing fan (4 blades)"
 category = "Mechanisms"
 description = "Mechanisms · 1.00 × 0.40 m footprint · 1.00 m tall. Rotating obstacle; operates during simulation. Place on a channel or as a freestanding obstacle."
 model = ExtResource("2_khtix")

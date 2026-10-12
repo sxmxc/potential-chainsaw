@@ -1,0 +1,9 @@
+[gd_resource type="FontVariation" format=3 uid="uid://di626pcgos8u2"]
+
+[ext_resource type="FontFile" uid="uid://bvbcoq1fnfbr5" path="res://assets/font/nunito-sans/NunitoSans.ttf" id="Font"]
+
+[resource]
+base_font = ExtResource("Font")
+variation_opentype = {
+2003265652: 600.0
+}

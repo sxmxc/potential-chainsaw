@@ -1,89 +1,145 @@
 [gd_scene format=3 uid="uid://bxo0prqjwsv8i"]
 
+[ext_resource type="Texture2D" uid="uid://c51nm6qenlph7" path="res://assets/ui/icons/rotate.svg" id="3_2yj2p"]
+[ext_resource type="Script" uid="uid://buakbbyctigdy" path="res://scripts/ui/icon_button.gd" id="IconScript"]
 [ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="BuildToolbar" type="HFlowContainer" unique_id=1199303520]
+[node name="BuildToolbar" type="VBoxContainer" unique_id=1199303520]
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Library" type="Button" parent="." unique_id=114523809]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 0)
-layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-toggle_mode = true
-text = "Pieces"
-
-[node name="Select" type="Button" parent="." unique_id=960823933]
+[node name="Placement" type="VBoxContainer" parent="." unique_id=547327049]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Cancel"
+size_flags_horizontal = 0
+mouse_filter = 2
 
-[node name="Grid" type="Button" parent="." unique_id=2052622115]
-unique_name_in_owner = true
+[node name="Identity" type="HBoxContainer" parent="Placement" unique_id=1526319328]
 layout_mode = 2
-tooltip_text = "Construction grid · G"
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-toggle_mode = true
+mouse_filter = 2
 
-[node name="Snap" type="Button" parent="." unique_id=1382665893]
+[node name="ActivePiece" type="Label" parent="Placement/Identity" unique_id=106590146]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
-tooltip_text = "Magnetic connectors · C"
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-toggle_mode = true
+theme_type_variation = &"CardLabel"
+vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="Lower" type="Button" parent="." unique_id=258019263]
+[node name="PlacementRotate" type="Button" parent="Placement/Identity" unique_id=1269752946]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-tooltip_text = "Lower 0.5 m · PgDn · hold Shift for 0.125 m"
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "−"
+tooltip_text = "Rotate the active piece Â· R"
+theme_type_variation = &"IconButton"
+icon = ExtResource("3_2yj2p")
+script = ExtResource("IconScript")
+icon_name = &"rotate"
 
-[node name="Height" type="Label" parent="." unique_id=628266016]
+[node name="Select" type="Button" parent="Placement/Identity" unique_id=1415765506]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Cancel placement Â· Esc or right-click"
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"cancel"
+
+[node name="PlacementState" type="Label" parent="Placement" unique_id=1359548815]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-text = "Level 0 m"
+autowrap_mode = 3
 
-[node name="Raise" type="Button" parent="." unique_id=186077859]
+[node name="Common" type="HFlowContainer" parent="." unique_id=1162364347]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Raise 0.5 m · PgUp · hold Shift for 0.125 m"
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "+"
+mouse_filter = 2
 
-[node name="Ground" type="Button" parent="." unique_id=2014397895]
+[node name="Library" type="Button" parent="Common" unique_id=114523809]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-tooltip_text = "Reset the free-placement plane to ground level (0 m)"
-focus_mode = 0
+tooltip_text = "Collapse pieces"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Ground"
+theme_type_variation = &"IconButton"
+toggle_mode = true
+script = ExtResource("IconScript")
+icon_name = &"pieces"
 
-[node name="FrameAll" type="Button" parent="." unique_id=1379863851]
+[node name="Grid" type="Button" parent="Common" unique_id=2052622115]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-tooltip_text = "Show the whole track · Home"
-focus_mode = 0
+tooltip_text = "Construction grid Â· G"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Frame all"
+theme_type_variation = &"IconButton"
+toggle_mode = true
+script = ExtResource("IconScript")
+icon_name = &"grid"
+
+[node name="Snap" type="Button" parent="Common" unique_id=1382665893]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Magnetic connectors Â· C"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+toggle_mode = true
+script = ExtResource("IconScript")
+icon_name = &"snap"
+
+[node name="Elevation" type="HBoxContainer" parent="Common" unique_id=1843841569]
+layout_mode = 2
+
+[node name="Lower" type="Button" parent="Common/Elevation" unique_id=258019263]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Lower 0.5 m Â· PgDn Â· hold Shift for 0.125 m"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"lower"
+
+[node name="Height" type="Label" parent="Common/Elevation" unique_id=628266016]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "0 m"
+
+[node name="Raise" type="Button" parent="Common/Elevation" unique_id=186077859]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Raise 0.5 m Â· PgUp Â· hold Shift for 0.125 m"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"raise"
+
+[node name="Ground" type="Button" parent="Common/Elevation" unique_id=2014397895]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Reset placement height"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"ground"
+
+[node name="FrameAll" type="Button" parent="Common" unique_id=1379863851]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Fit view Â· Home"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"frame"

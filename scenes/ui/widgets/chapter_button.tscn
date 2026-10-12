@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cuwe4b51w3ns"]
+
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="ChapterButton" type="Button" unique_id=301094400]
+custom_minimum_size = Vector2(224, 68)
+theme = ExtResource("Theme")
+theme_type_variation = &"SecondaryButton"
+toggle_mode = true
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1684419818]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_type_variation = &"CardMargin"
+
+[node name="Contents" type="VBoxContainer" parent="Margin" unique_id=1122505829]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ChapterTitle" type="Label" parent="Margin/Contents" unique_id=1764345033]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TrackTitle"
+autowrap_mode = 3
+
+[node name="ChapterProgress" type="Label" parent="Margin/Contents" unique_id=1386382209]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+autowrap_mode = 3

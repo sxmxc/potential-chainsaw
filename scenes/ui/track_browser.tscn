@@ -10,8 +10,12 @@ visible = false
 transient = true
 exclusive = true
 unresizable = true
+borderless = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
+
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=791295942]
 anchors_preset = 15
@@ -54,7 +58,6 @@ layout_mode = 2
 [node name="Load" type="Button" parent="Surface/Contents/Actions" unique_id=261662297]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "Load track"
@@ -62,7 +65,6 @@ text = "Load track"
 [node name="RenameButton" type="Button" parent="Surface/Contents/Actions" unique_id=1802703739]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Rename"
@@ -70,7 +72,6 @@ text = "Rename"
 [node name="Delete" type="Button" parent="Surface/Contents/Actions" unique_id=418114350]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"DangerButton"
 text = "Delete"
@@ -83,7 +84,6 @@ mouse_filter = 2
 [node name="Close" type="Button" parent="Surface/Contents/Actions" unique_id=1142817370]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"SecondaryButton"
 text = "Close"

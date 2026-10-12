@@ -6,6 +6,7 @@ class_name WorldManager
 @onready var build: BuildManager = $BuildManager
 @onready var simulation: SimulationManager = $SimulationManager
 @onready var camera: ConstructionCamera = $Camera
+@onready var simulation_camera: SimulationCamera = $SimulationCamera
 
 func play_music() -> void:
 	if world_music_playlist != null:

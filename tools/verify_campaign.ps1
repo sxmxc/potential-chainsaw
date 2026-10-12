@@ -1,5 +1,5 @@
 param([string]$Godot = "godot", [switch]$PublishVerified, [switch]$VisualReview,
-    [string[]]$Suites = @("music_transitions", "run", "bucket_elevator", "resizable_supports", "functional_mechanisms", "campaign_rules", "puzzle_workflow", "campaign_chapters", "campaign"))
+    [string[]]$Suites = @("music_transitions", "menu_showcase", "run", "bucket_elevator", "resizable_supports", "functional_mechanisms", "campaign_rules", "puzzle_workflow", "campaign_chapters", "ui_workflows", "campaign"))
 
 $ErrorActionPreference = "Stop"
 $projectPath = Split-Path -Parent $PSScriptRoot
@@ -26,7 +26,7 @@ try {
         $suiteExitCode = $LASTEXITCODE
         $lines = Get-Content -LiteralPath $log
         $runtimeErrors = @($lines | Where-Object { $_ -match "^(SCRIPT ERROR:|ERROR:)" -and $_ -notmatch "Failed to read the root certificate store" })
-        $lines | Where-Object { $_ -match "GDSCRIPT CHECK:|RESULT:|TESTS:|RULES:|WORKFLOW:|CHAPTERS:|CAMPAIGN FAILURES:|: PASS|: FAIL" } | Write-Output
+        $lines | Where-Object { $_ -match "GDSCRIPT CHECK:|RESULT:|TESTS:|RULES:|WORKFLOW:|WORKFLOWS:|CHAPTERS:|CAMPAIGN FAILURES:|: PASS|: FAIL" } | Write-Output
         if ($suiteExitCode -ne 0 -or $runtimeErrors.Count -gt 0) {
             $lines | Write-Output
             throw "$suite failed (exit $suiteExitCode). See output above."

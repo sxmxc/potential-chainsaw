@@ -294,11 +294,10 @@ func run(app: Node, assertion: Callable) -> void:
 	check.call(showcase.world_manager.get_world_3d()!=game.sandbox.get_world_3d(),"Showcase physics uses an isolated 3D world")
 	check.call(showcase.world_manager.simulation.marble is RigidBody3D,"Showcase marble uses the existing real physics simulation")
 	var initial=showcase.world_manager.simulation.marble.position
-	var successes=0
+	var initial_loops: int=showcase.loops
 	for frame in 1700:
 		await game.get_tree().physics_frame
-		if showcase.world_manager.simulation.state==SimulationManager.State.SUCCESS: successes+=1
-	check.call(successes>0 and showcase.loops>=2,"Physical showcase reaches the finish and restarts gracefully")
+	check.call(showcase.world_manager.simulation.state==SimulationManager.State.RUNNING and showcase.loops==initial_loops,"Physical showcase continuously circulates without resetting")
 	check.call(showcase.world_manager.simulation.marble.position.distance_to(initial)>0.1,"Showcase marble actually moves through the track")
 	check.call(build.snapshot()==user_snapshot and not build.dirty,"Showcase loop leaves sandbox construction and dirty state untouched")
 	showcase.animation.seek(9,true)

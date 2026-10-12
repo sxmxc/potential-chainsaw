@@ -33,37 +33,43 @@ layout_mode = 1
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=317578351]
 layout_mode = 0
+anchor_left = 0.08
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -24.0
+offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_type_variation = &"MenuMargin"
+theme_type_variation = &"MenuCompositionMargin"
+offset_top = 76.0
+
 
 [node name="Composition" type="HBoxContainer" parent="Margin" unique_id=113436970]
 layout_mode = 2
 mouse_filter = 2
 
 [node name="Left" type="VBoxContainer" parent="Margin/Composition" unique_id=1094415198]
-custom_minimum_size = Vector2(370, 0)
+custom_minimum_size = Vector2(330, 0)
 layout_mode = 2
 mouse_filter = 2
 
 [node name="TopSpace" type="Control" parent="Margin/Composition/Left" unique_id=1892516678]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Card" type="PanelContainer" parent="Margin/Composition/Left" unique_id=270619634]
 layout_mode = 2
-theme_type_variation = &"MenuPanel"
+theme_type_variation = &"UnframedPanel"
 
 [node name="Contents" type="VBoxContainer" parent="Margin/Composition/Left/Card" unique_id=173998887]
 layout_mode = 2
-theme_type_variation = &"MenuVBox"
+theme_type_variation = &"BrandMenuVBox"
 
 [node name="Eyebrow" type="Label" parent="Margin/Composition/Left/Card/Contents" unique_id=405865518]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"AccentSmallLabel"
 text = "A LITTLE GRAVITY. A LOT OF POSSIBILITIES."
@@ -74,14 +80,13 @@ layout_mode = 2
 theme_type_variation = &"BrandTitle"
 text = "Marble 
 Engineer"
-horizontal_alignment = 1
 
 [node name="Description" type="Label" parent="Margin/Composition/Left/Card/Contents" unique_id=1913153386]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "Dream it. Build it. Let it roll."
-horizontal_alignment = 1
 
 [node name="Actions" type="VBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1790030367]
 layout_mode = 2
@@ -89,58 +94,92 @@ layout_mode = 2
 [node name="Campaign" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1007912784]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"PrimaryButton"
+size_flags_horizontal = 0
 text = "Campaign"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
+mouse_default_cursor_shape = 2
+
 
 [node name="Sandbox" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1306160118]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
-focus_mode = 0
+size_flags_horizontal = 0
+text = "Sandbox"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"PrimaryButton"
-text = "Start building"
+
 
 [node name="Load" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=967771133]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
+size_flags_horizontal = 0
+text = "Saved tracks"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"QuietButton"
-text = "My constructions"
+
 
 [node name="Examples" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=663403546]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
+size_flags_horizontal = 0
+text = "Example tracks"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
 mouse_default_cursor_shape = 2
-theme_type_variation = &"QuietButton"
-text = "Try an example"
+
+
+[node name="PuzzleEditor" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1770515664]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Puzzle Editor"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
+mouse_default_cursor_shape = 2
+
+
+[node name="Settings" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=186515730]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Settings"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
+mouse_default_cursor_shape = 2
+
+
+[node name="QuitSpace" type="Control" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=480321599]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Quit" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1680328876]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Quit"
+alignment = 0
+custom_minimum_size = Vector2(236, 44)
+theme_type_variation = &"MenuNavigation"
+mouse_default_cursor_shape = 2
+
 
 [node name="Secondary" type="HBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1749837447]
+visible = false
 layout_mode = 2
-
-[node name="Settings" type="Button" parent="Margin/Composition/Left/Card/Contents/Secondary" unique_id=186515730]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"QuietButton"
-text = "Settings"
-
-[node name="Quit" type="Button" parent="Margin/Composition/Left/Card/Contents/Secondary" unique_id=1680328876]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_type_variation = &"QuietButton"
-text = "Quit"
 
 [node name="BottomSpace" type="Control" parent="Margin/Composition/Left" unique_id=184645858]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Stage" type="Control" parent="Margin/Composition" unique_id=5242842]
@@ -152,10 +191,13 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.9276224
-anchor_top = 0.981
-anchor_right = 1.0066434
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -28.0
+offset_right = -12.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_type_variation = &"SmallMutedLabel"

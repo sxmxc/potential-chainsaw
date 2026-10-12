@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://c4if8edlanmt2"]
 
 [ext_resource type="PackedScene" uid="uid://bxo0prqjwsv8i" path="res://scenes/ui/toolbars/build_toolbar.tscn" id="Build"]
-[ext_resource type="PackedScene" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
+[ext_resource type="PackedScene" uid="uid://cklb7w7086xys" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
-[ext_resource type="PackedScene" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
-[ext_resource type="PackedScene" uid="uid://khlp72i5rsq2" path="res://scenes/ui/inspector.tscn" id="Inspector"]
+[ext_resource type="PackedScene" uid="uid://cmd14munkq5gg" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inspector.tscn" id="Inspector"]
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-[ext_resource type="PackedScene" uid="uid://koyrdojdabnc" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
+[ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
 
 [node name="SandboxHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
@@ -37,7 +37,8 @@ theme_type_variation = &"HUDVBox"
 
 [node name="Top" type="PanelContainer" parent="Margin/Layout" unique_id=426073590]
 layout_mode = 2
-theme_type_variation = &"ToolbarPanel"
+mouse_filter = 2
+theme_type_variation = &"UnframedPanel"
 
 [node name="FileToolbar" parent="Margin/Layout/Top" unique_id=1010391491 instance=ExtResource("Files")]
 unique_name_in_owner = true
@@ -49,14 +50,26 @@ size_flags_vertical = 3
 mouse_filter = 2
 theme_type_variation = &"HUDHBox"
 
-[node name="Toolbox" parent="Margin/Layout/Body" unique_id=1150473639 instance=ExtResource("Toolbox")]
-unique_name_in_owner = true
+[node name="LibrarySpace" type="VBoxContainer" parent="Margin/Layout/Body" unique_id=1545337477]
+custom_minimum_size = Vector2(312, 0)
 layout_mode = 2
-size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Toolbox" parent="Margin/Layout/Body/LibrarySpace" unique_id=1150473639 instance=ExtResource("Toolbox")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(272, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="Workspace" type="VBoxContainer" parent="Margin/Layout/Body" unique_id=1424723866]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="WorldInput" type="Control" parent="Margin/Layout/Body/Workspace" unique_id=1491741143]
+layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
@@ -67,30 +80,50 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="WorldInput" type="Control" parent="Margin/Layout/Body/Workspace" unique_id=1491741143]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Inspector" parent="Margin/Layout/Body" unique_id=615013630 instance=ExtResource("Inspector")]
+[node name="Guidance" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=433491361]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Bottom" type="PanelContainer" parent="Margin/Layout" unique_id=2007693626]
-unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 theme_type_variation = &"ContextPanel"
 
-[node name="Status" type="Label" parent="Margin/Layout/Bottom" unique_id=1990605440]
+[node name="Contents" type="HBoxContainer" parent="Margin/Layout/Body/Workspace/Guidance" unique_id=1629256354]
+layout_mode = 2
+
+[node name="GuidanceText" type="Label" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=286286119]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(660, 0)
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
+
+[node name="DismissGuidance" type="Button" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=343362771]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+tooltip_text = "Dismiss hint"
+theme_type_variation = &"QuietButton"
+text = "×"
+
+[node name="Bottom" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=2007693626]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"ContextPanel"
+
+[node name="Status" type="Label" parent="Margin/Layout/Body/Workspace/Bottom" unique_id=1990605440]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
-text = "Drag pieces to move
-Shift-click or draw a box to select together"
 autowrap_mode = 3
+
+[node name="Inspector" parent="Margin/Layout/Body" unique_id=615013630 instance=ExtResource("Inspector")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
 
 [node name="SelectionOverlay" parent="." unique_id=676437620 instance=ExtResource("Overlay")]
 unique_name_in_owner = true

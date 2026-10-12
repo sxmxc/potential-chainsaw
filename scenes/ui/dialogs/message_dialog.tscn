@@ -10,8 +10,12 @@ visible = false
 transient = true
 exclusive = true
 unresizable = true
+borderless = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+transparent = true
+transparent_bg = true
+
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=2146464390]
 anchors_preset = 15
@@ -41,7 +45,6 @@ autowrap_mode = 3
 [node name="Close" type="Button" parent="Surface/Contents" unique_id=623433239]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "OK"
