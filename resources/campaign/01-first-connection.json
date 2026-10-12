@@ -1,0 +1,151 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Bridge the missing track and deliver one marble.",
+	"difficulty": "Introduction",
+	"hints": [
+		"Choose Straight, point at a glowing connector, and click. Test track runs the marble."
+	],
+	"id": "campaign-01",
+	"inventory": {
+		"straight": 1.0
+	},
+	"name": "First Connection",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "goal",
+			"type": "deliver"
+		}
+	],
+	"order": 1.0,
+	"permissions": {},
+	"pieces": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		}
+	],
+	"prerequisites": [],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "piece-2861340-5"
+		}
+	],
+	"status": "published",
+	"time_limit": 45.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "84efd8105ce8732e80638d88379dd4074fccf0b2bb4da88bcd064af305a723f1",
+		"physics_success": true,
+		"seconds": 2.94999999999999,
+		"tested_at": "2026-10-12T03:49:35"
+	},
+	"version": 1.0
+}

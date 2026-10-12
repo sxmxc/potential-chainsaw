@@ -11,7 +11,7 @@ extends Resource
 @export var bounds: AABB
 @export var rotation_steps: int = 4
 @export var connectors: Array[TrackConnector] = []
-@export_enum("static", "start", "finish", "rotor", "decoration", "support", "elevator", "resizable_support") var behavior: String = "static"
+@export_enum("static", "start", "finish", "rotor", "decoration", "support", "elevator", "resizable_support", "airflow", "gate", "diverter", "launcher", "sensor") var behavior: String = "static"
 @export var library_visible: bool = true
 @export var component_scene: PackedScene
 @export var collision_enabled: bool = true
@@ -30,6 +30,11 @@ func player_description() -> String:
 	match behavior:
 		"start": return "Release a marble here. Adjust its launch speed in the selection card."
 		"finish": return "Catch the marble to complete your run."
+		"airflow": return "Directed airflow along the fan axis. Adjust power, range and reverse in the inspector."
+		"gate": return "A physical stopper. Set a release delay or link a sensor to Open."
+		"diverter": return "A moving guide selects straight or left routing."
+		"launcher": return "Adds a physical impulse. Adjust strength and launch angle."
+		"sensor": return "Emits an entry event once per marble crossing."
 		"rotor": return "Spinning blades can redirect a moving marble."
 		"elevator": return "Lift marbles in circulating buckets. Select to adjust rise and travel speed."
 		"support": return "Support an elevated section. Place freely or adjust its height."

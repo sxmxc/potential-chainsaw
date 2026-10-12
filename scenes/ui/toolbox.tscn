@@ -39,7 +39,7 @@ text = "Pieces"
 
 [node name="Scroll" type="ScrollContainer" parent="Contents" unique_id=1108768129]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 112)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0

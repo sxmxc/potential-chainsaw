@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[ext_resource type="Script" path="res://scripts/ui/mechanism_settings.gd" id="MechanismSettings"]
+
+[ext_resource type="Script" path="res://scripts/ui/mechanism_link_settings.gd" id="LinkSettings"]
+
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
 custom_minimum_size = Vector2(240, 0)
 theme = ExtResource("Theme")
@@ -10,7 +14,7 @@ theme_type_variation = &"ContextPanel"
 script = ExtResource("Script")
 
 [node name="Scroll" type="ScrollContainer" parent="." unique_id=1364269164]
-custom_minimum_size = Vector2(0, 380)
+custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
@@ -186,3 +190,13 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Drag to move"
 autowrap_mode = 3
+
+[node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("MechanismSettings")
+
+[node name="LinkSettings" type="VBoxContainer" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("LinkSettings")

@@ -1,0 +1,74 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/puzzle_completion.gd" id="Script"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PuzzleCompletion" type="Window"]
+title = "Machine complete"
+size = Vector2i(480, 360)
+visible = false
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Surface" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_type_variation = &"ContextPanel"
+
+[node name="Contents" type="VBoxContainer" parent="Surface"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Surface/Contents"]
+layout_mode = 2
+theme_type_variation = &"AccentLabel"
+text = "MACHINE COMPLETE"
+
+[node name="Name" type="Label" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InspectorTitle"
+autowrap_mode = 3
+
+[node name="Result" type="Label" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
+
+[node name="Awards" type="Label" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SuccessLabel"
+autowrap_mode = 3
+
+[node name="Next" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Next puzzle"
+
+[node name="Preserve" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Preserve validated solution"
+
+[node name="ReturnEditor" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Return to Puzzle Editor"
+
+[node name="LevelSelection" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Level selection"
+
+[node name="KeepBuilding" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Inspect the machine"

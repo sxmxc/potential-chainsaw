@@ -1,0 +1,386 @@
+[
+	{
+		"path": "res://docs/campaign-qa/main-menu-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "main-menu"
+	},
+	{
+		"path": "res://docs/campaign-qa/level-selection-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "level-selection"
+	},
+	{
+		"path": "res://docs/campaign-qa/puzzle-hud-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "puzzle-hud"
+	},
+	{
+		"path": "res://docs/campaign-qa/completion-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "completion"
+	},
+	{
+		"path": "res://docs/campaign-qa/mechanism-inspector-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "mechanism-inspector"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-settings-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-settings"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-permissions-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-permissions"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-inventory-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-inventory"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-boundaries-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-boundaries"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-objectives-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-objectives"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-links-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-links"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-publish-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "author-publish"
+	},
+	{
+		"path": "res://docs/campaign-qa/test-as-player-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "test-as-player"
+	},
+	{
+		"path": "res://docs/campaign-qa/return-to-editor-1024x720.png",
+		"resolution": [
+			1024,
+			720
+		],
+		"screen": "return-to-editor"
+	},
+	{
+		"path": "res://docs/campaign-qa/main-menu-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "main-menu"
+	},
+	{
+		"path": "res://docs/campaign-qa/level-selection-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "level-selection"
+	},
+	{
+		"path": "res://docs/campaign-qa/puzzle-hud-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "puzzle-hud"
+	},
+	{
+		"path": "res://docs/campaign-qa/completion-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "completion"
+	},
+	{
+		"path": "res://docs/campaign-qa/mechanism-inspector-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "mechanism-inspector"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-settings-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-settings"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-permissions-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-permissions"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-inventory-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-inventory"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-boundaries-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-boundaries"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-objectives-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-objectives"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-links-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-links"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-publish-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "author-publish"
+	},
+	{
+		"path": "res://docs/campaign-qa/test-as-player-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "test-as-player"
+	},
+	{
+		"path": "res://docs/campaign-qa/return-to-editor-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "return-to-editor"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-gate-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-gate"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-launcher-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-launcher"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-bucket-elevator-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-bucket-elevator"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-fan-standing-two-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-fan-standing-two"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-fan-simple-four-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-fan-simple-four"
+	},
+	{
+		"path": "res://docs/campaign-qa/settings-diverter-1280x800.png",
+		"resolution": [
+			1280,
+			800
+		],
+		"screen": "settings-diverter"
+	},
+	{
+		"path": "res://docs/campaign-qa/main-menu-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "main-menu"
+	},
+	{
+		"path": "res://docs/campaign-qa/level-selection-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "level-selection"
+	},
+	{
+		"path": "res://docs/campaign-qa/puzzle-hud-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "puzzle-hud"
+	},
+	{
+		"path": "res://docs/campaign-qa/completion-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "completion"
+	},
+	{
+		"path": "res://docs/campaign-qa/mechanism-inspector-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "mechanism-inspector"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-settings-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-settings"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-permissions-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-permissions"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-inventory-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-inventory"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-boundaries-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-boundaries"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-objectives-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-objectives"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-links-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-links"
+	},
+	{
+		"path": "res://docs/campaign-qa/author-publish-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "author-publish"
+	},
+	{
+		"path": "res://docs/campaign-qa/test-as-player-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "test-as-player"
+	},
+	{
+		"path": "res://docs/campaign-qa/return-to-editor-1920x1080.png",
+		"resolution": [
+			1920,
+			1080
+		],
+		"screen": "return-to-editor"
+	}
+]

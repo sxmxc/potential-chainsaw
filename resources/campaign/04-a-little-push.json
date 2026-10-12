@@ -1,0 +1,188 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Use airflow to carry the slow marble uphill.",
+	"difficulty": "Workshop",
+	"hints": [
+		"The shrouded standing fan blows along its axis. Enable it; then tune power if needed."
+	],
+	"id": "campaign-04",
+	"inventory": {},
+	"name": "A Little Push",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "goal",
+			"type": "deliver"
+		}
+	],
+	"order": 4.0,
+	"permissions": {
+		"air": {
+			"config_keys": [
+				"enabled",
+				"power"
+			],
+			"configure": true,
+			"duplicate": false,
+			"limits": {
+				"power": [
+					0.1,
+					0.6
+				]
+			},
+			"move": false,
+			"remove": false,
+			"rotate": false
+		}
+	},
+	"pieces": [
+		{
+			"config": {
+				"enabled": false,
+				"power": 0.3,
+				"range": 5.0
+			},
+			"piece": "fan-standing-two",
+			"position": [
+				0.0,
+				0.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "air"
+		},
+		{
+			"config": {
+				"release_speed": 0.3
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-a",
+			"position": [
+				0.0,
+				0.0,
+				-0.5
+			],
+			"rotation": 2,
+			"uid": "uphill"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.25,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		}
+	],
+	"prerequisites": [
+		"campaign-03"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {
+				"enabled": true,
+				"power": 0.3,
+				"range": 5.0
+			},
+			"piece": "fan-standing-two",
+			"position": [
+				0.0,
+				0.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "air"
+		},
+		{
+			"config": {
+				"release_speed": 0.3
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-a",
+			"position": [
+				0.0,
+				0.0,
+				-0.5
+			],
+			"rotation": 2,
+			"uid": "uphill"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.25,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		}
+	],
+	"status": "published",
+	"time_limit": 30.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "4512f24de640061db4e8a5b3d107d9637990642e9f0fe8001d03f652a0fa00c4",
+		"physics_success": true,
+		"seconds": 2.89999999999999,
+		"tested_at": "2026-10-12T03:49:39"
+	},
+	"version": 1.0
+}

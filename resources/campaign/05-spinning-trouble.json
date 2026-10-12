@@ -1,0 +1,205 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Set the exposed paddle turning to clear the passage.",
+	"difficulty": "Workshop",
+	"hints": [
+		"A negative speed turns the paddle toward the destination. Its blades move marbles by contact."
+	],
+	"id": "campaign-05",
+	"inventory": {},
+	"name": "Spinning Trouble",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "goal",
+			"type": "deliver"
+		}
+	],
+	"order": 5.0,
+	"permissions": {
+		"paddle": {
+			"config_keys": [
+				"angular_speed"
+			],
+			"configure": true,
+			"duplicate": false,
+			"limits": {
+				"angular_speed": [
+					-3.0,
+					0.0
+				]
+			},
+			"move": false,
+			"remove": false,
+			"rotate": false
+		}
+	},
+	"pieces": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "middle"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {
+				"angular_speed": 0.0
+			},
+			"piece": "fan-simple-two",
+			"position": [
+				0.349999994039536,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "paddle"
+		}
+	],
+	"prerequisites": [
+		"campaign-04"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "middle"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {
+				"angular_speed": -1.3
+			},
+			"piece": "fan-simple-two",
+			"position": [
+				0.349999994039536,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "paddle"
+		}
+	],
+	"status": "published",
+	"time_limit": 30.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "e2c8ef433b88b116e290fb7fc89c74c6ed407529cd4d0334ce519c3c2f885919",
+		"physics_success": true,
+		"seconds": 2.94999999999999,
+		"tested_at": "2026-10-12T03:49:45"
+	},
+	"version": 1.0
+}

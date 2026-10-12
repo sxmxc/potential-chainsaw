@@ -22,6 +22,8 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 func refresh() -> void:
 	%Undo.disabled=not build.enabled or build.history.cursor==0
 	%Redo.disabled=not build.enabled or build.history.cursor>=build.history.commands.size()
+	%Save.visible = build.rules == null
+	%SaveAs.visible = false
 	var state=simulation.state
 	%Pause.visible=state in [SimulationManager.State.RUNNING,SimulationManager.State.PAUSED]
 	%Pause.text="Resume" if state==SimulationManager.State.PAUSED else "Pause"

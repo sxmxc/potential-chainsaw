@@ -12,6 +12,7 @@ const PIECE_SCENE = preload("res://scenes/track_piece.tscn")
 const SupportGeometry = preload("res://scripts/construction/support_geometry.gd")
 @export var drag_threshold: float = 7.0
 @export_range(12,96,1) var connector_target_radius: float = 32.0
+var rules: PuzzleRules
 var catalog: PieceCatalog
 var camera: ConstructionCamera
 var snap = SnapManager.new()
@@ -97,6 +98,9 @@ func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = ""
 
 func choose(definition: PieceDefinition) -> void:
 	if not enabled: return
+	if rules and rules.remaining(String(definition.id), snapshot()) <= 0:
+		show_status("No inventory remaining")
+		return
 	cancel()
 	select(null)
 	chosen=definition
@@ -286,6 +290,7 @@ func update_preview() -> void:
 		if point==null:
 			for preview in ghosts: preview.hide()
 			return
+	if validation_message.is_empty() and rules: validation_message=rules.validate(proposed_snapshot())
 	valid=validation_message.is_empty()
 	apply_preview()
 	var message="✕  "+validation_message if not valid else ("Connected · click to attach" if is_snapped else "Click to place · R rotate · right-click cancel")
@@ -320,6 +325,9 @@ func update_marker_feedback() -> void:
 
 func commit() -> void:
 	if not is_instance_valid(ghost) or not ghost.visible or not valid: return
+	if rules:
+		var rule_error = rules.validate(proposed_snapshot())
+		if not rule_error.is_empty(): show_status(rule_error); return
 	var before=snapshot()
 	var mode=operation
 	var edited: Array[TrackPiece] = []
@@ -332,6 +340,12 @@ func commit() -> void:
 		else:
 			var piece=spawn(item.definition,placement,"",item.config)
 			edited.append(piece)
+	if mode == "duplicate":
+		var remap: Dictionary = {}
+		for index in edited.size(): remap[preview_items[index].get("uid", "")] = edited[index].instance_id
+		for piece in edited:
+			for link in piece.configuration.get("links", []):
+				if remap.has(link.target): link.target = remap[link.target]
 	if mode!="place":
 		cancel()
 		set_selection(edited)
@@ -343,6 +357,12 @@ func commit() -> void:
 	record(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
 
 func record(before: Array, label: String) -> void:
+	if rules:
+		var problem = rules.validate(snapshot())
+		if not problem.is_empty():
+			restore(before)
+			show_status("Blocked: " + problem)
+			return
 	history.record(before,snapshot(),label)
 	dirty=true
 	refresh_connectors()
@@ -350,16 +370,26 @@ func record(before: Array, label: String) -> void:
 
 func configure_selected(config: Dictionary, label: String) -> bool:
 	if not enabled or selection.size()!=1 or chosen: return false
+	if rules and not rules.permits(selected.instance_id, "configure"):
+		show_status("Configuration is locked")
+		return false
 	var before=snapshot()
 	var previous=selected.configuration.duplicate(true)
 	snap.sample_indices.erase(selected.definition.get_instance_id())
 	selected.apply_configuration(config)
-	var problem=snap.validate(selected.definition,selected.transform,pieces,selected)
+	var problem=snap.validate(selected.definition,selected.transform,pieces,selected) if selected.definition.behavior in ["elevator", "resizable_support"] else ""
 	if not problem.is_empty():
 		selected.apply_configuration(previous)
 		show_status("✕  "+problem)
 		selection_changed.emit(selected)
 		return false
+	if rules:
+		var rule_error = rules.validate(snapshot())
+		if not rule_error.is_empty():
+			selected.apply_configuration(previous)
+			show_status(rule_error)
+			selection_changed.emit(selected)
+			return false
 	if selected.configuration==previous: return true
 	selected.tint(Color(1,0.78,0.25,0.4))
 	record(before,label)
@@ -367,7 +397,7 @@ func configure_selected(config: Dictionary, label: String) -> bool:
 	return true
 
 func delete_selected() -> void:
-	if not enabled or selection.is_empty(): return
+	if not enabled or selection.is_empty() or not selection_permitted("remove"): return
 	cancel()
 	var before=snapshot()
 	var removing=selection.duplicate()
@@ -376,6 +406,11 @@ func delete_selected() -> void:
 		pieces.erase(piece)
 		remove_child(piece)
 		piece.queue_free()
+	var remaining_ids: Array[String] = []
+	for piece in pieces: remaining_ids.append(piece.instance_id)
+	for piece in pieces:
+		if not piece.configuration.has("links"): continue
+		piece.configuration.links = piece.configuration.links.filter(func(link): return link.get("target", "") in remaining_ids)
 	record(before,"Delete assembly")
 
 func selection_pivot() -> Vector3:
@@ -384,6 +419,7 @@ func selection_pivot() -> Vector3:
 
 func move_selected(duplicate_piece: bool = false) -> void:
 	if not enabled or selection.is_empty(): return
+	if not selection_permitted("duplicate" if duplicate_piece else "move"): return
 	cancel()
 	var pivot=selection_pivot()
 	chosen=selected.definition
@@ -393,7 +429,7 @@ func move_selected(duplicate_piece: bool = false) -> void:
 	proposed=frame
 	operation="duplicate" if duplicate_piece else "move"
 	for piece in selection:
-		preview_items.append({"definition":piece.definition,"local":frame.affine_inverse()*piece.transform,"config":piece.configuration.duplicate(true)})
+		preview_items.append({"definition":piece.definition,"local":frame.affine_inverse()*piece.transform,"config":piece.configuration.duplicate(true),"uid":piece.instance_id})
 		if not duplicate_piece:
 			moving_group.append(piece)
 			piece.hide()
@@ -410,6 +446,7 @@ func rotate_piece() -> void:
 			forced_target.clear()
 			candidate_key=""
 	elif selected:
+		if not selection_permitted("rotate"): return
 		var pivot=selection_pivot()
 		var rotation_transform=Transform3D(Basis(Vector3.UP,PI/2),pivot)
 		var items: Array[Dictionary] = []
@@ -422,7 +459,7 @@ func rotate_piece() -> void:
 		selection_changed.emit(selected)
 
 func elevate_selected(delta: float) -> void:
-	if not selected or not enabled: return
+	if not selected or not enabled or not selection_permitted("move"): return
 	if selection.size()==1 and selected.support_component:
 		var config=selected.configuration.duplicate(true)
 		config.support_height=float(config.support_height)+delta
@@ -595,3 +632,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("build_height_down",false,true): set_height(height-height_step())
 		elif event.is_action_pressed("build_frame",false,true): frame_pieces(selection)
 		elif event.is_action_pressed("build_frame_all",false,true): frame_all()
+
+func selection_permitted(action: String) -> bool:
+	if not rules: return true
+	for piece in selection:
+		if not rules.permits(piece.instance_id, action):
+			show_status("This assembly contains a piece with locked " + action)
+			return false
+	return true
+
+func proposed_snapshot() -> Array:
+	var result: Array = []
+	for piece in pieces:
+		if piece not in moving_group: result.append(piece.serialize())
+	for index in preview_items.size():
+		var item: Dictionary = preview_items[index]
+		var placement: Transform3D = proposed * item.local
+		result.append({"uid": moving_group[index].instance_id if operation == "move" else "preview-new-%d" % index, "piece": String(item.definition.id), "position": [placement.origin.x, placement.origin.y, placement.origin.z], "rotation": posmod(roundi(placement.basis.get_euler().y / (PI / 2)), 4), "config": item.config.duplicate(true)})
+	return result

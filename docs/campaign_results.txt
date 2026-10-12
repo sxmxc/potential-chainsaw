@@ -1,0 +1,11 @@
+01 First Connection: PASS at 2.95s, marble (-0.001791, 0.449948, -1.459284)
+02 Around the Bend: PASS at 5.12s, marble (3.467715, 1.700004, -1.049654)
+03 One Level Down: PASS at 2.88s, marble (-0.004719, 0.45, -1.468287)
+04 A Little Push: PASS at 2.90s, marble (-0.004426, 0.698948, -1.456534)
+05 Spinning Trouble: PASS at 2.95s, marble (-0.00179, 0.449947, -1.459467)
+06 The Long Way Up: PASS at 12.80s, marble (-0.00072, 4.449958, -2.454458)
+07 Stop and Go: PASS at 6.81s, marble (-0.004244, 0.449964, -1.458646)
+08 The Fork: PASS at 5.38s, marble (2.457342, 0.45, 0.516345)
+09 Remote Control: PASS at 3.23s, marble (-0.002515, 0.449957, -1.461338)
+10 The Machine: PASS at 21.47s, marble (-0.004701, 4.450563, -6.484311)
+Failures: 0

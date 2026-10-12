@@ -1,6 +1,11 @@
 extends Node
 
 @onready var sandbox = $Sandbox
+var puzzle_session: PuzzleSession
+var authoring: Window
+var puzzle_browser: Window
+var puzzle_bar: PanelContainer
+var completion: Window
 var catalog: PieceCatalog
 var serializer: TrackSerializer
 var track_name: String = "Untitled track"
@@ -29,6 +34,26 @@ func _ready() -> void:
 	%TrackBrowser.closed.connect(modal_closed)
 	sandbox.build.changed.connect(update_name)
 	create_dialogs()
+	puzzle_session = PuzzleSession.new()
+	add_child(puzzle_session)
+	puzzle_session.configure(self)
+	authoring = preload("res://scenes/ui/puzzle_authoring.tscn").instantiate()
+	puzzle_browser = preload("res://scenes/ui/puzzle_browser.tscn").instantiate()
+	add_child(authoring)
+	add_child(puzzle_browser)
+	authoring.configure(puzzle_session)
+	puzzle_browser.configure(puzzle_session)
+	puzzle_bar = preload("res://scenes/ui/puzzle_bar.tscn").instantiate()
+	var layout = %HUD.get_node("Margin/Layout")
+	layout.add_child(puzzle_bar)
+	layout.move_child(puzzle_bar, 1)
+	puzzle_bar.configure(puzzle_session)
+	completion = preload("res://scenes/ui/puzzle_completion.tscn").instantiate()
+	add_child(completion)
+	completion.configure(puzzle_session)
+	puzzle_session.mode_changed.connect(func():
+		%HUD.get_node("%Toolbox").refresh()
+		%HUD.get_node("%FileToolbar").refresh())
 	new_track()
 	show_main_menu()
 	load_settings()
@@ -62,12 +87,19 @@ func create_dialogs() -> void:
 	message_dialog.closed.connect(modal_closed)
 func handle_action(action: String) -> void:
 	match action:
+		"campaign": puzzle_browser.open()
+		"puzzle_editor": puzzle_session.editor()
 		"sandbox":
-			if not %HUD.visible: enter_sandbox()
+			if puzzle_session.mode != "sandbox": new_track()
+			elif not %HUD.visible: enter_sandbox()
 		"save":
+			if puzzle_session.mode == "editor": puzzle_session.save(); return
+			if puzzle_session.mode in ["campaign", "test"]: %HUD.show_status("Use Test / Reset to retry your solution"); return
 			if track_id.is_empty(): prompt_save(false)
 			else: save_current(); modal_closed()
-		"save_as": prompt_save(true)
+		"save_as":
+			if puzzle_session.mode == "editor": puzzle_session.save()
+			elif puzzle_session.mode == "sandbox": prompt_save(true)
 		"rename": prompt_save(false)
 		"load", "examples": open_modal(); %TrackBrowser.open(action=="examples")
 		"menu": open_modal(); menu_dialog.popup_centered()
@@ -100,12 +132,14 @@ func show_main_menu() -> void:
 	%MainMenu.showcase.set_active(true)
 
 func new_track() -> void:
+	if puzzle_session: puzzle_session.sandbox()
 	sandbox.load_construction([])
 	track_name="Untitled track"
 	track_id=""
 	enter_sandbox()
 
 func load_track(id: String, example: bool) -> void:
+	if puzzle_session: puzzle_session.sandbox()
 	var data=serializer.decode(FileAccess.get_file_as_string("res://resources/examples/"+id+".json")) if example else serializer.load_track(id)
 	if data.is_empty(): show_message(serializer.last_error); return
 	sandbox.load_construction(data.pieces)
@@ -115,6 +149,15 @@ func load_track(id: String, example: bool) -> void:
 	if not serializer.warnings.is_empty(): show_message("\n".join(serializer.warnings))
 
 func guard(action: Callable) -> void:
+	if puzzle_session and puzzle_session.mode in ["campaign", "test"]:
+		action.call()
+		modal_closed()
+		return
+	if puzzle_session and puzzle_session.mode == "editor" and sandbox.build.dirty:
+		if not puzzle_session.save(): show_message("Could not save the puzzle draft"); return
+		action.call()
+		modal_closed()
+		return
 	if sandbox.build.dirty:
 		pending_action=action
 		open_modal()
@@ -180,6 +223,10 @@ func _notification(what: int) -> void:
 	if what==NOTIFICATION_WM_CLOSE_REQUEST: handle_action("quit")
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_P and not ConstructionInput.typing(get_viewport()):
+		guard(func(): puzzle_session.editor())
+		get_viewport().set_input_as_handled()
+		return
 	if ConstructionInput.typing(get_viewport()) or not %HUD.visible: return
 	if event.is_action_pressed("build_save_track",false,true): handle_action("save")
 	elif event.is_action_pressed("build_test_track",false,true):

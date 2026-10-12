@@ -19,7 +19,7 @@ func run() -> void:
 	root.size = Vector2i(1280, 720)
 	catalog=PieceCatalog.new()
 	snap=SnapManager.new()
-	check(catalog.pieces.size()==165,"Imported models, start/finish, elevator and six support assemblies are cataloged")
+	check(catalog.pieces.size()==169,"Imported models, start/finish, elevator and six support assemblies are cataloged")
 	for v in [Vector3.ZERO,Vector3(-3,1.125,2.5),Vector3(12.5,4,-8)]:
 		check(snap.grid_to_world(snap.world_to_grid(v)).is_equal_approx(v),"Grid round trip "+str(v))
 	check(snap.grid_position(Vector3(-0.76,0.2,-0.26)).is_equal_approx(Vector3(-1,0.25,-0.5)),"Negative grid rounding")
@@ -108,7 +108,7 @@ func run() -> void:
 	check(build.enabled,"Closing settings restores construction input")
 	await load("res://tests/construction_overhaul.gd").new().run(game,check)
 	game.new_track()
-	var rotor=build.spawn(catalog.get_piece("fan-two"),Transform3D(Basis.IDENTITY,Vector3(10,0,0)))
+	var rotor=build.spawn(catalog.get_piece("fan-simple-two"),Transform3D(Basis.IDENTITY,Vector3(10,0,0)))
 	await process_frame
 	check(rotor.rotor_component!=null,"Imported fan attaches real rotating collision component")
 	var rest=rotor.rotor_component.mesh.transform

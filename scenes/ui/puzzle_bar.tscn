@@ -1,0 +1,80 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="PuzzleBar" type="PanelContainer"]
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Contents" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Objective" type="Label" parent="Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Puzzle objective"
+autowrap_mode = 3
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="Hint" type="Label" parent="Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Guidance"
+autowrap_mode = 3
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="Actions" type="HFlowContainer" parent="Contents"]
+layout_mode = 2
+
+[node name="Counters" type="Label" parent="Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+autowrap_mode = 3
+
+[node name="Author" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Authoring tools"
+theme_type_variation = &"SecondaryButton"
+
+[node name="TestPlayer" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Test as Player"
+theme_type_variation = &"SecondaryButton"
+
+[node name="ReturnEditor" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Return to Editor"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Preserve" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Preserve solution"
+
+[node name="Reference" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Load reference"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Levels" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level selection"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Restart" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restart puzzle"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Next" type="Button" parent="Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Next puzzle"
+theme_type_variation = &"SecondaryButton"

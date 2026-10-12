@@ -6,6 +6,7 @@
 
 [sub_resource type="SystemFont" id="SystemFont_ar1b5"]
 font_names = PackedStringArray("Cascadia Code PL")
+subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_ldhhn"]
 font = SubResource("SystemFont_ar1b5")
@@ -64,7 +65,7 @@ text = "A LITTLE GRAVITY. A LOT OF POSSIBILITIES."
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"BrandTitle"
-text = "Marble
+text = "Marble 
 Engineer"
 horizontal_alignment = 1
 
@@ -77,6 +78,12 @@ horizontal_alignment = 1
 
 [node name="Actions" type="VBoxContainer" parent="Margin/Composition/Left/Card/Contents" unique_id=1790030367]
 layout_mode = 2
+
+[node name="Campaign" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1007912784]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Campaign"
 
 [node name="Sandbox" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1306160118]
 unique_name_in_owner = true

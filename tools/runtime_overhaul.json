@@ -1,0 +1,7 @@
+[
+ {"tool":"game","params":{"pid":29556,"action":"input","kind":"mouse","mode":"move","x":986,"y":471}},
+ {"tool":"game","params":{"pid":29556,"action":"input","kind":"mouse","mode":"click","button":"left","x":986,"y":471}},
+ {"tool":"game","params":{"pid":29556,"action":"input","kind":"key","mode":"press","key":"A","modifiers":["ctrl"],"route":"viewport"}},
+ {"tool":"game","params":{"pid":29556,"action":"input","kind":"key","mode":"release","key":"A","modifiers":["ctrl"],"route":"viewport"}},
+ {"tool":"game","params":{"pid":29556,"action":"call","path":"/root/MarbleEngineer","method":"qa_summary"}}
+]

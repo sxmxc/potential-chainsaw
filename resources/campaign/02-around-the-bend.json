@@ -1,0 +1,172 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Turn the corner toward the offset collector.",
+	"difficulty": "Introduction",
+	"hints": [
+		"A curve spans two cells. R rotates it; Tab cycles connector attachments."
+	],
+	"id": "campaign-02",
+	"inventory": {
+		"curve": 1.0,
+		"straight": 2.0
+	},
+	"name": "Around the Bend",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "sample-7",
+			"type": "deliver"
+		}
+	],
+	"order": 2.0,
+	"permissions": {},
+	"pieces": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				1.5,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "sample-1"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-a",
+			"position": [
+				-0.0000000149011611938477,
+				1.25,
+				2.5
+			],
+			"rotation": 0,
+			"uid": "sample-2"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.0000000149011611938477,
+				1.25000381469727,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "sample-3"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				3.99999237060547,
+				1.25000381469727,
+				-0.999992370605469
+			],
+			"rotation": 1,
+			"uid": "sample-7"
+		}
+	],
+	"prerequisites": [
+		"campaign-01"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				1.5,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "sample-1"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-a",
+			"position": [
+				-0.0000000149011611938477,
+				1.25,
+				2.5
+			],
+			"rotation": 0,
+			"uid": "sample-2"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.0000000149011611938477,
+				1.25000381469727,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "sample-3"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				3.99999237060547,
+				1.25000381469727,
+				-0.999992370605469
+			],
+			"rotation": 1,
+			"uid": "sample-7"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				0.499992281198502,
+				1.25000381469727,
+				-0.5
+			],
+			"rotation": 2,
+			"uid": "piece-3899628-14"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				1.99999225139618,
+				1.25000381469727,
+				-0.999992489814758
+			],
+			"rotation": 3,
+			"uid": "piece-3913000-15"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				2.99999237060547,
+				1.25000381469727,
+				-0.999992430210114
+			],
+			"rotation": 3,
+			"uid": "piece-3926891-16"
+		}
+	],
+	"status": "published",
+	"time_limit": 45.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "549cd32496ea78a2911c77dc28f92d2b091376109f7800a495569fd558a71922",
+		"physics_success": true,
+		"seconds": 5.11666666666671,
+		"tested_at": "2026-10-12T03:49:37"
+	},
+	"version": 1.0
+}

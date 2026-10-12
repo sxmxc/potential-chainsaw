@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://bxo0prqjwsv8i" path="res://scenes/ui/toolbars/build_toolbar.tscn" id="Build"]
 [ext_resource type="PackedScene" uid="uid://cklb7w7086xys" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
+[ext_resource type="PackedScene" uid="uid://4pjsxw6jdy1t" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
 [ext_resource type="PackedScene" uid="uid://cmd14munkq5gg" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
 [ext_resource type="PackedScene" uid="uid://khlp72i5rsq2" path="res://scenes/ui/inspector.tscn" id="Inspector"]
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
+[ext_resource type="PackedScene" uid="uid://cnkottri2d7gv" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://koyrdojdabnc" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
@@ -62,12 +62,12 @@ mouse_filter = 2
 [node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 1
 
 [node name="EditToolbar" parent="Margin/Layout/Body/Workspace" unique_id=646885837 instance=ExtResource("Edit")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 1
 
 [node name="WorldInput" type="Control" parent="Margin/Layout/Body/Workspace" unique_id=1491741143]
 layout_mode = 2
@@ -77,7 +77,7 @@ mouse_filter = 2
 [node name="Inspector" parent="Margin/Layout/Body" unique_id=615013630 instance=ExtResource("Inspector")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
 
 [node name="Bottom" type="PanelContainer" parent="Margin/Layout" unique_id=2007693626]
 unique_name_in_owner = true
@@ -96,9 +96,13 @@ autowrap_mode = 3
 
 [node name="SelectionOverlay" parent="." unique_id=676437620 instance=ExtResource("Overlay")]
 unique_name_in_owner = true
+layout_mode = 0
 anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="ExtensionPicker" parent="." unique_id=787953607 instance=ExtResource("Extension")]
 unique_name_in_owner = true
-oversampling_override = 1.0
-size = Vector2i(390, 1772)
+visible = false

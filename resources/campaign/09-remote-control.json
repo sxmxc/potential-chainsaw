@@ -1,0 +1,211 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Connect the sensor entry event to the gate Open action.",
+	"difficulty": "Workshop",
+	"hints": [
+		"Select the green sensor: choose Entered, the Marble Gate target, and Open, then Connect event."
+	],
+	"id": "campaign-09",
+	"inventory": {},
+	"name": "Remote Control",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "goal",
+			"type": "deliver"
+		}
+	],
+	"order": 9.0,
+	"permissions": {
+		"detector": {
+			"config_keys": [
+				"links"
+			],
+			"configure": true,
+			"duplicate": false,
+			"move": false,
+			"remove": false,
+			"rotate": false
+		}
+	},
+	"pieces": [
+		{
+			"config": {
+				"release_speed": 0.7
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {
+				"links": []
+			},
+			"piece": "sensor",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "detector"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "stopper"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {
+				"power": 0.08,
+				"range": 6.0
+			},
+			"piece": "fan-standing-four",
+			"position": [
+				0.0,
+				0.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "air"
+		}
+	],
+	"prerequisites": [
+		"campaign-08"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {
+				"release_speed": 0.7
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "open",
+						"event": "entered",
+						"target": "stopper"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "detector"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "stopper"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {
+				"power": 0.08,
+				"range": 6.0
+			},
+			"piece": "fan-standing-four",
+			"position": [
+				0.0,
+				0.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "air"
+		}
+	],
+	"status": "published",
+	"time_limit": 25.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "867083155ab3ac9929632c27e7500bb7fb4b8772e727f70799ecd327ae2e3b5d",
+		"physics_success": true,
+		"seconds": 3.23333333333332,
+		"tested_at": "2026-10-12T03:50:07"
+	},
+	"version": 1.0
+}

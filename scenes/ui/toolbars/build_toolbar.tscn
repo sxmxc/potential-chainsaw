@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="BuildToolbar" type="HBoxContainer" unique_id=1199303520]
+[node name="BuildToolbar" type="HFlowContainer" unique_id=1199303520]
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 [node name="Library" type="Button" parent="." unique_id=114523809]
+custom_minimum_size = Vector2(96, 0)
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
@@ -54,6 +55,7 @@ theme_type_variation = &"ToolbarButton"
 text = "−"
 
 [node name="Height" type="Label" parent="." unique_id=628266016]
+custom_minimum_size = Vector2(120, 0)
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"

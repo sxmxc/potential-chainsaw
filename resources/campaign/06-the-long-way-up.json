@@ -1,0 +1,130 @@
+{
+	"awards": {},
+	"bounds": [
+		-4.0,
+		-9.0,
+		7.0,
+		6.0,
+		0.0,
+		10.0
+	],
+	"camera": {},
+	"description": "Build a bucket elevator between the lower inlet and upper outlet.",
+	"difficulty": "Workshop",
+	"hints": [
+		"The elevator has separate input and output ports. Keep its rise at 4 m to meet the existing upper track."
+	],
+	"id": "campaign-06",
+	"inventory": {
+		"bucket-elevator": 1.0
+	},
+	"name": "The Long Way Up",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "elevator-demo-3",
+			"type": "deliver"
+		}
+	],
+	"order": 6.0,
+	"permissions": {},
+	"pieces": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "elevator-demo-1"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				4.0,
+				-2.0
+			],
+			"rotation": 0,
+			"uid": "elevator-demo-2"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				4.0,
+				-3.0
+			],
+			"rotation": 2,
+			"uid": "elevator-demo-3"
+		}
+	],
+	"prerequisites": [
+		"campaign-05"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "elevator-demo-1"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				4.0,
+				-2.0
+			],
+			"rotation": 0,
+			"uid": "elevator-demo-2"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				4.0,
+				-3.0
+			],
+			"rotation": 2,
+			"uid": "elevator-demo-3"
+		},
+		{
+			"config": {
+				"elevator_height": 4.0,
+				"elevator_speed": 0.8
+			},
+			"piece": "bucket-elevator",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "piece-18622559-53"
+		}
+	],
+	"status": "published",
+	"time_limit": 60.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "38c89752d11bd7d9f943dd89ef9baec70b0d26304f3bd10f96d457cb661f1708",
+		"physics_success": true,
+		"seconds": 12.7999999999999,
+		"tested_at": "2026-10-12T03:49:54"
+	},
+	"version": 1.0
+}

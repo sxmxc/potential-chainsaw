@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends HFlowContainer
 signal library_toggled
 var build: BuildManager
 var simulation: SimulationManager

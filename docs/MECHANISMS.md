@@ -1,4 +1,17 @@
-# Bucket elevator, resizable supports and supplied previews
+# Functional mechanisms, elevator, supports and previews
+
+Shrouded `fan-two`, `fan-four`, `fan-standing-two`, and `fan-standing-four` produce directed finite airflow. Select a fan to set power, range, reverse and initial enabled state. Standing fans push along local -Z; flat fans along local +Y. Their visible arrows reflect reversal. Link actions can activate, deactivate, toggle or reverse the operating field. The decorative blades do not collide as moving paddles.
+
+Exposed `fan-simple-two` and `fan-simple-four` use moving physical blade collision. Set angular speed (including negative rotation) in the inspector. They transfer momentum through contact and have no airflow force.
+
+The new Mechanisms catalog includes Gate, Diverter, Launcher and Sensor. A gate can start open/closed, release after a delay and close again automatically; its occupied clearance prevents crushing a marble. The Y-fork diverter physically guides left/right, accepts linked direction changes and optionally alternates after each marble clears the junction. The launcher's strength and elevation angle control a real impulse in its local forward direction. Its external mode physically holds an arriving marble until Fire, and auto-rearm can be disabled for single-shot use. A sensor emits Entered and optional Exited events without obstructing the lane.
+
+Selected mechanisms expose event/action linking in their inspector. Connections persist with track and puzzle saves, remap when assemblies are duplicated, and clean up when targets are deleted. Simulation reset restores configured initial state and clears per-run occupancy/firing/event state. Pause suspends mechanism motion and marble scheduling.
+
+See [Puzzle authoring](PUZZLE_AUTHORING.md) for campaign restrictions and linking, and [Campaign verification](CAMPAIGN_VERIFICATION.md) for the 53 real-physics mechanism checks and all ten verified puzzles.
+
+## Bucket elevator
+
 
 The elevator is complete as one construction piece. Find **Bucket Elevator** under **Mechanisms**, or open **Bucket Elevator** in the examples browser for a connected, playable four-piece route. Loading and Output use saved instances of the Kenney `straight` model and a saved triangle collision resource made from that mesh. The pocket has a small backstop to hold an arriving marble until a bucket is available.
 
@@ -8,7 +21,7 @@ The `end-square` mesh was inspected directly: identity local transform, 1×1 foo
 
 Capture is restricted to the loading pocket and one marble per bucket. A reusable ownership interface freezes the rigid body and temporarily removes its collision layer/mask. It interpolates the initial seating movement, preserves visible marble orientation, then moves the frozen body with the bucket during physics ticks. Discharge occurs at the tipped bucket mouth above the real exit track, with modest forward speed and a physical drop onto the bed. It never places the marble at the exit connector. The original collision, freeze mode and other touched state are restored on release/reset. Normal track movement remains rigid-body physics. This follows Godot's [RigidBody3D freeze API](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html#class-rigidbody3d-property-freeze).
 
-Build mode is stationary. Pause stops conveyor phase and retains capture state. Resume keeps a carried marble frozen until discharge. Reset restores the initial arrangement, clears queues and releases occupied buckets before the simulation removes its marble. The mechanism can process multiple arrivals; the game's existing test flow still releases one marble and ends when its finish is reached.
+Build mode is stationary. Pause stops conveyor phase and retains capture state. Resume keeps a carried marble frozen until discharge. Reset restores the initial arrangement, clears queues and releases occupied buckets before the simulation removes its marble. The mechanism can process multiple arrivals; Sandbox releases one marble, while campaign objectives support multiple scheduled releases and specified collectors.
 
 ## Supports
 
@@ -29,13 +42,13 @@ Support heights range from 1–30 m, with 0.125 m fine resolution. Height change
 
 Runtime code instantiates those existing scenes and adjusts mechanism state/height. It never writes or composes `.tscn` files at runtime. Editor-maintainable default arrangements are present before scripts run.
 
-All 165 PieceDefinition resources explicitly reference their previews. Kit pieces use `assets/models/previews/`; support family cards use their supplied top preview; the elevator retains its generated `resources/thumbnails/bucket-elevator.png`. Piece cards bind the resource's thumbnail directly, including the contextual extension picker.
+All 169 PieceDefinition resources explicitly reference their previews. Kit pieces use `assets/models/previews/`; support family cards use their supplied top preview; the elevator retains its generated `resources/thumbnails/bucket-elevator.png`. Piece cards bind the resource's thumbnail directly, including the contextual extension picker.
 
 ## Verification
 
 - Existing construction/physics regression suite: 169 checks, zero failures.
 - Elevator suite: 62 checks, zero failures. Physical input, capture, ascent, discharge and finish at 2/4/12 m and three rotations; pause/resume; occupied reset; repeated runs; three close arrivals; atomic settings/history; obstruction rollback; save/load; configured ghost geometry; upper output snapping; actual straight station models; selecting the assembly by clicking a bucket.
-- Support/preview suite: 1,156 checks, zero failures. Six families × both tops × minimum/default/fractional/maximum heights; matching segment continuity; unchanged cap scale; collision/bounds; history; duplication/deletion; save/load; ground anchoring; fitting beneath an elevated track; all supplied preview references.
+- Support/preview suite: 1,160 checks, zero failures. Six families × both tops × minimum/default/fractional/maximum heights; matching segment continuity; unchanged cap scale; collision/bounds; history; duplication/deletion; save/load; ground anchoring; fitting beneath an elevated track; all supplied preview references.
 - Nine elevator captures include Build mode at three resolutions, loading, ascent, tipping, discharge, finish and maximum height. Six support captures cover the families and Double top at 1280×720, 1600×900 and 1920×1080. Native inspector and HUD bounds fit the support captures. The previous fixed 700-pixel inventory minimum was changed to fill available container height and scroll, preventing small-window HUD clipping.
 
 The results and original framebuffer captures are under `docs/qa/` and `docs/*_test_results.txt`. Resolution captures use the actual game scenes with the Compatibility renderer; live Hera additionally checks the editor's Forward+ game. Standalone sandboxed processes may emit the existing Windows certificate-store initialization error.
