@@ -88,7 +88,7 @@ func create_dialogs() -> void:
 	message_dialog.closed.connect(modal_closed)
 func handle_action(action: String) -> void:
 	match action:
-		"campaign": puzzle_browser.open()
+		"campaign": puzzle_browser.open_campaign()
 		"puzzle_editor": puzzle_session.editor()
 		"sandbox":
 			if puzzle_session.mode != "sandbox": new_track()
@@ -244,11 +244,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func save_settings() -> void:
 	var config=ConfigFile.new()
 	config.set_value("camera","sensitivity",sandbox.camera.sensitivity)
-	config.save("user://settings.cfg")
+	config.save(SavePaths.resolve("user://settings.cfg"))
 
 func load_settings() -> void:
 	var config=ConfigFile.new()
-	if config.load("user://settings.cfg")==OK:
+	if config.load(SavePaths.resolve("user://settings.cfg"))==OK:
 		sandbox.camera.sensitivity=clampf(float(config.get_value("camera","sensitivity",1)),0.3,2.5)
 		settings_dialog.set_sensitivity(sandbox.camera.sensitivity)
 

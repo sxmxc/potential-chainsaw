@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "chapters": [
+    {"id": "introduction", "name": "Introduction", "order": 0, "optional": true, "introduction": true, "prerequisites": [], "description": "Optional: learn the tools through ten short puzzles.", "levels": ["campaign-01", "campaign-02", "campaign-03", "campaign-04", "campaign-05", "campaign-06", "campaign-07", "campaign-08", "campaign-09", "campaign-10"]},
+    {"id": "chapter-1", "name": "Chapter 1", "order": 1, "optional": false, "introduction": false, "prerequisites": [], "description": "Main Campaign: engineering puzzles combining limited inventory, elevation, momentum, and interacting mechanisms. Puzzles are being prepared.", "levels": []}
+  ]
+}

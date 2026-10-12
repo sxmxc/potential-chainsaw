@@ -12,9 +12,8 @@ func configure(value: PuzzleSession) -> void:
 	%Levels.pressed.connect(func(): session.game.puzzle_browser.open())
 	%Restart.pressed.connect(func(): session.player(session.puzzle, session.mode == "test"))
 	%Next.pressed.connect(func():
-		var levels = session.store.list_puzzles()
-		for i in levels.size() - 1:
-			if levels[i].id == session.puzzle.id: session.player(levels[i + 1]); return
+		var next = session.store.next_level(session.puzzle)
+		if not next.is_empty(): session.player(next); return
 		session.game.puzzle_browser.open())
 	session.mode_changed.connect(refresh)
 	session.game.sandbox.simulation.state_changed.connect(func(_state, _message): refresh())

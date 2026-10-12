@@ -17,6 +17,7 @@
 - Inventory is derived from the current layout. Duplication consumes stock; deletion and undo restore it. Permissions and boundaries apply to complete edits, including configured dimensions and mechanism links.
 - Keep authored starting layouts separate from player constructions and reference solutions. Returning from Test as Player restores the authored baseline.
 - PuzzleStore owns versioned JSON, progress and validation fingerprints. Drafts, published puzzles and campaign progress use separate user paths. Bundled levels live in `resources/campaign/`.
+- Chapters are data-driven through `resources/campaign_chapters.json` and puzzle chapter metadata. Introduction is optional and never gates main chapters. Both Next controls use PuzzleStore's chapter navigation. Preserve flat completion records by stable puzzle ID; store route/resume state separately in `campaign_state.json`.
 - Publishing requires a successful physical test matching the current authored definition. Content changes invalidate that proof. Revisions retain stable puzzle IDs.
 - Preserve existing track-save compatibility. Mechanism links use stable piece IDs, survive saves, remap within duplicated assemblies and are removed when their targets are deleted.
 
@@ -30,6 +31,6 @@
 
 ## Checks and generated output
 
-Run `./tools/verify_campaign.ps1` after construction, mechanism or campaign changes. It checks enabled compiler warnings, regression suites and positive/negative campaign cases. Saves and captured logs stay under ignored `.local-user/`; generated evidence does not belong in `docs/`.
+Run `./tools/verify_campaign.ps1` after construction, mechanism or campaign changes. It checks enabled compiler warnings, regression suites and positive/negative campaign cases. `SavePaths` redirects only application saves through `MARBLE_ENGINEER_TEST_DATA`; saves and logs use an automatically cleaned OS temporary directory. Never redirect `APPDATA` or copy Godot/project caches for tests. Generated evidence does not belong in `docs/`.
 
 Use the existing Godot editor for scene changes and live checks. Keep one editor per project. Review UI changes at small and large viewport sizes and exercise the affected interaction, rather than relying on source inspection alone.

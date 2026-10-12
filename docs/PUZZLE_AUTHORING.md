@@ -6,7 +6,7 @@ Run `scenes/main.tscn`. Press **Ctrl+Shift+P** to enter the developer editor; th
 
 1. Open **Authoring tools**. Create a new draft or open an existing draft/published puzzle.
 2. Construct the starting layout. Place at least one marble release and the collector or mechanism that will be the objective. A release's inspector sets quantity, spacing, delay and initial speed.
-3. In **Settings**, set name, description, order, difficulty, hints, prerequisites and time limit. Capture the intended camera. Optional time/piece award targets do not change the mandatory objective.
+3. In **Settings**, set name, description, chapter ID/display name, chapter order, optional/introduction classification, chapter unlock requirements, level order, difficulty, hints, prerequisites and time limit. Reuse a known chapter ID to populate its metadata, or enter a new ID to create a future chapter. Capture the intended camera. Optional time/piece award targets do not change the mandatory objective.
 4. Select an existing piece in the world. In **Permissions**, choose Fixed, Move, Rotate, Configure or Full, or set individual capabilities. Apply the permissions to the selection. Configurable pieces may be restricted to one setting with an optional numeric range; clearing the restriction allows the other configuration fields.
 5. In **Inventory**, choose catalog pieces and quantities. Zero removes a type. Players receive only this stock; fixed starting pieces do not spend it. Numeric setting limits can also restrict all inventory instances of a type, including elevator height.
 6. In **Boundaries**, draw the build region by clicking two corners on the current construction plane; set its lower/upper elevations. Draw forbidden regions similarly. Select a zone to redraw or remove it. Escape cancels a pending drawing operation. The wire cages show the resulting regions.
@@ -31,7 +31,7 @@ Construction and mechanism edits support undo/redo. Authoring metadata uses expl
 
 ## Saves and shipping content
 
-Godot's ordinary user data directory contains `puzzles/drafts`, `puzzles/published`, and `campaign_progress.json`. Local publication affects this installation. It does not automatically modify bundled project resources.
+Godot's ordinary user data directory contains `puzzles/drafts`, `puzzles/published`, `campaign_progress.json`, and `campaign_state.json`. Completion records retain stable puzzle IDs; campaign state records the introduction choice and resume location. Local publication affects this installation. It does not automatically modify bundled project resources.
 
 In **Publish**, export a campaign ZIP through the native file dialog. To include that content in a distributable game:
 
@@ -40,6 +40,8 @@ python tools/import_campaign.py path/to/campaign.zip
 ./tools/verify_campaign.ps1
 ```
 
-The import stages published JSON into `resources/campaign/`, matching existing IDs. Test the staged campaign in the target engine before export. In Godot's export preset, select all resources and add **`resources/campaign/*.json`** to the non-resource inclusion filter. JSON is essential campaign data; user-directory saves are not shipped. Keep imported model assets and the native scene/resource dependencies in the export. Then export through Godot with the matching platform templates installed.
+The bundle includes chapter metadata; import stages published JSON into `resources/campaign/`, matching existing IDs and filenames, and merges `resources/campaign_chapters.json`. Test the staged campaign in the target engine before export. In Godot's export preset, select all resources and add **`resources/campaign/*.json, resources/campaign_chapters.json`** to the non-resource inclusion filter. JSON is essential campaign data; user-directory saves are not shipped. Keep imported model assets and the native scene/resource dependencies in the export. Then export through Godot with the matching platform templates installed.
+
+Verification uses a uniquely named OS temporary directory for application save files and logs, removes it on exit, and leaves `APPDATA` unchanged. `-VisualReview` opens the chapter regression scene for Hera inspection with the same isolated saves and a three-minute automatic exit. It does not copy the project, Godot, or asset caches.
 
 For intentional fixture refresh after engine/physics changes, `./tools/verify_campaign.ps1 -PublishVerified` replaces bundled validation records only after all campaign cases pass. It is a developer verification command, not the authoring workflow. Future puzzle layouts and rules can be created entirely through the visual editor.

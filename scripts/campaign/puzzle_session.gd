@@ -50,6 +50,7 @@ func capture() -> Dictionary:
 	return puzzle.duplicate(true)
 
 func player(data: Dictionary, testing: bool = false) -> void:
+	if not testing: store.remember_level(data)
 	mode = "test" if testing else "campaign"
 	puzzle = data.duplicate(true)
 	game.sandbox.build.rules = null

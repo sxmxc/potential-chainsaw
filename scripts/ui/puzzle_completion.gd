@@ -12,9 +12,8 @@ func configure(value: PuzzleSession) -> void:
 	%LevelSelection.pressed.connect(func(): hide(); session.game.puzzle_browser.open())
 	%Next.pressed.connect(func():
 		hide()
-		var levels = session.store.list_puzzles()
-		for i in levels.size() - 1:
-			if levels[i].id == session.puzzle.id: session.player(levels[i + 1]); return
+		var next = session.store.next_level(session.puzzle)
+		if not next.is_empty(): session.player(next); return
 		session.game.puzzle_browser.open())
 	session.game.sandbox.simulation.state_changed.connect(result)
 	session.mode_changed.connect(func(): if session.game.sandbox.simulation.state != SimulationManager.State.SUCCESS: hide())

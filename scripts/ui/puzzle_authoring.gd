@@ -10,6 +10,14 @@ var refreshing: bool = false
 func configure(puzzle_session: PuzzleSession) -> void:
 	session = puzzle_session
 	close_requested.connect(hide)
+	%ChapterId.text_changed.connect(select_chapter)
+	%ChapterName.text_changed.connect(func(_text): update_chapter())
+	%ChapterOrder.value_changed.connect(func(_value): update_chapter())
+	%ChapterOptional.toggled.connect(func(_value): update_chapter())
+	%ChapterIntroduction.toggled.connect(func(value):
+		if value: %ChapterOptional.button_pressed = true
+		update_chapter())
+	%ChapterRequirements.text_changed.connect(func(_text): update_chapter())
 	%PuzzleName.text_changed.connect(func(text): if not refreshing: session.puzzle.name = text)
 	%Description.text_changed.connect(func(): if not refreshing: session.puzzle.description = %Description.text)
 	%Hint.text_changed.connect(func(): if not refreshing: session.puzzle.hints = [%Hint.text])
@@ -89,6 +97,7 @@ func open() -> void:
 	%PuzzleName.text = data.name
 	%Description.text = data.description
 	%Hint.text = "\n".join(data.get("hints", []))
+	show_chapter(session.store.chapter_for(data))
 	%Order.value = data.order
 	for index in %Difficulty.item_count:
 		if %Difficulty.get_item_text(index) == data.get("difficulty", "Introduction"): %Difficulty.select(index)
@@ -117,6 +126,34 @@ func open() -> void:
 		if level.id in data.get("prerequisites", []): %Prerequisites.select(index, false)
 	refreshing = false
 	popup_centered(Vector2i(560, 640))
+
+func show_chapter(chapter: Dictionary) -> void:
+	%ChapterId.text = chapter.get("id", "")
+	%ChapterName.text = chapter.get("name", "")
+	%ChapterOrder.value = chapter.get("order", 1)
+	%ChapterOptional.button_pressed = chapter.get("optional", false)
+	%ChapterIntroduction.button_pressed = chapter.get("introduction", false)
+	%ChapterRequirements.text = ", ".join(chapter.get("prerequisites", []))
+
+func select_chapter(id: String) -> void:
+	if refreshing: return
+	var available = session.store.list_puzzles()
+	available.append_array(session.store.list_puzzles(true))
+	for chapter in session.store.list_chapters(available):
+		if chapter.id == id.strip_edges():
+			refreshing = true
+			show_chapter(chapter)
+			refreshing = false
+			break
+	update_chapter()
+
+func update_chapter() -> void:
+	if refreshing: return
+	var requirements: Array[String] = []
+	for id in %ChapterRequirements.text.split(",", false):
+		if not id.strip_edges().is_empty(): requirements.append(id.strip_edges())
+	session.puzzle.chapter = {"id": %ChapterId.text.strip_edges(), "name": %ChapterName.text.strip_edges(), "order": int(%ChapterOrder.value), "optional": %ChapterOptional.button_pressed, "introduction": %ChapterIntroduction.button_pressed, "prerequisites": requirements}
+	session.game.sandbox.build.dirty = true
 
 func refresh_selection() -> void:
 	var build: BuildManager = session.game.sandbox.build
@@ -292,9 +329,14 @@ func export_package(path: String) -> void:
 	var count = 0
 	for data in session.store.list_puzzles():
 		if not data.get("validation", {}).get("physics_success", false): continue
+		data = data.duplicate(true)
+		# Manifest membership is exported separately to preserve validated fingerprints.
 		zip.start_file("campaign/" + data.id + ".json")
 		zip.write_file(JSON.stringify(data, "\t").to_utf8_buffer())
 		zip.close_file()
 		count += 1
+	zip.start_file("campaign_chapters.json")
+	zip.write_file(JSON.stringify({"version": 1, "chapters": session.store.list_chapters(session.store.list_puzzles())}, "\t").to_utf8_buffer())
+	zip.close_file()
 	zip.close()
 	%Validation.text = "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count

@@ -1,11 +1,14 @@
 class_name PuzzleStore
 extends RefCounted
 
-const DRAFTS = "user://puzzles/drafts"
-const PUBLISHED = "user://puzzles/published"
-const PROGRESS = "user://campaign_progress.json"
+static var DRAFTS: String = SavePaths.resolve("user://puzzles/drafts")
+static var PUBLISHED: String = SavePaths.resolve("user://puzzles/published")
+static var PROGRESS: String = SavePaths.resolve("user://campaign_progress.json")
+static var CAMPAIGN_STATE: String = SavePaths.resolve("user://campaign_state.json")
+const CHAPTERS = "res://resources/campaign_chapters.json"
 var catalog: PieceCatalog
 var progress: Dictionary = {}
+var campaign: Dictionary = {}
 var last_error: String = ""
 
 func _init(definitions: PieceCatalog) -> void:
@@ -14,9 +17,22 @@ func _init(definitions: PieceCatalog) -> void:
 	DirAccess.make_dir_recursive_absolute(PUBLISHED)
 	var saved = JSON.parse_string(FileAccess.get_file_as_string(PROGRESS)) if FileAccess.file_exists(PROGRESS) else null
 	if saved is Dictionary: progress = saved
+	var state = JSON.parse_string(FileAccess.get_file_as_string(CAMPAIGN_STATE)) if FileAccess.file_exists(CAMPAIGN_STATE) else null
+	if state is Dictionary:
+		campaign = state
+	elif not progress.is_empty():
+		# Legacy progress remains in place, including IDs, records, and awards.
+		campaign = {"version": 1, "started": true, "introduction_skipped": false}
+		var levels = list_puzzles()
+		for data in levels:
+			if not completed(data.id) and unlocked(data, levels):
+				campaign.current_level = data.id
+				campaign.current_chapter = chapter_for(data).id
+				break
+		if not campaign.has("current_chapter"): campaign.current_chapter = first_chapter(false).get("id", "")
 
 func create() -> Dictionary:
-	return {"version": 1, "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "order": 1, "difficulty": "Introduction", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "prerequisites": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
+	return {"version": 1, "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "chapter": first_chapter(false), "order": 1, "difficulty": "Workshop", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "prerequisites": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
 
 func fingerprint(data: Dictionary) -> String:
 	var content = data.duplicate(true)
@@ -29,6 +45,12 @@ func validate(data: Dictionary) -> Array[String]:
 	if int(data.get("version", 0)) != 1: errors.append("Unsupported puzzle version")
 	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))): errors.append("Invalid puzzle ID")
 	if str(data.get("name", "")).strip_edges().is_empty(): errors.append("A puzzle needs a name")
+	var chapter = chapter_for(data)
+	if not TrackSerializer.new(catalog).valid_id(str(chapter.get("id", ""))): errors.append("Invalid chapter ID")
+	if str(chapter.get("name", "")).strip_edges().is_empty(): errors.append("A chapter needs a display name")
+	if int(data.get("order", 0)) < 1: errors.append("Level order must be positive")
+	if chapter.get("introduction", false) and not chapter.get("optional", false): errors.append("Introduction chapters must be optional")
+	if not chapter.get("prerequisites", []) is Array: errors.append("Chapter unlock requirements must be a list")
 	var track = TrackSerializer.new(catalog)
 	var construction = track.decode(JSON.stringify({"version": 1, "name": str(data.get("name", "")), "pieces": data.get("pieces", [])}))
 	if construction.is_empty() or not track.warnings.is_empty(): errors.append("Starting construction is invalid: " + track.last_error + " ".join(track.warnings))
@@ -94,24 +116,153 @@ func list_puzzles(drafts: bool = false) -> Array[Dictionary]:
 			if data is Dictionary and (drafts or data.get("status") == "published"): by_id[data.id] = data
 	var result: Array[Dictionary] = []
 	for data in by_id.values(): result.append(data)
-	result.sort_custom(func(a, b): return int(a.order) < int(b.order))
+	result.sort_custom(func(a, b):
+		var ca = chapter_for(a)
+		var cb = chapter_for(b)
+		if int(ca.get("order", 1)) != int(cb.get("order", 1)): return int(ca.get("order", 1)) < int(cb.get("order", 1))
+		if ca.id != cb.id: return str(ca.id) < str(cb.id)
+		if int(a.order) != int(b.order): return int(a.order) < int(b.order)
+		return str(a.id) < str(b.id))
 	return result
 
 func unlocked(data: Dictionary, levels: Array) -> bool:
+	if completed(data.id): return true
+	var chapter = chapter_for(data)
+	# Introduction puzzles can always be revisited independently.
+	if chapter.get("introduction", false): return true
+	if not chapter_unlocked(chapter): return false
 	for id in data.get("prerequisites", []):
-		if not progress.has(id): return false
+		if not requirement_completed(id): return false
 	if not data.get("prerequisites", []).is_empty(): return true
-	if levels.is_empty() or data.id == levels[0].id: return true
-	for i in levels.size():
-		if levels[i].id == data.id: return progress.has(data.id) or progress.has(levels[i - 1].id)
+	var previous: Dictionary = {}
+	for level in levels:
+		if chapter_for(level).id != chapter.id: continue
+		if level.id == data.id: return previous.is_empty() or completed(previous.id)
+		previous = level
 	return false
+
+func completed(id: String) -> bool:
+	return progress.get(id, {}).get("completed", false)
+
+func base_chapters() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var data = JSON.parse_string(FileAccess.get_file_as_string(CHAPTERS))
+	if data is Dictionary:
+		for chapter in data.get("chapters", []): result.append(chapter)
+	result.sort_custom(func(a, b): return int(a.get("order", 1)) < int(b.get("order", 1)))
+	return result
+
+func chapter_for(data: Dictionary) -> Dictionary:
+	var metadata: Dictionary = data.get("chapter", {})
+	for chapter in base_chapters():
+		if metadata.get("id", "") == chapter.id or (metadata.is_empty() and data.get("id", "") in chapter.get("levels", [])):
+			var result = chapter.duplicate(true)
+			result.merge(metadata, true)
+			return result
+	if not metadata.is_empty(): return metadata
+	return first_chapter(false)
+
+func first_chapter(intro: bool) -> Dictionary:
+	for chapter in base_chapters():
+		if bool(chapter.get("introduction", false)) == intro: return chapter.duplicate(true)
+	return {}
+
+func list_chapters(levels: Array) -> Array[Dictionary]:
+	var by_id: Dictionary = {}
+	for chapter in base_chapters(): by_id[chapter.id] = chapter
+	for data in levels:
+		var chapter = chapter_for(data)
+		by_id[chapter.id] = chapter
+	var result: Array[Dictionary] = []
+	for chapter in by_id.values(): result.append(chapter)
+	result.sort_custom(func(a, b):
+		if int(a.get("order", 1)) != int(b.get("order", 1)): return int(a.get("order", 1)) < int(b.get("order", 1))
+		return str(a.id) < str(b.id))
+	return result
+
+func requirement_completed(id: String) -> bool:
+	# Optional introduction never gates the main campaign, even in legacy prerequisites.
+	for chapter in list_chapters(list_puzzles()):
+		if chapter.get("introduction", false) and id in chapter.get("levels", []): return true
+	for level in list_puzzles():
+		if level.id == id and chapter_for(level).get("introduction", false): return true
+	return completed(id)
+
+func chapter_unlocked(chapter: Dictionary) -> bool:
+	if chapter.get("introduction", false): return true
+	for id in chapter.get("prerequisites", []):
+		if not requirement_completed(id): return false
+	return true
+
+func chapter_progress(id: String, levels: Array) -> Dictionary:
+	var total = 0
+	var done = 0
+	for data in levels:
+		if chapter_for(data).id != id: continue
+		total += 1
+		if completed(data.id): done += 1
+	return {"completed": done, "total": total}
+
+func start_campaign(play_introduction: bool) -> Dictionary:
+	var chapter = first_chapter(play_introduction)
+	campaign = {"version": 1, "started": true, "introduction_skipped": not play_introduction, "current_chapter": chapter.get("id", ""), "current_level": ""}
+	var target = resume_level()
+	if not target.is_empty(): campaign.current_level = target.id
+	write(CAMPAIGN_STATE, campaign)
+	return target
+
+func remember_level(data: Dictionary) -> void:
+	if not campaign.get("started", false):
+		campaign = {"version": 1, "started": true, "introduction_skipped": false}
+	var chapter = chapter_for(data)
+	campaign.current_level = data.id
+	campaign.current_chapter = chapter.id
+	campaign["introduction_level" if chapter.get("introduction", false) else "main_level"] = data.id
+	write(CAMPAIGN_STATE, campaign)
+
+func resume_level() -> Dictionary:
+	var levels = list_puzzles()
+	for data in levels:
+		if data.id == campaign.get("current_level", "") and unlocked(data, levels): return data
+	for data in levels:
+		if chapter_for(data).id == campaign.get("current_chapter", "") and unlocked(data, levels) and not completed(data.id): return data
+	return {}
+
+func next_level(data: Dictionary) -> Dictionary:
+	var levels = list_puzzles()
+	var chapter = chapter_for(data)
+	var after = false
+	for level in levels:
+		if chapter_for(level).id != chapter.id: continue
+		if after: return level if unlocked(level, levels) else {}
+		if level.id == data.id: after = true
+	# Optional chapters join the main route; main chapters advance by chapter order.
+	for candidate in list_chapters(levels):
+		if candidate.get("optional", false): continue
+		if not chapter.get("optional", false) and int(candidate.get("order", 1)) <= int(chapter.get("order", 1)): continue
+		if not chapter_unlocked(candidate): continue
+		for level in levels:
+			if chapter_for(level).id == candidate.id and unlocked(level, levels) and not completed(level.id): return level
+		if chapter_progress(candidate.id, levels).total == 0:
+			campaign.current_chapter = candidate.id
+			campaign.current_level = ""
+			return {}
+	return {}
 
 func complete(data: Dictionary, seconds: float, count: int) -> void:
 	var previous: Dictionary = progress.get(data.id, {})
-	progress[data.id] = {"completed": true, "revision": data.get("revision", 1), "best_time": minf(seconds, float(previous.get("best_time", INF))), "fewest_pieces": mini(count, int(previous.get("fewest_pieces", 99999)))}
+	progress[data.id] = previous.duplicate(true)
+	progress[data.id].merge({"completed": true, "revision": data.get("revision", 1), "best_time": minf(seconds, float(previous.get("best_time", INF))), "fewest_pieces": mini(count, int(previous.get("fewest_pieces", 99999)))}, true)
 	var awards: Array = previous.get("awards", []).duplicate()
 	var goals: Dictionary = data.get("awards", {})
 	if float(goals.get("time", 0)) > 0 and seconds <= float(goals.time) and "time" not in awards: awards.append("time")
 	if int(goals.get("pieces", 0)) > 0 and count <= int(goals.pieces) and "pieces" not in awards: awards.append("pieces")
 	progress[data.id].awards = awards
 	write(PROGRESS, progress)
+	var next = next_level(data)
+	if not next.is_empty():
+		campaign.current_level = next.id
+		campaign.current_chapter = chapter_for(next).id
+	else:
+		campaign.current_level = ""
+	write(CAMPAIGN_STATE, campaign)

@@ -2,7 +2,7 @@ class_name TrackSerializer
 extends RefCounted
 
 const FORMAT_VERSION = 1
-const SAVE_DIR = "user://tracks"
+static var SAVE_DIR: String = SavePaths.resolve("user://tracks")
 var catalog: PieceCatalog
 var last_error: String = ""
 var warnings: Array[String] = []

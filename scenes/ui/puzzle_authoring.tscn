@@ -79,11 +79,62 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 wrap_mode = 1
 
+[node name="ChapterIdLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter ID (reuse an ID or create a new chapter)"
+autowrap_mode = 3
+
+[node name="ChapterId" type="LineEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChapterNameLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter display name"
+autowrap_mode = 3
+
+[node name="ChapterName" type="LineEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChapterOrderLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter navigation order"
+autowrap_mode = 3
+
+[node name="ChapterOrder" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 999.0
+
+[node name="ChapterOptional" type="CheckBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Optional chapter"
+
+[node name="ChapterIntroduction" type="CheckBox" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Introduction / tutorial chapter"
+
+[node name="ChapterRequirementsLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter unlock requirements (puzzle IDs, comma separated)"
+autowrap_mode = 3
+
+[node name="ChapterRequirements" type="LineEdit" parent="Surface/Contents/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="OrderLabel" type="Label" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=1771759475]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-text = "Campaign order"
+text = "Level order within chapter"
 autowrap_mode = 3
 
 [node name="Order" type="SpinBox" parent="Surface/Contents/Tabs/Settings/Fields" unique_id=865590472]

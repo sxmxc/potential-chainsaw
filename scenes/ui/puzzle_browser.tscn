@@ -26,9 +26,37 @@ theme_type_variation = &"SmallMutedLabel"
 text = "CAMPAIGN · build a working marble machine"
 autowrap_mode = 3
 
+[node name="StartChoice" type="VBoxContainer" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+
+[node name="PlayIntroduction" type="Button" parent="Surface/Contents/StartChoice"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Play Introduction"
+
+[node name="SkipIntroduction" type="Button" parent="Surface/Contents/StartChoice"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Skip Introduction"
+
+[node name="Chapters" type="OptionButton" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+fit_to_longest_item = false
+
+[node name="Resume" type="Button" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Resume campaign"
+
 [node name="Levels" type="ItemList" parent="Surface/Contents" unique_id=1239105248]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 340)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 
