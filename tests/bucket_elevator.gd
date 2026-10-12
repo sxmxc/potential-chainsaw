@@ -83,6 +83,7 @@ func run() -> void:
 	var normalized=Geometry.normalized({"elevator_height":999,"elevator_speed":-1})
 	check(normalized.elevator_height==12.0 and normalized.elevator_speed==0.25, "Configuration limits are enforced")
 	await test_route(2.0, 0.8, 0)
+	await test_route(2.0, 0.25, 3)
 	await test_route(4.0, 2.0, 1)
 	await test_route(12.0, 2.0, 2)
 	await test_multiple()
@@ -104,6 +105,11 @@ func test_route(lift_height: float, conveyor_speed: float, quarter: int) -> void
 	var sim: SimulationManager=game.sandbox.simulation
 	check(sim.start(), "Connected elevator route starts at height %.1f, rotation %d" % [lift_height,quarter])
 	var component=lift.elevator_component
+	var discharge: Dictionary = {"age": -1.0, "speed": 0.0, "checked": false}
+	component.marble_unloaded.connect(func(body: RigidBody3D):
+		discharge.age = 0.0
+		discharge.speed = body.linear_velocity.length()
+		check(body.angular_velocity.is_equal_approx(rotation_basis.y.cross(body.linear_velocity) / 0.2), "Discharge spin matches outlet rolling direction after rotation"))
 	var saw_capture=false
 	var max_rise=0.0
 	var previous_position=sim.marble.position
@@ -111,6 +117,12 @@ func test_route(lift_height: float, conveyor_speed: float, quarter: int) -> void
 	var pause_tested=false
 	for frame in 2400:
 		await physics_frame
+		if discharge.age >= 0.0 and not discharge.checked:
+			discharge.age += 1.0 / 120.0
+			if discharge.age >= 0.5:
+				discharge.checked = true
+				var forward_speed: float = sim.marble.linear_velocity.dot(rotation_basis * Vector3.FORWARD)
+				check(forward_speed > discharge.speed * 0.85, "Landing on the outlet retains forward momentum")
 		if Capture.is_carried(sim.marble):
 			saw_capture=true
 			biggest_step=maxf(biggest_step,sim.marble.position.distance_to(previous_position))

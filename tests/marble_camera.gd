@@ -30,9 +30,15 @@ func run() -> void:
 	var targets: Dictionary = {}
 	var bounded_horizon: bool = true
 	var transition_bank: float = 0.0
-	for frame in 120*42:
+	var previous_shot: int = -1
+	var chase_shots: int = 0
+	for frame in 120*70:
 		await process_frame
 		shots[director.shot] = true
+		if director.shot == 2 and previous_shot != 2:
+			chase_shots += 1
+			check(director.remaining >= 16.0 and director.remaining <= 20.0, "Showcase follows for 16–20 seconds per shot")
+		previous_shot = director.shot
 		var followed = menu_world.simulation_camera.chase.marble
 		if is_instance_valid(followed): targets[followed.get_instance_id()] = true
 		transition_bank = maxf(transition_bank, absf(menu_world.camera.global_basis.x.y))
@@ -40,6 +46,7 @@ func run() -> void:
 			bounded_horizon = bounded_horizon and absf(menu_world.camera.global_basis.x.y) < 0.01
 	check(shots.has(0) and shots.has(1) and shots.has(2) and shots.has(3), "Menu visits wide, detail, chase and return shots")
 	check(targets.size() >= 2, "Menu chooses different active marbles")
+	check(chase_shots >= 2, "Longer chase shots still cycle through different marbles")
 	check(bounded_horizon, "Settled menu chase horizon stays level")
 	print("CAMERA maximum bank during addon shot transitions: %.3f" % transition_bank)
 	check(player_host.get_active_pcam() == game.sandbox.camera.free_view, "Menu priorities cannot switch player camera")

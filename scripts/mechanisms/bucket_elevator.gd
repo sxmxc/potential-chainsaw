@@ -94,7 +94,8 @@ func _physics_process(delta: float) -> void:
 		var pose_data = sample(phase + index * loop_length() / buckets.size())
 		if bucket.occupied() and pose_data.ascending and pose_data.point.y >= lift_height + 0.8:
 			var released: RigidBody3D = bucket.transport.marble
-			bucket.unload(global_basis * Vector3(0, 0, -clampf(travel_speed, 0.65, 2)))
+			# Give the tipped marble momentum onto the outlet even at slow belt speeds.
+			bucket.unload(global_basis * Vector3(0, 0, -clampf(travel_speed + 0.6, 1.4, 2.6)))
 			unloaded_count += 1
 			marble_unloaded.emit(released)
 		elif not bucket.occupied() and pose_data.point.y < 0.22 and pose_data.point.z < 0.48:

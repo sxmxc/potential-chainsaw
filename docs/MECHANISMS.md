@@ -23,6 +23,7 @@ Choose **Bucket Elevator** under **Mechanisms**, or load its connected example f
 - The inlet stays anchored. Height changes update the output connector, frame, buckets, collision and placement bounds together.
 - Attach track to the upper connector without changing the building plane. Placement reserves the complete mechanism volume, including the moving buckets. Conflicting height changes are rejected.
 - Each bucket carries one marble from the loading pocket, tips above the output track and releases it onto the track. Multiple arrivals queue for available buckets.
+- Discharge adds forward speed (1.4–2.6 m/s, following belt speed) and matching rolling spin to preserve momentum on the outlet.
 - Build mode is stationary. Pause retains carried marbles; reset releases them and restores the initial arrangement.
 
 Editable scenes live in `scenes/mechanisms/`: `bucket_elevator.tscn`, `elevator_bucket.tscn`, `elevator_frame_section.tscn` and `elevator_track_station.tscn`.

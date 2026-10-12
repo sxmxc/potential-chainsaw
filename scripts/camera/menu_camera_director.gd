@@ -2,7 +2,7 @@ extends Node3D
 ## Scheduling only: PhantomCameraHost owns all transitions and interruption.
 @export_range(6.0, 30.0) var wide_duration: float = 11.0
 @export_range(4.0, 16.0) var detail_duration: float = 7.0
-@export_range(4.0, 8.0) var chase_duration: float = 6.0
+@export_range(8.0, 30.0) var chase_duration: float = 18.0
 @onready var world: WorldManager = $"../Track"
 @onready var detail: PhantomCamera3D = $Detail
 var active: bool = false
@@ -45,7 +45,7 @@ func _process(delta: float) -> void:
 		1, 3:
 			if _choose_marble():
 				shot = 2
-				remaining = random.randf_range(maxf(4.0, chase_duration-1.0), minf(8.0, chase_duration+1.0))
+				remaining = random.randf_range(maxf(8.0, chase_duration-2.0), minf(30.0, chase_duration+2.0))
 			else: _return_wide()
 		2:
 			world.simulation_camera.chase.stop()

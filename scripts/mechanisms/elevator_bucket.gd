@@ -28,7 +28,14 @@ func pose(point: Vector3, tip_angle: float, delta: float) -> void:
 	transport.place(global_transform * capture_offset.lerp(seated, blend))
 
 func unload(velocity: Vector3) -> void:
-	if transport: transport.release(velocity)
+	if transport:
+		var body: RigidBody3D = transport.marble
+		transport.release(velocity)
+		if is_instance_valid(body):
+			# Match outlet rolling speed instead of restoring the incoming spin.
+			var collision = body.get_node("Collision") as CollisionShape3D
+			var sphere = collision.shape as SphereShape3D
+			body.angular_velocity = global_basis.y.cross(velocity) / sphere.radius
 	transport = null
 
 func reset() -> void:

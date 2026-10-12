@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://du7qoi00w1j1f"]
 
-[ext_resource type="PackedScene" uid="uid://wgbq42kevblw" path="res://assets/models/GLB format/marble-center-butterfly-high.glb" id="1_il0lc"]
+[ext_resource type="Script" path="res://scripts/simulation/marble.gd" id="Script"]
 
 [sub_resource type="PhysicsMaterial" id="Physics"]
 friction = 0.2
@@ -17,8 +17,7 @@ physics_material_override = SubResource("Physics")
 continuous_cd = true
 linear_damp = 0.01
 angular_damp = 0.025
+script = ExtResource("Script")
 
 [node name="Collision" type="CollisionShape3D" parent="." unique_id=495954486]
 shape = SubResource("Sphere")
-
-[node name="Model" parent="." unique_id=1031836589 instance=ExtResource("1_il0lc")]
