@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://816wp88y5yxp"]
 
+[ext_resource type="Texture2D" uid="uid://drb7xaotmc8vy" path="res://assets/ui/icons/delete.svg" id="DeleteIcon"]
+[ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="EnvironmentIcon"]
 [ext_resource type="Script" uid="uid://d2s5cf04l5n1y" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
@@ -96,6 +98,13 @@ theme_type_variation = &"QuietButton"
 toggle_mode = true
 text = "Publish"
 metadata/page = 6
+
+[node name="EnvironmentPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=151025064]
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+toggle_mode = true
+text = "Environment"
+metadata/page = 7
 
 [node name="Tabs" type="TabContainer" parent="Surface/Contents/Body" unique_id=1307822684]
 unique_name_in_owner = true
@@ -849,7 +858,153 @@ theme_type_variation = &"SecondaryButton"
 text = "Export campaign"
 clip_text = true
 
+[node name="Environment" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=817384481]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+metadata/_tab_index = 7
+
+[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Environment" unique_id=580160787]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnvironmentHelp" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1225126398]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Choose a model, then click the grid. Click and drag objects to move them. R rotates; Esc cancels."
+autowrap_mode = 3
+
+[node name="EnvironmentCatalog" type="ItemList" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1139462374]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+fixed_icon_size = Vector2i(48, 48)
+
+[node name="PlaceEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1458807215]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Place selected model"
+
+[node name="EnvironmentEditing" type="CheckButton" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=11827061]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Edit environment"
+
+[node name="EnvironmentObjects" type="ItemList" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1167750353]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="EnvironmentSelection" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=910175921]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Select an object"
+
+[node name="EnvironmentX" type="SpinBox" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=2074673539]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -48.0
+max_value = 48.0
+step = 0.125
+prefix = "X "
+
+[node name="EnvironmentY" type="SpinBox" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1788397472]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -48.0
+max_value = 48.0
+step = 0.125
+prefix = "Y "
+
+[node name="EnvironmentZ" type="SpinBox" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=173373177]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -48.0
+max_value = 48.0
+step = 0.125
+prefix = "Z "
+
+[node name="ApplyEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=770614828]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Apply position"
+
+[node name="RotateEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1117211012]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Rotate 90°"
+
+[node name="DuplicateEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1745761690]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Duplicate"
+
+[node name="DeleteEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1794627705]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Remove"
+
+[node name="UndoEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1256427000]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Undo environment edit"
+
+[node name="RedoEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=1356711366]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Redo environment edit"
+
+[node name="LegacyEnvironmentLabel" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=37570712]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Fixed scene (existing puzzles)"
+
+[node name="EnvironmentRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=895290146]
+layout_mode = 2
+
+[node name="EnvironmentPath" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=921747857]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SmallMutedLabel"
+text = "No environment"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="ChooseEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=27158506]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Choose fixed environment scene"
+theme_type_variation = &"IconButton"
+icon = ExtResource("EnvironmentIcon")
+
+[node name="ClearEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=513348645]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Remove environment"
+theme_type_variation = &"IconButton"
+icon = ExtResource("DeleteIcon")
+
 [node name="ExportDialog" type="FileDialog" parent="." unique_id=1808200639]
 unique_name_in_owner = true
 access = 2
 filters = PackedStringArray("*.zip ; Campaign content bundle")
+
+[node name="EnvironmentDialog" type="FileDialog" parent="." unique_id=367484858]
+unique_name_in_owner = true
+title = "Open a File"
+file_mode = 0
+root_subfolder = "res://scenes/environments"
+filters = PackedStringArray("*.tscn ; Fixed environment scene")

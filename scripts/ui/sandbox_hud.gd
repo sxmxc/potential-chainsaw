@@ -53,7 +53,7 @@ func refresh() -> void:
 	%FileToolbar.refresh()
 	%BuildToolbar.refresh(library_open)
 	%EditToolbar.refresh()
-	%Toolbox.visible=library_open and simulation.state==SimulationManager.State.BUILD
+	%Toolbox.visible=library_open and simulation.state==SimulationManager.State.BUILD and not build.environment_editing
 	if notification_until==0:
 		%Status.text=""
 		if build.operation in ["move","duplicate"]:

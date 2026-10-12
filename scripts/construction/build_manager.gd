@@ -34,7 +34,9 @@ var movement_height: float = 0
 var pointer_offset: Vector3 = Vector3.ZERO
 var grid_visible: bool = true
 var snapping: bool = true
-var enabled: bool = false
+var environment_editing: bool = false
+var enabled: bool = false:
+	set(value): enabled = value and not environment_editing
 var proposed: Transform3D = Transform3D.IDENTITY
 var valid: bool = false
 var is_snapped: bool = false
@@ -215,7 +217,7 @@ func refresh_grid() -> void:
 	mesh.surface_end()
 	grid_mesh.mesh=mesh
 	grid_mesh.position.y=height+0.006
-	grid_mesh.visible=grid_visible and enabled
+	grid_mesh.visible=grid_visible and (enabled or environment_editing)
 
 func refresh_connectors() -> void:
 	if not connector_markers: return

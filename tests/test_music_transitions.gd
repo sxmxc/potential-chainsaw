@@ -1,8 +1,10 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 func playing_player(playlist: AudioStreamPlaylist) -> AudioStreamPlayer:
+	# Player identity is part of this regression; inspect nodes through Node's API,
+	# without touching the addon's pool bookkeeping or tween state.
 	for node in get_tree().root.get_node("SoundManager").find_children("*", "AudioStreamPlayer", true, false):
-		var player = node as AudioStreamPlayer
+		var player := node as AudioStreamPlayer
 		if player.stream == playlist and player.playing and not player.stream_paused:
 			return player
 	return null
@@ -12,7 +14,7 @@ func settle() -> void:
 
 func test_music_transitions() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	var menu_playlist: AudioStreamPlaylist = game.get_node("%MainMenu").main_menu_playlist
 	var world_playlist: AudioStreamPlaylist = game.sandbox.world_music_playlist
 	await settle()
@@ -43,5 +45,3 @@ func test_music_transitions() -> void:
 	game.puzzle_session.player(campaign_data)
 	await settle()
 	assert_true(playing_player(world_playlist) != null and playing_player(menu_playlist) == null, "Campaign activates World music")
-	game.queue_free()
-	await get_tree().process_frame

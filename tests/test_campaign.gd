@@ -1,11 +1,12 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 
 func before_each() -> void:
 	super()
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 
 func level(index: int) -> Dictionary:

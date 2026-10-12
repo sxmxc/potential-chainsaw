@@ -1,24 +1,47 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 var catalog: PieceCatalog
 var snap: SnapManager
 
-func test_catalog_models_and_previews_load() -> void:
-	var piece_catalog = PieceCatalog.new()
-	assert_eq(piece_catalog.pieces.size(), 169)
-	for definition in piece_catalog.pieces:
-		assert_not_null(definition.model, "%s model loads" % definition.id)
-		if definition.model:
-			assert_not_null(autofree(definition.model.instantiate()), "%s model instantiates" % definition.id)
-		assert_not_null(definition.thumbnail, "%s preview loads" % definition.id)
-		if definition.thumbnail:
-			assert_true(definition.thumbnail.get_width() > 0 and definition.thumbnail.get_height() > 0, "%s preview has image data" % definition.id)
-	for model in preload("res://scripts/simulation/marble.gd").MODELS:
-		assert_not_null(autofree(model.instantiate()), "Marble variant instantiates")
+class TestCatalog:
+	extends GutTest
+
+	func test_catalog_models_and_previews_load() -> void:
+		var piece_catalog = PieceCatalog.new()
+		assert_eq(piece_catalog.pieces.size(), 169)
+		for definition in piece_catalog.pieces:
+			assert_not_null(definition.model, "%s model loads" % definition.id)
+			if definition.model:
+				assert_not_null(autofree(definition.model.instantiate()), "%s model instantiates" % definition.id)
+			assert_not_null(definition.thumbnail, "%s preview loads" % definition.id)
+			if definition.thumbnail:
+				assert_true(definition.thumbnail.get_width() > 0 and definition.thumbnail.get_height() > 0, "%s preview has image data" % definition.id)
+		for model in preload("res://scripts/simulation/marble.gd").MODELS:
+			assert_not_null(autofree(model.instantiate()), "Marble variant instantiates")
+
+class TestPersistence:
+	extends "res://tests/support/game_test.gd"
+
+	func test_save_paths_are_owned_by_each_instance() -> void:
+		var definitions := PieceCatalog.new()
+		var first_tracks := TrackSerializer.new(definitions)
+		var first_puzzles := PuzzleStore.new(definitions)
+		var draft := first_puzzles.create()
+		assert_true(first_puzzles.save_draft(draft))
+		var track_id := first_tracks.save_track("First fixture", [])
+		assert_false(track_id.is_empty())
+		OS.set_environment("MARBLE_ENGINEER_TEST_DATA", test_directory.path_join("second"))
+		var second_tracks := TrackSerializer.new(definitions)
+		var second_puzzles := PuzzleStore.new(definitions)
+		assert_true(second_tracks.list_tracks().is_empty(), "Second instance cannot see first instance's track")
+		assert_false(FileAccess.file_exists(second_puzzles.drafts_directory.path_join(draft.id + ".json")))
+		assert_eq(first_tracks.load_track(track_id).name, "First fixture", "Existing instance retains its path after the environment changes")
+		assert_true(FileAccess.file_exists(first_puzzles.drafts_directory.path_join(draft.id + ".json")))
+		OS.set_environment("MARBLE_ENGINEER_TEST_DATA", test_directory)
+		assert_eq(TrackSerializer.new(definitions).load_track(track_id).name, "First fixture", "Recreated instance resolves the current fixture")
 
 func test_construction() -> void:
-	get_tree().root.size = Vector2i(1280, 720)
 	catalog=PieceCatalog.new()
 	snap=SnapManager.new()
 	assert_true(catalog.pieces.size()==169,"Imported models, start/finish, elevator and six support assemblies are cataloged")
@@ -48,7 +71,8 @@ func test_construction() -> void:
 	var unknown=serializer.decode('{"version":1,"name":"migration","pieces":[{"piece":"future-piece","position":[0,0,0],"rotation":0}]}')
 	assert_true(not unknown.is_empty() and unknown.pieces.is_empty() and serializer.warnings.size()==1,"Missing catalog entries report and skip")
 	game=load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	var build: BuildManager=game.sandbox.build
 	assert_true(ProjectSettings.get_setting("gui/theme/custom")=="res://resources/sandbox_theme.tres","Project-wide native Theme configured")
@@ -140,8 +164,6 @@ func test_construction() -> void:
 		assert_true(game.sandbox.simulation.marble==null and build.enabled,"Reset returns build mode and removes marble")
 	game.new_track()
 	assert_true(not game.qa_test(),"Missing release/finish fails without leaving build mode")
-	game.queue_free()
-	await get_tree().process_frame
 
 func check_connected_chain(pieces: Array[TrackPiece], title: String) -> void:
 	for i in range(0,pieces.size()-1):

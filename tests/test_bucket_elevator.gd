@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 const Geometry = preload("res://scripts/mechanisms/elevator_geometry.gd")
 const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
@@ -7,7 +7,7 @@ var game: Node
 func test_bucket_elevator() -> void:
 	get_tree().root.size = Vector2i(1280,720)
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	await get_tree().process_frame
 	game.enter_sandbox()
 	var build: BuildManager = game.sandbox.build

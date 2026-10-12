@@ -1,10 +1,10 @@
 class_name PuzzleStore
 extends RefCounted
 
-static var DRAFTS: String = SavePaths.resolve("user://puzzles/drafts")
-static var PUBLISHED: String = SavePaths.resolve("user://puzzles/published")
-static var PROGRESS: String = SavePaths.resolve("user://campaign_progress.json")
-static var CAMPAIGN_STATE: String = SavePaths.resolve("user://campaign_state.json")
+var drafts_directory: String = SavePaths.resolve("user://puzzles/drafts")
+var published_directory: String = SavePaths.resolve("user://puzzles/published")
+var progress_path: String = SavePaths.resolve("user://campaign_progress.json")
+var campaign_state_path: String = SavePaths.resolve("user://campaign_state.json")
 const CHAPTERS = "res://resources/campaign_chapters.json"
 var catalog: PieceCatalog
 var progress: Dictionary = {}
@@ -13,11 +13,11 @@ var last_error: String = ""
 
 func _init(definitions: PieceCatalog) -> void:
 	catalog = definitions
-	DirAccess.make_dir_recursive_absolute(DRAFTS)
-	DirAccess.make_dir_recursive_absolute(PUBLISHED)
-	var saved = JSON.parse_string(FileAccess.get_file_as_string(PROGRESS)) if FileAccess.file_exists(PROGRESS) else null
+	DirAccess.make_dir_recursive_absolute(drafts_directory)
+	DirAccess.make_dir_recursive_absolute(published_directory)
+	var saved = JSON.parse_string(FileAccess.get_file_as_string(progress_path)) if FileAccess.file_exists(progress_path) else null
 	if saved is Dictionary: progress = saved
-	var state = JSON.parse_string(FileAccess.get_file_as_string(CAMPAIGN_STATE)) if FileAccess.file_exists(CAMPAIGN_STATE) else null
+	var state = JSON.parse_string(FileAccess.get_file_as_string(campaign_state_path)) if FileAccess.file_exists(campaign_state_path) else null
 	if state is Dictionary:
 		campaign = state
 	elif not progress.is_empty():
@@ -32,17 +32,21 @@ func _init(definitions: PieceCatalog) -> void:
 		if not campaign.has("current_chapter"): campaign.current_chapter = first_chapter(false).get("id", "")
 
 func create() -> Dictionary:
-	return {"version": 1, "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "chapter": first_chapter(false), "order": 1, "difficulty": "Workshop", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "prerequisites": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
+	return {"version": 2, "environment_instances": [], "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "chapter": first_chapter(false), "order": 1, "difficulty": "Workshop", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "prerequisites": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
 
 func fingerprint(data: Dictionary) -> String:
 	var content = data.duplicate(true)
-	for key in ["solution", "validation", "status", "modified"]: content.erase(key)
+	for key in ["solution", "validation", "status", "modified", "environment_snapshot"]: content.erase(key)
+	if not str(data.get("environment", "")).is_empty() or not data.get("environment_instances", []).is_empty(): content["environment_signature"] = PuzzleEnvironment.definition_signature(data)
+	if content.get("environment_instances", []).is_empty(): content.erase("environment_instances")
 	# Canonicalize the numeric types and precision produced by JSON persistence.
 	return JSON.stringify(JSON.parse_string(JSON.stringify(content)), "", true, true).sha256_text()
 
 func validate(data: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
-	if int(data.get("version", 0)) != 1: errors.append("Unsupported puzzle version")
+	var environment = PuzzleEnvironment.inspect_definition(data)
+	for error in environment.errors: errors.append(str(error))
+	if int(data.get("version", 0)) not in [1, 2]: errors.append("Unsupported puzzle version")
 	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))): errors.append("Invalid puzzle ID")
 	if str(data.get("name", "")).strip_edges().is_empty(): errors.append("A puzzle needs a name")
 	var chapter = chapter_for(data)
@@ -63,6 +67,10 @@ func validate(data: Dictionary) -> Array[String]:
 		var definition = catalog.get_piece(piece.piece)
 		if not definition: errors.append("Unknown piece: " + piece.piece)
 		elif definition.behavior == "start": starts += 1
+		if definition:
+			if definition.behavior == "elevator": definition = TrackPiece.ElevatorGeometry.configured(definition, piece.get("config", {}))
+			elif definition.behavior == "resizable_support": definition = TrackPiece.SupportGeometry.configured(definition, piece.get("config", {}))
+			if PuzzleEnvironment.blocked(definition, Transform3D(Basis(Vector3.UP, int(piece.rotation) * PI / 2), Vector3(piece.position[0], piece.position[1], piece.position[2])), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
 	if starts == 0: errors.append("Place a marble release")
 	if data.get("objectives", []).is_empty(): errors.append("Add a completion objective")
 	for objective in data.get("objectives", []):
@@ -96,7 +104,7 @@ func write(path: String, data: Dictionary) -> bool:
 
 func save_draft(data: Dictionary) -> bool:
 	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))): return false
-	return write(DRAFTS + "/" + data.id + ".json", data)
+	return write(drafts_directory + "/" + data.id + ".json", data)
 
 func publish(data: Dictionary) -> bool:
 	var errors = validate(data)
@@ -104,11 +112,18 @@ func publish(data: Dictionary) -> bool:
 	if not errors.is_empty(): last_error = "\n".join(errors); return false
 	var published = data.duplicate(true)
 	published.status = "published"
-	return write(PUBLISHED + "/" + data.id + ".json", published)
+	published.erase("environment_snapshot")
+	if not str(data.get("environment", "")).is_empty() or not data.get("environment_instances", []).is_empty():
+		var snapshot_path: String = published_directory + "/" + data.id + "-" + fingerprint(data) + ".tscn"
+		if PuzzleEnvironment.freeze(data, snapshot_path) != OK:
+			last_error = "Could not preserve the published environment"
+			return false
+		published.environment_snapshot = snapshot_path
+	return write(published_directory + "/" + data.id + ".json", published)
 
 func list_puzzles(drafts: bool = false) -> Array[Dictionary]:
 	var by_id: Dictionary = {}
-	var directories = [DRAFTS] if drafts else ["res://resources/campaign", PUBLISHED]
+	var directories = ["res://resources/puzzle_drafts", drafts_directory] if drafts else ["res://resources/campaign", published_directory]
 	for directory in directories:
 		for filename in DirAccess.get_files_at(directory):
 			if not filename.ends_with(".json"): continue
@@ -208,7 +223,7 @@ func start_campaign(play_introduction: bool) -> Dictionary:
 	campaign = {"version": 1, "started": true, "introduction_skipped": not play_introduction, "current_chapter": chapter.get("id", ""), "current_level": ""}
 	var target = resume_level()
 	if not target.is_empty(): campaign.current_level = target.id
-	write(CAMPAIGN_STATE, campaign)
+	write(campaign_state_path, campaign)
 	return target
 
 func remember_level(data: Dictionary) -> void:
@@ -218,7 +233,7 @@ func remember_level(data: Dictionary) -> void:
 	campaign.current_level = data.id
 	campaign.current_chapter = chapter.id
 	campaign["introduction_level" if chapter.get("introduction", false) else "main_level"] = data.id
-	write(CAMPAIGN_STATE, campaign)
+	write(campaign_state_path, campaign)
 
 func resume_level() -> Dictionary:
 	var levels = list_puzzles()
@@ -258,11 +273,11 @@ func complete(data: Dictionary, seconds: float, count: int) -> void:
 	if float(goals.get("time", 0)) > 0 and seconds <= float(goals.time) and "time" not in awards: awards.append("time")
 	if int(goals.get("pieces", 0)) > 0 and count <= int(goals.pieces) and "pieces" not in awards: awards.append("pieces")
 	progress[data.id].awards = awards
-	write(PROGRESS, progress)
+	write(progress_path, progress)
 	var next = next_level(data)
 	if not next.is_empty():
 		campaign.current_level = next.id
 		campaign.current_chapter = chapter_for(next).id
 	else:
 		campaign.current_level = ""
-	write(CAMPAIGN_STATE, campaign)
+	write(campaign_state_path, campaign)

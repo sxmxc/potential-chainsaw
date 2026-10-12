@@ -10,10 +10,11 @@ import sys
 import zipfile
 
 def import_bundle(bundle_path, destination):
-    """Validate and stage only JSON campaign data into the selected directory."""
+    """Validate and stage campaign data and frozen native environments into the selected directory."""
     destination = pathlib.Path(destination)
     with zipfile.ZipFile(bundle_path) as bundle:
         pending = []
+        environments = {}
         chapter_path = destination.parent / "campaign_chapters.json"
         chapter_data = None
         if "campaign_chapters.json" in bundle.namelist():
@@ -44,12 +45,32 @@ def import_bundle(bundle_path, destination):
             data = json.loads(bundle.read(entry))
             if not re.fullmatch(r"[a-zA-Z0-9_-]{1,100}", data.get("id", "")):
                 raise ValueError("Invalid puzzle ID")
-            if data.get("version") != 1 or data.get("status") != "published":
+            if data.get("version") not in (1, 2) or data.get("status") != "published":
                 raise ValueError("Bundle contains unsupported or unpublished content")
             if not data.get("validation", {}).get("physics_success") or not data.get("solution"):
                 raise ValueError("Bundle contains untested content")
+            snapshot = data.get("environment_snapshot", "")
+            if snapshot:
+                filename = pathlib.PurePosixPath(snapshot).name
+                expected = "res://resources/campaign/environments/" + filename
+                if snapshot != expected or not re.fullmatch(r"[a-zA-Z0-9_-]+\.tscn", filename):
+                    raise ValueError("Invalid environment snapshot path")
+                entry = bundle.getinfo("environments/" + filename)
+                if entry.file_size > 50_000_000:
+                    raise ValueError("Environment snapshot exceeds size limit")
+                contents = bundle.read(entry)
+                # Frozen geometry has no scripts or mutable external dependencies.
+                text = contents.decode("utf-8")
+                if "[ext_resource" in text or 'type="Script"' in text or not text.startswith("[gd_scene"):
+                    raise ValueError("Environment snapshot must contain only bundled native resources")
+                environments[filename] = contents
             pending.append((destination / (data["id"] + ".json"), data))
         destination.mkdir(parents=True, exist_ok=True)
+        if environments:
+            environment_dir = destination / "environments"
+            environment_dir.mkdir(exist_ok=True)
+            for filename, contents in environments.items():
+                (environment_dir / filename).write_bytes(contents)
         for path, data in pending:
             matches = [p for p in destination.glob("*.json") if json.loads(p.read_text(encoding="utf-8")).get("id") == data["id"]]
             if matches:

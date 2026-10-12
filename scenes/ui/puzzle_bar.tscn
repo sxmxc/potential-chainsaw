@@ -1,45 +1,31 @@
 [gd_scene format=3 uid="uid://cla2de6nd36p7"]
 
-[ext_resource type="Script" uid="uid://dsjtodkys2qvo" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
-[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Script" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/undo.svg" id="Back"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/save.svg" id="Save"]
 
-[node name="PuzzleBar" type="PanelContainer" unique_id=223460734]
-size_flags_horizontal = 0
+[node name="PuzzleBar" type="PanelContainer"]
+size_flags_vertical = 4
 theme = ExtResource("Theme")
 theme_type_variation = &"UnframedPanel"
 script = ExtResource("Script")
 
-[node name="Contents" type="VBoxContainer" parent="." unique_id=2057856055]
+[node name="Actions" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Actions" type="HFlowContainer" parent="Contents" unique_id=1063786482]
-layout_mode = 2
-
-[node name="Author" type="Button" parent="Contents/Actions" unique_id=225476015]
+[node name="ReturnEditor" type="Button" parent="Actions"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Authoring tools"
+theme_type_variation = &"IconButton"
+icon = ExtResource("Back")
+tooltip_text = "Return to editor"
 
-[node name="TestPlayer" type="Button" parent="Contents/Actions" unique_id=1059598128]
+[node name="SolutionActions" type="MenuButton" parent="Actions"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Test as player"
-
-[node name="ReturnEditor" type="Button" parent="Contents/Actions" unique_id=2005915677]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Return to editor"
-
-[node name="Preserve" type="Button" parent="Contents/Actions" unique_id=261910764]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Save solution"
-
-[node name="Reference" type="Button" parent="Contents/Actions" unique_id=1571643929]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Load solution"
+theme_type_variation = &"IconButton"
+icon = ExtResource("Save")
+tooltip_text = "Solution tools"

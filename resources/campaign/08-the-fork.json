@@ -1,221 +1,221 @@
 {
-	"awards": {},
-	"bounds": [
-		-4.0,
-		-9.0,
-		7.0,
-		6.0,
-		0.0,
-		10.0
-	],
-	"camera": {},
-	"description": "Route the marble into the right-hand collector.",
-	"difficulty": "Workshop",
-	"hints": [
-		"Clear Route left in the diverter inspector. The left catcher is not the objective."
-	],
-	"id": "campaign-08",
-	"inventory": {},
-	"name": "The Fork",
-	"objectives": [
-		{
-			"count": 1.0,
-			"target": "goal",
-			"type": "deliver"
-		}
-	],
-	"order": 8.0,
-	"permissions": {
-		"fork": {
-			"config_keys": [
-				"left"
-			],
-			"configure": true,
-			"duplicate": false,
-			"move": false,
-			"remove": false,
-			"rotate": false
-		}
-	},
-	"pieces": [
-		{
-			"config": {
-				"release_speed": 1.4
-			},
-			"piece": "sandbox-start",
-			"position": [
-				0.0,
-				0.0,
-				-2.5
-			],
-			"rotation": 2,
-			"uid": "release"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				0.0,
-				0.0,
-				-1.5
-			],
-			"rotation": 0,
-			"uid": "approach"
-		},
-		{
-			"config": {
-				"left": true
-			},
-			"piece": "diverter",
-			"position": [
-				0.0,
-				0.0,
-				0.0
-			],
-			"rotation": 0,
-			"uid": "fork"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				2.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "right"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				3.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "goal"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				-2.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "side"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				-3.0,
-				0.0,
-				0.5
-			],
-			"rotation": 3,
-			"uid": "wrong-goal"
-		}
-	],
-	"prerequisites": [
-		"campaign-07"
-	],
-	"restricted_zones": [],
-	"revision": 1.0,
-	"solution": [
-		{
-			"config": {
-				"release_speed": 1.4
-			},
-			"piece": "sandbox-start",
-			"position": [
-				0.0,
-				0.0,
-				-2.5
-			],
-			"rotation": 2,
-			"uid": "release"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				0.0,
-				0.0,
-				-1.5
-			],
-			"rotation": 0,
-			"uid": "approach"
-		},
-		{
-			"config": {
-				"left": false
-			},
-			"piece": "diverter",
-			"position": [
-				0.0,
-				0.0,
-				0.0
-			],
-			"rotation": 0,
-			"uid": "fork"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				2.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "right"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				3.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "goal"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				-2.0,
-				0.0,
-				0.5
-			],
-			"rotation": 1,
-			"uid": "side"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				-3.0,
-				0.0,
-				0.5
-			],
-			"rotation": 3,
-			"uid": "wrong-goal"
-		}
-	],
-	"status": "published",
-	"time_limit": 25.0,
-	"validation": {
-		"engine": "4.7.2-stable (official)",
-		"fingerprint": "4b1a4e22ef11df924d0a19a2e500fc055c4c3280af401fa4778bc393f6506131",
-		"physics_success": true,
-		"seconds": 5.38333333333339,
-		"tested_at": "2026-10-12T03:50:02"
-	},
-	"version": 1.0
+  "awards": {},
+  "bounds": [
+    -4.0,
+    -9.0,
+    7.0,
+    6.0,
+    0.0,
+    10.0
+  ],
+  "camera": {},
+  "description": "Route the marble into the right-hand collector.",
+  "difficulty": "Workshop",
+  "hints": [
+    "Clear Route left in the diverter inspector. The left catcher is not the objective."
+  ],
+  "id": "campaign-08",
+  "inventory": {},
+  "name": "The Fork",
+  "objectives": [
+    {
+      "count": 1.0,
+      "target": "goal",
+      "type": "deliver"
+    }
+  ],
+  "order": 8.0,
+  "permissions": {
+    "fork": {
+      "config_keys": [
+        "left"
+      ],
+      "configure": true,
+      "duplicate": false,
+      "move": false,
+      "remove": false,
+      "rotate": false
+    }
+  },
+  "pieces": [
+    {
+      "config": {
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        0.0,
+        -2.5
+      ],
+      "rotation": 2.0,
+      "uid": "release"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        0.0,
+        -1.5
+      ],
+      "rotation": 0.0,
+      "uid": "approach"
+    },
+    {
+      "config": {
+        "left": true
+      },
+      "piece": "diverter",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": 0.0,
+      "uid": "fork"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        2.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "right"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        3.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "goal"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        -2.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "side"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        -3.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 3.0,
+      "uid": "wrong-goal"
+    }
+  ],
+  "prerequisites": [
+    "campaign-07"
+  ],
+  "restricted_zones": [],
+  "revision": 1.0,
+  "solution": [
+    {
+      "config": {
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        0.0,
+        -2.5
+      ],
+      "rotation": 2.0,
+      "uid": "release"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        0.0,
+        -1.5
+      ],
+      "rotation": 0.0,
+      "uid": "approach"
+    },
+    {
+      "config": {
+        "left": false
+      },
+      "piece": "diverter",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": 0.0,
+      "uid": "fork"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        2.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "right"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        3.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "goal"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        -2.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 1.0,
+      "uid": "side"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        -3.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 3.0,
+      "uid": "wrong-goal"
+    }
+  ],
+  "status": "published",
+  "time_limit": 25.0,
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "4b1a4e22ef11df924d0a19a2e500fc055c4c3280af401fa4778bc393f6506131",
+    "physics_success": true,
+    "seconds": 5.38333333333339,
+    "tested_at": "2026-10-12T03:50:02"
+  },
+  "version": 1.0
 }

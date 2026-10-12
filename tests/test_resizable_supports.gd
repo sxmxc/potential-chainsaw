@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 const Geometry=preload("res://scripts/construction/support_geometry.gd")
 const FAMILIES=["support-single","support-two","support-four","support-color-single","support-color-two","support-color-four"]
@@ -7,7 +7,7 @@ var game: Node
 func test_resizable_supports() -> void:
 	get_tree().root.size=Vector2i(1280,720)
 	game=load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	await get_tree().process_frame
 	game.enter_sandbox()
 	var build: BuildManager=game.sandbox.build
@@ -72,5 +72,3 @@ func test_resizable_supports() -> void:
 	build.update_preview()
 	assert_true(build.ghost.configuration.support_height==5.0 and build.proposed.origin.y==0,"Hovering an elevated level track sizes the support to it with its base on ground")
 	assert_true(build.valid,"A fitted support can sit below the matching track without false overlap")
-	game.queue_free()
-	await get_tree().process_frame

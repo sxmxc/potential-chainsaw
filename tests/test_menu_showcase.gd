@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends GutTest
 
 func test_menu_showcase() -> void:
 	var showcase=load("res://scenes/showcase.tscn").instantiate()

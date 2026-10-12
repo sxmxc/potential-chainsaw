@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 
@@ -7,17 +7,18 @@ func item(id: String, uid: String, z: float, turn: int = 0) -> Dictionary:
 
 func place(build: BuildManager, id: String, at: Vector3) -> void:
 	build.choose(game.catalog.get_piece(id))
+	assert_not_null(build.ghost, "Inventory permits " + id)
 	if not build.ghost: return
 	build.proposed = Transform3D(Basis.IDENTITY, at)
-	build.valid = true
+	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces).is_empty()
 	build.ghost.visible = true
 	build.commit()
 	build.cancel()
 
 func test_puzzle_workflow() -> void:
-	get_tree().root.size = Vector2i(1280, 720)
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	var session: PuzzleSession = game.puzzle_session
 	var build: BuildManager = game.sandbox.build
@@ -95,8 +96,3 @@ func test_puzzle_workflow() -> void:
 	session.puzzle.description = "Revised"
 	assert_true(not session.publish(), "Content edit invalidates working solution proof")
 	game.message_dialog.close()
-	for path in [PuzzleStore.DRAFTS + "/" + data.id + ".json", PuzzleStore.PUBLISHED + "/" + data.id + ".json"]: DirAccess.remove_absolute(path)
-	session.store.progress.erase(data.id)
-	session.store.write(PuzzleStore.PROGRESS, session.store.progress)
-	game.queue_free()
-	await get_tree().process_frame

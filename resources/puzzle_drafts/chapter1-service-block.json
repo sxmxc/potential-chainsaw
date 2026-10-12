@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "id": "chapter1-service-block",
+  "revision": 1,
+  "name": "Service block",
+  "description": "Deliver the marble to the far collector.",
+  "chapter": {
+    "id": "chapter-1",
+    "name": "Chapter 1",
+    "order": 1,
+    "optional": false,
+    "introduction": false,
+    "prerequisites": []
+  },
+  "order": 1,
+  "difficulty": "Workshop",
+  "pieces": [
+    {
+      "uid": "release",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        1.5,
+        4
+      ],
+      "rotation": 0,
+      "config": {
+        "release_speed": 1.4
+      }
+    },
+    {
+      "uid": "goal",
+      "piece": "sandbox-finish",
+      "position": [
+        4,
+        1,
+        -4
+      ],
+      "rotation": 2,
+      "config": {}
+    }
+  ],
+  "permissions": {},
+  "inventory": {
+    "straight": 10,
+    "curve": 6,
+    "ramp-long-a": 6,
+    "ramp-long-b": 3,
+    "corner": 4
+  },
+  "bounds": [
+    -4,
+    -5,
+    6,
+    5,
+    0,
+    4
+  ],
+  "restricted_zones": [],
+  "objectives": [
+    {
+      "type": "deliver",
+      "target": "goal",
+      "source": "release",
+      "count": 1
+    }
+  ],
+  "hints": [],
+  "prerequisites": [],
+  "camera": {
+    "focus": [
+      0,
+      1,
+      0
+    ],
+    "yaw": 0.65,
+    "pitch": 0.65,
+    "distance": 17
+  },
+  "awards": {},
+  "solution": [
+    {
+      "uid": "release",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        1.5,
+        4
+      ],
+      "rotation": 0,
+      "config": {
+        "release_speed": 1.4
+      }
+    },
+    {
+      "uid": "goal",
+      "piece": "sandbox-finish",
+      "position": [
+        4,
+        1,
+        -4
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "s1",
+      "piece": "ramp-long-a",
+      "position": [
+        0,
+        1.25,
+        2.5
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "s2",
+      "piece": "curve",
+      "position": [
+        0.5,
+        1.25,
+        0.5
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "s3",
+      "piece": "straight",
+      "position": [
+        2,
+        1.25,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "s4",
+      "piece": "curve",
+      "position": [
+        3.5,
+        1.25,
+        -0.5
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "s5",
+      "piece": "ramp-long-a",
+      "position": [
+        4,
+        1,
+        -2.5
+      ],
+      "rotation": 0,
+      "config": {}
+    }
+  ],
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "d6d1f9982abc9e3025b67d34a99b5906222260ecd7336c2c8f4d49b833754591",
+    "physics_success": true,
+    "seconds": 7.15833333333348,
+    "tested_at": "2026-10-12T21:24:05"
+  },
+  "status": "draft",
+  "time_limit": 60,
+  "environment": "res://scenes/environments/service_block.tscn"
+}

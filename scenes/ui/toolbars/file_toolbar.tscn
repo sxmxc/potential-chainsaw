@@ -48,6 +48,19 @@ layout_mode = 2
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
 
+[node name="Open" type="Button" parent="LeftIsland/Controls"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Open puzzle"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"IconButton"
+script = ExtResource("IconScript")
+icon_name = &"open"
+
 [node name="Save" type="Button" parent="LeftIsland/Controls" unique_id=1705256878]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 40)
@@ -117,8 +130,11 @@ theme_type_variation = &"AccentSmallLabel"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"ToolbarButton"
-text = "Authoring tools"
+custom_minimum_size = Vector2(40, 40)
+theme_type_variation = &"IconButton"
+tooltip_text = "Authoring tools"
+script = ExtResource("IconScript")
+icon_name = &"pieces"
 
 [node name="Test" type="Button" parent="RightIsland/Controls" unique_id=392098965]
 unique_name_in_owner = true

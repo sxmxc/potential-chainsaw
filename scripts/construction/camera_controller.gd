@@ -77,8 +77,20 @@ func _unhandled_input(event: InputEvent) -> void:
 			target_yaw -= event.relative.x*0.006*sensitivity*(-1.0 if invert_x else 1.0)
 			target_pitch = clampf(target_pitch+event.relative.y*0.006*sensitivity*(-1.0 if invert_y else 1.0),-0.3,1.48)
 		elif drag_button == MOUSE_BUTTON_MIDDLE:
-			var up = global_basis.y if event.shift_pressed else Vector3(global_basis.z.x,0,global_basis.z.z).normalized()
-			target_focus += (-global_basis.x*event.relative.x+up*event.relative.y)*target_distance*0.0018*sensitivity
+			target_focus += pan_offset(event.position, event.relative, event.shift_pressed) * sensitivity
+
+func pan_offset(pointer: Vector2, motion: Vector2, vertical: bool = false) -> Vector3:
+	# Grab the construction plane beneath the cursor. A screen-space drag then
+	# keeps that point beneath the cursor at any zoom, pitch or viewport size.
+	# Shift uses a plane parallel to the view, preserving vertical camera pan.
+	var normal := global_basis.z if vertical else Vector3.UP
+	var plane := Plane(normal, normal.dot(focus_point))
+	var previous = plane.intersects_ray(project_ray_origin(pointer - motion), project_ray_normal(pointer - motion))
+	var current_cam = plane.intersects_ray(project_ray_origin(pointer), project_ray_normal(pointer))
+	if previous == null or current_cam == null: return Vector3.ZERO
+	# A nearly horizontal view can put the intersection far beyond the machine.
+	if not vertical and (global_position.distance_to(previous) > distance * 8 or global_position.distance_to(current_cam) > distance * 8): return Vector3.ZERO
+	return previous - current
 
 func _input(event: InputEvent) -> void:
 	# GUI consumption of a release must not leave an orbit/pan gesture latched.

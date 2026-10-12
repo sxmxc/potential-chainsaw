@@ -17,6 +17,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%Undo.icon=get_theme_icon("undo","SandboxIcons")
 	%Redo.icon=get_theme_icon("redo","SandboxIcons")
 	%Save.pressed.connect(func():action_requested.emit("save"))
+	%Open.pressed.connect(func():action_requested.emit("open_puzzle"))
 	%SaveAs.pressed.connect(func():action_requested.emit("save_as"))
 	%Undo.pressed.connect(build.undo)
 	%Redo.pressed.connect(build.redo)
@@ -34,6 +35,7 @@ func refresh() -> void:
 	%Undo.disabled=not build.enabled or build.history.cursor==0
 	%Redo.disabled=not build.enabled or build.history.cursor>=build.history.commands.size()
 	%Save.visible = not session or session.mode in ["sandbox", "editor"]
+	%Open.visible = session != null and session.mode == "editor"
 	%Save.tooltip_text = "Save draft · Ctrl+S" if session and session.mode == "editor" else "Save track · Ctrl+S"
 	%SaveAs.visible = false
 	%Author.visible=session!=null and session.mode=="editor"

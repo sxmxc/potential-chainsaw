@@ -1,8 +1,8 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 func test_marble_camera() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	await wait_seconds(0.1)
 	var showcase = game.get_node("%MainMenu").showcase
 	var director = showcase.director

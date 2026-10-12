@@ -1,11 +1,11 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 var build: BuildManager
 
 func test_group_editing_and_input() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	game.qa_resolution(1280,720)
 	game.enter_sandbox()
 	for frame in 8: await get_tree().process_frame

@@ -1,12 +1,43 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 func settle() -> void:
 	for i in 4: await get_tree().process_frame
 
+func test_draft_player_hud_fits_small_windows() -> void:
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	var session: PuzzleSession = game.puzzle_session
+	var drafts: Array = session.store.list_puzzles(true).filter(func(data): return str(data.id).begins_with("chapter1-"))
+	assert_eq(drafts.size(), 3)
+	for dimensions in [Vector2i(1024, 720), Vector2i(1280, 720)]:
+		game.qa_resolution(dimensions.x, dimensions.y)
+		for data in drafts:
+			session.editor(data)
+			await settle()
+			var toolbar: Control = game.get_node("%HUD").get_node("%FileToolbar")
+			var open_button: Button = toolbar.get_node("%Open")
+			assert_true(open_button.visible and open_button.icon != null, "Editor exposes a recognizable Open action")
+			assert_eq(open_button.get_index() + 1, toolbar.get_node("%Save").get_index(), "Open sits beside Save")
+			assert_true(Rect2(Vector2.ZERO, Vector2(dimensions)).grow(0.5).encloses(toolbar.get_global_rect()), "Editor toolbar fits the window")
+			open_button.pressed.emit()
+			assert_true(game.puzzle_browser.visible and game.puzzle_browser.editing, "Open goes directly to the editor puzzle library")
+			game.puzzle_browser.close()
+			assert_true(session.test_player())
+			await settle()
+			assert_false(open_button.visible, "Player tests do not expose draft loading")
+			var hud: Control = game.get_node("%HUD")
+			var viewport := Rect2(Vector2.ZERO, Vector2(dimensions))
+			for control: Control in [hud, hud.get_node("%FileToolbar"), hud.get_node("%Toolbox"), hud.get_node("%BuildToolbar"), game.puzzle_bar]:
+				assert_true(viewport.grow(0.5).encloses(control.get_global_rect()), data.name + " keeps " + control.name + " inside " + str(dimensions))
+			assert_lt(game.puzzle_bar.size.y, 60.0, "Test actions stay in one compact toolbar row")
+			assert_not_null(game.puzzle_bar.get_node("%ReturnEditor").icon)
+			assert_false(game.puzzle_bar.get_node("%SolutionActions").get_popup().visible, "References stay behind an explicit menu action")
+			session.return_editor()
+
 func test_ui_workflows() -> void:
 	get_tree().root.size=Vector2i(1280,720)
 	var game=load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	game.qa_resolution(1280,720)
 	await settle()
 	var hud=game.get_node("%HUD")

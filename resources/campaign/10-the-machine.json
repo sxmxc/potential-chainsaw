@@ -1,241 +1,241 @@
 {
-	"awards": {},
-	"bounds": [
-		-4.0,
-		-9.0,
-		7.0,
-		6.0,
-		0.0,
-		10.0
-	],
-	"camera": {},
-	"description": "Lift, detect, release, and launch into the upper collector.",
-	"difficulty": "Machine",
-	"hints": [
-		"Add the 4 m elevator and a landing track. Link sensor Entered to gate Open and launcher Fire. Leave a one-cell jump gap."
-	],
-	"id": "campaign-10",
-	"inventory": {
-		"bucket-elevator": 1.0,
-		"straight": 1.0
-	},
-	"name": "The Machine",
-	"objectives": [
-		{
-			"count": 1.0,
-			"target": "goal",
-			"type": "deliver"
-		}
-	],
-	"order": 10.0,
-	"permissions": {
-		"detector": {
-			"config_keys": [
-				"links"
-			],
-			"configure": true,
-			"duplicate": false,
-			"move": false,
-			"remove": false,
-			"rotate": false
-		},
-		"jump": {
-			"config_keys": [
-				"strength",
-				"angle"
-			],
-			"configure": true,
-			"duplicate": false,
-			"limits": {
-				"angle": [
-					15.0,
-					35.0
-				],
-				"strength": [
-					3.0,
-					5.0
-				]
-			},
-			"move": false,
-			"remove": false,
-			"rotate": false
-		}
-	},
-	"pieces": [
-		{
-			"config": {},
-			"piece": "sandbox-start",
-			"position": [
-				0.0,
-				0.0,
-				-2.0
-			],
-			"rotation": 2,
-			"uid": "release"
-		},
-		{
-			"config": {
-				"links": []
-			},
-			"piece": "sensor",
-			"position": [
-				0.0,
-				4.0,
-				-2.0
-			],
-			"rotation": 0,
-			"uid": "detector"
-		},
-		{
-			"config": {},
-			"piece": "gate",
-			"position": [
-				0.0,
-				4.0,
-				-3.0
-			],
-			"rotation": 0,
-			"uid": "stopper"
-		},
-		{
-			"config": {
-				"angle": 25.0,
-				"external": true,
-				"strength": 4.0
-			},
-			"piece": "launcher",
-			"position": [
-				0.0,
-				4.0,
-				-4.0
-			],
-			"rotation": 0,
-			"uid": "jump"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				0.0,
-				4.0,
-				-7.0
-			],
-			"rotation": 2,
-			"uid": "goal"
-		}
-	],
-	"prerequisites": [
-		"campaign-09"
-	],
-	"restricted_zones": [],
-	"revision": 1.0,
-	"solution": [
-		{
-			"config": {},
-			"piece": "sandbox-start",
-			"position": [
-				0.0,
-				0.0,
-				-2.0
-			],
-			"rotation": 2,
-			"uid": "release"
-		},
-		{
-			"config": {
-				"links": [
-					{
-						"action": "open",
-						"event": "entered",
-						"target": "stopper"
-					},
-					{
-						"action": "fire",
-						"event": "entered",
-						"target": "jump"
-					}
-				]
-			},
-			"piece": "sensor",
-			"position": [
-				0.0,
-				4.0,
-				-2.0
-			],
-			"rotation": 0,
-			"uid": "detector"
-		},
-		{
-			"config": {},
-			"piece": "gate",
-			"position": [
-				0.0,
-				4.0,
-				-3.0
-			],
-			"rotation": 0,
-			"uid": "stopper"
-		},
-		{
-			"config": {
-				"angle": 25.0,
-				"external": true,
-				"strength": 4.0
-			},
-			"piece": "launcher",
-			"position": [
-				0.0,
-				4.0,
-				-4.0
-			],
-			"rotation": 0,
-			"uid": "jump"
-		},
-		{
-			"config": {},
-			"piece": "sandbox-finish",
-			"position": [
-				0.0,
-				4.0,
-				-7.0
-			],
-			"rotation": 2,
-			"uid": "goal"
-		},
-		{
-			"config": {
-				"elevator_height": 4.0,
-				"elevator_speed": 0.8
-			},
-			"piece": "bucket-elevator",
-			"position": [
-				0.0,
-				0.0,
-				0.0
-			],
-			"rotation": 0,
-			"uid": "piece-40158343-100"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				0.0,
-				4.0,
-				-6.0
-			],
-			"rotation": 0,
-			"uid": "piece-40182469-101"
-		}
-	],
-	"status": "published",
-	"time_limit": 75.0,
-	"validation": {
-		"engine": "4.7.2-stable (official)",
-		"fingerprint": "f8d6bf6f3b66cc51754f6b75a8ebf25ddb99e58a128004d1742d02c181a83046",
-		"physics_success": true,
-		"seconds": 21.4749999999994,
-		"tested_at": "2026-10-12T03:50:17"
-	},
-	"version": 1.0
+  "awards": {},
+  "bounds": [
+    -4.0,
+    -9.0,
+    7.0,
+    6.0,
+    0.0,
+    10.0
+  ],
+  "camera": {},
+  "description": "Lift, detect, release, and launch into the upper collector.",
+  "difficulty": "Machine",
+  "hints": [
+    "Add the 4 m elevator and a landing track. Link sensor Entered to gate Open and launcher Fire. Leave a one-cell jump gap."
+  ],
+  "id": "campaign-10",
+  "inventory": {
+    "bucket-elevator": 1.0,
+    "straight": 1.0
+  },
+  "name": "The Machine",
+  "objectives": [
+    {
+      "count": 1.0,
+      "target": "goal",
+      "type": "deliver"
+    }
+  ],
+  "order": 10.0,
+  "permissions": {
+    "detector": {
+      "config_keys": [
+        "links"
+      ],
+      "configure": true,
+      "duplicate": false,
+      "move": false,
+      "remove": false,
+      "rotate": false
+    },
+    "jump": {
+      "config_keys": [
+        "strength",
+        "angle"
+      ],
+      "configure": true,
+      "duplicate": false,
+      "limits": {
+        "angle": [
+          15.0,
+          35.0
+        ],
+        "strength": [
+          3.0,
+          5.0
+        ]
+      },
+      "move": false,
+      "remove": false,
+      "rotate": false
+    }
+  },
+  "pieces": [
+    {
+      "config": {},
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        0.0,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "release"
+    },
+    {
+      "config": {
+        "links": []
+      },
+      "piece": "sensor",
+      "position": [
+        0.0,
+        4.0,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "detector"
+    },
+    {
+      "config": {},
+      "piece": "gate",
+      "position": [
+        0.0,
+        4.0,
+        -3.0
+      ],
+      "rotation": 0.0,
+      "uid": "stopper"
+    },
+    {
+      "config": {
+        "angle": 25.0,
+        "external": true,
+        "strength": 4.0
+      },
+      "piece": "launcher",
+      "position": [
+        0.0,
+        4.0,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "jump"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        0.0,
+        4.0,
+        -7.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal"
+    }
+  ],
+  "prerequisites": [
+    "campaign-09"
+  ],
+  "restricted_zones": [],
+  "revision": 1.0,
+  "solution": [
+    {
+      "config": {},
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        0.0,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "release"
+    },
+    {
+      "config": {
+        "links": [
+          {
+            "action": "open",
+            "event": "entered",
+            "target": "stopper"
+          },
+          {
+            "action": "fire",
+            "event": "entered",
+            "target": "jump"
+          }
+        ]
+      },
+      "piece": "sensor",
+      "position": [
+        0.0,
+        4.0,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "detector"
+    },
+    {
+      "config": {},
+      "piece": "gate",
+      "position": [
+        0.0,
+        4.0,
+        -3.0
+      ],
+      "rotation": 0.0,
+      "uid": "stopper"
+    },
+    {
+      "config": {
+        "angle": 25.0,
+        "external": true,
+        "strength": 4.0
+      },
+      "piece": "launcher",
+      "position": [
+        0.0,
+        4.0,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "jump"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        0.0,
+        4.0,
+        -7.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal"
+    },
+    {
+      "config": {
+        "elevator_height": 4.0,
+        "elevator_speed": 0.8
+      },
+      "piece": "bucket-elevator",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-40158343-100"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        4.0,
+        -6.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-40182469-101"
+    }
+  ],
+  "status": "published",
+  "time_limit": 75.0,
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "f8d6bf6f3b66cc51754f6b75a8ebf25ddb99e58a128004d1742d02c181a83046",
+    "physics_success": true,
+    "seconds": 21.4749999999994,
+    "tested_at": "2026-10-12T03:50:17"
+  },
+  "version": 1.0
 }

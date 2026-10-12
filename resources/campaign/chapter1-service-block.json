@@ -1,0 +1,196 @@
+{
+  "awards": {},
+  "bounds": [
+    -4.0,
+    -5.0,
+    6.0,
+    5.0,
+    0.0,
+    4.0
+  ],
+  "camera": {
+    "distance": 17.0,
+    "focus": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "pitch": 0.65,
+    "yaw": 0.65
+  },
+  "chapter": {
+    "id": "chapter-1",
+    "introduction": false,
+    "name": "Chapter 1",
+    "optional": false,
+    "order": 1.0,
+    "prerequisites": []
+  },
+  "description": "Deliver the marble to the far collector.",
+  "difficulty": "Workshop",
+  "environment": "res://scenes/environments/service_block.tscn",
+  "environment_instances": [],
+  "environment_snapshot": "res://resources/campaign/environments/chapter1-service-block-0d796e111c3e81dbb4fbaaba995cb8e8535e3d6cc74f1923b4669066619b6247.tscn",
+  "hints": [],
+  "id": "chapter1-service-block",
+  "inventory": {
+    "corner": 4.0,
+    "curve": 6.0,
+    "ramp-long-a": 6.0,
+    "ramp-long-b": 3.0,
+    "straight": 10.0
+  },
+  "name": "Service block",
+  "objectives": [
+    {
+      "count": 1.0,
+      "source": "release",
+      "target": "goal",
+      "type": "deliver"
+    }
+  ],
+  "order": 1.0,
+  "permissions": {},
+  "pieces": [
+    {
+      "config": {
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        1.5,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "release"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        4.0,
+        1.0,
+        -4.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal"
+    }
+  ],
+  "prerequisites": [],
+  "restricted_zones": [],
+  "revision": 1.0,
+  "solution": [
+    {
+      "config": {
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        1.5,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "release"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        4.0,
+        1.0,
+        -4.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-a",
+      "position": [
+        0.0,
+        1.24999618530273,
+        2.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-520027684-5"
+    },
+    {
+      "config": {},
+      "piece": "curve",
+      "position": [
+        0.499992311000824,
+        1.25,
+        0.5
+      ],
+      "rotation": 2.0,
+      "uid": "piece-526823929-6"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        1.99999225139618,
+        1.25,
+        7.51912375562e-06
+      ],
+      "rotation": 3.0,
+      "uid": "piece-531785736-7"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        2.99999237060547,
+        1.25,
+        7.50719846109e-06
+      ],
+      "rotation": 3.0,
+      "uid": "piece-533350482-8"
+    },
+    {
+      "config": {},
+      "piece": "corner",
+      "position": [
+        3.99999237060547,
+        1.25,
+        7.50123581383e-06
+      ],
+      "rotation": 0.0,
+      "uid": "piece-535361754-9"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-a",
+      "position": [
+        3.99999237060547,
+        0.999996185302734,
+        -1.49999248981476
+      ],
+      "rotation": 0.0,
+      "uid": "piece-540755598-10"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        4.0,
+        1.0,
+        -3.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-543009651-11"
+    }
+  ],
+  "status": "published",
+  "time_limit": 60.0,
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "0d796e111c3e81dbb4fbaaba995cb8e8535e3d6cc74f1923b4669066619b6247",
+    "physics_success": true,
+    "seconds": 7.70000000000017,
+    "tested_at": "2026-10-12T22:48:26"
+  },
+  "version": 2.0
+}

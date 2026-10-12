@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "id": "chapter1-loading-loft",
+  "revision": 1,
+  "name": "Loading loft",
+  "description": "Deliver the marble to the loft collector.",
+  "chapter": {
+    "id": "chapter-1",
+    "name": "Chapter 1",
+    "order": 1,
+    "optional": false,
+    "introduction": false,
+    "prerequisites": []
+  },
+  "order": 2,
+  "difficulty": "Workshop",
+  "pieces": [
+    {
+      "uid": "release",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        0,
+        -3
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "goal",
+      "piece": "sandbox-finish",
+      "position": [
+        0,
+        4,
+        -4
+      ],
+      "rotation": 2,
+      "config": {}
+    }
+  ],
+  "permissions": {},
+  "inventory": {
+    "straight": 12,
+    "curve": 8,
+    "bucket-elevator": 1,
+    "ramp-long-a": 6,
+    "ramp-long-d": 4,
+    "corner": 4
+  },
+  "bounds": [
+    -5,
+    -5.5,
+    6,
+    5,
+    0,
+    7
+  ],
+  "restricted_zones": [],
+  "objectives": [
+    {
+      "type": "deliver",
+      "target": "goal",
+      "source": "release",
+      "count": 1
+    }
+  ],
+  "hints": [],
+  "prerequisites": [],
+  "camera": {
+    "focus": [
+      0.5,
+      1,
+      -0.5
+    ],
+    "yaw": 2.1,
+    "pitch": 0.65,
+    "distance": 18
+  },
+  "awards": {},
+  "solution": [
+    {
+      "uid": "release",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        0,
+        -3
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "goal",
+      "piece": "sandbox-finish",
+      "position": [
+        0,
+        4,
+        -4
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "s1",
+      "piece": "curve",
+      "position": [
+        0.5,
+        0,
+        -1.5
+      ],
+      "rotation": 3,
+      "config": {}
+    },
+    {
+      "uid": "s2",
+      "piece": "straight",
+      "position": [
+        2,
+        0,
+        -1
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "s3",
+      "piece": "curve",
+      "position": [
+        3.5,
+        0,
+        -0.5
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "s4",
+      "piece": "bucket-elevator",
+      "position": [
+        4,
+        0,
+        2
+      ],
+      "rotation": 0,
+      "config": {
+        "elevator_height": 4,
+        "elevator_speed": 0.8
+      }
+    },
+    {
+      "uid": "s5",
+      "piece": "straight",
+      "position": [
+        4,
+        4,
+        0
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "s6",
+      "piece": "curve",
+      "position": [
+        3.5,
+        4,
+        -1.5
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "s7",
+      "piece": "straight",
+      "position": [
+        2,
+        4,
+        -2
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "s8",
+      "piece": "curve",
+      "position": [
+        0.5,
+        4,
+        -2.5
+      ],
+      "rotation": 3,
+      "config": {}
+    }
+  ],
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "c89f668ca8c7d335b0872f6548bb33eacb288b5b4ff2524b6a36fa31691750d5",
+    "physics_success": true,
+    "seconds": 25.6083333333325,
+    "tested_at": "2026-10-12T21:24:35"
+  },
+  "status": "draft",
+  "time_limit": 60,
+  "environment": "res://scenes/environments/loading_loft.tscn"
+}

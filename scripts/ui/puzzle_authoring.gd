@@ -9,12 +9,35 @@ var refreshing: bool = false
 
 func configure(puzzle_session: PuzzleSession) -> void:
 	session = puzzle_session
-	%Close.pressed.connect(func(): hide(); session.game.get_node("%HUD").refresh())
+	%Close.pressed.connect(func(): session.set_environment_editing(false); hide(); session.game.get_node("%HUD").refresh())
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
 		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
-		if index==6: refresh_publish())
+		if index==6: refresh_publish()
+		session.set_environment_editing(index == 7)
+		if index == 7: refresh_environment())
 	for button in %Navigation.get_children(): button.pressed.connect(func(): %Tabs.current_tab=int(button.get_meta("page")))
+	for asset in PuzzleEnvironment.CATALOG:
+		var entry: Dictionary = PuzzleEnvironment.CATALOG[asset]
+		var preview := load("res://assets/models/environment/" + entry.kit + "/Previews/" + entry.model + ".png") as Texture2D
+		%EnvironmentCatalog.add_item(entry.name, preview)
+		%EnvironmentCatalog.set_item_metadata(%EnvironmentCatalog.item_count - 1, asset)
+	%PlaceEnvironment.pressed.connect(func():
+		var selected = %EnvironmentCatalog.get_selected_items()
+		if not selected.is_empty(): session.choose_environment(%EnvironmentCatalog.get_item_metadata(selected[0])); refresh_environment())
+	%EnvironmentEditing.toggled.connect(func(active): if not refreshing: session.set_environment_editing(active))
+	%EnvironmentObjects.item_selected.connect(func(index): session.set_environment_editing(true); session.select_environment(%EnvironmentObjects.get_item_metadata(index)))
+	%ApplyEnvironment.pressed.connect(func():
+		var item := session.environment_item()
+		if not item.is_empty(): session.transform_environment(Vector3(%EnvironmentX.value, %EnvironmentY.value, %EnvironmentZ.value), int(item.rotation)))
+	%RotateEnvironment.pressed.connect(func():
+		var item := session.environment_item()
+		if not item.is_empty(): session.transform_environment(PuzzleEnvironment.transform_for(item).origin, int(item.rotation) + 1))
+	%DuplicateEnvironment.pressed.connect(session.duplicate_environment)
+	%DeleteEnvironment.pressed.connect(session.remove_environment)
+	%UndoEnvironment.pressed.connect(session.environment_undo)
+	%RedoEnvironment.pressed.connect(func(): session.environment_undo(true))
+	session.environment_selection_changed.connect(refresh_environment)
 	session.mode_changed.connect(func(): if visible: refresh_publish())
 	%ChapterId.text_changed.connect(select_chapter)
 	%ChapterName.text_changed.connect(func(_text): update_chapter())
@@ -51,6 +74,12 @@ func configure(puzzle_session: PuzzleSession) -> void:
 		else: session.puzzle.inventory[id] = int(%Quantity.value)
 		refresh_inventory())
 	%DrawBuild.pressed.connect(func(): hide(); session.begin_boundary())
+	%ChooseEnvironment.pressed.connect(func(): session.game.open_modal(); %EnvironmentDialog.popup_centered(Vector2i(700, 500)))
+	%EnvironmentDialog.canceled.connect(session.game.modal_closed)
+	%EnvironmentDialog.file_selected.connect(func(path):
+		session.game.modal_closed()
+		if session.set_environment(path): %EnvironmentPath.text = path.get_file())
+	%ClearEnvironment.pressed.connect(func(): session.set_environment(""); %EnvironmentPath.text = "No environment")
 	%DrawZone.pressed.connect(func(): hide(); session.begin_boundary(true))
 	%ClearZones.pressed.connect(func(): session.puzzle.restricted_zones = []; session.refresh_boundary())
 	%RemoveZone.pressed.connect(func():
@@ -91,7 +120,7 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%ExportDialog.canceled.connect(session.game.modal_closed)
 	%ExportDialog.file_selected.connect(export_package)
 	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
-	%OpenPuzzle.pressed.connect(func(): session.game.puzzle_browser.open(true))
+	%OpenPuzzle.pressed.connect(func(): session.game.handle_action("open_puzzle"))
 	session.game.sandbox.build.selection_changed.connect(func(_piece): if visible: refresh_selection())
 	for definition in session.game.catalog.pieces:
 		if not definition.library_visible: continue
@@ -113,7 +142,9 @@ func open() -> void:
 	%AwardPieces.value = data.get("awards", {}).get("pieces", 0)
 	%MinHeight.value = data.bounds[4]
 	%MaxHeight.value = data.bounds[5]
+	%EnvironmentPath.text = str(data.get("environment", "")).get_file() if not str(data.get("environment", "")).is_empty() else "No environment"
 	refresh_selection()
+	refresh_environment()
 	refresh_inventory()
 	refresh_inventory_settings()
 	refresh_objects()
@@ -133,11 +164,12 @@ func open() -> void:
 		if level.id in data.get("prerequisites", []): %Prerequisites.select(index, false)
 	refreshing = false
 	show()
+	session.set_environment_editing(%Tabs.current_tab == 7)
 	refresh_publish()
 	session.game.get_node("%HUD").refresh()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("ui_cancel"):
+	if visible and event.is_action_pressed("ui_cancel") and not session.environment_editing:
 		hide()
 		session.game.get_node("%HUD").refresh()
 		get_viewport().set_input_as_handled()
@@ -361,6 +393,17 @@ func export_package(path: String) -> void:
 		if not data.get("validation", {}).get("physics_success", false): continue
 		data = data.duplicate(true)
 		# Manifest membership is exported separately to preserve validated fingerprints.
+		var frozen := str(data.get("environment_snapshot", ""))
+		if not frozen.is_empty():
+			if not FileAccess.file_exists(frozen):
+				zip.close()
+				%Validation.text = "Published environment is missing"
+				return
+			var filename := frozen.get_file()
+			zip.start_file("environments/" + filename)
+			zip.write_file(FileAccess.get_file_as_bytes(frozen))
+			zip.close_file()
+			data.environment_snapshot = "res://resources/campaign/environments/" + filename
 		zip.start_file("campaign/" + data.id + ".json")
 		zip.write_file(JSON.stringify(data, "\t").to_utf8_buffer())
 		zip.close_file()
@@ -370,3 +413,25 @@ func export_package(path: String) -> void:
 	zip.close_file()
 	zip.close()
 	%Validation.text = "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count
+
+func refresh_environment() -> void:
+	if not session or session.mode != "editor": return
+	var was_refreshing := refreshing
+	refreshing = true
+	%EnvironmentEditing.button_pressed = session.environment_editing
+	%EnvironmentObjects.clear()
+	for item in session.puzzle.get("environment_instances", []):
+		%EnvironmentObjects.add_item(PuzzleEnvironment.CATALOG[item.asset].name)
+		var index: int = %EnvironmentObjects.item_count - 1
+		%EnvironmentObjects.set_item_metadata(index, item.uid)
+		if item.uid == session.environment_selected: %EnvironmentObjects.select(index)
+	var selected := session.environment_item()
+	%EnvironmentSelection.text = PuzzleEnvironment.CATALOG[selected.asset].name if not selected.is_empty() else ("Click the grid to place" if not session.environment_asset.is_empty() else "Select an object")
+	for button in [%ApplyEnvironment, %RotateEnvironment, %DuplicateEnvironment, %DeleteEnvironment]: button.disabled = selected.is_empty()
+	if not selected.is_empty():
+		%EnvironmentX.value = selected.position[0]
+		%EnvironmentY.value = selected.position[1]
+		%EnvironmentZ.value = selected.position[2]
+	%UndoEnvironment.disabled = session.environment_history.cursor == 0
+	%RedoEnvironment.disabled = session.environment_history.cursor >= session.environment_history.commands.size()
+	refreshing = was_refreshing

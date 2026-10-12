@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 const Settings = preload("res://scripts/game_settings.gd")
 var game: Node
@@ -7,12 +7,16 @@ var sender: GutInputSender
 func before_each() -> void:
 	super()
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
 	game.enter_sandbox()
 	sender = GutInputSender.new(Input)
 	autofree(sender)
 	await settle()
+
+func after_each() -> void:
+	sender.release_all()
+	await super()
 
 func settle() -> void:
 	for frame in 4: await get_tree().process_frame

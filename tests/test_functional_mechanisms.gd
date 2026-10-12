@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 var build: BuildManager
@@ -16,7 +16,7 @@ func ball(at: Vector3, velocity: Vector3 = Vector3.ZERO) -> RigidBody3D:
 func test_functional_mechanisms() -> void:
 	var body: RigidBody3D
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
 	await get_tree().process_frame
 	game.new_track()
 	build = game.sandbox.build
@@ -147,5 +147,3 @@ func test_functional_mechanisms() -> void:
 		assert_true(alternating.mechanism_component.left != expected_left, "Alternating fork rearms after marble exits")
 		body.queue_free()
 		await ticks(4)
-	game.queue_free()
-	await get_tree().process_frame

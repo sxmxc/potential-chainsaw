@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 class FixtureStore extends PuzzleStore:
 	var fixture_levels: Array[Dictionary] = []
@@ -7,11 +7,10 @@ class FixtureStore extends PuzzleStore:
 
 func test_campaign_chapters() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	var store: PuzzleStore = game.puzzle_session.store
-	var previous_progress = store.progress.duplicate(true)
-	var previous_campaign = store.campaign.duplicate(true)
 	store.progress = {}
 	store.campaign = {}
 	var levels = store.list_puzzles()
@@ -69,8 +68,8 @@ func test_campaign_chapters() -> void:
 	assert_true(store.campaign.current_chapter == "chapter-1", "Completing Introduction enters Chapter 1")
 	assert_true(store.chapter_progress("introduction", levels).completed == 10 and store.chapter_progress("chapter-1", levels).completed == 0, "Tutorial and main progress counted separately")
 	var legacy = {"campaign-01": {"completed": true, "revision": 1, "best_time": 3.5, "fewest_pieces": 4, "awards": ["time"], "custom_record": "preserve"}}
-	store.write(PuzzleStore.PROGRESS, legacy)
-	DirAccess.remove_absolute(PuzzleStore.CAMPAIGN_STATE)
+	store.write(store.progress_path, legacy)
+	DirAccess.remove_absolute(store.campaign_state_path)
 	reopened = PuzzleStore.new(game.catalog)
 	assert_true(JSON.stringify(reopened.progress) == JSON.stringify(JSON.parse_string(JSON.stringify(legacy))), "Legacy save migration preserves every record field")
 	assert_true(reopened.campaign.started and reopened.resume_level().id == "campaign-02", "Legacy partial campaign resumes without new-player choice")
@@ -96,9 +95,3 @@ func test_campaign_chapters() -> void:
 		assert_true(store.fingerprint(exported) == store.fingerprint(data), "Export preserves puzzle validation: " + data.id)
 	bundle.close()
 	DirAccess.remove_absolute(bundle_path)
-	store.progress = previous_progress
-	store.campaign = previous_campaign
-	store.write(PuzzleStore.PROGRESS, previous_progress)
-	store.write(PuzzleStore.CAMPAIGN_STATE, previous_campaign)
-	game.queue_free()
-	await get_tree().process_frame

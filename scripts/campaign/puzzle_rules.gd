@@ -4,10 +4,12 @@ extends RefCounted
 var puzzle: Dictionary
 var catalog: PieceCatalog
 var initial: Dictionary = {}
+var environment_solids: Array = []
 
-func _init(data: Dictionary, definitions: PieceCatalog) -> void:
+func _init(data: Dictionary, definitions: PieceCatalog, solids: Variant = null) -> void:
 	puzzle = data.duplicate(true)
 	catalog = definitions
+	environment_solids = PuzzleEnvironment.inspect_definition(data).solids if solids == null else solids
 	for piece in puzzle.get("pieces", []): initial[piece.uid] = piece
 
 func permits(uid: String, action: String) -> bool:
@@ -37,6 +39,8 @@ func validate(construction: Array) -> String:
 			var limits: Array = puzzle.configuration_limits[item.piece][key]
 			var value = item.get("config", {}).get(key)
 			if value != null and (not (value is float or value is int) or float(value) < float(limits[0]) or float(value) > float(limits[1])): return "Mechanism setting exceeds puzzle limits: " + key
+		var placement := Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), Vector3(item.position[0], item.position[1], item.position[2]))
+		if PuzzleEnvironment.blocked(definition, placement, environment_solids): return "Blocked by the environment"
 		if initial.has(item.uid):
 			var original: Dictionary = initial[item.uid]
 			if item.piece != original.piece: return "Authored pieces cannot be replaced"

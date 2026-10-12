@@ -1,0 +1,314 @@
+{
+  "version": 1,
+  "id": "chapter1-shared-clearance",
+  "revision": 1,
+  "name": "Shared clearance",
+  "description": "Deliver each batch to its labelled collector.",
+  "chapter": {
+    "id": "chapter-1",
+    "name": "Chapter 1",
+    "order": 1,
+    "optional": false,
+    "introduction": false,
+    "prerequisites": []
+  },
+  "order": 3,
+  "difficulty": "Workshop",
+  "pieces": [
+    {
+      "uid": "release-a",
+      "piece": "sandbox-start",
+      "position": [
+        -4,
+        1,
+        0
+      ],
+      "rotation": 3,
+      "config": {
+        "release_speed": 1.4,
+        "quantity": 2,
+        "interval": 1.4
+      }
+    },
+    {
+      "uid": "goal-a",
+      "piece": "sandbox-finish",
+      "position": [
+        4,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "release-b",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        3,
+        4
+      ],
+      "rotation": 0,
+      "config": {
+        "release_speed": 0.8,
+        "quantity": 2,
+        "interval": 1.4
+      }
+    },
+    {
+      "uid": "goal-b",
+      "piece": "sandbox-finish",
+      "position": [
+        0,
+        0.75,
+        -5
+      ],
+      "rotation": 2,
+      "config": {}
+    }
+  ],
+  "permissions": {},
+  "inventory": {
+    "straight": 18,
+    "curve": 8,
+    "ramp-long-a": 6,
+    "ramp-long-b": 4,
+    "ramp-long-c": 4,
+    "ramp-long-d": 4,
+    "bucket-elevator": 1,
+    "corner": 4
+  },
+  "bounds": [
+    -5,
+    -6,
+    5,
+    5,
+    0,
+    4
+  ],
+  "restricted_zones": [],
+  "objectives": [
+    {
+      "type": "deliver",
+      "target": "goal-a",
+      "source": "release-a",
+      "count": 2
+    },
+    {
+      "type": "deliver",
+      "target": "goal-b",
+      "source": "release-b",
+      "count": 2
+    }
+  ],
+  "hints": [],
+  "prerequisites": [],
+  "camera": {
+    "focus": [
+      0,
+      1,
+      0
+    ],
+    "yaw": 0.65,
+    "pitch": 0.65,
+    "distance": 17
+  },
+  "awards": {},
+  "solution": [
+    {
+      "uid": "release-a",
+      "piece": "sandbox-start",
+      "position": [
+        -4,
+        1,
+        0
+      ],
+      "rotation": 3,
+      "config": {
+        "release_speed": 1.4,
+        "quantity": 2,
+        "interval": 1.4
+      }
+    },
+    {
+      "uid": "goal-a",
+      "piece": "sandbox-finish",
+      "position": [
+        4,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "release-b",
+      "piece": "sandbox-start",
+      "position": [
+        0,
+        3,
+        4
+      ],
+      "rotation": 0,
+      "config": {
+        "release_speed": 0.8,
+        "quantity": 2,
+        "interval": 1.4
+      }
+    },
+    {
+      "uid": "goal-b",
+      "piece": "sandbox-finish",
+      "position": [
+        0,
+        0.75,
+        -5
+      ],
+      "rotation": 2,
+      "config": {}
+    },
+    {
+      "uid": "a-3",
+      "piece": "straight",
+      "position": [
+        -3,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a-2",
+      "piece": "straight",
+      "position": [
+        -2,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a-1",
+      "piece": "straight",
+      "position": [
+        -1,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a0",
+      "piece": "straight",
+      "position": [
+        0,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a1",
+      "piece": "straight",
+      "position": [
+        1,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a2",
+      "piece": "straight",
+      "position": [
+        2,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "a3",
+      "piece": "straight",
+      "position": [
+        3,
+        1,
+        0
+      ],
+      "rotation": 1,
+      "config": {}
+    },
+    {
+      "uid": "b1",
+      "piece": "straight",
+      "position": [
+        0,
+        3,
+        3
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "b2",
+      "piece": "ramp-long-a",
+      "position": [
+        0,
+        2.75,
+        1.5
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "b3",
+      "piece": "straight",
+      "position": [
+        0,
+        2.75,
+        0
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "b4",
+      "piece": "ramp-long-d",
+      "position": [
+        0,
+        1.25,
+        -1.5
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "b5",
+      "piece": "ramp-long-b",
+      "position": [
+        0,
+        0.75,
+        -3.5
+      ],
+      "rotation": 0,
+      "config": {}
+    }
+  ],
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "a688a6e48619cf0c5a7c45af337bb7cd2822ac29f236c5725056e00018e35474",
+    "physics_success": true,
+    "seconds": 9.89166666666675,
+    "tested_at": "2026-10-12T21:24:51"
+  },
+  "status": "draft",
+  "time_limit": 60,
+  "environment": "res://scenes/environments/shared_clearance.tscn"
+}

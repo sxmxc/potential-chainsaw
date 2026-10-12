@@ -18,6 +18,7 @@ func configure(data: PieceCatalog, manager: BuildManager = null) -> void:
 	%Category.get_popup().transparent=true
 	%Collapse.pressed.connect(func():collapsed.emit())
 	get_viewport().size_changed.connect(fit_content)
+	if get_parent() is Control: get_parent().resized.connect(fit_content)
 	%Category.item_selected.connect(func(_index):refresh())
 	%Search.text_changed.connect(func(text):
 		if not text.is_empty(): %Category.select(0)
@@ -79,7 +80,8 @@ func fit_content() -> void:
 	var rows: int=ceili(float(buttons.size())/%Pieces.columns)
 	var content_height: float=rows*row_height+maxi(0,rows-1)*%Pieces.get_theme_constant("v_separation")
 	var overhead: float=get_combined_minimum_size().y-%Scroll.custom_minimum_size.y
-	var available: float=maxf(row_height,get_viewport().get_visible_rect().size.y*0.68-overhead)
+	var parent_height: float = get_parent().size.y if get_parent() is Control else get_viewport().get_visible_rect().size.y * 0.68
+	var available: float = maxf(0, minf(parent_height, get_viewport().get_visible_rect().size.y * 0.68) - overhead)
 	%Scroll.custom_minimum_size.y=minf(content_height,available) if rows>0 else 0.0
 func clear_choice() -> void:
 	selected_id=&""

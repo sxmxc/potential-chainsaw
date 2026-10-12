@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://drq7krlx6234a" path="res://assets/ui/icons/ground.svg" id="Icon_ground"]
 [ext_resource type="Texture2D" uid="uid://dnwyfaa7mykyy" path="res://assets/ui/icons/lower.svg" id="Icon_lower"]
 [ext_resource type="Texture2D" uid="uid://cdsb0kd6lxcu2" path="res://assets/ui/icons/menu.svg" id="Icon_menu"]
+[ext_resource type="Texture2D" uid="uid://bwi1dhlg7usyi" path="res://assets/ui/icons/open.svg" id="Icon_open"]
 [ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="Icon_pieces"]
 [ext_resource type="Texture2D" uid="uid://qhb7mybcy267" path="res://assets/ui/icons/raise.svg" id="Icon_raise"]
 [ext_resource type="Texture2D" uid="uid://bxui4xoxv2gxo" path="res://assets/ui/icons/save.svg" id="Icon_save"]
@@ -779,6 +780,7 @@ SandboxIcons/icons/ground = ExtResource("Icon_ground")
 SandboxIcons/icons/lower = ExtResource("Icon_lower")
 SandboxIcons/icons/menu = ExtResource("Icon_menu")
 SandboxIcons/icons/move = ExtResource("3_cqjf2")
+SandboxIcons/icons/open = ExtResource("Icon_open")
 SandboxIcons/icons/pause = ExtResource("4_1ga0a")
 SandboxIcons/icons/pieces = ExtResource("Icon_pieces")
 SandboxIcons/icons/play = ExtResource("5_r5doh")

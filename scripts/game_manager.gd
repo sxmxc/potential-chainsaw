@@ -46,9 +46,9 @@ func _ready() -> void:
 	authoring.configure(puzzle_session)
 	puzzle_browser.configure(puzzle_session)
 	puzzle_bar = preload("res://scenes/ui/puzzle_bar.tscn").instantiate()
-	var layout = %HUD.get_node("Margin/Layout")
-	layout.add_child(puzzle_bar)
-	layout.move_child(puzzle_bar, 1)
+	var toolbar_actions = %HUD.get_node("%FileToolbar").get_node("RightIsland/Controls")
+	toolbar_actions.add_child(puzzle_bar)
+	toolbar_actions.move_child(puzzle_bar, toolbar_actions.get_node("Menu").get_index())
 	puzzle_bar.configure(puzzle_session)
 	completion = preload("res://scenes/ui/puzzle_completion.tscn").instantiate()
 	add_child(completion)
@@ -111,6 +111,13 @@ func handle_action(action: String) -> void:
 		"restart_puzzle": puzzle_session.player(puzzle_session.puzzle, puzzle_session.mode == "test"); modal_closed()
 		"levels": puzzle_browser.open()
 		"author": authoring.open()
+		"open_puzzle":
+			if puzzle_session.mode != "editor": return
+			if sandbox.build.dirty and not puzzle_session.save():
+				show_message("Could not save the puzzle draft")
+				return
+			authoring.hide()
+			puzzle_browser.open(true)
 		"test_player": puzzle_session.test_player(); modal_closed()
 		"return_editor": puzzle_session.return_editor(); modal_closed()
 		"preserve_solution":

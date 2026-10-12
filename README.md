@@ -58,7 +58,7 @@ Run the same tests from the command line:
 godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit
 ```
 
-To run just settings and input regressions, add `-gselect=settings_and_input`. GUT reports assertions, engine errors, and exit status. Physics integration tests use the project's 120 Hz simulation. Test saves live in unique `user://gut-tests/` fixture directories and are removed during teardown; player tracks, progress, drafts, and settings are isolated. Tests never publish content or rewrite bundled solutions.
+To run just settings and input regressions, add `-gselect=settings_and_input`. GUT reports assertions, engine errors, and exit status. Physics integration tests use the project's 120 Hz simulation. Persistence tests use `tests/support/game_test.gd` for unique `user://gut-tests/` directories and safe teardown. Tests loading `main.tscn` use `scene_test.gd` to snapshot and restore settings and bindings through public APIs. Pure resource and camera tests extend `GutTest` and use GUT autofree. Tests set display dimensions only when their assertions require them; player tracks, progress, drafts, and settings are isolated. Publication regressions write only into the isolated fixture; tests never publish real campaign content or rewrite bundled solutions.
 
 `tools/import_campaign.py` remains the utility for importing published campaign bundles. The custom verification runner, warning-forcing checker, and one-off benchmark have been removed.
 

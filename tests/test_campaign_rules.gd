@@ -1,4 +1,4 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/scene_test.gd"
 
 var game: Node
 var session: PuzzleSession
@@ -11,9 +11,9 @@ func record(id: String, uid: String, at: Vector3, config: Dictionary = {}) -> Di
 	return {"piece": id, "uid": uid, "position": [at.x, at.y, at.z], "rotation": 0, "config": config}
 
 func test_campaign_rules() -> void:
-	get_tree().root.size = Vector2i(1280, 800)
 	game = load("res://scenes/main.tscn").instantiate()
-	get_tree().root.add_child(autoqfree(game))
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	session = game.puzzle_session
 	build = game.sandbox.build
@@ -36,7 +36,8 @@ func test_campaign_rules() -> void:
 	build.select(build.pieces[1])
 	build.move_selected(true)
 	build.proposed.origin = Vector3(4, 0, 0)
-	build.valid = true
+	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	assert_true(build.valid, "Proposed edit passes real placement validation")
 	build.ghost.visible = true
 	build.commit()
 	assert_true(build.pieces.size() == 3 and build.rules.remaining("straight", build.snapshot()) == 1, "Duplicating authored editable piece costs inventory")
@@ -52,7 +53,8 @@ func test_campaign_rules() -> void:
 	session.player(data, true)
 	build.choose(game.catalog.get_piece("bucket-elevator"))
 	build.proposed = Transform3D.IDENTITY
-	build.valid = true
+	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	assert_true(build.valid, "Proposed edit passes real placement validation")
 	build.ghost.visible = true
 	build.commit()
 	build.cancel()
@@ -68,7 +70,8 @@ func test_campaign_rules() -> void:
 	build.set_selection([source, target])
 	build.move_selected(true)
 	build.proposed.origin = Vector3(0, 0, 3)
-	build.valid = true
+	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	assert_true(build.valid, "Proposed edit passes real placement validation")
 	build.ghost.visible = true
 	build.commit()
 	var duplicate_source = build.pieces[2]
@@ -107,7 +110,6 @@ func test_campaign_rules() -> void:
 	assert_true(game.qa_test(), "Activation objective works without a collector")
 	await ticks(150)
 	assert_true(game.sandbox.simulation.state == SimulationManager.State.SUCCESS, "Timed gate event fulfills activation objective")
-	var progress_before = session.store.progress.duplicate(true)
 	session.store.progress.clear()
 	var levels: Array = [{"id": "qa-first", "prerequisites": []}, {"id": "qa-second", "prerequisites": ["qa-first"]}]
 	assert_true(session.store.unlocked(levels[0], levels) and not session.store.unlocked(levels[1], levels), "New progress unlocks only the first level")
@@ -115,7 +117,3 @@ func test_campaign_rules() -> void:
 	session.store.complete(levels[0], 4, 3)
 	assert_true(session.store.unlocked(levels[1], levels), "Completion unlocks prerequisite level")
 	assert_true(session.store.progress["qa-first"].awards.size() == 2, "Optional awards persist without gating progression")
-	session.store.progress = progress_before
-	session.store.write(PuzzleStore.PROGRESS, progress_before)
-	game.queue_free()
-	await get_tree().process_frame

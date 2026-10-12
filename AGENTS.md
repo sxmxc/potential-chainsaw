@@ -28,6 +28,11 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 
 ## Godot engineering standards
 
+- Before adding code, trace the existing owner, callers and scene signals; reuse that system and consult official Godot and installed addon documentation.
+- Keep behavior local and traceable. Remove redundant state and forwarding layers; do not add managers or fallback paths to hide invalid states.
+- Check inherited engine members before naming variables. Repair warnings in touched scripts; introduce no parser warnings and never suppress them to pass checks.
+- Keep feature changes focused: defer unrelated refactors and verify the affected behavior proportionately with GUT and parsing checks.
+
 - Follow Godot-native conventions: typed GDScript where practical, focused scenes, reusable Resources, signals, InputMap actions, and explicit state ownership.
 - Keep scene composition, data, presentation, and behavior separate. Avoid monolithic scripts, duplicate state machines, sprawling autoloads, and hardcoded node paths scattered across unrelated files.
 - Use stable IDs for piece definitions and placed instances. Maintain backward compatibility for existing saved constructions, puzzle definitions, and progress; introduce migrations when formats change.
@@ -66,6 +71,7 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Do not fill a campaign quota with generic gaps, superficial variations, or mechanism-showcase exercises. A mechanically working level is not automatically a good puzzle.
 - Validate outcomes through simulation objectives, **not** by comparing the player's construction to one prescribed layout. Legitimate alternate solutions are welcome.
 - Keep player retries unlimited unless explicitly directed otherwise. Testing a puzzle must not erase the player's build.
+- Environment placements belong in puzzle data; reusable catalog scenes own meshes/collision. Edit instances through the Environment page. Preserve legacy fixed scene references and published native resource snapshots; never count scenery as track inventory.
 - Puzzle Editor must use actual in-game construction and support draft → test as player → validation → publish, with isolated test copies. Do not require hand-editing JSON or GDScript to author levels.
 - Publishing requires tested completion conditions and a known-good solution. Do not claim fun has been established without human playtesting.
 
@@ -124,3 +130,5 @@ For each substantive task:
 ## Test framework
 
 Use the installed GUT plugin and `tests/test_*.gd` suites for automated tests. Run through the GUT panel or its standard CLI. Do not add custom verification runners, force compiler warnings, create one-off test scripts, or publish/modify campaign fixtures as a test side effect. Preserve player saves with isolated GUT fixtures.
+
+Use documented GUT lifecycle and autofree methods. Pure tests extend `GutTest`; persistence tests use `tests/support/game_test.gd`; tests loading `main.tscn` use `tests/support/scene_test.gd` to restore the globals that scene changes. Scope additional setup to the test that needs it, restore prior values rather than defaults, and assert observable outcomes without bypassing validation. Do not inspect runner scene paths or addon internals for teardown.

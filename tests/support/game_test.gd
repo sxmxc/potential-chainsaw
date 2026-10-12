@@ -1,77 +1,40 @@
 extends GutTest
 
+# Only persistence tests need this fixture. GUT owns node/input-sender cleanup.
 var previous_test_directory: String
+var had_test_directory: bool
 var test_directory: String
-var previous_max_fps: int
-var previous_window_size: Vector2i
-var previous_scale_size: Vector2i
-var previous_scale_mode: int
-var previous_scale_aspect: int
-var previous_puzzle_paths: Array[String] = []
-var previous_track_path: String
-var runner_layer: CanvasLayer
-var previous_runner_visibility: bool
 
 func before_each() -> void:
+	had_test_directory = OS.has_environment("MARBLE_ENGINEER_TEST_DATA")
 	previous_test_directory = OS.get_environment("MARBLE_ENGINEER_TEST_DATA")
-	test_directory = OS.get_user_data_dir().path_join("gut-tests").path_join(str(Time.get_ticks_usec()))
-	DirAccess.make_dir_recursive_absolute(test_directory)
+	test_directory = OS.get_user_data_dir().path_join("gut-tests").path_join(Crypto.new().generate_random_bytes(12).hex_encode())
+	assert_eq(DirAccess.make_dir_recursive_absolute(test_directory), OK, "Create isolated persistence fixture")
 	OS.set_environment("MARBLE_ENGINEER_TEST_DATA", test_directory)
-	# PuzzleStore resolves static paths when scripts load, before GUT setup.
-	previous_puzzle_paths = [PuzzleStore.DRAFTS, PuzzleStore.PUBLISHED, PuzzleStore.PROGRESS, PuzzleStore.CAMPAIGN_STATE]
-	PuzzleStore.DRAFTS = test_directory.path_join("puzzles/drafts")
-	PuzzleStore.PUBLISHED = test_directory.path_join("puzzles/published")
-	PuzzleStore.PROGRESS = test_directory.path_join("campaign_progress.json")
-	PuzzleStore.CAMPAIGN_STATE = test_directory.path_join("campaign_state.json")
-	previous_track_path = TrackSerializer.SAVE_DIR
-	TrackSerializer.SAVE_DIR = test_directory.path_join("tracks")
-	previous_max_fps = Engine.max_fps
-	previous_window_size = get_window().size
-	previous_scale_size = get_window().content_scale_size
-	previous_scale_mode = get_window().content_scale_mode
-	previous_scale_aspect = get_window().content_scale_aspect
-	get_window().size = Vector2i(1280, 720)
-	get_window().content_scale_size = Vector2i(1280, 720)
-	get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
-	get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
-	ConstructionInput.install(true)
-	runner_layer = get_tree().root.get_node_or_null("GutRunner/GutLayer")
-	if runner_layer:
-		previous_runner_visibility = runner_layer.visible
-		runner_layer.hide()
 
 func after_each() -> void:
-	# GUT owns queued fixture teardown. Stop global audio too.
-	var sound_manager = get_tree().root.get_node_or_null("SoundManager")
-	if sound_manager:
-		for pool in [sound_manager.music, sound_manager.sound_effects, sound_manager.ui_sound_effects]:
-			if pool == sound_manager.music:
-				for tween in pool.tweens.values(): tween.kill()
-				pool.tweens.clear()
-			for player in pool.busy_players.duplicate():
-				player.stop()
-				pool.mark_player_as_available(player)
-	await get_tree().process_frame
-	Engine.max_fps = previous_max_fps
-	get_window().size = previous_window_size
-	get_window().content_scale_size = previous_scale_size
-	get_window().content_scale_mode = previous_scale_mode as Window.ContentScaleMode
-	get_window().content_scale_aspect = previous_scale_aspect as Window.ContentScaleAspect
-	ConstructionInput.install(true)
-	OS.set_environment("MARBLE_ENGINEER_TEST_DATA", previous_test_directory)
-	PuzzleStore.DRAFTS = previous_puzzle_paths[0]
-	PuzzleStore.PUBLISHED = previous_puzzle_paths[1]
-	PuzzleStore.PROGRESS = previous_puzzle_paths[2]
-	PuzzleStore.CAMPAIGN_STATE = previous_puzzle_paths[3]
-	TrackSerializer.SAVE_DIR = previous_track_path
-	if runner_layer: runner_layer.visible = previous_runner_visibility
+	if had_test_directory:
+		OS.set_environment("MARBLE_ENGINEER_TEST_DATA", previous_test_directory)
+	else:
+		OS.unset_environment("MARBLE_ENGINEER_TEST_DATA")
 	remove_test_directory(test_directory)
 
 func remove_test_directory(path: String) -> void:
-	# Only the unique fixture directory created above is removed.
-	if path != test_directory and not path.begins_with(test_directory + "/"):
+	var resolved := ProjectSettings.globalize_path(path).simplify_path()
+	if test_directory.is_empty() or (resolved != test_directory and not resolved.begins_with(test_directory + "/")):
 		fail_test("Refusing cleanup outside the fixture directory")
 		return
-	for filename in DirAccess.get_files_at(path): DirAccess.remove_absolute(path.path_join(filename))
-	for directory in DirAccess.get_directories_at(path): remove_test_directory(path.path_join(directory))
-	DirAccess.remove_absolute(path)
+	var directory := DirAccess.open(resolved)
+	if directory == null:
+		fail_test("Could not open fixture directory for cleanup")
+		return
+	# Never follow a link out of the fixture tree.
+	for filename in directory.get_files():
+		assert_eq(DirAccess.remove_absolute(resolved.path_join(filename)), OK, "Remove fixture file")
+	for child in directory.get_directories():
+		var child_path := resolved.path_join(child)
+		if directory.is_link(child):
+			assert_eq(DirAccess.remove_absolute(child_path), OK, "Remove fixture link")
+		else:
+			remove_test_directory(child_path)
+	assert_eq(DirAccess.remove_absolute(resolved), OK, "Remove fixture directory")

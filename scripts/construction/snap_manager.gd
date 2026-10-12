@@ -10,6 +10,7 @@ var boundary: float = 48.0
 var target_radius: float = 32.0
 var candidate_budget: int = 12
 var sample_indices: Dictionary = {}
+var environment_solids: Array = []
 
 # Sources contain a definition and a transform relative to one group anchor.
 # All editing paths use the same rigid transform and boundary connectors.
@@ -150,6 +151,7 @@ func connector_occupied(point: Vector3, normal: Vector3, connector: TrackConnect
 
 func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array, ignore: Node = null) -> String:
 	var box = placement * definition.bounds
+	if PuzzleEnvironment.blocked(definition, placement, environment_solids): return "Blocked by the environment"
 	if box.position.x < -boundary or box.end.x > boundary or box.position.z < -boundary or box.end.z > boundary or box.position.y < -0.01 or box.end.y > 32:
 		return "Outside the build area (±48 m, 0–32 m high)"
 	for piece in pieces:

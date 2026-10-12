@@ -14,7 +14,7 @@ func write_bundle(files: Dictionary) -> String:
 	assert_eq(zip.open(path), OK)
 	for filename in files:
 		zip.start_file(filename)
-		zip.write_file(JSON.stringify(files[filename]).to_utf8_buffer())
+		zip.write_file((files[filename] if files[filename] is String else JSON.stringify(files[filename])).to_utf8_buffer())
 		zip.close_file()
 	zip.close()
 	return path
@@ -67,3 +67,15 @@ func test_invalid_bundle_leaves_destination_untouched() -> void:
 	var destination = test_directory.path_join("resources/campaign")
 	assert_ne(import_bundle(bundle, destination), 0)
 	assert_false(DirAccess.dir_exists_absolute(destination))
+
+func test_version_two_bundle_carries_fixed_native_environment() -> void:
+	var data := read_json("res://resources/campaign/" + DirAccess.get_files_at("res://resources/campaign")[0])
+	data.version = 2
+	data.environment_instances = [{"uid": "env-1", "asset": "column", "position": [5, 0, 0], "rotation": 0}]
+	data.environment_snapshot = "res://resources/campaign/environments/frozen-test.tscn"
+	var native := "[gd_scene format=3]\n\n[node name=\"Environment\" type=\"Node3D\"]\n"
+	var bundle := write_bundle({"campaign/puzzle.json": data, "environments/frozen-test.tscn": native})
+	var destination := test_directory.path_join("resources/campaign")
+	assert_eq(import_bundle(bundle, destination), 0)
+	assert_eq(read_json(destination.path_join(data.id + ".json")), data)
+	assert_eq(FileAccess.get_file_as_string(destination.path_join("environments/frozen-test.tscn")), native)

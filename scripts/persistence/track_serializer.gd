@@ -2,21 +2,21 @@ class_name TrackSerializer
 extends RefCounted
 
 const FORMAT_VERSION = 1
-static var SAVE_DIR: String = SavePaths.resolve("user://tracks")
+var save_directory: String = SavePaths.resolve("user://tracks")
 var catalog: PieceCatalog
 var last_error: String = ""
 var warnings: Array[String] = []
 
 func _init(piece_catalog: PieceCatalog) -> void:
 	catalog = piece_catalog
-	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+	DirAccess.make_dir_recursive_absolute(save_directory)
 
 func save_track(name: String, pieces: Array, existing_id: String = "") -> String:
 	last_error = ""
 	if name.strip_edges().is_empty(): last_error="Please give your track a name"; return ""
 	var id = existing_id if valid_id(existing_id) else "%d-%s" % [Time.get_unix_time_from_system(),Crypto.new().generate_random_bytes(6).hex_encode()]
 	var data = {"version":FORMAT_VERSION,"id":id,"name":name.strip_edges().left(80),"modified":Time.get_datetime_string_from_system(true),"pieces":pieces}
-	var path = SAVE_DIR+"/"+id+".json"
+	var path = save_directory+"/"+id+".json"
 	var temp = path+".tmp"
 	var file = FileAccess.open(temp,FileAccess.WRITE)
 	if not file: last_error="Could not write track: "+error_string(FileAccess.get_open_error()); return ""
@@ -29,7 +29,7 @@ func save_track(name: String, pieces: Array, existing_id: String = "") -> String
 
 func load_track(id: String) -> Dictionary:
 	if not valid_id(id): last_error="Invalid track identifier"; return {}
-	return decode(FileAccess.get_file_as_string(SAVE_DIR+"/"+id+".json"))
+	return decode(FileAccess.get_file_as_string(save_directory+"/"+id+".json"))
 
 func decode(text: String) -> Dictionary:
 	last_error = ""
@@ -73,7 +73,7 @@ func decode(text: String) -> Dictionary:
 
 func list_tracks() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for file in DirAccess.get_files_at(SAVE_DIR):
+	for file in DirAccess.get_files_at(save_directory):
 		if not file.ends_with(".json"): continue
 		var data = load_track(file.get_basename())
 		if not data.is_empty(): result.append({"id":file.get_basename(),"name":data.name,"modified":data.get("modified",""),"count":data.pieces.size()})
@@ -82,7 +82,7 @@ func list_tracks() -> Array[Dictionary]:
 
 func delete_track(id: String) -> Error:
 	if not valid_id(id): return ERR_INVALID_PARAMETER
-	return DirAccess.remove_absolute(SAVE_DIR+"/"+id+".json")
+	return DirAccess.remove_absolute(save_directory+"/"+id+".json")
 
 func valid_id(id: String) -> bool:
 	if id.is_empty() or id.length()>100: return false
