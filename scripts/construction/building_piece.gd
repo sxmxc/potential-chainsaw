@@ -14,8 +14,6 @@ var mechanism_component: MarbleMechanism
 var support_component: Node3D
 var tint_material: StandardMaterial3D
 
-signal mechanism_event(event: String, marble: RigidBody3D)
-
 func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) -> void:
 	config = preload("res://scripts/mechanisms/settings_schema.gd").normalized(data.behavior, config)
 	base_definition = data
@@ -39,7 +37,6 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 		mechanism_component = load("res://scripts/mechanisms/" + data.behavior + ".gd").new()
 		add_child(mechanism_component)
 	if mechanism_component and data.behavior != "elevator": mechanism_component.configure(config)
-	if mechanism_component: mechanism_component.event_raised.connect(func(event, marble): mechanism_event.emit(event, marble))
 	if data.component_scene and not ghost:
 		add_child(data.component_scene.instantiate())
 	if data.behavior in ["start", "finish"]:
@@ -119,12 +116,3 @@ func tint(color: Color, enabled: bool = true) -> void:
 
 func serialize() -> Dictionary:
 	return {"uid": instance_id, "piece": String(definition.id), "position": [position.x,position.y,position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4), "config": configuration.duplicate(true)}
-
-func supported_actions() -> Array:
-	return mechanism_component.actions.keys() if mechanism_component else []
-
-func supported_events() -> Array:
-	return mechanism_component.events if mechanism_component else []
-
-func perform_action(action: String) -> bool:
-	return mechanism_component.perform(action) if mechanism_component else false

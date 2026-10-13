@@ -29,7 +29,7 @@ func test_functional_mechanisms() -> void:
 		airflow.active = true
 		await ticks(20)
 		assert_true(body.linear_velocity.dot(piece.basis * airflow.axis) > 0.05, id + " applies forward force in real physics")
-		assert_true(piece.perform_action("switch_direction") and airflow.active, id + " linked reversal keeps simulation active")
+		assert_true(piece.mechanism_component.perform("switch_direction") and airflow.active, id + " linked reversal keeps simulation active")
 		assert_true(airflow.area.position.dot(airflow.axis) < 0, id + " linked reversal moves the force region")
 		body.position = Vector3(0, 0.5, 0.8) if id.contains("standing") else Vector3(0, -0.5, 0)
 		body.linear_velocity = Vector3.ZERO
@@ -67,7 +67,7 @@ func test_functional_mechanisms() -> void:
 	gate.mechanism_component.active = true
 	await ticks(120)
 	assert_true(body.position.z > 0.15, "Closed gate physically stops marble")
-	assert_true(gate.perform_action("open"), "Gate exposes Open action")
+	assert_true(gate.mechanism_component.perform("open"), "Gate exposes Open action")
 	await ticks(160)
 	assert_true(body.position.z < -0.1, "Opening gate releases a stopped marble without an external impulse")
 	gate.mechanism_component.reset()
@@ -93,7 +93,7 @@ func test_functional_mechanisms() -> void:
 	launcher.mechanism_component.active = true
 	await ticks(240)
 	assert_true(launcher.mechanism_component.fired.is_empty() and body.position.z > -0.8, "External launcher physically retains loaded marble before trigger")
-	launcher.perform_action("fire")
+	launcher.mechanism_component.perform("fire")
 	await ticks(100)
 	assert_true(launcher.mechanism_component.fired.size() == 1 and body.position.z < -1, "External trigger launches the retained marble")
 	launcher.mechanism_component.reset()
@@ -104,7 +104,7 @@ func test_functional_mechanisms() -> void:
 	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": [{"event": "entered", "target": "gate", "action": "open"}]})
 	gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "gate")
 	var events: Array = []
-	sensor.mechanism_event.connect(func(event, _body): events.append(event))
+	sensor.mechanism_component.event_raised.connect(func(event, _body): events.append(event))
 	sensor.mechanism_component.active = true
 	gate.mechanism_component.active = true
 	var links = MechanismLinks.new()
@@ -170,12 +170,12 @@ func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 	for piece in moving:
 		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_eq(progress, 0.0, "Initially disabled mechanism remains stationary")
-	sensor.mechanism_event.emit("entered", null)
+	sensor.mechanism_component.event_raised.emit("entered", null)
 	await ticks(12)
 	for piece in moving:
 		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_gt(progress, 0.0, "Sensor link activates physical motion")
-		assert_true(piece.perform_action("deactivate"))
+		assert_true(piece.mechanism_component.perform("deactivate"))
 	sim.toggle_pause()
 	await ticks(4)
 	sim.toggle_pause()
@@ -187,7 +187,7 @@ func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 		var piece = moving[index]
 		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_eq(progress, stopped[index], "Resume preserves linked deactivation")
-		assert_true(piece.perform_action("toggle"))
+		assert_true(piece.mechanism_component.perform("toggle"))
 	await ticks(12)
 	for index in moving.size():
 		var piece = moving[index]

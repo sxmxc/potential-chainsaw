@@ -66,8 +66,9 @@ func start() -> bool:
 	for piece in build.pieces:
 		if piece.mechanism_component: piece.mechanism_component.active = true
 	for piece in build.pieces:
+		if not piece.mechanism_component: continue
 		var callback = _mechanism_event.bind(piece)
-		if not piece.mechanism_event.is_connected(callback): piece.mechanism_event.connect(callback)
+		if not piece.mechanism_component.event_raised.is_connected(callback): piece.mechanism_component.event_raised.connect(callback)
 	links.bind(build.pieces, func(): return state == State.RUNNING)
 	elapsed = 0
 	state = State.RUNNING

@@ -10,7 +10,7 @@ func has_properties() -> bool:
 	var piece: BuildingPiece=build.selected
 	if session and session.mode == "editor" and build.selection.any(func(object): return not object.definition.authoring_only): return true
 	if build.selection.size() != 1: return false
-	return piece.definition.behavior in ["start","elevator","resizable_support"] or not piece.supported_events().is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(piece.definition.behavior,{}).is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").FLAGS.get(piece.definition.behavior,{}).is_empty()
+	return piece.definition.behavior in ["start","elevator","resizable_support"] or (piece.mechanism_component and not piece.mechanism_component.events.is_empty()) or not preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(piece.definition.behavior,{}).is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").FLAGS.get(piece.definition.behavior,{}).is_empty()
 func configure(manager: BuildManager) -> void:
 	build=manager
 	%MechanismSettings.configure(manager)
@@ -51,7 +51,7 @@ func refresh(piece: BuildingPiece) -> void:
 	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
 	%SupportTop.disabled=not editable
 	if selection_changed: %LinkSettings.hide()
-	%LinksToggle.visible=count==1 and not piece.supported_events().is_empty()
+	%LinksToggle.visible=count==1 and piece.mechanism_component != null and not piece.mechanism_component.events.is_empty()
 	refresh_permissions(selection_changed)
 	refreshing=false
 	fit_content.call_deferred()

@@ -208,7 +208,7 @@ func refresh_objects() -> void:
 	%MarbleSource.set_item_metadata(0, "")
 	for piece in session.game.sandbox.build.pieces:
 		var object_label = piece.definition.display_name + " · " + piece.instance_id.right(6)
-		if (piece.definition.behavior == "finish" and %ObjectiveType.selected == 0) or (not piece.supported_events().is_empty() and %ObjectiveType.selected == 1):
+		if (piece.definition.behavior == "finish" and %ObjectiveType.selected == 0) or (piece.mechanism_component and not piece.mechanism_component.events.is_empty() and %ObjectiveType.selected == 1):
 			%ObjectiveTarget.add_item(object_label)
 			%ObjectiveTarget.set_item_metadata(%ObjectiveTarget.item_count - 1, piece.instance_id)
 		if piece.definition.behavior == "start":
@@ -221,8 +221,9 @@ func refresh_objective_events() -> void:
 	%ObjectiveEvent.visible = not delivery
 	for control in [%MarbleSource, %MarbleSourceLabel, %RequiredCount, %RequiredCountLabel, %AllMarbles]: control.visible = delivery
 	%ObjectiveEvent.clear()
-	if %ObjectiveTarget.item_count == 0: return
-	for event in session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected)).supported_events(): %ObjectiveEvent.add_item(event.capitalize())
+	if delivery or %ObjectiveTarget.item_count == 0: return
+	var target: BuildingPiece = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
+	for event in target.mechanism_component.events: %ObjectiveEvent.add_item(event.capitalize())
 
 func add_objective() -> void:
 	if %ObjectiveTarget.item_count == 0: return
@@ -231,7 +232,8 @@ func add_objective() -> void:
 	if type == "deliver" and target.definition.behavior != "finish": %Validation.text = "Choose a collector for delivery"; return
 	var data = {"type": type, "target": target.instance_id, "count": int(%RequiredCount.value), "source": %MarbleSource.get_item_metadata(%MarbleSource.selected), "time_limit": %ObjectiveTime.value}
 	if type == "activate":
-		var events = target.supported_events()
+		if not target.mechanism_component: return
+		var events = target.mechanism_component.events
 		if events.is_empty(): return
 		data.event = events[maxi(0, %ObjectiveEvent.selected)]
 	session.puzzle.objectives.append(data)

@@ -23,14 +23,14 @@ func refresh(piece: BuildingPiece) -> void:
 	%LinkList.clear()
 	%AddLink.disabled = true
 	%RemoveLink.disabled = true
-	if not piece or build.selection.size() != 1 or piece.supported_events().is_empty():
+	if not piece or build.selection.size() != 1 or not piece.mechanism_component or piece.mechanism_component.events.is_empty():
 		hide()
 		return
-	for event in piece.supported_events():
+	for event in piece.mechanism_component.events:
 		%LinkEvent.add_item(event.capitalize())
 		%LinkEvent.set_item_metadata(%LinkEvent.item_count - 1, event)
 	for target in build.pieces:
-		if target.supported_actions().is_empty(): continue
+		if not target.mechanism_component or target.mechanism_component.actions.is_empty(): continue
 		%LinkTarget.add_item(target.definition.display_name + " · " + target.instance_id.right(4))
 		var index: int = %LinkTarget.item_count - 1
 		%LinkTarget.set_item_metadata(index, target.instance_id)
@@ -45,8 +45,8 @@ func refresh_actions() -> void:
 	%LinkAction.clear()
 	if %LinkTarget.item_count == 0: return
 	var target := build.find_piece(%LinkTarget.get_item_metadata(%LinkTarget.selected))
-	if not target: return
-	for action in target.supported_actions():
+	if not target or not target.mechanism_component: return
+	for action in target.mechanism_component.actions:
 		%LinkAction.add_item(action.capitalize())
 		%LinkAction.set_item_metadata(%LinkAction.item_count - 1, action)
 
