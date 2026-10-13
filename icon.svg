@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="124" height="124" x="2" y="2" fill="#363d52" stroke="#212532" stroke-width="4" rx="14"/><g fill="#fff" transform="translate(12.322 12.322)scale(.101)"><path d="M105 673v33q407 354 814 0v-33z"/><path fill="#478cbf" d="m105 673 152 14q12 1 15 14l4 67 132 10 8-61q2-11 15-15h162q13 4 15 15l8 61 132-10 4-67q3-13 15-14l152-14V427q30-39 56-81-35-59-83-108-43 20-82 47-40-37-88-64 7-51 8-102-59-28-123-42-26 43-46 89-49-7-98 0-20-46-46-89-64 14-123 42 1 51 8 102-48 27-88 64-39-27-82-47-48 49-83 108 26 42 56 81zm0 33v39c0 276 813 276 814 0v-39l-134 12-5 69q-2 10-14 13l-162 11q-12 0-16-11l-10-65H446l-10 65q-4 11-16 11l-162-11q-12-3-14-13l-5-69z"/><path d="M483 600c0 34 58 34 58 0v-86c0-34-58-34-58 0z"/><circle cx="725" cy="526" r="90"/><circle cx="299" cy="526" r="90"/></g><g fill="#414042" transform="translate(12.322 12.322)scale(.101)"><circle cx="307" cy="532" r="60"/><circle cx="717" cy="532" r="60"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+
+<linearGradient id="gld" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#FFE17A"/><stop offset="1" stop-color="#FFC043"/></linearGradient>
+<linearGradient id="ball" x1=".1" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#AEFFE9"/><stop offset=".65" stop-color="#4CD6BB"/><stop offset="1" stop-color="#18A99B"/></linearGradient>
+<path id="rail" d="M 97 150 L 202 150 C 303 150 346 218 346 300 L 346 382"/>
+</defs>
+<!-- precise flat cog silhouette -->
+<path d="M 205.98 164.78 L 218.44 161.58 L 218.00 135.21 L 270.00 135.21 L 269.56 161.58 L 282.02 164.78 L 285.08 165.77 L 297.04 170.51 L 312.18 148.92 L 354.25 179.48 L 338.40 200.56 L 346.60 210.47 L 348.49 213.07 L 355.38 223.93 L 380.33 215.37 L 396.39 264.82 L 371.18 272.55 L 371.99 285.39 L 371.99 288.61 L 371.18 301.45 L 396.39 309.18 L 380.33 358.63 L 355.38 350.07 L 348.49 360.93 L 346.60 363.53 L 338.40 373.44 L 354.25 394.52 L 312.18 425.08 L 297.04 403.49 L 285.08 408.23 L 282.02 409.22 L 269.56 412.42 L 270.00 438.79 L 218.00 438.79 L 218.44 412.42 L 205.98 409.22 L 202.92 408.23 L 190.96 403.49 L 175.82 425.08 L 133.75 394.52 L 149.60 373.44 L 141.40 363.53 L 139.51 360.93 L 132.62 350.07 L 107.67 358.63 L 91.61 309.18 L 116.82 301.45 L 116.01 288.61 L 116.01 285.39 L 116.82 272.55 L 91.61 264.82 L 107.67 215.37 L 132.62 223.93 L 139.51 213.07 L 141.40 210.47 L 149.60 200.56 L 133.75 179.48 L 175.82 148.92 L 190.96 170.51 L 202.92 165.77 Z M 293 287 A 49 49 0 1 0 195 287 A 49 49 0 1 0 293 287 Z" fill="#075267" fill-rule="evenodd" stroke="#063948" stroke-width="8" stroke-linejoin="round" />
+<circle cx="244" cy="287" r="57" fill="none" stroke="#2497A0" stroke-width="9"/>
+<!-- Track raised over cog. -->
+<use href="#rail" transform="translate(0 18)" fill="none" stroke="#3E2863" stroke-width="99" stroke-linecap="butt" stroke-linejoin="round"/>
+<use href="#rail" transform="translate(0 8)" fill="none" stroke="#5F3B9A" stroke-width="99" stroke-linecap="butt" stroke-linejoin="round"/>
+<use href="#rail" fill="none" stroke="#5D328C" stroke-width="95" stroke-linecap="butt" stroke-linejoin="round"/>
+<use href="#rail" fill="none" stroke="#AC7BE2" stroke-width="88" stroke-linecap="butt" stroke-linejoin="round"/>
+<use href="#rail" fill="none" stroke="#6A43A5" stroke-width="77" stroke-linecap="butt" stroke-linejoin="round"/>
+<use href="#rail" fill="none" stroke="url(#gld)" stroke-width="62" stroke-linecap="butt" stroke-linejoin="round"/>
+<!-- Single marble with restrained highlight -->
+<circle cx="344" cy="256" r="46" fill="#06445A"/>
+<circle cx="340" cy="251" r="39" fill="url(#ball)"/>
+<ellipse cx="326" cy="238" rx="13" ry="8" transform="rotate(-35 326 238)" fill="#DEFFF2"/>
+</svg>

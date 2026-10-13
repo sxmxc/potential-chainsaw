@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bj4isw11fl00d"]
 
 [ext_resource type="AudioStream" uid="uid://dy2f265g2gfsg" path="res://assets/audio/songs/menu_song_loop.mp3" id="3_m1kxf"]
+[ext_resource type="Script" uid="uid://bjoaq7nk1qf67" path="res://scripts/ui/version_label.gd" id="5_x2yvf"]
 [ext_resource type="Script" uid="uid://ottibv50h24e" path="res://scripts/ui/main_menu.gd" id="Script"]
 [ext_resource type="PackedScene" uid="uid://cs82gsc8c1xb6" path="res://scenes/showcase.tscn" id="Showcase"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
@@ -196,4 +197,5 @@ theme_type_variation = &"SmallMutedLabel"
 text = "v0.0.1-alpha"
 label_settings = SubResource("LabelSettings_ldhhn")
 horizontal_alignment = 2
+script = ExtResource("5_x2yvf")
 metadata/_edit_use_anchors_ = true
