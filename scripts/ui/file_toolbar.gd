@@ -32,8 +32,8 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%Reset.pressed.connect(simulation.reset)
 	refresh()
 func refresh() -> void:
-	%Undo.disabled=not build.enabled or build.history.cursor==0
-	%Redo.disabled=not build.enabled or build.history.cursor>=build.history.commands.size()
+	%Undo.disabled=not build.enabled or not build.history.has_undo()
+	%Redo.disabled=not build.enabled or not build.history.has_redo()
 	%Save.visible = not session or session.mode in ["sandbox", "editor"]
 	%Open.visible = session != null and session.mode == "editor"
 	%Save.tooltip_text = "Save draft · Ctrl+S" if session and session.mode == "editor" else "Save track · Ctrl+S"

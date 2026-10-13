@@ -4,6 +4,7 @@
 
 - `scenes/world.tscn` and `scripts/world_manager.gd` provide the shared construction world. Sandbox, campaign, puzzle editing and Test as Player use the same BuildManager and SimulationManager.
 - BuildManager owns placement, connector snapping, selection, configuration and snapshot history. Validate complete proposed edits before committing. Group edits are atomic; one forbidden member rejects the whole operation.
+- Construction history uses Godot's `UndoRedo` with complete layout snapshots. BuildManager registers validated edits without replaying them; undo/redo restores selection by stable IDs. UI and mode resets use the engine's history API.
 - PieceDefinition resources own catalog metadata, connectors, bounds and thumbnails. Changing an adjustable piece must update its geometry, collision, connectors and placement bounds together. Reject conflicting changes without leaving partial state.
 - SimulationManager owns releases, physical motion and completion. Mechanisms use collision, forces and impulses. Collectors and mechanism events determine success; a reference solution is never the completion test.
 - Pause suspends mechanism motion and release scheduling. Reset clears runtime state and restores configured initial state while preserving construction.

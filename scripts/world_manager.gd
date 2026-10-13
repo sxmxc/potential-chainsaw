@@ -22,7 +22,7 @@ func load_construction(pieces: Array) -> void:
 	build.dirty=false
 	simulation.reset()
 	build.restore(pieces)
-	build.history.clear()
+	build.history.clear_history()
 	build.dirty=false
 	build.set_height(0)
 	build.frame_all()

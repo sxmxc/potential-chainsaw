@@ -169,7 +169,7 @@ func restore_reference() -> bool:
 	if not problem.is_empty(): game.sandbox.build.show_status(problem); return false
 	game.sandbox.simulation.reset()
 	game.sandbox.build.restore(puzzle.solution)
-	game.sandbox.build.history.clear()
+	game.sandbox.build.history.clear_history()
 	game.sandbox.build.dirty = false
 	return true
 

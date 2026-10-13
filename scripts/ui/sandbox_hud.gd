@@ -33,7 +33,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build.options_changed.connect(refresh)
 	build.changed.connect(refresh)
 	build.changed.connect(func(): if build.rules: %Toolbox.refresh())
-	build.history.changed.connect(refresh)
+	build.history.version_changed.connect(refresh)
 	build.selection_changed.connect(func(_piece):refresh())
 	simulation.state_changed.connect(_state_changed)
 	refresh()

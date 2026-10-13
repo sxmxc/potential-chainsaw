@@ -3,6 +3,59 @@ extends "res://tests/support/scene_test.gd"
 var game: Node
 var build: BuildManager
 
+func test_history_branching_permissions_and_world_reset() -> void:
+	game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.enter_sandbox()
+	game.new_track()
+	build = game.sandbox.build
+	var piece := build.spawn(build.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 1, 0)))
+	var uid := piece.instance_id
+	build.select(piece)
+	var baseline := build.snapshot()
+	build.rotate_piece()
+	var rotated := build.snapshot()
+	build.elevate_selected(0.5)
+	var raised := build.snapshot()
+	var toolbar := game.get_node("%HUD").get_node("%FileToolbar")
+	assert_false(toolbar.get_node("%Undo").disabled)
+	assert_true(toolbar.get_node("%Redo").disabled)
+	build.enabled = false
+	build.undo()
+	assert_eq(build.snapshot(), raised, "Simulation/modal permissions block undo")
+	build.enabled = true
+	build.dirty = false
+	build.undo()
+	assert_eq(build.snapshot(), rotated)
+	assert_eq(build.selected.instance_id, uid, "Undo retains selection by stable identity")
+	assert_true(build.dirty, "Undo changes the saved construction")
+	assert_false(toolbar.get_node("%Redo").disabled, "Toolbar sees the completed undo")
+	build.enabled = false
+	build.redo()
+	assert_eq(build.snapshot(), rotated, "Simulation/modal permissions block redo")
+	build.enabled = true
+	build.redo()
+	assert_eq(build.snapshot(), raised)
+	build.undo()
+	build.elevate_selected(1.0)
+	var branch := build.snapshot()
+	assert_false(build.history.has_redo(), "New edits discard the abandoned redo branch")
+	build.redo()
+	assert_eq(build.snapshot(), branch)
+	build.undo()
+	assert_eq(build.snapshot(), rotated)
+	build.undo()
+	assert_eq(build.snapshot(), baseline, "Earlier snapshots remain intact across a new branch")
+	build.undo()
+	assert_eq(build.snapshot(), baseline, "Undo at the beginning leaves the construction intact")
+	game.new_track()
+	assert_false(build.history.has_undo())
+	assert_false(build.history.has_redo())
+	assert_true(toolbar.get_node("%Undo").disabled)
+	assert_true(toolbar.get_node("%Redo").disabled)
+	build.redo()
+	assert_true(build.pieces.is_empty(), "A new world cannot redo the previous construction")
+
 func test_group_editing_and_input() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
@@ -25,7 +78,7 @@ func test_group_editing_and_input() -> void:
 	build.apply_preview()
 	build.commit()
 	assert_true(a.position==Vector3(3,3,0) and b.position==Vector3(3,4,2),"Group translation preserves elevation offsets")
-	assert_true(build.history.commands.size()==1,"Group movement is one history command")
+	assert_eq(build.history.get_history_count(),1,"Group movement is one history command")
 	build.undo()
 	assert_true(build.snapshot()==original,"One undo restores the entire group")
 	build.redo()
@@ -119,7 +172,7 @@ func test_group_editing_and_input() -> void:
 	await motion(screen+Vector2(70,45))
 	assert_true(build.direct_drag and build.ghost!=null,"Pointer threshold starts dragging without a Move tool")
 	await mouse(screen+Vector2(70,45),false)
-	assert_true(a.position.y==1 and build.history.commands.size()==1,"Releasing a direct drag preserves elevation and commits once")
+	assert_true(a.position.y==1 and build.history.get_history_count()==1,"Releasing a direct drag preserves elevation and commits once")
 	var moved=a.transform
 	screen=build.camera.unproject_position(a.position+Vector3(0,0.25,0))
 	await motion(screen)

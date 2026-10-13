@@ -16,7 +16,7 @@ var rules: PuzzleRules
 var catalog: PieceCatalog
 var camera: ConstructionCamera
 var snap = SnapManager.new()
-var history = BuildHistory.new()
+var history: UndoRedo = UndoRedo.new()
 var pieces: Array[TrackPiece] = []
 var selection: Array[TrackPiece] = []
 var selected: TrackPiece
@@ -57,6 +57,10 @@ var additive: bool = false
 var box_active: bool = false
 var direct_drag: bool = false
 var last_status: String = ""
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		history.free()
 
 func _ready() -> void:
 	snap.target_radius=connector_target_radius
@@ -370,8 +374,13 @@ func record(before: Array, label: String) -> void:
 			restore(before)
 			show_status("Blocked: " + problem)
 			return
-	if before == snapshot(true): return
-	history.record(before,snapshot(true),label)
+	var after := snapshot(true)
+	if before == after: return
+	history.create_action(label)
+	history.add_do_method(restore_history.bind(after))
+	history.add_undo_method(restore_history.bind(before.duplicate(true)))
+	# The validated edit is already applied; only redo should restore its snapshot.
+	history.commit_action(false)
 	dirty=true
 	refresh_connectors()
 	changed.emit()
@@ -484,16 +493,15 @@ func elevate_selected(delta: float) -> void:
 	selection_changed.emit(selected)
 
 func undo() -> void:
-	if not enabled or history.cursor==0: return
-	restore_history(history.undo())
-	dirty=true
+	if not enabled: return
+	history.undo()
 
 func redo() -> void:
-	if not enabled or history.cursor>=history.commands.size(): return
-	restore_history(history.redo())
-	dirty=true
+	if not enabled: return
+	history.redo()
 
 func restore_history(data: Array) -> void:
+	dirty=true
 	var ids: Array[String] = []
 	var previous: Array[String] = []
 	for piece in selection: ids.append(piece.instance_id)
