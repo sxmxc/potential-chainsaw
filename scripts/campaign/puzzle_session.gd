@@ -18,14 +18,6 @@ var first_corner: Variant = null
 var boundary_zone_index: int = -1
 var opening_fingerprint: String = ""
 var opening_revision: int = 1
-signal environment_selection_changed
-var environment_editing: bool = false
-var environment_selected: String = ""
-var environment_asset: String = ""
-var environment_history := BuildHistory.new()
-var environment_press: Variant = null
-var environment_offset := Vector3.ZERO
-var environment_dragging: bool = false
 var environment_node: Node3D
 
 func configure(owner_game: Node) -> void:
@@ -38,17 +30,16 @@ func configure(owner_game: Node) -> void:
 	game.sandbox.add_child(boundary_visual)
 
 func editor(data: Dictionary = {}) -> void:
-	set_environment_editing(false)
 	mode = "editor"
+	game.sandbox.build.authoring = true
 	puzzle = store.create() if data.is_empty() else data.duplicate(true)
 	opening_fingerprint = store.fingerprint(puzzle)
 	opening_revision = int(puzzle.get("revision", 1))
-	environment_history.clear()
 	game.sandbox.build.rules = null
 	game.sandbox.simulation.puzzle = {}
 	game.sandbox.build.dirty = false
 	reload_environment()
-	game.sandbox.load_construction(puzzle.pieces)
+	game.sandbox.load_construction(puzzle.pieces + PuzzleEnvironment.construction_instances(puzzle))
 	game.track_name = puzzle.name
 	game.track_id = ""
 	game.enter_sandbox()
@@ -59,6 +50,17 @@ func editor(data: Dictionary = {}) -> void:
 func capture() -> Dictionary:
 	if mode == "editor":
 		puzzle.pieces = game.sandbox.build.snapshot()
+		var instances: Array = game.sandbox.build.snapshot(true).filter(func(item): return not item.has("piece"))
+		puzzle.erase("environment")
+		puzzle.erase("environment_placement")
+		puzzle.environment_instances = []
+		for item: Dictionary in instances:
+			if item.uid == PuzzleEnvironment.LEGACY_UID:
+				puzzle.environment = item.scene
+				if not PuzzleEnvironment.transform_for(item).is_equal_approx(Transform3D.IDENTITY):
+					puzzle.environment_placement = {"position": item.position.duplicate(), "rotation": item.rotation}
+			else: puzzle.environment_instances.append(item)
+		if not puzzle.environment_instances.is_empty(): puzzle.version = 2
 		if puzzle.get("status") == "published" and store.fingerprint(puzzle) != opening_fingerprint:
 			puzzle.revision = opening_revision + 1
 			puzzle.status = "draft"
@@ -66,8 +68,8 @@ func capture() -> Dictionary:
 
 func player(data: Dictionary, testing: bool = false) -> void:
 	if not testing: store.remember_level(data)
-	set_environment_editing(false)
 	mode = "test" if testing else "campaign"
+	game.sandbox.build.authoring = false
 	puzzle = data.duplicate(true)
 	game.sandbox.build.rules = null
 	game.sandbox.simulation.puzzle = puzzle
@@ -89,8 +91,8 @@ func player(data: Dictionary, testing: bool = false) -> void:
 	mode_changed.emit()
 
 func sandbox() -> void:
-	set_environment_editing(false)
 	mode = "sandbox"
+	game.sandbox.build.authoring = false
 	puzzle = {}
 	reload_environment()
 	game.sandbox.build.rules = null
@@ -100,17 +102,19 @@ func sandbox() -> void:
 
 func set_environment(path: String) -> bool:
 	if mode != "editor": return false
-	var inspected := PuzzleEnvironment.inspect(path)
-	if not inspected.errors.is_empty():
-		game.show_message("\n".join(inspected.errors))
-		return false
-	if path.is_empty(): puzzle.erase("environment")
-	else: puzzle["environment"] = path
-	game.sandbox.build.history.clear()
-	environment_history.clear()
-	reload_environment()
-	game.sandbox.build.dirty = true
-	mode_changed.emit()
+	var build: BuildManager = game.sandbox.build
+	if not build.enabled: return false
+	var before := build.snapshot(true)
+	var construction: Array = before.filter(func(item): return item.uid != PuzzleEnvironment.LEGACY_UID)
+	if not path.is_empty():
+		var definition: PieceDefinition = game.catalog.get_piece("environment_scene:" + path)
+		if not definition: return false
+		var remaining: Array = build.pieces.filter(func(piece): return piece.instance_id != PuzzleEnvironment.LEGACY_UID)
+		var error := build.snap.validate(definition, Transform3D.IDENTITY, remaining)
+		if not error.is_empty(): build.show_status(error); return false
+		construction.append({"uid": PuzzleEnvironment.LEGACY_UID, "scene": path, "position": [0, 0, 0], "rotation": 0})
+	build.restore(construction)
+	build.record(before, "Change environment scene")
 	return true
 
 func reload_environment() -> bool:
@@ -130,179 +134,20 @@ func reload_environment() -> bool:
 		environment_node = scene.instantiate()
 		PuzzleEnvironment._collect(environment_node, Transform3D.IDENTITY, inspected)
 	else:
-		inspected = PuzzleEnvironment.inspect_definition(puzzle)
+		var fixed_data := puzzle.duplicate(true)
+		if mode == "editor":
+			fixed_data.environment_instances = []
+			fixed_data.erase("environment")
+			fixed_data.erase("environment_placement")
+		inspected = PuzzleEnvironment.inspect_definition(fixed_data)
 		if not inspected.errors.is_empty():
 			game.show_message("\n".join(inspected.errors))
 			return false
-		if not str(puzzle.get("environment", "")).is_empty() or not puzzle.get("environment_instances", []).is_empty():
-			environment_node = PuzzleEnvironment.instantiate_definition(puzzle)
+		if not str(fixed_data.get("environment", "")).is_empty() or not fixed_data.get("environment_instances", []).is_empty():
+			environment_node = PuzzleEnvironment.instantiate_definition(fixed_data)
 	game.sandbox.build.snap.environment_solids = inspected.solids
 	if environment_node: game.sandbox.add_child(environment_node)
-	update_environment_highlight()
-	environment_selection_changed.emit()
 	return true
-
-func set_environment_editing(active: bool) -> void:
-	if not game: return
-	if active and (mode != "editor" or game.sandbox.simulation.state != SimulationManager.State.BUILD): return
-	cancel_environment_gesture()
-	environment_editing = active
-	if active:
-		boundary_tool = ""
-		first_corner = null
-	game.sandbox.build.cancel()
-	game.sandbox.build.select(null)
-	game.sandbox.build.environment_editing = active
-	game.sandbox.build.enabled = not active and game.sandbox.simulation.state == SimulationManager.State.BUILD
-	game.sandbox.build.refresh_grid()
-	if not active:
-		environment_asset = ""
-		environment_selected = ""
-	update_environment_highlight()
-	environment_selection_changed.emit()
-	game.get_node("%HUD").refresh()
-
-func environment_item() -> Dictionary:
-	for item in puzzle.get("environment_instances", []):
-		if item.uid == environment_selected: return item
-	return {}
-
-func select_environment(uid: String) -> void:
-	if mode != "editor": return
-	environment_selected = uid
-	environment_asset = ""
-	update_environment_highlight()
-	environment_selection_changed.emit()
-
-func choose_environment(asset: String) -> void:
-	if not PuzzleEnvironment.CATALOG.has(asset): return
-	set_environment_editing(true)
-	if not environment_editing: return
-	environment_asset = asset
-	environment_selected = ""
-	game.sandbox.build.show_status("Click the grid to place · Esc cancels")
-	environment_selection_changed.emit()
-
-func edit_environment(items: Array, label: String, record_history: bool = true) -> bool:
-	if mode != "editor" or game.sandbox.simulation.state != SimulationManager.State.BUILD: return false
-	var candidate := puzzle.duplicate(true)
-	candidate.environment_instances = items
-	var inspected := PuzzleEnvironment.inspect_definition(candidate)
-	if not inspected.errors.is_empty(): return false
-	for piece in game.sandbox.build.pieces:
-		if PuzzleEnvironment.blocked(piece.definition, piece.transform, inspected.solids):
-			game.sandbox.build.show_status("Blocked by a track piece")
-			return false
-	var before: Array = puzzle.get("environment_instances", []).duplicate(true)
-	if before == items: return true
-	puzzle.version = 2
-	puzzle.environment_instances = items.duplicate(true)
-	if record_history: environment_history.record(before, items, label)
-	# Track history belongs to the previous collision arrangement.
-	game.sandbox.build.history.clear()
-	reload_environment()
-	game.sandbox.build.dirty = true
-	mode_changed.emit()
-	return true
-
-func place_environment(asset: String, point: Vector3) -> bool:
-	if not PuzzleEnvironment.CATALOG.has(asset): return false
-	var items: Array = puzzle.get("environment_instances", []).duplicate(true)
-	var uid := "environment-" + Crypto.new().generate_random_bytes(8).hex_encode()
-	items.append({"uid": uid, "asset": asset, "position": [point.x, point.y, point.z], "rotation": 0})
-	if not edit_environment(items, "Place environment"): return false
-	select_environment(uid)
-	return true
-
-func transform_environment(point: Vector3, turn: int) -> bool:
-	var items: Array = puzzle.get("environment_instances", []).duplicate(true)
-	for item in items:
-		if item.uid == environment_selected:
-			item.position = [point.x, point.y, point.z]
-			item.rotation = posmod(turn, 4)
-			return edit_environment(items, "Move/rotate environment")
-	return false
-
-func remove_environment() -> void:
-	if environment_selected.is_empty(): return
-	var items: Array = puzzle.get("environment_instances", []).filter(func(item): return item.uid != environment_selected)
-	if edit_environment(items, "Remove environment"): select_environment("")
-
-func duplicate_environment() -> void:
-	var item := environment_item().duplicate(true)
-	if item.is_empty(): return
-	item.uid = "environment-" + Crypto.new().generate_random_bytes(8).hex_encode()
-	item.position[0] += game.sandbox.build.snap.horizontal_step
-	var items: Array = puzzle.get("environment_instances", []).duplicate(true)
-	items.append(item)
-	if edit_environment(items, "Duplicate environment"): select_environment(item.uid)
-
-func environment_undo(redo: bool = false) -> void:
-	if mode != "editor" or game.sandbox.simulation.state != SimulationManager.State.BUILD: return
-	cancel_environment_gesture()
-	if redo and environment_history.cursor >= environment_history.commands.size(): return
-	if not redo and environment_history.cursor == 0: return
-	var index := environment_history.cursor if redo else environment_history.cursor - 1
-	var items: Array = environment_history.commands[index]["after" if redo else "before"]
-	if edit_environment(items, "Restore environment", false):
-		environment_history.cursor += 1 if redo else -1
-		environment_history.changed.emit()
-		environment_selection_changed.emit()
-
-func cancel_environment_gesture() -> void:
-	if environment_dragging:
-		# Drag only previews the node; JSON remains the committed source of truth.
-		reload_environment()
-	environment_press = null
-	environment_dragging = false
-
-func pick_environment(screen: Vector2) -> String:
-	var camera: ConstructionCamera = game.sandbox.camera
-	var ray := camera.project_ray_origin(screen)
-	var hit: Dictionary = game.sandbox.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(ray, ray + camera.project_ray_normal(screen) * 250, 1))
-	var node := hit.get("collider") as Node
-	while node:
-		if node.has_meta("environment_uid"): return str(node.get_meta("environment_uid"))
-		node = node.get_parent()
-	return ""
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not environment_editing or mode != "editor" or not game.sandbox.camera.enabled or game.sandbox.simulation.state != SimulationManager.State.BUILD or ConstructionInput.typing(get_viewport()): return
-	var build: BuildManager = game.sandbox.build
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and game.sandbox.camera.drag_button == 0:
-		if not environment_asset.is_empty():
-			var point = build.plane_point(event.position, build.height)
-			if point != null: place_environment(environment_asset, build.snap.grid_position(point))
-		else:
-			select_environment(pick_environment(event.position))
-			if not environment_item().is_empty():
-				environment_press = event.position
-				var placement := PuzzleEnvironment.transform_for(environment_item())
-				var point = build.plane_point(event.position, placement.origin.y)
-				if point != null: environment_offset = placement.origin - point
-		get_viewport().set_input_as_handled()
-	elif event is InputEventMouseMotion and environment_press != null and game.sandbox.camera.drag_button == 0:
-		if event.position.distance_to(environment_press) < build.drag_threshold and not environment_dragging: return
-		var item := environment_item()
-		if item.is_empty(): return
-		var point = build.plane_point(event.position, float(item.position[1]))
-		if point != null:
-			environment_dragging = true
-			var object := environment_node.get_node(NodePath(environment_selected)) as Node3D
-			object.position = build.snap.grid_position(point + environment_offset)
-		get_viewport().set_input_as_handled()
-	elif event is InputEventKey and event.pressed and not event.echo:
-		var item := environment_item()
-		if event.is_action_pressed("build_cancel", false, true): cancel_environment_gesture(); environment_asset = ""; select_environment("")
-		elif event.is_action_pressed("build_remove", false, true): remove_environment()
-		elif event.is_action_pressed("build_duplicate", false, true): duplicate_environment()
-		elif event.is_action_pressed("build_rotate", false, true) and not item.is_empty(): transform_environment(PuzzleEnvironment.transform_for(item).origin, int(item.rotation) + 1)
-		elif event.is_action_pressed("build_undo", false, true): environment_undo()
-		elif event.is_action_pressed("build_redo", false, true): environment_undo(true)
-		elif event.is_action_pressed("build_height_up", false, true): build.set_height(build.height + build.height_step())
-		elif event.is_action_pressed("build_height_down", false, true): build.set_height(build.height - build.height_step())
-		else: return
-		get_viewport().set_input_as_handled()
 
 func test_player() -> bool:
 	if mode != "editor": return false
@@ -363,7 +208,8 @@ func publish() -> bool:
 
 func set_permissions(values: Dictionary) -> void:
 	if mode != "editor": return
-	for piece in game.sandbox.build.selection: puzzle.permissions[piece.instance_id] = values.duplicate(true)
+	for piece in game.sandbox.build.selection:
+		if not piece.definition.authoring_only: puzzle.permissions[piece.instance_id] = values.duplicate(true)
 	game.sandbox.build.dirty = true
 	mode_changed.emit()
 
@@ -405,7 +251,6 @@ func draw_box(mesh: ImmediateMesh, box: AABB) -> void:
 			if i < j: mesh.surface_add_vertex(corners[i]); mesh.surface_add_vertex(corners[j])
 
 func begin_boundary(zone: bool = false, zone_index: int = -1) -> void:
-	set_environment_editing(false)
 	boundary_tool = "zone" if zone else "build"
 	boundary_zone_index = zone_index
 	first_corner = null
@@ -414,19 +259,6 @@ func begin_boundary(zone: bool = false, zone_index: int = -1) -> void:
 	game.sandbox.build.show_status("Build region · click two opposite corners in the world · Esc cancels")
 
 func _input(event: InputEvent) -> void:
-	if environment_editing and event is InputEventMouseButton and event.pressed and get_viewport().gui_get_hovered_control() == null:
-		var focus := get_viewport().gui_get_focus_owner()
-		if focus: focus.release_focus()
-	if environment_editing and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and environment_press != null:
-		if environment_dragging and get_viewport().gui_get_hovered_control() == null:
-			var object := environment_node.get_node(NodePath(environment_selected)) as Node3D
-			var obj_point := object.position
-			var turn := int(environment_item().rotation)
-			environment_dragging = false
-			if not transform_environment(obj_point, turn): reload_environment()
-		else: cancel_environment_gesture()
-		environment_press = null
-		get_viewport().set_input_as_handled()
 	if boundary_tool.is_empty(): return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		boundary_tool = ""
@@ -454,10 +286,3 @@ func _input(event: InputEvent) -> void:
 		refresh_boundary()
 		mode_changed.emit()
 	get_viewport().set_input_as_handled()
-
-func update_environment_highlight() -> void:
-	if not is_instance_valid(environment_node): return
-	for object in environment_node.get_children():
-		var highlighted: bool = environment_editing and str(object.get_meta("environment_uid", "")) == environment_selected and not environment_selected.is_empty()
-		for mesh in object.find_children("*", "MeshInstance3D", true, false):
-			mesh.material_overlay = preload("res://resources/environment_selection.tres") if highlighted else null

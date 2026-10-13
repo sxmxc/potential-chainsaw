@@ -5,7 +5,7 @@ var displayed_piece: TrackPiece
 func has_properties() -> bool:
 	if not build.selected: return false
 	var piece: TrackPiece=build.selected
-	return piece.definition.behavior in ["start","elevator","resizable_support"] or not piece.supported_events().is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(piece.definition.behavior,{}).is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").FLAGS.get(piece.definition.behavior,{}).is_empty()
+	return piece.definition.authoring_only or piece.definition.behavior in ["start","elevator","resizable_support"] or not piece.supported_events().is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(piece.definition.behavior,{}).is_empty() or not preload("res://scripts/mechanisms/settings_schema.gd").FLAGS.get(piece.definition.behavior,{}).is_empty()
 func configure(manager: BuildManager) -> void:
 	build=manager
 	%MechanismSettings.configure(manager)
@@ -50,10 +50,10 @@ func refresh(piece: TrackPiece) -> void:
 	%SupportSettings.visible=count==1 and piece.definition.behavior=="resizable_support"
 	%SupportHeight.value=piece.configuration.get("support_height",2.0)
 	%SupportTop.select(1 if piece.configuration.get("support_double_top",false) else 0)
-	%Details.hide()
+	%Details.visible=piece.definition.authoring_only
 	%Description.hide()
-	%Lower.hide()
-	%Raise.hide()
+	%Lower.visible=piece.definition.authoring_only
+	%Raise.visible=piece.definition.authoring_only
 	var editable: bool=not build.rules or build.rules.permits(piece.instance_id,"configure")
 	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
 	%SupportTop.disabled=not editable

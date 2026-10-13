@@ -89,6 +89,7 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
 				score+=minf(100,(preferred*port.point).distance_to(target.point))*0.08
 				if target.key==sticky: score-=8.0
 				results.append({"transform":placement,"point":target.point,"target":target,"key":target.key+"/"+str(port_index)+"/"+str(quarter),"error":"","score":score})
+	if forced.is_empty(): results.append_array(surface_candidates(items, preferred, pieces, ignored, camera, cursor, sticky))
 	results.sort_custom(func(a,b):return a.score<b.score)
 	# Limit expensive solid validation to plausible nearby alternatives.
 	if results.size()>candidate_budget: results.resize(candidate_budget)
@@ -97,6 +98,74 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
 		if not candidate.error.is_empty(): candidate.score+=1000.0
 	results.sort_custom(func(a,b):return a.score<b.score)
 	return results
+
+# Native solids align opposing faces using their measured edges and centres.
+# They share candidate selection and validation with tracks without track ports.
+func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String) -> Array[Dictionary]:
+	var results: Array[Dictionary] = []
+	var placements: Dictionary = {}
+	var source_boxes: Array[Dictionary] = []
+	for item in items:
+		for solid in item.definition.collision_solids:
+			source_boxes.append({"box":Transform3D(preferred.basis, Vector3.ZERO) * item.local * solid, "definition":item.definition})
+	if source_boxes.is_empty(): return results
+	for piece in pieces:
+		if piece in ignored: continue
+		for solid_index in piece.definition.collision_solids.size():
+			var target_box: AABB = piece.transform * piece.definition.collision_solids[solid_index]
+			for axis in 3:
+				for side in 2:
+					var anchors := face_anchors(target_box, axis, side)
+					for anchor_index in anchors.size():
+						var point: Vector3 = anchors[anchor_index]
+						if (camera.global_position[axis] - point[axis]) * (side * 2 - 1) <= 0: continue
+						var key: String = "%s/solid%d/%d/%d/%d" % [piece.instance_id, solid_index, axis, side, anchor_index]
+						if camera.is_position_behind(point): continue
+						var pixels: float = cursor.distance_to(camera.unproject_position(point))
+						if pixels > target_radius * (1.4 if key == sticky else 1.0): continue
+						var target := {"piece":piece, "point":point, "key":key}
+						if not target_visible(target, camera, ignored): continue
+						for source_item in source_boxes:
+							var source_box: AABB = source_item.box
+							var sources := face_anchors(source_box, axis, 1 - side)
+							if axis != 1 and permits_overlap(source_item.definition, piece.definition):
+								# Centre a column on the wall joint instead of pushing it outside.
+								for level in 3:
+									var centre := source_box.get_center()
+									centre.y = source_box.position.y + source_box.size.y * level * 0.5
+									sources.append(centre)
+							for source: Vector3 in sources:
+								var placement := Transform3D(preferred.basis, point - source)
+								# Side attachments retain elevation; top/bottom faces can stack.
+								if axis != 1 and not is_equal_approx(placement.origin.y, preferred.origin.y): continue
+								# Thin walls join at their ends rather than crossing at a midpoint.
+								var length_axis: int = 0 if source_box.size.x > source_box.size.z else 2
+								var width_axis: int = 2 if length_axis == 0 else 0
+								if axis == width_axis and source_box.size[length_axis] > source_box.size[width_axis] * 4.0 and is_equal_approx(source[length_axis], source_box.get_center()[length_axis]): continue
+								var offset := placement.origin - preferred.origin
+								var score: float = pixels + Vector2(offset.x, offset.z).length() * 2.0 + absf(offset.y) * 0.1
+								if not camera.is_position_behind(placement.origin): score += cursor.distance_to(camera.unproject_position(placement.origin)) * 0.5
+								if key == sticky: score -= 8.0
+								# Different face anchors can describe the same rigid placement.
+								var placement_key := str(placement.origin)
+								if placements.has(placement_key) and placements[placement_key].score <= score: continue
+								var candidate := {"transform":placement, "point":point, "target":target, "key":key+"/"+str(source), "error":"", "score":score}
+								placements[placement_key] = candidate
+	results.assign(placements.values())
+	return results
+
+func face_anchors(box: AABB, axis: int, side: int) -> Array[Vector3]:
+	var result: Array[Vector3] = []
+	var first: int = (axis + 1) % 3
+	var second: int = (axis + 2) % 3
+	for u in 3:
+		for v in 3:
+			var point := box.position
+			point[axis] += box.size[axis] * side
+			point[first] += box.size[first] * u * 0.5
+			point[second] += box.size[second] * v * 0.5
+			result.append(point)
+	return result
 
 func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -> bool:
 	var origin := camera.global_position
@@ -152,17 +221,33 @@ func connector_occupied(point: Vector3, normal: Vector3, connector: TrackConnect
 func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array, ignore: Node = null) -> String:
 	var box = placement * definition.bounds
 	if PuzzleEnvironment.blocked(definition, placement, environment_solids): return "Blocked by the environment"
-	if box.position.x < -boundary or box.end.x > boundary or box.position.z < -boundary or box.end.z > boundary or box.position.y < -0.01 or box.end.y > 32:
+	# A reusable scene may have authored foundations below its placement origin.
+	var bottom: float = placement.origin.y if definition.authoring_only else box.position.y
+	if box.position.x < -boundary or box.end.x > boundary or box.position.z < -boundary or box.end.z > boundary or bottom < -0.01 or box.end.y > 32:
 		return "Outside the build area (±48 m, 0–32 m high)"
 	for piece in pieces:
 		if piece == ignore: continue
+		if permits_overlap(definition, piece.definition): continue
 		if not box.grow(-0.015).intersects(piece.transform * piece.definition.bounds): continue
 		if solid_overlap(definition, placement, piece.definition, piece.transform):
 			return "Physical overlap with " + piece.definition.display_name
 	return ""
 
+func permits_overlap(a: PieceDefinition, b: PieceDefinition) -> bool:
+	return a.authoring_only and b.authoring_only and (a.overlap_with.has(b.id) or b.overlap_with.has(a.id))
+
 func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: Transform3D) -> bool:
 	# A moving mechanism reserves its complete swept volume, including empty gaps.
+	if not a.collision_solids.is_empty():
+		var solids: Array = []
+		for solid in a.collision_solids: solids.append(at * solid)
+		if not b.collision_solids.is_empty():
+			for solid in b.collision_solids:
+				for other: AABB in solids:
+					if (bt * solid).grow(-0.001).intersects(other): return true
+			return false
+		return PuzzleEnvironment.blocked(b, bt, solids)
+	if not b.collision_solids.is_empty(): return solid_overlap(b, bt, a, at)
 	if a.reserve_bounds or b.reserve_bounds:
 		return (at*a.bounds).grow(-0.015).intersects((bt*b.bounds).grow(-0.015))
 	# Right-angle rigid transforms preserve the per-axis sample tolerance. Index

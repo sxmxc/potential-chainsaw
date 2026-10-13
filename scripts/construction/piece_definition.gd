@@ -12,6 +12,11 @@ extends Resource
 @export var rotation_steps: int = 4
 @export var connectors: Array[TrackConnector] = []
 @export_enum("static", "start", "finish", "rotor", "decoration", "support", "elevator", "resizable_support", "airflow", "gate", "diverter", "launcher", "sensor") var behavior: String = "static"
+# Environment scenes supply native collision rather than generated mesh collision.
+@export var authoring_only: bool = false
+@export var collision_solids: Array[AABB] = []
+# Authored scenery joints may interpenetrate these registered piece types.
+@export var overlap_with: Array[StringName] = []
 @export var library_visible: bool = true
 @export var component_scene: PackedScene
 @export var collision_enabled: bool = true

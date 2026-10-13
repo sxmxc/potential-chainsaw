@@ -90,7 +90,7 @@ func pan_offset(pointer: Vector2, motion: Vector2, vertical: bool = false) -> Ve
 	if previous == null or current_cam == null: return Vector3.ZERO
 	# A nearly horizontal view can put the intersection far beyond the machine.
 	if not vertical and (global_position.distance_to(previous) > distance * 8 or global_position.distance_to(current_cam) > distance * 8): return Vector3.ZERO
-	return previous - current
+	return previous - current_cam
 
 func _input(event: InputEvent) -> void:
 	# GUI consumption of a release must not leave an orbit/pan gesture latched.

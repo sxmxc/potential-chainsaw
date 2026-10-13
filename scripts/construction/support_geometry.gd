@@ -17,9 +17,9 @@ static func normalized(config: Dictionary) -> Dictionary:
 static func sections(family: String, config: Dictionary) -> Array[Dictionary]:
 	var settings=normalized(config)
 	var result: Array[Dictionary]=[]
-	var bottom=load("res://resources/pieces/"+family+"-bottom.tres") as PieceDefinition
-	var middle=load("res://resources/pieces/"+family+"-middle.tres") as PieceDefinition
-	var top=load("res://resources/pieces/"+family+("-top-double.tres" if settings.support_double_top else "-top.tres")) as PieceDefinition
+	var bottom=PieceCatalog.REGISTRY.load_entry(StringName(family+"-bottom")) as PieceDefinition
+	var middle=PieceCatalog.REGISTRY.load_entry(StringName(family+"-middle")) as PieceDefinition
+	var top=PieceCatalog.REGISTRY.load_entry(StringName(family+("-top-double" if settings.support_double_top else "-top"))) as PieceDefinition
 	result.append({"definition":bottom,"transform":Transform3D.IDENTITY,"name":"Bottom"})
 	var remaining: float=settings.support_height-1.0
 	var elevation=SEGMENT_HEIGHT

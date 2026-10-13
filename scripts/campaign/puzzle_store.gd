@@ -80,7 +80,8 @@ func validate(data: Dictionary) -> Array[String]:
 		if int(objective.get("count", 1)) < 1: errors.append("Objective quantity must be positive")
 		if not objective.get("source", "").is_empty() and not by_id.has(objective.source): errors.append("Required marble source is missing")
 	for id in data.get("inventory", {}):
-		if not catalog.get_piece(id) or int(data.inventory[id]) < 0: errors.append("Invalid inventory: " + id)
+		var definition := catalog.get_piece(id)
+		if not definition or definition.authoring_only or int(data.inventory[id]) < 0: errors.append("Invalid inventory: " + id)
 	var bounds = data.get("bounds", [])
 	if bounds.size() != 6 or bounds[0] >= bounds[2] or bounds[1] >= bounds[3] or bounds[4] >= bounds[5]: errors.append("Build region is empty")
 	for id in data.get("configuration_limits", {}):

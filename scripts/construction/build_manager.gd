@@ -34,9 +34,8 @@ var movement_height: float = 0
 var pointer_offset: Vector3 = Vector3.ZERO
 var grid_visible: bool = true
 var snapping: bool = true
-var environment_editing: bool = false
-var enabled: bool = false:
-	set(value): enabled = value and not environment_editing
+var authoring: bool = false
+var enabled: bool = false
 var proposed: Transform3D = Transform3D.IDENTITY
 var valid: bool = false
 var is_snapped: bool = false
@@ -68,9 +67,10 @@ func _ready() -> void:
 	add_child(connector_markers)
 	refresh_grid()
 
-func snapshot() -> Array:
+func snapshot(include_environment: bool = false) -> Array:
 	var result: Array = []
-	for piece in pieces: result.append(piece.serialize())
+	for piece in pieces:
+		if include_environment or not piece.definition.authoring_only: result.append(piece.serialize())
 	return result
 
 func restore(data: Array) -> void:
@@ -82,13 +82,15 @@ func restore(data: Array) -> void:
 		piece.queue_free()
 	pieces.clear()
 	for item in data:
-		var definition=catalog.get_piece(item.piece)
-		if not definition: continue
+		var id: String = "environment_scene:" + item.scene if item.has("scene") else ("environment:" + item.asset if item.has("asset") else item.piece)
+		var definition=catalog.get_piece(id)
+		if not definition or (definition.authoring_only and not authoring): continue
 		spawn(definition,Transform3D(Basis(Vector3.UP,int(item.rotation)*PI/2),Vector3(item.position[0],item.position[1],item.position[2])),item.uid,item.get("config",{}))
 	refresh_connectors()
 	changed.emit()
 
 func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = "", config: Dictionary = {}) -> TrackPiece:
+	if definition.authoring_only and not authoring: return null
 	var piece=PIECE_SCENE.instantiate() as TrackPiece
 	piece.instance_id=uid if not uid.is_empty() else "piece-%d-%d" % [Time.get_ticks_usec(),next_uid]
 	next_uid+=1
@@ -99,7 +101,7 @@ func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = ""
 	return piece
 
 func choose(definition: PieceDefinition) -> void:
-	if not enabled: return
+	if not enabled or (definition.authoring_only and not authoring): return
 	if rules and rules.remaining(String(definition.id), snapshot()) <= 0:
 		show_status("No inventory remaining")
 		return
@@ -133,7 +135,7 @@ func make_ghost() -> void:
 
 func select(piece: TrackPiece) -> void:
 	var values: Array[TrackPiece] = []
-	if ConstructionSelection.editable(piece): values.append(piece)
+	if ConstructionSelection.editable(piece) and (authoring or not piece.definition.authoring_only): values.append(piece)
 	set_selection(values)
 
 func set_selection(values: Array[TrackPiece]) -> void:
@@ -141,7 +143,7 @@ func set_selection(values: Array[TrackPiece]) -> void:
 		if is_instance_valid(piece): piece.tint(Color.WHITE,false)
 	selection.clear()
 	for piece in values:
-		if ConstructionSelection.editable(piece) and piece not in selection: selection.append(piece)
+		if ConstructionSelection.editable(piece) and (authoring or not piece.definition.authoring_only) and piece not in selection: selection.append(piece)
 	selected=selection[0] if not selection.is_empty() else null
 	for piece in selection: piece.tint(Color(1,0.78,0.25,0.4))
 	selection_changed.emit(selected)
@@ -217,7 +219,7 @@ func refresh_grid() -> void:
 	mesh.surface_end()
 	grid_mesh.mesh=mesh
 	grid_mesh.position.y=height+0.006
-	grid_mesh.visible=grid_visible and (enabled or environment_editing)
+	grid_mesh.visible=grid_visible and enabled
 
 func refresh_connectors() -> void:
 	if not connector_markers: return
@@ -295,7 +297,7 @@ func update_preview() -> void:
 	if validation_message.is_empty() and rules: validation_message=rules.validate(proposed_snapshot())
 	valid=validation_message.is_empty()
 	apply_preview()
-	var message="✕  "+validation_message if not valid else ("Connected · click to attach" if is_snapped else "Click to place · R rotate · right-click cancel")
+	var message="✕  "+validation_message if not valid else ("Aligned · click to place" if is_snapped else "Click to place · R rotate · right-click cancel")
 	if direct_drag: message="Release to move · Esc cancel" if valid else "✕  "+validation_message
 	if is_snapped and candidates.size()>1: message+=" · Tab: attachment %d/%d" % [candidate_index()+1,candidates.size()]
 	show_status(message)
@@ -326,11 +328,14 @@ func update_marker_feedback() -> void:
 		marker.material_override.albedo_color=Color("55e4ba") if active else (Color("ffd17a") if hovered else Color("80b9af"))
 
 func commit() -> void:
-	if not is_instance_valid(ghost) or not ghost.visible or not valid: return
+	if not enabled or not is_instance_valid(ghost) or not ghost.visible or not valid: return
+	if chosen.authoring_only and not authoring: return
+	var placement_error = snap.validate_group(preview_items, proposed, pieces, moving_group)
+	if not placement_error.is_empty(): show_status(placement_error); return
 	if rules:
 		var rule_error = rules.validate(proposed_snapshot())
 		if not rule_error.is_empty(): show_status(rule_error); return
-	var before=snapshot()
+	var before=snapshot(true)
 	var mode=operation
 	var edited: Array[TrackPiece] = []
 	for index in preview_items.size():
@@ -365,17 +370,18 @@ func record(before: Array, label: String) -> void:
 			restore(before)
 			show_status("Blocked: " + problem)
 			return
-	history.record(before,snapshot(),label)
+	if before == snapshot(true): return
+	history.record(before,snapshot(true),label)
 	dirty=true
 	refresh_connectors()
 	changed.emit()
 
 func configure_selected(config: Dictionary, label: String) -> bool:
-	if not enabled or selection.size()!=1 or chosen: return false
+	if not enabled or selection.size()!=1 or chosen or not selection_permitted("configure"): return false
 	if rules and not rules.permits(selected.instance_id, "configure"):
 		show_status("Configuration is locked")
 		return false
-	var before=snapshot()
+	var before=snapshot(true)
 	var previous=selected.configuration.duplicate(true)
 	snap.sample_indices.erase(selected.definition.get_instance_id())
 	selected.apply_configuration(config)
@@ -401,7 +407,7 @@ func configure_selected(config: Dictionary, label: String) -> bool:
 func delete_selected() -> void:
 	if not enabled or selection.is_empty() or not selection_permitted("remove"): return
 	cancel()
-	var before=snapshot()
+	var before=snapshot(true)
 	var removing=selection.duplicate()
 	select(null)
 	for piece in removing:
@@ -442,7 +448,7 @@ func move_selected(duplicate_piece: bool = false) -> void:
 func rotate_piece() -> void:
 	if not enabled: return
 	if chosen:
-		if is_snapped and candidates.size()>1: cycle_candidate()
+		if is_snapped and candidates.size()>1 and not chosen.connectors.is_empty(): cycle_candidate()
 		else:
 			turn=posmod(turn+1,4)
 			forced_target.clear()
@@ -455,7 +461,7 @@ func rotate_piece() -> void:
 		for piece in selection: items.append({"definition":piece.definition,"local":Transform3D(piece.basis,piece.position-pivot)})
 		var error=snap.validate_group(items,rotation_transform,pieces,selection)
 		if not error.is_empty(): show_status("✕  "+error); return
-		var before=snapshot()
+		var before=snapshot(true)
 		for index in selection.size(): selection[index].transform=rotation_transform*items[index].local
 		record(before,"Rotate assembly")
 		selection_changed.emit(selected)
@@ -472,7 +478,7 @@ func elevate_selected(delta: float) -> void:
 	var placement=Transform3D(Basis.IDENTITY,Vector3(0,delta,0))
 	var error=snap.validate_group(items,placement,pieces,selection)
 	if not error.is_empty(): show_status("✕  "+error); return
-	var before=snapshot()
+	var before=snapshot(true)
 	for piece in selection: piece.position.y+=delta
 	record(before,"Raise/lower assembly")
 	selection_changed.emit(selected)
@@ -631,6 +637,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("build_frame_all",false,true): frame_all()
 
 func selection_permitted(action: String) -> bool:
+	for piece in selection:
+		if piece.definition.authoring_only and not authoring: return false
 	if not rules: return true
 	for piece in selection:
 		if not rules.permits(piece.instance_id, action):
@@ -641,9 +649,10 @@ func selection_permitted(action: String) -> bool:
 func proposed_snapshot() -> Array:
 	var result: Array = []
 	for piece in pieces:
-		if piece not in moving_group: result.append(piece.serialize())
+		if piece not in moving_group and not piece.definition.authoring_only: result.append(piece.serialize())
 	for index in preview_items.size():
 		var item: Dictionary = preview_items[index]
+		if item.definition.authoring_only: continue
 		var placement: Transform3D = proposed * item.local
 		result.append({"uid": moving_group[index].instance_id if operation == "move" else "preview-new-%d" % index, "piece": String(item.definition.id), "position": [placement.origin.x, placement.origin.y, placement.origin.z], "rotation": posmod(roundi(placement.basis.get_euler().y / (PI / 2)), 4), "config": item.config.duplicate(true)})
 	return result

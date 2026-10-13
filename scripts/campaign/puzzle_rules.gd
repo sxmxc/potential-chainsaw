@@ -29,7 +29,7 @@ func validate(construction: Array) -> String:
 		if seen.has(item.uid): return "Duplicate instance identifier"
 		seen[item.uid] = item
 		var definition = catalog.get_piece(item.piece)
-		if not definition: return "Unknown piece"
+		if not definition or definition.authoring_only: return "Unknown piece"
 		var bounds_changed = false
 		if definition.behavior in ["elevator", "resizable_support"]:
 			var geometry = load("res://scripts/mechanisms/elevator_geometry.gd") if definition.behavior == "elevator" else load("res://scripts/construction/support_geometry.gd")

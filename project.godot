@@ -17,7 +17,6 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-HeraGameInspector="*uid://c4ug7a211oav8"
 SoundManager="*uid://b72a2q1fxu5yg"
 PhantomCameraManager="*uid://duq6jhf6unyis"
 
@@ -33,7 +32,7 @@ window/size/min_height=720
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/hera_agent_godot/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/sound_manager/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/yard/plugin.cfg")
 
 [gui]
 
@@ -48,3 +47,7 @@ common/physics_interpolation=true
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[yard]
+
+updates/channel="Prerelease"

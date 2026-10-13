@@ -2,28 +2,41 @@ class_name PuzzleEnvironment
 extends RefCounted
 
 # Reusable scenes own geometry; puzzle JSON owns instance placement.
-const CATALOG = {
-	"partition": {"name": "Wall", "model": "wall", "kit": "kenney_building"},
-	"deck": {"name": "Floor", "model": "floor", "kit": "kenney_building"},
-	"column": {"name": "Column", "model": "column", "kit": "kenney_building"},
-	"machine": {"name": "Factory machine", "model": "machine", "kit": "kenney_factory"},
-}
+const LEGACY_UID = "legacy-environment"
 
 static func scene_path(asset: String) -> String:
-	return "res://scenes/environments/" + asset + ".tscn" if CATALOG.has(asset) else ""
+	var definition := PieceCatalog.REGISTRY.load_entry(StringName("environment:" + asset)) as PieceDefinition
+	return definition.model.resource_path if definition and definition.authoring_only and definition.model else ""
+
+static func instance_scene(item: Dictionary) -> String:
+	return str(item.scene) if item.get("scene") is String else scene_path(str(item.get("asset", "")))
+
+# Project legacy references into the same placed-object records without rewriting them.
+static func construction_instances(data: Dictionary) -> Array:
+	var instances: Array = data.get("environment_instances", []).duplicate(true)
+	var path := str(data.get("environment", ""))
+	if not path.is_empty():
+		var placement: Dictionary = data.get("environment_placement", {"position": [0, 0, 0], "rotation": 0}).duplicate(true)
+		placement.uid = LEGACY_UID
+		placement.scene = path
+		instances.push_front(placement)
+	return instances
 
 static func transform_for(item: Dictionary) -> Transform3D:
 	return Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), Vector3(item.position[0], item.position[1], item.position[2]))
 
 static func inspect_definition(data: Dictionary) -> Dictionary:
-	var result := inspect(str(data.get("environment", "")))
+	var result := {"solids": [], "errors": []}
 	var instances = data.get("environment_instances", [])
 	if not instances is Array:
 		result.errors.append("Environment instances must be a list")
 		return result
+	if not data.get("environment_placement", {}) is Dictionary:
+		result.errors.append("Invalid environment placement")
+		return result
 	var seen: Array[String] = []
-	for item in instances:
-		if not item is Dictionary or not CATALOG.has(item.get("asset", "")):
+	for item in construction_instances(data):
+		if not item is Dictionary or instance_scene(item).is_empty():
 			result.errors.append("Unknown environment asset")
 			continue
 		var point = item.get("position", [])
@@ -33,7 +46,7 @@ static func inspect_definition(data: Dictionary) -> Dictionary:
 			result.errors.append("Invalid environment instance")
 			continue
 		seen.append(uid)
-		var asset := inspect(scene_path(item.asset))
+		var asset := inspect(instance_scene(item))
 		result.errors.append_array(asset.errors)
 		for solid: AABB in asset.solids: result.solids.append(transform_for(item) * solid)
 	return result
@@ -41,13 +54,11 @@ static func inspect_definition(data: Dictionary) -> Dictionary:
 static func instantiate_definition(data: Dictionary) -> Node3D:
 	var root := Node3D.new()
 	root.name = "Environment"
-	var legacy := str(data.get("environment", ""))
-	if not legacy.is_empty(): root.add_child(ResourceLoader.load(legacy, "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP).instantiate())
-	for item in data.get("environment_instances", []):
-		var object: Node3D = ResourceLoader.load(scene_path(item.asset), "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP).instantiate()
-		object.name = item.uid
+	for item in construction_instances(data):
+		var object: Node3D = ResourceLoader.load(instance_scene(item), "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP).instantiate()
+		object.name = str(data.environment).get_file().get_basename() if item.uid == LEGACY_UID and data.has("environment") else item.uid
 		object.set_meta("environment_uid", item.uid)
-		object.transform = transform_for(item)
+		object.transform = transform_for(item) * object.transform
 		root.add_child(object)
 	return root
 
@@ -55,9 +66,14 @@ static func definition_signature(data: Dictionary) -> String:
 	var contents := signature(str(data.get("environment", "")))
 	var assets: Array[String] = []
 	for item in data.get("environment_instances", []):
-		if item is Dictionary and CATALOG.has(item.get("asset", "")) and item.asset not in assets: assets.append(item.asset)
+		if item is Dictionary and not scene_path(str(item.get("asset", ""))).is_empty() and item.asset not in assets: assets.append(item.asset)
 	assets.sort()
 	for asset in assets: contents += asset + signature(scene_path(asset))
+	var scenes: Array[String] = []
+	for item in data.get("environment_instances", []):
+		if item is Dictionary and item.get("scene") is String and item.scene not in scenes: scenes.append(item.scene)
+	scenes.sort()
+	for path in scenes: contents += path + signature(path)
 	return contents
 
 # Publication freezes native resources, including imported mesh/collision dependencies.

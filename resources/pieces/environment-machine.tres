@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bmeenvmach01"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_bixth"]
+[ext_resource type="PackedScene" uid="uid://bdt0ohfa4h2vw" path="res://assets/models/environment/kenney_factory/GLB format/machine.glb" id="2_cdu1j"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="Texture2D" uid="uid://dgyswc57nienp" path="res://assets/models/environment/kenney_factory/Previews/machine.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"environment:machine"
+display_name = "Factory machine"
+category = "Scenery"
+model = ExtResource("2_cdu1j")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.6, 0, -0.75, 1.2, 1.3, 1.5)
+behavior = "decoration"
+authoring_only = true
+collision_solids = Array[AABB]([AABB(-0.6, 0, -0.75, 1.2, 1.3, 1.5)])
+collision_enabled = false

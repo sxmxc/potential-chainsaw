@@ -69,7 +69,10 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 func _collect(node: Node) -> void:
 	if node is StaticBody3D:
 		if not bodies.has(node): bodies.append(node)
-		return
+		if preview:
+			node.collision_layer = 0
+			node.collision_mask = 0
+		if not definition.authoring_only: return
 	if node is MeshInstance3D:
 		if not meshes.has(node): meshes.append(node)
 		if definition.behavior == "rotor" and node.name == "fan" and not preview:
@@ -128,6 +131,11 @@ func tint(color: Color, enabled: bool = true) -> void:
 		mesh.material_overlay = tint_material
 
 func serialize() -> Dictionary:
+	if definition.authoring_only:
+		var item := {"uid": instance_id, "position": [position.x, position.y, position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4)}
+		if String(definition.id).begins_with("environment_scene:"): item.scene = String(definition.id).trim_prefix("environment_scene:")
+		else: item.asset = String(definition.id).trim_prefix("environment:")
+		return item
 	return {"uid": instance_id, "piece": String(definition.id), "position": [position.x,position.y,position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4), "config": configuration.duplicate(true)}
 
 func supported_actions() -> Array:

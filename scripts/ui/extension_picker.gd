@@ -23,7 +23,7 @@ func refresh() -> void:
 	for child in %Pieces.get_children():
 		%Pieces.remove_child(child)
 		child.queue_free()
-	for definition in build.catalog.pieces:
+	for definition in build.catalog.query():
 		var compatible:=false
 		for port in definition.connectors:
 			if port.compatible(target.connector): compatible=true

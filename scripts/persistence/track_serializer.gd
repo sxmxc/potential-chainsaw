@@ -47,7 +47,7 @@ func decode(text: String) -> Dictionary:
 	for item in data.pieces:
 		if not item is Dictionary or not item.get("piece") is String:
 			last_error="Invalid piece record"; return {}
-		if not catalog.get_piece(item.piece): warnings.append("Skipped unknown piece: "+item.piece); continue
+		if not catalog.get_piece(item.piece) or catalog.get_piece(item.piece).authoring_only: warnings.append("Skipped unknown piece: "+item.piece); continue
 		var p = item.get("position")
 		if not p is Array or p.size()!=3: last_error="Invalid piece position"; return {}
 		for value in p:

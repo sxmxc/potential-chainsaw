@@ -9,8 +9,8 @@ class TestCatalog:
 
 	func test_catalog_models_and_previews_load() -> void:
 		var piece_catalog = PieceCatalog.new()
-		assert_eq(piece_catalog.pieces.size(), 169)
-		for definition in piece_catalog.pieces:
+		assert_eq(piece_catalog.query().size(), 173)
+		for definition in piece_catalog.query():
 			assert_not_null(definition.model, "%s model loads" % definition.id)
 			if definition.model:
 				assert_not_null(autofree(definition.model.instantiate()), "%s model instantiates" % definition.id)
@@ -19,6 +19,51 @@ class TestCatalog:
 				assert_true(definition.thumbnail.get_width() > 0 and definition.thumbnail.get_height() > 0, "%s preview has image data" % definition.id)
 		for model in preload("res://scripts/simulation/marble.gd").MODELS:
 			assert_not_null(autofree(model.instantiate()), "Marble variant instantiates")
+
+class TestRegistry:
+	extends GutTest
+
+	func test_registry_ids_and_indexed_queries_match_saved_definitions() -> void:
+		var definitions := PieceCatalog.new()
+		var registry := PieceCatalog.REGISTRY
+		assert_eq(registry.size(), 173, "Tracks, hidden support sections and scenery are registered")
+		assert_true(registry.is_property_indexed(&"category"))
+		assert_true(registry.is_property_indexed(&"behavior"))
+		var registered_ids := registry.get_all_string_ids()
+		for file in DirAccess.get_files_at("res://resources/pieces"):
+			if not file.ends_with(".tres"): continue
+			var saved := load("res://resources/pieces/" + file) as PieceDefinition
+			assert_true(registered_ids.has(saved.id), file + " is in the authoritative registry")
+		for id in registered_ids:
+			var definition := definitions.get_piece(String(id))
+			assert_not_null(definition, "Registered resource loads: " + String(id))
+			if not definition: continue
+			assert_eq(definition.id, id, "Registry and persistent piece IDs agree")
+			assert_true(definitions.query({&"category":definition.category, &"behavior":definition.behavior}).has(definition), "AND query finds " + String(id))
+		assert_null(definitions.get_piece("unregistered-piece"))
+		assert_true(definitions.query({&"category":"Unknown category"}).is_empty())
+		var expected: Array[String] = ["All pieces"]
+		for definition in definitions.query():
+			if not expected.has(definition.category): expected.append(definition.category)
+		assert_eq(definitions.categories().size(), expected.size(), "Category menu reflects registered content")
+
+	func test_registered_scenery_preserves_native_collision_and_legacy_asset_ids() -> void:
+		var definitions := PieceCatalog.new()
+		var scenery := definitions.query({&"category":"Scenery", &"behavior":"decoration"})
+		for asset in ["partition", "deck", "column", "machine"]:
+			var definition := definitions.get_piece("environment:" + asset)
+			assert_not_null(definition)
+			if not definition: continue
+			assert_true(scenery.has(definition))
+			assert_true(definition.authoring_only)
+			assert_false(definition.collision_enabled, "Native scene owns collision")
+			assert_eq(PuzzleEnvironment.scene_path(asset), definition.model.resource_path)
+			var inspected := PuzzleEnvironment.inspect(definition.model.resource_path)
+			assert_eq(inspected.errors, [])
+			assert_eq(definition.collision_solids.size(), inspected.solids.size())
+			for index in definition.collision_solids.size():
+				assert_true(definition.collision_solids[index].is_equal_approx(inspected.solids[index]), "Indexed definition matches native solid")
+		assert_eq(PuzzleEnvironment.scene_path("unknown"), "")
 
 class TestPersistence:
 	extends "res://tests/support/game_test.gd"
@@ -44,7 +89,7 @@ class TestPersistence:
 func test_construction() -> void:
 	catalog=PieceCatalog.new()
 	snap=SnapManager.new()
-	assert_true(catalog.pieces.size()==169,"Imported models, start/finish, elevator and six support assemblies are cataloged")
+	assert_true(catalog.query().size()==173,"Tracks, mechanisms, supports and native scenery share a catalog")
 	for v in [Vector3.ZERO,Vector3(-3,1.125,2.5),Vector3(12.5,4,-8)]:
 		assert_true(snap.grid_to_world(snap.world_to_grid(v)).is_equal_approx(v),"Grid round trip "+str(v))
 	assert_true(snap.grid_position(Vector3(-0.76,0.2,-0.26)).is_equal_approx(Vector3(-1,0.25,-0.5)),"Negative grid rounding")

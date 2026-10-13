@@ -37,7 +37,7 @@ func refresh_placement() -> void:
 	var feedback: String=""
 	if preview_visible and not build.valid: feedback="✕ "+build.validation_message
 	elif preview_visible and build.is_snapped:
-		feedback="Connector aligned"
+		feedback="Aligned"
 		if build.candidates.size()>1: feedback+=" · Tab %d/%d" % [build.candidate_index()+1,build.candidates.size()]
 	%PlacementState.text=feedback
 	%PlacementState.visible=not feedback.is_empty()

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bmeenvfloor1"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_efi6l"]
+[ext_resource type="PackedScene" uid="uid://dh1jbfvw4ofl6" path="res://assets/models/environment/kenney_building/GLB format/floor.glb" id="2_lt56y"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="Texture2D" uid="uid://vla768c8h81u" path="res://assets/models/environment/kenney_building/Previews/floor.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"environment:deck"
+display_name = "Floor"
+category = "Scenery"
+model = ExtResource("2_lt56y")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-1, 0, -1, 2, 0.1, 2)
+behavior = "decoration"
+authoring_only = true
+collision_solids = Array[AABB]([AABB(-1, 0, -1, 2, 0.1, 2)])
+collision_enabled = false

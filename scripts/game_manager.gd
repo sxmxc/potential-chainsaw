@@ -282,7 +282,7 @@ func load_settings() -> void:
 
 func qa_summary() -> Dictionary:
 	var hovered=get_viewport().gui_get_hovered_control()
-	return {"pieces":sandbox.build.pieces.size(),"selected":sandbox.build.selection.size(),"operation":sandbox.build.operation,"candidates":sandbox.build.candidates.size(),"state":sandbox.simulation.state,"dirty":sandbox.build.dirty,"track":track_name,"catalog":catalog.pieces.size(),"height":sandbox.build.height,"main_menu":%MainMenu.visible,"ghost":sandbox.build.ghost!=null and sandbox.build.ghost.visible,"valid":sandbox.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
+	return {"pieces":sandbox.build.pieces.size(),"selected":sandbox.build.selection.size(),"operation":sandbox.build.operation,"candidates":sandbox.build.candidates.size(),"state":sandbox.simulation.state,"dirty":sandbox.build.dirty,"track":track_name,"catalog":catalog.REGISTRY.size(),"height":sandbox.build.height,"main_menu":%MainMenu.visible,"ghost":sandbox.build.ghost!=null and sandbox.build.ghost.visible,"valid":sandbox.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
 
 func qa_example(id: String) -> void:
 	load_track(id,true)

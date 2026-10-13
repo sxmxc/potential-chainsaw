@@ -12,7 +12,7 @@ func test_resizable_supports() -> void:
 	game.enter_sandbox()
 	var build: BuildManager=game.sandbox.build
 	var available=0
-	for definition in game.catalog.pieces:
+	for definition in game.catalog.query():
 		assert_true(definition.thumbnail!=null,"Preview resource exists for "+String(definition.id))
 		if definition.category=="Supports" and definition.library_visible: available+=1
 	assert_true(available==6,"Inventory shows six support families instead of separate stack sections")

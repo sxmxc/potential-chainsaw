@@ -36,6 +36,7 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Follow Godot-native conventions: typed GDScript where practical, focused scenes, reusable Resources, signals, InputMap actions, and explicit state ownership.
 - Keep scene composition, data, presentation, and behavior separate. Avoid monolithic scripts, duplicate state machines, sprawling autoloads, and hardcoded node paths scattered across unrelated files.
 - Use stable IDs for piece definitions and placed instances. Maintain backward compatibility for existing saved constructions, puzzle definitions, and progress; introduce migrations when formats change.
+- YARD's `resources/registries/piece_registry.tres` is authoritative for piece membership and indexed metadata. Resolve pieces through its runtime API and the existing PieceCatalog; do not add filesystem scans or parallel catalogs. Registry entry IDs must match `PieceDefinition.id`. Indexing is automatic on editor Play/export; headless tests consume the saved index. Preserve legacy scene-reference placements and authoring-only permissions.
 - Prefer a small, understandable implementation over general-purpose frameworks. New components must solve an existing need.
 - Do not edit original imported assets destructively. Wrap assets in reusable scenes and add companion collision, connectors, or behavior there.
 - Test both headless parsing/resource loading and real interactive/physics workflows when relevant. Compilation alone is not verification.
@@ -71,7 +72,7 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Do not fill a campaign quota with generic gaps, superficial variations, or mechanism-showcase exercises. A mechanically working level is not automatically a good puzzle.
 - Validate outcomes through simulation objectives, **not** by comparing the player's construction to one prescribed layout. Legitimate alternate solutions are welcome.
 - Keep player retries unlimited unless explicitly directed otherwise. Testing a puzzle must not erase the player's build.
-- Environment placements belong in puzzle data; reusable catalog scenes own meshes/collision. Edit instances through the Environment page. Preserve legacy fixed scene references and published native resource snapshots; never count scenery as track inventory.
+- Environment placements belong in puzzle data; registered reusable scenes own meshes/collision. Edit instances through the shared construction toolbox and controls. Preserve legacy fixed scene references and published native resource snapshots; never count scenery as track inventory.
 - Puzzle Editor must use actual in-game construction and support draft → test as player → validation → publish, with isolated test copies. Do not require hand-editing JSON or GDScript to author levels.
 - Publishing requires tested completion conditions and a known-good solution. Do not claim fun has been established without human playtesting.
 
