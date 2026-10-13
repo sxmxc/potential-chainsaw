@@ -8,33 +8,36 @@ signal state_changed(state: State, message: String)
 signal arrived
 signal objective_progress
 var connect_before_run: bool = false
-var dispatching_links: bool = false
+@export_range(1, 65536, 1) var signal_delivery_limit: int = 16384
+var signal_queue: Array[Dictionary] = []
+var draining_signals: bool = false
 var state: State = State.BUILD
 var build: BuildManager
 var marble: RigidBody3D
 var marbles: Array[RigidBody3D] = []
-var pending_releases: Array[Dictionary] = []
 var paused_velocities: Dictionary = {}
 var objectives = PuzzleObjectives.new()
 var puzzle: Dictionary = {}
 var construction_before: Array = []
-var sensors: Array[Area3D] = []
 var elapsed: float = 0
-var paused_linear: Vector3
-var paused_angular: Vector3
 
 func start() -> bool:
 	reset()
-	var starts: Array[BuildingPiece] = []
-	var finishes: Array[BuildingPiece] = []
+	var starts: Array[MarbleRelease] = []
+	var finishes: Array[MarbleCollector] = []
 	for piece in build.pieces:
-		if piece.definition.behavior == "start": starts.append(piece)
-		if piece.definition.behavior == "finish": finishes.append(piece)
+		for behavior_node in piece.behaviors:
+			if behavior_node is MarbleRelease: starts.append(behavior_node)
+			if behavior_node is MarbleCollector: finishes.append(behavior_node)
 	if starts.is_empty() or (puzzle.is_empty() and starts.size()!=1):
 		state_changed.emit(State.BUILD,"Add one marble release to test the track.")
 		return false
 	if finishes.is_empty() and (puzzle.is_empty() or puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver")):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
+		return false
+	var link_errors := validate_links()
+	if not link_errors.is_empty():
+		state_changed.emit(State.BUILD, "\n".join(link_errors))
 		return false
 	connect_before_run = build.connect_mode
 	build.cancel()
@@ -43,83 +46,101 @@ func start() -> bool:
 	build.refresh_grid()
 	construction_before = build.snapshot()
 	objectives.reset(puzzle.get("objectives", []))
-	pending_releases.clear()
-	for start_piece in starts:
-		var quantity = clampi(int(start_piece.configuration.get("quantity", 1)), 1, 20)
-		for index in quantity:
-			pending_releases.append({"piece": start_piece, "time": float(start_piece.configuration.get("start_delay", 0)) + index * maxf(0.6, float(start_piece.configuration.get("interval", 1))), "index": index})
-	for release in pending_releases.duplicate():
-		if release.time <= 0:
-			spawn_marble(release)
-			pending_releases.erase(release)
-	for finish in finishes:
-		var area = Area3D.new()
-		area.collision_layer = 0
-		area.collision_mask = 2
-		var shape = CollisionShape3D.new()
-		var box = BoxShape3D.new()
-		box.size = finish.definition.trigger_size
-		shape.shape = box
-		area.add_child(shape)
-		add_child(area)
-		area.transform = finish.transform*Transform3D(Basis.IDENTITY,finish.definition.trigger_position)
-		area.body_entered.connect(_on_finish.bind(finish.instance_id))
-		sensors.append(area)
 	for piece in build.pieces:
-		if piece.mechanism_component: piece.mechanism_component.active = true
-	for piece in build.pieces:
-		if not piece.mechanism_component: continue
-		var callback = _mechanism_event.bind(piece)
-		if not piece.mechanism_component.event_raised.is_connected(callback): piece.mechanism_component.event_raised.connect(callback)
+		for behavior_node in piece.behaviors:
+			var callback := _behavior_output.bind(piece)
+			if not behavior_node.output_raised.is_connected(callback): behavior_node.output_raised.connect(callback)
+			if behavior_node is MarbleRelease:
+				var released := _track_marble.bind(piece)
+				if not behavior_node.marble_spawned.is_connected(released): behavior_node.marble_spawned.connect(released)
+			if behavior_node is MarbleCollector:
+				var collected := _on_finish.bind(piece.instance_id)
+				if not behavior_node.marble_collected.is_connected(collected): behavior_node.marble_collected.connect(collected)
 	elapsed = 0
 	state = State.RUNNING
+	# Queue initial emissions until every receiver has entered its run lifecycle.
+	draining_signals = true
+	for piece in build.pieces:
+		for behavior_node in piece.behaviors: behavior_node.start_run()
+	# Seed persistent wires from configured initial output states after every reset.
+	for piece in build.pieces:
+		for behavior_node in piece.behaviors:
+			for port in behavior_node.state_outputs:
+				_behavior_output(port, behavior_node.output_values[port], piece)
+	draining_signals = false
+	_flush_signals()
+	if state != State.RUNNING: return false
 	state_changed.emit(state,"Testing")
 	return true
 
-func spawn_marble(release: Dictionary) -> void:
-	var start_piece: BuildingPiece = release.piece
-	var body: RigidBody3D = preload("res://scenes/marble.tscn").instantiate()
-	add_child(body)
-	body.position = start_piece.transform * start_piece.definition.spawn_position
-	body.set_meta("source", start_piece.instance_id)
-	body.set_meta("marble_id", start_piece.instance_id + ":" + str(release.index))
+func _track_marble(body: RigidBody3D, ordinal: int, piece: BuildingPiece) -> void:
+	body.reparent(self)
 	body.reset_physics_interpolation()
-	body.linear_velocity = start_piece.basis * start_piece.definition.spawn_direction * clampf(float(start_piece.configuration.get("release_speed", 1.4)), 0, 6)
-	body.angular_velocity = Vector3(body.linear_velocity.z, 0, -body.linear_velocity.x) / 0.2
+	body.set_meta("source", piece.instance_id)
+	body.set_meta("marble_id", piece.instance_id + ":" + str(ordinal))
 	marbles.append(body)
 	if not is_instance_valid(marble): marble = body
 
-func _mechanism_event(event: String, body: RigidBody3D, piece: BuildingPiece) -> void:
+func _behavior_output(port: String, value: Variant, piece: BuildingPiece) -> void:
 	if state != State.RUNNING: return
-	objectives.activated(event, body, piece)
+	var body: RigidBody3D = value if value is RigidBody3D else null
+	objectives.activated(port, body, piece)
 	objective_progress.emit()
-	# Actions emit events synchronously. Record those for objectives, but do not
-	# dispatch another link chain until this source event has finished.
-	if dispatching_links: return
-	dispatching_links = true
-	for link in piece.configuration.get("links", []):
-		if link.get("event") != event: continue
-		var target := build.find_piece(link.get("target", ""))
-		if is_instance_valid(target) and target.mechanism_component:
-			target.mechanism_component.perform(link.get("action", ""))
-	dispatching_links = false
+	signal_queue.append({"source": piece, "port": port, "value": value})
+	_flush_signals()
+
+func _flush_signals() -> void:
+	if draining_signals: return
+	draining_signals = true
+	var deliveries := 0
+	# FIFO preserves source emissions and saved link order. An action's outputs
+	# join the queue instead of recursing or being discarded.
+	while not signal_queue.is_empty() and state == State.RUNNING:
+		var emission: Dictionary = signal_queue.pop_front()
+		for link in emission.source.configuration.get("links", []):
+			if link.get("event") != emission.port: continue
+			var target := build.find_piece(link.get("target", ""))
+			if not target or not target.input_ports.has(link.get("action", "")): continue
+			deliveries += 1
+			if deliveries > signal_delivery_limit:
+				signal_queue.clear()
+				_end(State.FAILED, "Signal loop did not settle. Check the wiring.")
+				break
+			target.input_ports[link.action].receive(link.action, emission.value)
+	draining_signals = false
 
 func validate_links() -> Array[String]:
 	var errors: Array[String] = []
 	for source in build.pieces:
+		var inputs_seen: Dictionary = {}
+		var outputs_seen: Dictionary = {}
+		var fields_seen: Dictionary = {}
+		for behavior_node in source.behaviors:
+			for port in behavior_node.inputs:
+				if inputs_seen.has(port): errors.append("Duplicate input on " + source.instance_id + ": " + port)
+				inputs_seen[port] = true
+			for field in behavior_node.configuration_fields:
+				if field.key.is_empty(): errors.append("Unnamed configuration field on " + source.instance_id)
+				if fields_seen.has(field.key): errors.append("Duplicate configuration field on " + source.instance_id + ": " + String(field.key))
+				fields_seen[field.key] = true
+				if field.kind == PieceSetting.Kind.NUMBER and (field.minimum > field.maximum or field.step <= 0 or not is_finite(field.default_number) or field.default_number < field.minimum or field.default_number > field.maximum):
+					errors.append("Invalid configuration range on " + source.instance_id + ": " + String(field.key))
+			for port in behavior_node.output_ports():
+				if outputs_seen.has(port): errors.append("Duplicate output on " + source.instance_id + ": " + port)
+				outputs_seen[port] = true
+			for port in behavior_node.state_inputs:
+				if not behavior_node.inputs.has(port): errors.append("State input has no receiver on " + source.instance_id + ": " + port)
 		for link in source.configuration.get("links", []):
 			var target := build.find_piece(link.get("target", ""))
-			if not target or not target.mechanism_component or not source.mechanism_component or not target.mechanism_component.actions.has(link.get("action")) or link.get("event") not in source.mechanism_component.events:
+			if not target or not source.output_ports.has(link.get("event", "")) or not target.input_ports.has(link.get("action", "")):
 				errors.append("Invalid mechanism link on " + source.instance_id)
+			elif source.output_ports[link.event].state_outputs.has(link.event) != target.input_ports[link.action].state_inputs.has(link.action):
+				errors.append("Pulse and state ports cannot be connected on " + source.instance_id)
 	return errors
 
 func _physics_process(delta: float) -> void:
 	if state != State.RUNNING: return
 	elapsed += delta
-	for release in pending_releases.duplicate():
-		if elapsed >= release.time:
-			spawn_marble(release)
-			pending_releases.erase(release)
 	for body in marbles:
 		if body.get_meta("delivered", false): continue
 		if body.position.y < -4 or abs(body.position.x) > build.snap.boundary + 4 or abs(body.position.z) > build.snap.boundary + 4:
@@ -147,7 +168,7 @@ func _on_finish(body: Node3D, collector: String) -> void:
 func _end(result: State, message: String) -> void:
 	state = result
 	for piece in build.pieces:
-		if piece.mechanism_component: piece.mechanism_component.active = false
+		for behavior_node in piece.behaviors: behavior_node.active = false
 	state_changed.emit(state,message)
 
 func toggle_pause() -> void:
@@ -167,26 +188,28 @@ func toggle_pause() -> void:
 		state = State.RUNNING
 	else: return
 	for piece in build.pieces:
-		if piece.mechanism_component: piece.mechanism_component.active = state == State.RUNNING
-	state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
+		for behavior_node in piece.behaviors: behavior_node.active = state == State.RUNNING
+	if state == State.RUNNING:
+		for piece in build.pieces:
+			for behavior_node in piece.behaviors:
+				for port in behavior_node.state_outputs: _behavior_output(port, behavior_node.output_values[port], piece)
+	if state in [State.RUNNING, State.PAUSED]:
+		state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
 
 func reset() -> void:
 	var restore_connect := state != State.BUILD and connect_before_run
 	connect_before_run = false
+	state = State.BUILD
+	signal_queue.clear()
 	if build:
 		for piece in build.pieces:
-			if piece.mechanism_component: piece.mechanism_component.reset()
+			for behavior_node in piece.behaviors: behavior_node.reset()
 	for body in marbles:
 		if is_instance_valid(body):
 			remove_child(body)
 			body.queue_free()
 	marbles.clear()
-	pending_releases.clear()
 	marble = null
-	for sensor in sensors:
-		remove_child(sensor)
-		sensor.queue_free()
-	sensors.clear()
 	if build:
 		build.enabled = true
 		build.refresh_grid()

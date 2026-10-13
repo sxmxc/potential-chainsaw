@@ -1,27 +1,34 @@
-extends MarbleMechanism
+extends PieceBehavior
 
-var area: Area3D
-var indicator: AnimatableBody3D
+@export var area: Area3D
+@export var indicator_animation: AnimationPlayer
 var occupied: Dictionary = {}
 
+func _init() -> void:
+	state_outputs = {"occupied": false}
+
 func _ready() -> void:
-	area = detection(Vector3(0.5, 0.7, 0.2), Vector3(0, 0.55, 0))
-	indicator = moving_box(Vector3(0.06, 0.3, 0.1), Vector3(0.4, 0.65, 0), Color("59e5b1"))
-	indicator.collision_layer = 0
-	events.append("entered")
-	events.append("exited")
+	outputs.append("entered")
+	outputs.append("exited")
 	area.body_entered.connect(_entered)
 	area.body_exited.connect(_exited)
+	reset()
 
 func _entered(body: Node3D) -> void:
 	if not active or not enabled or not is_marble(body) or occupied.has(body.get_instance_id()): return
 	occupied[body.get_instance_id()] = true
-	event_raised.emit("entered", body)
+	indicator_animation.play("occupied")
+	emit_output("occupied", true)
+	emit_output("entered", body)
 
 func _exited(body: Node3D) -> void:
 	if not occupied.erase(body.get_instance_id()): return
-	if active and config.get("detect_exit", false) and is_marble(body): event_raised.emit("exited", body)
+	if occupied.is_empty():
+		indicator_animation.play("idle")
+		emit_output("occupied", false)
+	if active and config.get("detect_exit", false) and is_marble(body): emit_output("exited", body)
 
 func reset() -> void:
 	super.reset()
 	occupied.clear()
+	indicator_animation.play("idle")

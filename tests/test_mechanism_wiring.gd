@@ -26,8 +26,9 @@ func settle() -> void:
 	for frame in 6: await get_tree().process_frame
 
 func drag(source: BuildingPiece, target: BuildingPiece) -> void:
-	var start: Vector2 = wiring.port_position(source, true, 0)
-	var finish: Vector2 = wiring.port_position(target, false)
+	var start: Vector2 = wiring.port_position(source, true)
+	var bounds := ConstructionSelection.projected_bounds(target, build.camera)
+	var finish: Vector2 = bounds.get_center() - Vector2(0, bounds.size.y * 0.25)
 	sender.mouse_motion(start)
 	await settle()
 	sender.mouse_left_button_down(start)
@@ -35,22 +36,24 @@ func drag(source: BuildingPiece, target: BuildingPiece) -> void:
 	assert_false(wiring.dragging.is_empty(), "Output handle starts a connection gesture")
 	sender.mouse_motion(finish)
 	await settle()
-	assert_true(wiring.valid_receiver(wiring.hovered_handle), "Input responds as a valid receiver")
+	assert_true(wiring.valid_receiver(wiring.hovered_handle), "The visible body of the piece accepts the connection")
 	sender.mouse_left_button_up(finish)
 	await settle()
 	assert_true(wiring.get_node("%Context").visible, "Multiple actions open the contextual chooser")
 
 func choose_action(label: String) -> void:
-	for button in wiring.get_node("%Actions").get_children():
-		if button.text == label:
-			button.pressed.emit()
+	var actions: OptionButton = wiring.get_node("%Actions")
+	for index in actions.item_count:
+		if actions.get_item_text(index) == label:
+			actions.select(index)
+			actions.item_selected.emit(index)
 			return
 	fail_test("Missing supported action: " + label)
 
 func test_visual_wiring_construction_and_physics() -> void:
 	var sensor := build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "trigger")
 	var gate := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(3, 0, 0)), "gate")
-	var second := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(-3, 0, 0)), "second")
+	var second := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(-3, 1.5, 0)), "second")
 	build.frame_all()
 	await wait_seconds(0.6)
 	await settle()
@@ -65,6 +68,16 @@ func test_visual_wiring_construction_and_physics() -> void:
 	wiring.get_node("%Apply").pressed.emit()
 	assert_eq(sensor.configuration.links.size(), 2, "One source can control two receivers")
 	wiring.set_tool(false)
+	build.select(gate)
+	await settle()
+	var inspector = game.get_node("%HUD").get_node("%Inspector")
+	assert_true(inspector.get_node("%ConfigurationHeading").visible and inspector.get_node("%ConnectionsHeading").visible, "Settings and wiring have separate sections")
+	var close_delay: SettingSlider = inspector.get_node("%MechanismSettings").fields["auto_close"]
+	close_delay.grab_focus()
+	sender.key_down(KEY_END)
+	sender.key_up(KEY_END)
+	await settle()
+	assert_eq(gate.configuration.get("auto_close"), 60.0, "The real property control edits the mechanism independently of wiring")
 	game.get_node("%HUD").get_node("%BuildToolbar").get_node("%Connections").pressed.emit()
 	await settle()
 	assert_true(wiring.overlay_enabled and not build.connect_mode, "Overlay visibility is independent of editing")
@@ -75,7 +88,7 @@ func test_visual_wiring_construction_and_physics() -> void:
 	assert_eq(sensor.configuration.links.size(), 2, "Visibility never changes authored links")
 	wiring.toggle_overlay()
 	var wire: Dictionary = wiring.wires[0]
-	assert_lt(wire.points[0].distance_to(wiring.port_position(sensor, true, 0)), 0.1, "Directed curve starts at source output")
+	assert_lt(wire.points[0].distance_to(wiring.port_position(sensor, true)), 0.1, "Directed curve starts at source output")
 	assert_lt(wire.points[-1].distance_to(wiring.port_position(gate, false)), 0.1, "Directed curve ends at receiver input")
 	build.select(sensor)
 	build.move_selected()
@@ -86,7 +99,7 @@ func test_visual_wiring_construction_and_physics() -> void:
 	assert_gt(wiring.wires[0].points[0].distance_to(wire.points[0]), 20.0, "Wiring follows the live move preview before committing")
 	build.commit()
 	await settle()
-	assert_lt(wiring.wires[0].points[0].distance_to(wiring.port_position(sensor, true, 0)), 0.1, "Wiring follows moved pieces")
+	assert_lt(wiring.wires[0].points[0].distance_to(wiring.port_position(sensor, true)), 0.1, "Wiring follows moved pieces")
 	var assembly: Array[BuildingPiece] = [sensor, gate, second]
 	build.set_selection(assembly)
 	build.move_selected(true)
@@ -129,6 +142,13 @@ func test_visual_wiring_construction_and_physics() -> void:
 	assert_eq(build.find_piece("trigger").configuration.links[0].action, "open")
 	await settle()
 	if DisplayServer.get_name() != "headless" and OS.has_environment("MARBLE_ENGINEER_WIRING_CAPTURE"):
+		build.frame_all()
+		build.select(build.find_piece("trigger"))
+		await wait_seconds(0.6)
+		await settle()
+		var displayed_wire: Dictionary = wiring.wires.filter(func(value): return value.source == "trigger" and value.index == 0)[0]
+		wiring.open_context("trigger", "gate", "entered", 0, displayed_wire.points[16])
+		await settle()
 		await RenderingServer.frame_post_draw
 		assert_eq(get_viewport().get_texture().get_image().save_png(OS.get_environment("MARBLE_ENGINEER_WIRING_CAPTURE")), OK)
 	var simulation: SimulationManager = game.sandbox.simulation
@@ -143,8 +163,8 @@ func test_visual_wiring_construction_and_physics() -> void:
 	marble.position = build.find_piece("trigger").position + Vector3(0, 0.46, 0.4)
 	marble.linear_velocity = Vector3(0, 0, -0.6)
 	for tick in 80: await get_tree().physics_frame
-	assert_true(build.find_piece("gate").mechanism_component.open, "A physical sensor crossing opens the linked gate")
-	assert_true(build.find_piece("second").mechanism_component.open, "The same crossing reaches the second receiver")
+	assert_true(build.find_piece("gate").behaviors[0].open, "A physical sensor crossing opens the linked gate")
+	assert_true(build.find_piece("second").behaviors[0].open, "The same crossing reaches the second receiver")
 	simulation.reset()
 	assert_true(build.connect_mode and wiring.overlay_enabled, "Return to build restores tool and overlay")
 	build.select(build.find_piece("gate"))
@@ -162,7 +182,7 @@ func test_cancellation_and_locked_configuration() -> void:
 	wiring.escape()
 	assert_false(wiring.get_node("%Context").visible)
 	assert_true(sensor.configuration.get("links", []).is_empty())
-	var start: Vector2 = wiring.port_position(sensor, true, 0)
+	var start: Vector2 = wiring.port_position(sensor, true)
 	sender.mouse_left_button_down(start)
 	await settle()
 	wiring.escape()

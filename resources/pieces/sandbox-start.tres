@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://b86mn3lilapry"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_65t0g"]
-[ext_resource type="PackedScene" uid="uid://nj1mshutedu8" path="res://assets/models/build_pieces/GLB format/end-square.glb" id="2_65t0g"]
+[ext_resource type="PackedScene" uid="uid://bbbq0isjhkjjx" path="res://scenes/mechanisms/sandbox-start.tscn" id="2_65t0g"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_hp88a"]
 [ext_resource type="Texture2D" uid="uid://d2ltn13hnohm7" path="res://assets/models/build_pieces/previews/end-square.png" id="Preview"]
 
@@ -20,6 +20,7 @@ id = &"sandbox-start"
 display_name = "Marble release"
 category = "Start & finish"
 description = "Release a real rolling marble. The arrow points in the launch direction; adjust speed in the inspector."
+usage_hint = "Release a marble here. Adjust its launch speed in the selection card."
 model = ExtResource("2_65t0g")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.5, 0, -0.5, 1, 0.5, 1)

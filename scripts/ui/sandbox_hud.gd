@@ -25,6 +25,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 		if session: guidance_done[session.puzzle.get("id","")]=true
 		refresh())
 	%Inspector.configure(build)
+	%Inspector.connections_requested.connect(func(): %MechanismWiring.set_tool(true))
 	%SelectionOverlay.set_marquee(Rect2(),false)
 	%SelectionOverlay.build=build
 	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar.get_node("%Placement"),%EditToolbar,%Bottom])

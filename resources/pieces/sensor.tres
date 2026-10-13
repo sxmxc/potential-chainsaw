@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://be1tr85imq5j"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_byx5y"]
-[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="2_1ua4j"]
+[ext_resource type="PackedScene" uid="uid://dran0bj5hmige" path="res://scenes/mechanisms/sensor.tscn" id="2_1ua4j"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_rkt6l"]
 [ext_resource type="Texture2D" uid="uid://cypn7i8eta5ts" path="res://resources/thumbnails/sensor.png" id="Preview"]
 

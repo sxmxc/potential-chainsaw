@@ -4,6 +4,7 @@
 [ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="MechanismWiring" type="Control"]
+z_index = -1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,9 +26,11 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 
 [node name="Context" type="PanelContainer" parent="."]
+z_index = 2
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(328, 0)
+theme_type_variation = &"ContextPanel"
 
 [node name="Contents" type="VBoxContainer" parent="Context"]
 layout_mode = 2
@@ -38,23 +41,31 @@ layout_mode = 2
 theme_type_variation = &"CardLabel"
 autowrap_mode = 3
 
-[node name="When" type="Label" parent="Context/Contents"]
+[node name="Ports" type="HBoxContainer" parent="Context/Contents"]
 layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "When this happens"
 
-[node name="Events" type="HFlowContainer" parent="Context/Contents"]
+[node name="Events" type="OptionButton" parent="Context/Contents/Ports"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(138, 40)
 layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+clip_text = true
+tooltip_text = "Signal sent by the source"
 
-[node name="Do" type="Label" parent="Context/Contents"]
+[node name="Direction" type="Label" parent="Context/Contents/Ports"]
 layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Do this"
+text = "→"
+theme_type_variation = &"AccentLabel"
 
-[node name="Actions" type="HFlowContainer" parent="Context/Contents"]
+[node name="Actions" type="OptionButton" parent="Context/Contents/Ports"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(138, 40)
 layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+clip_text = true
+tooltip_text = "Receiver response"
 
 [node name="Controls" type="HBoxContainer" parent="Context/Contents"]
 layout_mode = 2
@@ -70,7 +81,7 @@ text = "Connect"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
-text = "Delete"
+text = "Remove"
 
 [node name="Dismiss" type="Button" parent="Context/Contents/Controls"]
 unique_name_in_owner = true

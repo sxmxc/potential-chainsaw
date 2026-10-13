@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[node name="PieceText" type="HBoxContainer"]
+layout_mode = 2
+
+[node name="Caption" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="LineEdit" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(132, 44)
+layout_mode = 2
+size_flags_horizontal = 3

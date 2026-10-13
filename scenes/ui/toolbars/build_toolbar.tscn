@@ -162,20 +162,22 @@ icon_name = &"frame"
 
 [node name="Connect" type="Button" parent="Common"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(124, 40)
 layout_mode = 2
-tooltip_text = "Connect mechanisms · drag outputs to inputs"
-theme_type_variation = &"IconButton"
+tooltip_text = "Edit connections · drag a send handle onto a piece"
+text = "Connect"
+theme_type_variation = &"SecondaryButton"
 toggle_mode = true
 icon = ExtResource("ConnectIcon")
 script = ExtResource("IconScript")
 
 [node name="Connections" type="Button" parent="Common"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(104, 40)
 layout_mode = 2
-tooltip_text = "Show mechanism connections"
-theme_type_variation = &"IconButton"
+tooltip_text = "View connections while building"
+text = "Wires"
+theme_type_variation = &"SecondaryButton"
 toggle_mode = true
 icon = ExtResource("ConnectionsIcon")
 script = ExtResource("IconScript")

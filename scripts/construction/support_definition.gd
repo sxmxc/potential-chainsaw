@@ -8,11 +8,12 @@ const DEFAULT_HEIGHT = 2.0
 const SEGMENT_HEIGHT = 0.5
 
 func normalized_configuration(config: Dictionary) -> Dictionary:
-	var result=config.duplicate(true)
-	var requested=config.get("support_height",DEFAULT_HEIGHT)
+	var result=super.normalized_configuration(config)
+	var settings := resolved_configuration(result)
+	var requested=settings.get("support_height",DEFAULT_HEIGHT)
 	if not (requested is float or requested is int) or not is_finite(float(requested)): requested=DEFAULT_HEIGHT
 	result.support_height=clampf(snappedf(float(requested),HEIGHT_STEP),MIN_HEIGHT,MAX_HEIGHT)
-	result.support_double_top=bool(config.get("support_double_top",false))
+	result.support_double_top=bool(settings.get("support_double_top",false))
 	return result
 
 func sections(config: Dictionary) -> Array[Dictionary]:

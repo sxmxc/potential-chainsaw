@@ -1,21 +1,23 @@
-extends MarbleMechanism
+extends PieceBehavior
 
-var barrier: AnimatableBody3D
+@export var barrier: AnimatableBody3D
+@export var closed_height: float = 0.525
+@export var open_height: float = 1.25
+@export var release_height: float = 1.0
+@export var travel_speed: float = 1.5
 var open: bool = false
 var elapsed: float = 0
 var opened_at: float = -1
 var timer_fired: bool = false
-var clearance: Area3D
+@export var clearance: Area3D
 var pending_close: bool = false
 var waiting_release: Array[RigidBody3D] = []
 
 func _ready() -> void:
-	barrier = moving_box(Vector3(0.48, 0.55, 0.1), Vector3(0, 0.525, 0), Color("ffc66d"))
-	clearance = detection(Vector3(0.5, 0.75, 0.5), Vector3(0, 0.6, 0))
-	actions = {"open": func(): set_open(true), "close": func(): set_open(false), "toggle": func(): set_open(not open), "release": func(): set_open(true)}
-	events = ["activated"]
-	events.append("opened")
-	events.append("closed")
+	inputs = {"open": func(_value: Variant): set_open(true), "close": func(_value: Variant): set_open(false), "toggle": func(_value: Variant): set_open(not open), "release": func(_value: Variant): set_open(true)}
+	outputs = ["activated"]
+	outputs.append("opened")
+	outputs.append("closed")
 	reset()
 
 func set_open(value: bool) -> void:
@@ -30,13 +32,13 @@ func set_open(value: bool) -> void:
 		for body in clearance.get_overlapping_bodies():
 			if is_marble(body): waiting_release.append(body)
 	opened_at = elapsed if value else -1.0
-	event_raised.emit("opened" if value else "closed", null)
+	emit_output("opened" if value else "closed", null)
 
 func _physics_process(delta: float) -> void:
 	if not active: return
 	elapsed += delta
 	# Wait for the physics server to commit a clear opening before nudging.
-	if open and barrier.position.y >= 1.0:
+	if open and barrier.position.y >= release_height:
 		for body in waiting_release:
 			if not is_instance_valid(body) or body.freeze or not is_marble(body): continue
 			var point = to_local(body.global_position)
@@ -54,7 +56,7 @@ func _physics_process(delta: float) -> void:
 		set_open(true)
 	var close_delay = float(config.get("auto_close", 0))
 	if open and close_delay > 0 and elapsed - opened_at >= close_delay: set_open(false)
-	barrier.position.y = move_toward(barrier.position.y, 1.25 if open else 0.525, delta * 1.5)
+	barrier.position.y = move_toward(barrier.position.y, open_height if open else closed_height, delta * travel_speed)
 
 func reset() -> void:
 	super.reset()
@@ -64,4 +66,4 @@ func reset() -> void:
 	pending_close = false
 	waiting_release.clear()
 	open = bool(config.get("open", false))
-	if barrier: barrier.position.y = 1.25 if open else 0.525
+	if barrier: barrier.position.y = open_height if open else closed_height

@@ -22,14 +22,14 @@ func test_functional_mechanisms() -> void:
 	build = game.sandbox.build
 	for id in ["fan-two", "fan-four", "fan-standing-two", "fan-standing-four"]:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY, "", {"power": 0.2, "range": 2})
-		var airflow = piece.mechanism_component
+		var airflow = piece.behaviors[0]
 		assert_true(airflow != null and not airflow is RotorComponent, id + " uses airflow without moving blade collision")
 		body = ball(Vector3(0, 0.7, -0.8) if id.contains("standing") else Vector3(0, 0.8, 0))
 		body.gravity_scale = 0
 		airflow.active = true
 		await ticks(20)
 		assert_true(body.linear_velocity.dot(piece.basis * airflow.axis) > 0.05, id + " applies forward force in real physics")
-		assert_true(piece.mechanism_component.perform("switch_direction") and airflow.active, id + " linked reversal keeps simulation active")
+		assert_true(piece.behaviors[0].receive("switch_direction") and airflow.active, id + " linked reversal keeps simulation active")
 		assert_true(airflow.area.position.dot(airflow.axis) < 0, id + " linked reversal moves the force region")
 		body.position = Vector3(0, 0.5, 0.8) if id.contains("standing") else Vector3(0, -0.5, 0)
 		body.linear_velocity = Vector3.ZERO
@@ -46,7 +46,7 @@ func test_functional_mechanisms() -> void:
 		await get_tree().process_frame
 	for id in ["fan-simple-two", "fan-simple-four"]:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY)
-		var paddle = piece.mechanism_component
+		var paddle = piece.behaviors[0]
 		assert_true(paddle is RotorComponent, id + " is exclusively physical")
 		body = ball(Vector3(0.38, 0.4, 0.0))
 		body.gravity_scale = 0
@@ -64,54 +64,54 @@ func test_functional_mechanisms() -> void:
 	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D.IDENTITY)
 	build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)))
 	body = ball(Vector3(0, 0.46, 0.8), Vector3(0, 0, -1))
-	gate.mechanism_component.active = true
+	gate.behaviors[0].active = true
 	await ticks(120)
 	assert_true(body.position.z > 0.15, "Closed gate physically stops marble")
-	assert_true(gate.mechanism_component.perform("open"), "Gate exposes Open action")
+	assert_true(gate.behaviors[0].receive("open"), "Gate exposes Open action")
 	await ticks(160)
 	assert_true(body.position.z < -0.1, "Opening gate releases a stopped marble without an external impulse")
-	gate.mechanism_component.reset()
-	assert_true(not gate.mechanism_component.open, "Gate resets initial state")
+	gate.behaviors[0].reset()
+	assert_true(not gate.behaviors[0].open, "Gate resets initial state")
 	body.queue_free()
 	await ticks(4)
 	gate.apply_configuration({"open": true, "auto_close": 0.2})
-	gate.mechanism_component.active = true
+	gate.behaviors[0].active = true
 	await ticks(80)
-	assert_true(not gate.mechanism_component.open and gate.mechanism_component.barrier.position.y < 0.7, "Gate automatically closes physically after delay")
+	assert_true(not gate.behaviors[0].open and gate.behaviors[0].barrier.position.y < 0.7, "Gate automatically closes physically after delay")
 	build.restore([])
 	await get_tree().process_frame
 	var launcher = build.spawn(game.catalog.get_piece("launcher"), Transform3D.IDENTITY)
 	body = ball(Vector3(0, 0.46, 0.1), Vector3(0, 0, -0.8))
-	launcher.mechanism_component.active = true
+	launcher.behaviors[0].active = true
 	await ticks(140)
-	assert_true(launcher.mechanism_component.fired.size() == 1 and body.position.z < -0.7, "Launcher detects and fires a real impulse once")
+	assert_true(launcher.behaviors[0].fired.size() == 1 and body.position.z < -0.7, "Launcher detects and fires a real impulse once")
 	body.queue_free()
 	build.restore([])
 	await get_tree().process_frame
 	launcher = build.spawn(game.catalog.get_piece("launcher"), Transform3D.IDENTITY, "", {"external": true})
 	body = ball(Vector3(0, 0.46, 0.1), Vector3(0, 0, -0.8))
-	launcher.mechanism_component.active = true
+	launcher.behaviors[0].active = true
 	await ticks(240)
-	assert_true(launcher.mechanism_component.fired.is_empty() and body.position.z > -0.8, "External launcher physically retains loaded marble before trigger")
-	launcher.mechanism_component.perform("fire")
+	assert_true(launcher.behaviors[0].fired.is_empty() and body.position.z > -0.8, "External launcher physically retains loaded marble before trigger")
+	launcher.behaviors[0].receive("fire")
 	await ticks(100)
-	assert_true(launcher.mechanism_component.fired.size() == 1 and body.position.z < -1, "External trigger launches the retained marble")
-	launcher.mechanism_component.reset()
-	assert_true(launcher.mechanism_component.fired.is_empty() and not launcher.mechanism_component.pending, "Launcher resets loading and firing state")
+	assert_true(launcher.behaviors[0].fired.size() == 1 and body.position.z < -1, "External trigger launches the retained marble")
+	launcher.behaviors[0].reset()
+	assert_true(launcher.behaviors[0].fired.is_empty() and not launcher.behaviors[0].pending, "Launcher resets loading and firing state")
 	body.queue_free()
 	build.restore([])
 	await get_tree().process_frame
 	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": [{"event": "entered", "target": "gate", "action": "open"}]})
 	gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "gate")
 	var events: Array = []
-	sensor.mechanism_component.event_raised.connect(func(event, _body): events.append(event))
+	sensor.behaviors[0].output_raised.connect(func(event, _body): events.append(event))
 	var sim: SimulationManager = game.sandbox.simulation
 	sim.puzzle = {"objectives": []}
 	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "release", {"start_delay": 60})
 	assert_true(sim.start())
 	body = ball(Vector3(0, 0.46, 0.4), Vector3(0, 0, -0.6))
 	await ticks(80)
-	assert_true(events.count("entered") == 1 and gate.mechanism_component.open, "Sensor crossing dispatches one persistent Open link")
+	assert_true(events.count("entered") == 1 and gate.behaviors[0].open, "Sensor crossing dispatches one persistent Open link")
 	assert_true(sim.validate_links().is_empty(), "Link validation")
 	sim.reset()
 	body.queue_free()
@@ -126,11 +126,11 @@ func test_functional_mechanisms() -> void:
 		await ticks(4)
 		body = ball(Vector3(0, 0.46, -1.7), Vector3(0, 0, 1.4))
 		body.angular_velocity = Vector3(7, 0, 0)
-		diverter.mechanism_component.active = true
+		diverter.behaviors[0].active = true
 		await ticks(500)
 		assert_true(body.position.x < -0.6 if route_left else body.position.x > 0.6, "Diverter physically selects " + ("left" if route_left else "right") + " exit")
-		diverter.mechanism_component.reset()
-		assert_true(diverter.mechanism_component.left == route_left, "Diverter initial direction resets")
+		diverter.behaviors[0].reset()
+		assert_true(diverter.behaviors[0].left == route_left, "Diverter initial direction resets")
 		body.queue_free()
 		build.restore([])
 		await get_tree().process_frame
@@ -139,17 +139,17 @@ func test_functional_mechanisms() -> void:
 	build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, -1.5)))
 	for x in [-2, 2]:
 		build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(x, 0, 0.5)))
-	alternating.mechanism_component.active = true
+	alternating.behaviors[0].active = true
 	for expected_left in [false, true]:
 		body = ball(Vector3(0, 0.46, -1.7), Vector3(0, 0, 1.4))
 		body.angular_velocity = Vector3(7, 0, 0)
 		await ticks(500)
 		assert_true(body.position.x < -0.6 if expected_left else body.position.x > 0.6, "Alternating fork physically routes successive marbles")
-		assert_true(alternating.mechanism_component.left != expected_left, "Alternating fork rearms after marble exits")
+		assert_true(alternating.behaviors[0].left != expected_left, "Alternating fork rearms after marble exits")
 		body.queue_free()
 		await ticks(4)
 
-func test_link_dispatch_records_action_events_without_recursive_chains() -> void:
+func test_link_dispatch_preserves_downstream_signal_chains() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
@@ -158,25 +158,26 @@ func test_link_dispatch_records_action_events_without_recursive_chains() -> void
 	var sim: SimulationManager = game.sandbox.simulation
 	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
 	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "sensor", {"links": [{"event": "entered", "target": "gate", "action": "toggle"}]})
-	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "gate", "action": "close"}]})
+	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "downstream", "action": "open"}]})
+	var downstream = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(6, 0, 0)), "downstream")
 	sim.puzzle = {"objectives": [{"type": "activate", "target": "gate", "event": "opened"}]}
 	assert_true(sim.validate_links().is_empty())
 	assert_true(sim.start())
-	sensor.mechanism_component.event_raised.emit("entered", null)
-	assert_true(gate.mechanism_component.open, "Synchronous action events cannot recursively dispatch the Close link")
+	sensor.behaviors[0].output_raised.emit("entered", null)
+	assert_true(gate.behaviors[0].open and downstream.behaviors[0].open, "Linked action outputs reach downstream receivers")
 	assert_true(sim.objectives.satisfied(0), "The linked gate's Opened event still counts toward objectives")
 	sim.reset()
-	sensor.mechanism_component.event_raised.emit("entered", null)
-	assert_false(gate.mechanism_component.open, "Build mode ignores mechanism links")
+	sensor.behaviors[0].output_raised.emit("entered", null)
+	assert_false(gate.behaviors[0].open, "Build mode ignores mechanism links")
 	assert_false(sim.objectives.satisfied(0), "Reset clears activation progress")
 	assert_true(sim.start())
 	sim.toggle_pause()
-	sensor.mechanism_component.event_raised.emit("entered", null)
-	assert_false(gate.mechanism_component.open, "Paused simulation ignores mechanism links")
+	sensor.behaviors[0].output_raised.emit("entered", null)
+	assert_false(gate.behaviors[0].open, "Paused simulation ignores mechanism links")
 	assert_false(sim.objectives.satisfied(0), "Paused events do not count toward objectives")
 	sim.toggle_pause()
-	sensor.mechanism_component.event_raised.emit("entered", null)
-	assert_true(gate.mechanism_component.open, "Restart handles the source event once, without duplicate toggles")
+	sensor.behaviors[0].output_raised.emit("entered", null)
+	assert_true(gate.behaviors[0].open, "Restart handles the source event once, without duplicate toggles")
 	sim.reset()
 	for invalid_link in [
 		{"event": "entered", "target": "missing", "action": "open"},
@@ -207,36 +208,36 @@ func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 	assert_true(sim.start())
 	await ticks(12)
 	for piece in moving:
-		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		var progress: float = piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_eq(progress, 0.0, "Initially disabled mechanism remains stationary")
-	sensor.mechanism_component.event_raised.emit("entered", null)
+	sensor.behaviors[0].output_raised.emit("entered", null)
 	await ticks(12)
 	for piece in moving:
-		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		var progress: float = piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_gt(progress, 0.0, "Sensor link activates physical motion")
-		assert_true(piece.mechanism_component.perform("deactivate"))
+		assert_true(piece.behaviors[0].receive("deactivate"))
 	sim.toggle_pause()
 	await ticks(4)
 	sim.toggle_pause()
 	var stopped: Array[float] = []
 	for piece in moving:
-		stopped.append(piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle"))
+		stopped.append(piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle"))
 	await ticks(12)
 	for index in moving.size():
 		var piece = moving[index]
-		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		var progress: float = piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_eq(progress, stopped[index], "Resume preserves linked deactivation")
-		assert_true(piece.mechanism_component.perform("toggle"))
+		assert_true(piece.behaviors[0].receive("toggle"))
 	await ticks(12)
 	for index in moving.size():
 		var piece = moving[index]
-		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		var progress: float = piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_gt(progress, stopped[index], "Toggle restarts motion")
 	sim.reset()
 	assert_eq(build.snapshot(), baseline, "Runtime actions do not alter saved construction")
 	assert_true(sim.start())
 	await ticks(12)
 	for piece in moving:
-		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		var progress: float = piece.behaviors[0].get("phase" if piece.definition.behavior == "elevator" else "angle")
 		assert_eq(progress, 0.0, "New run restores configured disabled state")
 	sim.reset()

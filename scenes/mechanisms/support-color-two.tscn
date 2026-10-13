@@ -5,8 +5,31 @@
 [ext_resource type="Script" uid="uid://d3ma337kim6us" path="res://scripts/construction/resizable_support.gd" id="Script"]
 [ext_resource type="PackedScene" uid="uid://0oo1mftht02r" path="res://assets/models/build_pieces/GLB format/support-color-two-top.glb" id="Top"]
 
+[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Setting_support_height"]
+script = ExtResource("Setting")
+key = &"support_height"
+label = "Support bearing height"
+description = "Bottom and top retain their shape; matching middle sections fill the height"
+default_number = 2.0
+minimum = 1.0
+maximum = 30.0
+step = 0.125
+unit = "m"
+
+
+[sub_resource type="Resource" id="Setting_support_double_top"]
+script = ExtResource("Setting")
+key = &"support_double_top"
+label = "Double top"
+kind = 1
+default_flag = false
+
+
 [node name="SupportAssembly" type="Node3D" unique_id=2059675316]
 script = ExtResource("Script")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_support_height"), SubResource("Setting_support_double_top")])
 family = "support-color-two"
 
 [node name="Bottom" parent="." unique_id=980894527 instance=ExtResource("Bottom")]

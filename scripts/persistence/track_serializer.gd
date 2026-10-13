@@ -58,10 +58,11 @@ func decode(text: String) -> Dictionary:
 		var uid = str(item.get("uid","loaded-%d" % clean.size()))
 		if uids.has(uid): uid += "-%d" % clean.size()
 		uids[uid] = true
-		var config := catalog.get_piece(item.piece).normalized_configuration(item.get("config", {}))
+		var config: Dictionary = item.get("config", {}).duplicate(true)
 		if config.has("release_speed"):
 			if not (config.release_speed is float or config.release_speed is int): last_error="Invalid release speed"; return {}
 			config.release_speed = clampf(float(config.release_speed),0,6)
+		config = catalog.get_piece(item.piece).normalized_configuration(config)
 		clean.append({"uid":uid,"piece":item.piece,"position":p.duplicate(),"rotation":posmod(int(item.rotation),4),"config":config})
 	data.pieces = clean
 	data.name = data.name.left(80)

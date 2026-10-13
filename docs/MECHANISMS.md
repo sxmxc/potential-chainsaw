@@ -13,7 +13,7 @@ Select a piece to edit its settings in the inspector. Settings and event links a
 | Launcher | Strength and elevation control the impulse. External mode holds an arriving marble until Fire. Disable auto-rearm for single-shot use. |
 | Sensor | Emits Entered and optional Exited events without blocking the lane. |
 
-The inspector's link controls connect a source event to a target action. For example, Sensor Entered → Gate Open. Add a second link to fire a launcher from the same event. Available events and actions depend on the selected mechanism. Links remap within duplicated assemblies and are removed when their target is deleted.
+Use Connect to drag a send handle onto a receiving piece, then choose compatible ports when needed. Wires independently shows existing connections while building. For example, Sensor Entered → Gate Open. Add a second link to fire a launcher from the same event. Available events and actions depend on the selected mechanism. Links remap within duplicated assemblies and are removed when their target is deleted.
 
 ## Bucket elevator
 
@@ -30,12 +30,14 @@ Editable scenes live in `scenes/mechanisms/`: `bucket_elevator.tscn`, `elevator_
 
 ## Supports
 
-Six complete families provide single, two and four supports in normal and color variants. Select an assembly to choose Single or Double top and set bearing height from 1–30 m, in increments down to 0.125 m.
+Six complete families provide single, two and four supports in normal and color variants. Select an assembly to choose a single or double top and set bearing height from 1–30 m, in increments down to 0.125 m.
 
 The base stays on the ground. Placement beneath a level track adopts that track's elevation; otherwise the building plane supplies the height. Set height manually for slopes and irregular undersides. Inspector Lower/Raise changes support height. Moving a group preserves its transforms without resizing its supports.
 
 Matching middle segments fill the height between the original bottom and top models. Height changes update collision, bounds and placement checks. The complete assembly supports selection, movement, rotation, duplication, saves and undo. Older saves containing loose support parts remain readable.
 
 The six `scenes/mechanisms/support-*.tscn` scenes contain editable default assemblies. PieceDefinition resources supply the inventory thumbnails.
+
+For modifying meshes, indicators, collision, settings or adding new behaviors, see [Piece authoring](PIECE_AUTHORING.md).
 
 See [Puzzle authoring](PUZZLE_AUTHORING.md) for inventory limits, permissions and objectives, and [Architecture](ARCHITECTURE.md) for implementation rules.

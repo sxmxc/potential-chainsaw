@@ -67,7 +67,7 @@ func configure(puzzle_session: PuzzleSession) -> void:
 		var count = 0
 		var source = %MarbleSource.get_item_metadata(%MarbleSource.selected)
 		for piece in session.game.sandbox.build.pieces:
-			if piece.definition.behavior == "start" and (source.is_empty() or source == piece.instance_id): count += int(piece.configuration.get("quantity", 1))
+			if piece.behaviors.any(func(behavior_node): return behavior_node is MarbleRelease) and (source.is_empty() or source == piece.instance_id): count += int(piece.definition.resolved_configuration(piece.configuration).get("quantity", 1))
 		%RequiredCount.value = maxi(1, count))
 	%RemoveObjective.pressed.connect(func():
 		var selected = %ObjectiveList.get_selected_items()
@@ -193,10 +193,10 @@ func refresh_inventory_settings() -> void:
 	%InventorySetting.clear()
 	if %InventoryPiece.item_count == 0: return
 	var definition = session.game.catalog.get_piece(%InventoryPiece.get_item_metadata(%InventoryPiece.selected))
-	var keys: Array = preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(definition.behavior, {}).keys()
-	for key in keys:
-		%InventorySetting.add_item(key.capitalize())
-		%InventorySetting.set_item_metadata(%InventorySetting.item_count - 1, key)
+	for setting in definition.settings:
+		if setting.kind != PieceSetting.Kind.NUMBER: continue
+		%InventorySetting.add_item(setting.label)
+		%InventorySetting.set_item_metadata(%InventorySetting.item_count - 1, String(setting.key))
 
 func refresh_zones() -> void:
 	%RestrictedList.clear()
@@ -209,10 +209,10 @@ func refresh_objects() -> void:
 	%MarbleSource.set_item_metadata(0, "")
 	for piece in session.game.sandbox.build.pieces:
 		var object_label = piece.definition.display_name + " · " + piece.instance_id.right(6)
-		if (piece.definition.behavior == "finish" and %ObjectiveType.selected == 0) or (piece.mechanism_component and not piece.mechanism_component.events.is_empty() and %ObjectiveType.selected == 1):
+		if (piece.behaviors.any(func(behavior_node): return behavior_node is MarbleCollector) and %ObjectiveType.selected == 0) or (not piece.output_ports.is_empty() and %ObjectiveType.selected == 1):
 			%ObjectiveTarget.add_item(object_label)
 			%ObjectiveTarget.set_item_metadata(%ObjectiveTarget.item_count - 1, piece.instance_id)
-		if piece.definition.behavior == "start":
+		if piece.behaviors.any(func(behavior_node): return behavior_node is MarbleRelease):
 			%MarbleSource.add_item(object_label)
 			%MarbleSource.set_item_metadata(%MarbleSource.item_count - 1, piece.instance_id)
 	refresh_objective_events()
@@ -224,17 +224,17 @@ func refresh_objective_events() -> void:
 	%ObjectiveEvent.clear()
 	if delivery or %ObjectiveTarget.item_count == 0: return
 	var target: BuildingPiece = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
-	for event in target.mechanism_component.events: %ObjectiveEvent.add_item(event.capitalize())
+	for event in target.output_ports.keys(): %ObjectiveEvent.add_item(event.capitalize())
 
 func add_objective() -> void:
 	if %ObjectiveTarget.item_count == 0: return
 	var target = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
 	var type = "deliver" if %ObjectiveType.selected == 0 else "activate"
-	if type == "deliver" and target.definition.behavior != "finish": %Validation.text = "Choose a collector for delivery"; return
+	if type == "deliver" and not target.behaviors.any(func(behavior_node): return behavior_node is MarbleCollector): %Validation.text = "Choose a collector for delivery"; return
 	var data = {"type": type, "target": target.instance_id, "count": int(%RequiredCount.value), "source": %MarbleSource.get_item_metadata(%MarbleSource.selected), "time_limit": %ObjectiveTime.value}
 	if type == "activate":
-		if not target.mechanism_component: return
-		var events = target.mechanism_component.events
+		if target.output_ports.is_empty(): return
+		var events = target.output_ports.keys()
 		if events.is_empty(): return
 		data.event = events[maxi(0, %ObjectiveEvent.selected)]
 	session.puzzle.objectives.append(data)

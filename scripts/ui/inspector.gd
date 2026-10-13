@@ -1,7 +1,7 @@
 extends PanelContainer
+signal connections_requested
 var build: BuildManager
 var session: PuzzleSession
-const Schema = preload("res://scripts/mechanisms/settings_schema.gd")
 const PERMISSIONS: Array[String] = ["move", "rotate", "configure", "remove", "duplicate"]
 var refreshing: bool = false
 var displayed_piece: BuildingPiece
@@ -10,7 +10,7 @@ func has_properties() -> bool:
 	var piece: BuildingPiece=build.selected
 	if session and session.mode == "editor" and build.selection.any(func(object): return not object.definition.authoring_only): return true
 	if build.selection.size() != 1: return false
-	return (piece.mechanism_component and not piece.mechanism_component.events.is_empty()) or not Schema.NUMBERS.get(piece.definition.behavior,{}).is_empty() or not Schema.FLAGS.get(piece.definition.behavior,{}).is_empty()
+	return (not piece.output_ports.is_empty() or not piece.input_ports.is_empty()) or not piece.definition.settings.is_empty()
 func configure(manager: BuildManager) -> void:
 	build=manager
 	%MechanismSettings.configure(manager)
@@ -19,6 +19,7 @@ func configure(manager: BuildManager) -> void:
 	%PermissionsToggle.pressed.connect(func(): %Permissions.visible = not %Permissions.visible; fit_content.call_deferred())
 	%Preset.item_selected.connect(set_permission_preset)
 	%ApplyPermissions.pressed.connect(apply_permissions)
+	%EditConnections.pressed.connect(func(): connections_requested.emit())
 	build.selection_changed.connect(refresh)
 	refresh(null)
 func refresh(piece: BuildingPiece) -> void:
@@ -31,14 +32,21 @@ func refresh(piece: BuildingPiece) -> void:
 	%PieceName.text=piece.definition.display_name if count==1 else "%d-piece assembly" % count
 	%Details.text="Height: %s m" % ConstructionInput.height_text(piece.position.y) if count==1 else "Heights stay together"
 	%Details.visible = count == 1
-	%Capabilities.visible = count == 1 and piece.mechanism_component != null
+	%ConfigurationHeading.visible = count == 1 and not piece.definition.settings.is_empty()
+	%Capabilities.visible = count == 1 and (not piece.input_ports.is_empty() or not piece.output_ports.is_empty())
+	%ConnectionsHeading.visible = %Capabilities.visible
+	%ConnectionSummary.visible = %Capabilities.visible
+	%EditConnections.visible = %Capabilities.visible
 	if %Capabilities.visible:
-		var mechanism := piece.mechanism_component
 		var roles: PackedStringArray = []
-		if not mechanism.events.is_empty(): roles.append("Output · " + ", ".join(mechanism.events.map(func(event): return preload("res://scripts/ui/mechanism_wiring.gd").readable(event))))
-		if not mechanism.actions.is_empty(): roles.append("Input · " + ", ".join(mechanism.actions.keys().map(func(action): return preload("res://scripts/ui/mechanism_wiring.gd").readable(action))))
-		if roles.is_empty(): roles.append("Operates independently")
+		if not piece.output_ports.is_empty(): roles.append("Can send signals")
+		if not piece.input_ports.is_empty(): roles.append("Can receive signals")
 		%Capabilities.text = "\n".join(roles)
+		var incoming := 0
+		for source in build.pieces:
+			for link in source.configuration.get("links", []):
+				if link.get("target", "") == piece.instance_id: incoming += 1
+		%ConnectionSummary.text = "%d incoming · %d outgoing" % [incoming, piece.configuration.get("links", []).size()]
 	refresh_permissions(selection_changed)
 	refreshing=false
 	fit_content.call_deferred()
@@ -57,8 +65,8 @@ func refresh_permissions(selection_changed: bool) -> void:
 	for action in PERMISSIONS: get_node("%Permit" + action.capitalize()).set_pressed_no_signal(permission.get(action, false))
 	%RestrictSetting.set_pressed_no_signal(permission.has("config_keys"))
 	%ConfigKeys.clear()
-	var keys: Array = Schema.NUMBERS.get(tracks[0].definition.behavior, {}).keys()
-	keys.append_array(Schema.FLAGS.get(tracks[0].definition.behavior, {}).keys())
+	var keys: Array = []
+	for setting in tracks[0].definition.settings: keys.append(String(setting.key))
 	keys.append_array(tracks[0].configuration.keys())
 	var restrictions: Array = permission.get("config_keys", [])
 	if restrictions.size() > 1:

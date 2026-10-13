@@ -41,16 +41,39 @@ theme_type_variation = &"MutedLabel"
 text = "Piece properties"
 autowrap_mode = 3
 
+[node name="ConfigurationHeading" type="Label" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+text = "Settings"
+
 [node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=1377873254]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("MechanismSettings")
+
+[node name="ConnectionsHeading" type="Label" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+text = "Connections"
 
 [node name="Capabilities" type="Label" parent="Scroll/Contents"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
+
+[node name="ConnectionSummary" type="Label" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="EditConnections" type="Button" parent="Scroll/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Connect pieces"
 
 [node name="PermissionsToggle" type="Button" parent="Scroll/Contents"]
 unique_name_in_owner = true

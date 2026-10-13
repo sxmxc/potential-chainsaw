@@ -8,31 +8,40 @@ var configuration: Dictionary = {}
 var model_node: Node3D
 var meshes: Array[MeshInstance3D] = []
 var bodies: Array[StaticBody3D] = []
-var marker: MeshInstance3D
 var preview: bool = false
-var mechanism_component: MarbleMechanism
-var support_component: Node3D
+var behaviors: Array[PieceBehavior] = []
 var tint_material: StandardMaterial3D
 
+# Ports are derived from the authored components, never stored a second time.
+# Names must be unique across the components on one piece because saved links
+# address a stable piece ID and port name.
+var input_ports: Dictionary:
+	get:
+		var ports: Dictionary = {}
+		for behavior_node in behaviors:
+			for port in behavior_node.inputs: ports[port] = behavior_node
+		return ports
+var output_ports: Dictionary:
+	get:
+		var ports: Dictionary = {}
+		for behavior_node in behaviors:
+			for port in behavior_node.output_ports(): ports[port] = behavior_node
+		return ports
+
 func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) -> void:
-	config = preload("res://scripts/mechanisms/settings_schema.gd").normalized(data.behavior, config)
 	base_definition = data
 	definition = data
 	preview = ghost
 	model_node = data.model.instantiate()
 	model_node.position += data.placement_offset
+	if model_node is PieceBehavior: behaviors.append(model_node)
+	for behavior_node in model_node.find_children("*", "", true, false):
+		if behavior_node is PieceBehavior: behaviors.append(behavior_node)
+	for behavior_node in behaviors:
+		behavior_node.preview_only = ghost
+		if ghost: behavior_node.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(model_node)
-	if data.behavior == "elevator":
-		var elevator = model_node as BucketElevator
-		elevator.preview_only = ghost
-		mechanism_component = elevator
-		apply_configuration(config)
-	elif data.behavior == "resizable_support":
-		support_component = model_node
-		apply_configuration(config)
-	else:
-		configuration = config.duplicate(true)
-		_collect(model_node)
+	apply_configuration(config)
 	if not ghost and not data.collision_enabled and bodies.is_empty():
 		# Decorative objects remain selectable without blocking marble travel.
 		var pick_body := StaticBody3D.new()
@@ -46,45 +55,17 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 		pick_body.add_child(pick_shape)
 		add_child(pick_body)
 		bodies.append(pick_body)
-	if data.behavior in ["gate", "diverter", "launcher", "sensor"] and not ghost:
-		mechanism_component = load("res://scripts/mechanisms/" + data.behavior + ".gd").new()
-		add_child(mechanism_component)
-	if mechanism_component and data.behavior != "elevator": mechanism_component.configure(config)
-	if data.component_scene and not ghost:
-		add_child(data.component_scene.instantiate())
-	if data.behavior in ["start", "finish"]:
-		marker = MeshInstance3D.new()
-		var ring = TorusMesh.new()
-		ring.inner_radius = 0.24
-		ring.outer_radius = 0.29
-		marker.mesh = ring
-		marker.position = Vector3(0,0.72,0)
-		var material = StandardMaterial3D.new()
-		material.albedo_color = Color("59e5b1") if data.behavior == "start" else Color("ffc66d")
-		material.emission_enabled = true
-		material.emission = material.albedo_color
-		marker.material_override = material
-		add_child(marker)
 
-func _collect(node: Node) -> void:
-	if node is StaticBody3D:
-		if not bodies.has(node): bodies.append(node)
+func _collect(node: Node, collision_owned: bool = false) -> void:
+	if node is CollisionObject3D:
+		collision_owned = true
+		if node is StaticBody3D and node not in bodies: bodies.append(node)
 		if preview:
 			node.collision_layer = 0
 			node.collision_mask = 0
-		if not definition.authoring_only: return
 	if node is MeshInstance3D:
 		if not meshes.has(node): meshes.append(node)
-		if definition.behavior == "rotor" and node.name == "fan" and not preview:
-			var rotor = RotorComponent.new()
-			mechanism_component = rotor
-			add_child(rotor)
-			rotor.setup(node)
-		elif definition.behavior == "airflow" and node.name == "fan" and not preview:
-			mechanism_component = preload("res://scripts/mechanisms/airflow.gd").new()
-			add_child(mechanism_component)
-			mechanism_component.setup(node, String(definition.id).contains("standing"))
-		elif definition.collision_enabled and not preview:
+		if definition.collision_enabled and not preview and not collision_owned and not node.get_children().any(func(child): return child is StaticBody3D):
 			var body = StaticBody3D.new()
 			body.collision_layer = 1
 			body.collision_mask = 2
@@ -98,22 +79,16 @@ func _collect(node: Node) -> void:
 			body.add_child(collision)
 			bodies.append(body)
 	for child in node.get_children():
-		if child is Node3D: _collect(child)
+		if child is Node3D: _collect(child, collision_owned)
 
 func apply_configuration(config: Dictionary) -> void:
-	config = preload("res://scripts/mechanisms/settings_schema.gd").normalized(base_definition.behavior, config)
 	configuration = base_definition.normalized_configuration(config)
 	definition = base_definition.configured(configuration)
-	if base_definition.behavior == "elevator":
-		mechanism_component.configure(configuration)
-	elif base_definition.behavior == "resizable_support":
-		support_component.configure(configuration)
-	else:
-		if mechanism_component: mechanism_component.configure(config)
-		return
+	for behavior_node in behaviors:
+		behavior_node.configure(base_definition.resolved_configuration(configuration))
 	meshes.clear()
 	bodies.clear()
-	_collect(model_node)
+	_collect(model_node, base_definition.native_collision)
 
 func tint(color: Color, enabled: bool = true) -> void:
 	if not tint_material:

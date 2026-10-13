@@ -136,7 +136,7 @@ func choose(definition: PieceDefinition) -> void:
 	preview_items=[{"definition":definition,"local":Transform3D.IDENTITY,"config":{}}]
 	movement_height=height
 	make_ghost()
-	if definition.behavior=="resizable_support": resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,height))
+	if not definition.height_setting.is_empty(): resize_height_preview(height)
 	options_changed.emit()
 
 func choose_extension(definition: PieceDefinition, target: Dictionary) -> void:
@@ -222,14 +222,14 @@ func set_height(value: float) -> void:
 	if chosen:
 		movement_height=height
 		forced_target.clear()
-		if operation=="place" and chosen.behavior=="resizable_support": resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,height))
+		if operation=="place" and not chosen.height_setting.is_empty(): resize_height_preview(height)
 	refresh_grid()
 	options_changed.emit()
 
-func resize_support_preview(value: float) -> void:
+func resize_height_preview(value: float) -> void:
 	if ghosts.is_empty(): return
 	var config=ghost.configuration.duplicate(true)
-	config.support_height=value
+	config[String(chosen.height_setting)] = value
 	config=chosen.normalized_configuration(config)
 	if config==ghost.configuration: return
 	ghost.apply_configuration(config)
@@ -297,21 +297,21 @@ func update_preview() -> void:
 		contact_marker.hide()
 		return
 	var preview_height=movement_height
-	var support_placement=operation=="place" and chosen.behavior=="resizable_support"
-	if support_placement:
+	var height_placement=operation=="place" and chosen.ground_placement and not chosen.height_setting.is_empty()
+	if height_placement:
 		var under_cursor=pick_piece(cursor_position)
-		if under_cursor and under_cursor.definition.behavior in ["static","start","finish"] and not under_cursor.definition.connectors.is_empty():
+		if under_cursor and not under_cursor.definition.authoring_only and not under_cursor.definition.connectors.is_empty():
 			var level=under_cursor.definition.connectors[0].position.y
 			var flat=true
 			for port in under_cursor.definition.connectors:
 				if absf(port.position.y-level)>0.02: flat=false
-			if flat: preview_height=maxf(SupportDefinition.MIN_HEIGHT,under_cursor.position.y+level-0.25)
-		resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,preview_height))
+			if flat: preview_height=under_cursor.position.y+level+chosen.height_offset
+		resize_height_preview(preview_height)
 	var point=plane_point(cursor_position,grab_height if direct_drag else preview_height)
 	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else proposed.origin
 	if operation=="place": free_position.y=height
 	else: free_position.y=movement_height
-	if support_placement: free_position.y=0
+	if height_placement: free_position.y=0
 	proposed=Transform3D(Basis(Vector3.UP,turn*PI/2),free_position)
 	var grab_offset: Variant = null
 	if direct_drag: grab_offset = pointer_offset
@@ -439,8 +439,9 @@ func configure_piece(piece: BuildingPiece, config: Dictionary, label: String) ->
 	var before=snapshot(true)
 	var previous=piece.configuration.duplicate(true)
 	snap.sample_indices.erase(piece.definition.get_instance_id())
+	var previous_definition := piece.definition
 	piece.apply_configuration(config)
-	var problem=snap.validate(piece.definition,piece.transform,pieces,piece) if piece.definition.behavior in ["elevator", "resizable_support"] else ""
+	var problem=snap.validate(piece.definition,piece.transform,pieces,piece) if piece.definition != previous_definition else ""
 	if not problem.is_empty():
 		piece.apply_configuration(previous)
 		show_status("✕  "+problem)
@@ -461,14 +462,15 @@ func configure_piece(piece: BuildingPiece, config: Dictionary, label: String) ->
 
 func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
 	var source := find_piece(source_id)
-	if not source or not source.mechanism_component: return false
+	if not source or source.output_ports.is_empty(): return false
 	var config := source.configuration.duplicate(true)
 	var links: Array = config.get("links", [])
 	if index < -1 or index >= links.size(): return false
 	if not link.is_empty():
 		var target := find_piece(link.get("target", ""))
-		if not target or not target.mechanism_component: return false
-		if link.get("event", "") not in source.mechanism_component.events or not target.mechanism_component.actions.has(link.get("action", "")): return false
+		if not target or target.input_ports.is_empty(): return false
+		if not source.output_ports.has(link.get("event", "")) or not target.input_ports.has(link.get("action", "")): return false
+		if source.output_ports[link.event].state_outputs.has(link.event) != target.input_ports[link.action].state_inputs.has(link.action): return false
 		for other in links.size():
 			if other != index and links[other] == link: return false
 		if index == -1: links.append(link.duplicate(true))
@@ -544,10 +546,11 @@ func rotate_piece() -> void:
 
 func elevate_selected(delta: float) -> void:
 	if not selected or not enabled or not selection_permitted("move"): return
-	if selection.size()==1 and selected.support_component:
+	if selection.size()==1 and not selected.definition.height_setting.is_empty():
 		var config=selected.configuration.duplicate(true)
-		config.support_height=float(config.support_height)+delta
-		configure_selected(config,"Support height")
+		var key := String(selected.definition.height_setting)
+		config[key] = float(selected.definition.resolved_configuration(config)[key]) + delta
+		configure_selected(config,"Height")
 		return
 	var items: Array[Dictionary] = []
 	for piece in selection: items.append({"definition":piece.definition,"local":piece.transform})

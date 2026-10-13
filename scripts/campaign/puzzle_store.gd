@@ -66,7 +66,7 @@ func validate(data: Dictionary) -> Array[String]:
 		by_id[piece.uid] = piece
 		var definition = catalog.get_piece(piece.piece)
 		if not definition: errors.append("Unknown piece: " + piece.piece)
-		elif definition.behavior == "start": starts += 1
+		elif definition.has_behavior(MarbleRelease): starts += 1
 		if definition:
 			definition = definition.configured(piece.get("config", {}))
 			if SnapManager.intersects_solids(definition, Transform3D(Basis(Vector3.UP, int(piece.rotation) * PI / 2), Vector3(piece.position[0], piece.position[1], piece.position[2])), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
@@ -74,7 +74,7 @@ func validate(data: Dictionary) -> Array[String]:
 	if data.get("objectives", []).is_empty(): errors.append("Add a completion objective")
 	for objective in data.get("objectives", []):
 		if not by_id.has(objective.get("target", "")): errors.append("Objective target is missing")
-		elif objective.get("type", "deliver") == "deliver" and catalog.get_piece(by_id[objective.target].piece) and catalog.get_piece(by_id[objective.target].piece).behavior != "finish": errors.append("Delivery objective needs a collector")
+		elif objective.get("type", "deliver") == "deliver" and catalog.get_piece(by_id[objective.target].piece) and not catalog.get_piece(by_id[objective.target].piece).has_behavior(MarbleCollector): errors.append("Delivery objective needs a collector")
 		if objective.get("type", "deliver") not in ["deliver", "activate"]: errors.append("Unknown objective type")
 		if int(objective.get("count", 1)) < 1: errors.append("Objective quantity must be positive")
 		if not objective.get("source", "").is_empty() and not by_id.has(objective.source): errors.append("Required marble source is missing")

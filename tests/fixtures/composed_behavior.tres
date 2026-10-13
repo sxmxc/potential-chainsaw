@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/composed_behavior.tscn" id="Model"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"fixture-composed-behavior"
+display_name = "Composed behavior fixture"
+model = ExtResource("Model")
+bounds = AABB(-0.25, 0, -0.25, 0.5, 0.5, 0.5)
+behavior = "unlisted-behavior"

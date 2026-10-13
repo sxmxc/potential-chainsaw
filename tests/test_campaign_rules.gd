@@ -102,7 +102,7 @@ func test_campaign_rules() -> void:
 		if game.sandbox.simulation.state in [SimulationManager.State.SUCCESS, SimulationManager.State.FAILED]: break
 	assert_true(game.sandbox.simulation.state == SimulationManager.State.SUCCESS and game.sandbox.simulation.objectives.deliveries.size() == 2, "Two real marbles fulfill quantity and source objectives")
 	game.sandbox.simulation.reset()
-	assert_true(game.sandbox.simulation.marbles.is_empty() and game.sandbox.simulation.pending_releases.is_empty(), "Reset clears all bodies and pending releases")
+	assert_true(game.sandbox.simulation.marbles.is_empty() and game.sandbox.build.pieces[0].behaviors[0].pending_releases.is_empty(), "Reset clears all bodies and pending releases")
 	data = session.store.create()
 	data.pieces = [record("sandbox-start", "release", Vector3(0, 0, 2)), record("gate", "gate", Vector3.ZERO, {"delay": 1})]
 	data.objectives = [{"type": "activate", "target": "gate", "event": "opened"}]

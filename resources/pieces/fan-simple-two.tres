@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://diwevwapexff8"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_epjvb"]
-[ext_resource type="PackedScene" uid="uid://cqdyhjhlsjt05" path="res://assets/models/build_pieces/GLB format/fan-simple-two.glb" id="2_5rkdv"]
+[ext_resource type="PackedScene" path="res://scenes/mechanisms/fan-simple-two.tscn" id="2_5rkdv"]
 [ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="3_sjo58"]
 [ext_resource type="Texture2D" uid="uid://b4lfqwsmri4gi" path="res://assets/models/build_pieces/previews/fan-simple-two.png" id="Preview"]
 
 [resource]
+native_collision = true
 script = ExtResource("3_sjo58")
 id = &"fan-simple-two"
 display_name = "Paddle fan (2 blades)"
@@ -15,4 +16,5 @@ model = ExtResource("2_5rkdv")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.3382358, 0, -0.15000002, 0.6764716, 0.5, 0.30000004)
 behavior = "rotor"
+usage_hint = "Spinning blades can redirect a moving marble."
 surface_cells = PackedVector3Array(-0.05, 0.05, -0.05, 0.05, 0.05, -0.05, -0.05, 0.05, 0.05, 0.05, 0.05, 0.05, -0.05, 0.15, -0.05, 0.05, 0.15, -0.05, -0.05, 0.15, 0.05, 0.05, 0.15, 0.05, -0.05, 0.25, -0.05, 0.05, 0.25, -0.05, -0.05, 0.25, 0.05, 0.05, 0.25, 0.05, -0.05, 0.35, -0.05, 0.05, 0.35, -0.05, -0.05, 0.35, 0.05, 0.05, 0.35, 0.05, -0.05, 0.45, -0.05, 0.05, 0.45, -0.05, -0.05, 0.45, 0.05, 0.05, 0.45, 0.05)

@@ -1,5 +1,5 @@
 class_name BucketElevator
-extends MarbleMechanism
+extends PieceBehavior
 
 const BucketScene = preload("res://scenes/mechanisms/elevator_bucket.tscn")
 const FrameScene = preload("res://scenes/mechanisms/elevator_frame_section.tscn")
@@ -8,7 +8,6 @@ const TURN_RADIUS = 0.75
 const BUCKET_SPACING = 1.4
 var lift_height: float = ElevatorDefinition.DEFAULT_HEIGHT
 var travel_speed: float = ElevatorDefinition.DEFAULT_SPEED
-var preview_only: bool = false
 var phase: float = 0.0
 var buckets: Array[Node3D] = []
 var waiting: Array[RigidBody3D] = []
@@ -16,8 +15,8 @@ var loaded_count: int = 0
 var unloaded_count: int = 0
 
 func _init() -> void:
-	actions = {"activate": func(): enabled = true, "deactivate": func(): enabled = false, "toggle": func(): enabled = not enabled}
-	events = ["activated", "loaded", "unloaded"]
+	inputs = {"activate": func(_value: Variant): enabled = true, "deactivate": func(_value: Variant): enabled = false, "toggle": func(_value: Variant): enabled = not enabled}
+	outputs = ["activated", "loaded", "unloaded"]
 
 func _ready() -> void:
 	$LoadingSensor.body_entered.connect(_queue_marble)
@@ -44,10 +43,6 @@ func configure(settings: Dictionary) -> void:
 		var bucket = BucketScene.instantiate()
 		$Buckets.add_child(bucket)
 		buckets.append(bucket)
-	if preview_only:
-		for body in find_children("*", "CollisionObject3D", true, false):
-			body.collision_layer = 0
-			body.collision_mask = 0
 	arrange(0)
 
 func straight_length() -> float:
@@ -96,7 +91,7 @@ func _physics_process(delta: float) -> void:
 			# Give the tipped marble momentum onto the outlet even at slow belt speeds.
 			bucket.unload(global_basis * Vector3(0, 0, -clampf(travel_speed + 0.6, 1.4, 2.6)))
 			unloaded_count += 1
-			event_raised.emit("unloaded", released)
+			emit_output("unloaded", released)
 		elif not bucket.occupied() and pose_data.point.y < 0.22 and pose_data.point.z < 0.48:
 			for body in waiting.duplicate():
 				if not is_instance_valid(body) or Capture.is_carried(body): waiting.erase(body); continue
@@ -105,7 +100,7 @@ func _physics_process(delta: float) -> void:
 				if bucket.capture(body):
 					waiting.erase(body)
 					loaded_count += 1
-					event_raised.emit("loaded", body)
+					emit_output("loaded", body)
 					break
 
 func _queue_marble(body: Node3D) -> void:

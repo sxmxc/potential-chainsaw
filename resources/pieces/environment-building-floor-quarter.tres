@@ -14,5 +14,6 @@ thumbnail = ExtResource("Preview")
 placement_offset = Vector3(0, 0, 0.5)
 bounds = AABB(-0.5, 0, -0.5, 1, 0.1, 1)
 behavior = "decoration"
+usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-0.5, 0, -0.5, 1, 0.1, 1)])

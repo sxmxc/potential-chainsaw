@@ -15,3 +15,4 @@ model = ExtResource("2_xfhnn")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.4625, 0, -0.0375, 0.925, 0.5, 0.075)
 behavior = "decoration"
+usage_hint = "Add a finishing touch to your construction."

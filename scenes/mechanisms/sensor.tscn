@@ -1,0 +1,124 @@
+[gd_scene format=3 uid="uid://dran0bj5hmige"]
+
+[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
+[ext_resource type="Script" uid="uid://b0kjwkxrim7bl" path="res://scripts/mechanisms/sensor.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+[ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/straight.tres" id="TrackShape"]
+
+[sub_resource type="Resource" id="Setting_detect_exit"]
+script = ExtResource("Setting")
+key = &"detect_exit"
+label = "Emit exit event"
+kind = 1
+
+[sub_resource type="PhysicsMaterial" id="TrackPhysics"]
+friction = 0.18
+bounce = 0.02
+
+[sub_resource type="BoxShape3D" id="DetectionShape"]
+resource_local_to_scene = true
+size = Vector3(0.5, 0.7, 0.9911621)
+
+[sub_resource type="StandardMaterial3D" id="IndicatorMaterial"]
+resource_local_to_scene = true
+albedo_color = Color(0.3490196, 0.8980392, 0.6941177, 1)
+emission_enabled = true
+
+[sub_resource type="BoxMesh" id="IndicatorMesh"]
+size = Vector3(0.06, 0.3, 0.1)
+
+[sub_resource type="Animation" id="idle"]
+resource_name = "idle"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Indicator:material_override:albedo_color")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(0.3490196, 0.8980392, 0.6941177, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Indicator:material_override:emission")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="occupied"]
+resource_name = "occupied"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Indicator:material_override:albedo_color")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 0.7764706, 0.427451, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Indicator:material_override:emission")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 0.7764706, 0.427451, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="IndicatorAnimations"]
+_data = {
+&"idle": SubResource("idle"),
+&"occupied": SubResource("occupied")
+}
+
+[node name="Sensor" type="Node3D" unique_id=340510370 node_paths=PackedStringArray("area", "indicator_animation")]
+script = ExtResource("Script")
+area = NodePath("Detection")
+indicator_animation = NodePath("IndicatorAnimation")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_detect_exit")])
+
+[node name="Track" type="StaticBody3D" parent="." unique_id=655493745]
+collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
+
+[node name="Model" parent="Track" unique_id=1174319033 instance=ExtResource("Model")]
+
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=1719815341]
+shape = ExtResource("TrackShape")
+
+[node name="Detection" type="Area3D" parent="." unique_id=2099235233]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=1744589230]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0019286871)
+shape = SubResource("DetectionShape")
+
+[node name="Indicator" type="MeshInstance3D" parent="." unique_id=1789522090]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.65, 0)
+material_override = SubResource("IndicatorMaterial")
+mesh = SubResource("IndicatorMesh")
+
+[node name="IndicatorAnimation" type="AnimationPlayer" parent="." unique_id=867151714]
+libraries/ = SubResource("IndicatorAnimations")
+
+[editable path="Track/Model"]

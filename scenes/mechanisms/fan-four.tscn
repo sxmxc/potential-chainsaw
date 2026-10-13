@@ -1,0 +1,111 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/mechanisms/airflow.gd" id="Script"]
+
+[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/fan-four.glb" id="Model"]
+
+[ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/fan-four.tres" id="TrackShape"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Setting_power"]
+script = ExtResource("Setting")
+key = &"power"
+label = "Air power"
+description = "Air power (N)"
+default_number = 1.2
+minimum = 0.0
+maximum = 5.0
+step = 0.05
+unit = "N"
+
+
+[sub_resource type="Resource" id="Setting_range"]
+script = ExtResource("Setting")
+key = &"range"
+label = "Range"
+description = "Effective range (m)"
+default_number = 4.0
+minimum = 0.5
+maximum = 10.0
+step = 0.25
+unit = "m"
+
+
+[sub_resource type="Resource" id="Setting_enabled"]
+script = ExtResource("Setting")
+key = &"enabled"
+label = "Initially enabled"
+kind = 1
+default_flag = true
+
+
+[sub_resource type="Resource" id="Setting_reverse"]
+script = ExtResource("Setting")
+key = &"reverse"
+label = "Reverse airflow"
+kind = 1
+default_flag = false
+
+
+[sub_resource type="PhysicsMaterial" id="TrackPhysics"]
+friction = 0.18
+bounce = 0.02
+
+[sub_resource type="BoxShape3D" id="DetectionShape"]
+resource_local_to_scene = true
+size = Vector3(0.9, 4, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="ArrowMaterial"]
+albedo_color = Color(0.3490196, 0.8980392, 0.6941177, 1)
+
+[sub_resource type="CylinderMesh" id="ShaftMesh"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.4
+
+[sub_resource type="CylinderMesh" id="TipMesh"]
+top_radius = 0.0
+bottom_radius = 0.1
+height = 0.2
+
+[node name="Airflow" type="Node3D" node_paths=PackedStringArray("blade", "area", "arrow")]
+script = ExtResource("Script")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_power"), SubResource("Setting_range"), SubResource("Setting_enabled"), SubResource("Setting_reverse")])
+blade = NodePath("Track/Model/fan-four/fan")
+area = NodePath("Detection")
+arrow = NodePath("Arrow")
+
+[node name="Track" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("TrackPhysics")
+collision_layer = 1
+collision_mask = 2
+
+[node name="Model" parent="Track" instance=ExtResource("Model")]
+
+
+[node name="Collision" type="CollisionShape3D" parent="Track"]
+shape = ExtResource("TrackShape")
+
+[node name="Detection" type="Area3D" parent="."]
+position = Vector3(0, 2.3, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape3D" parent="Detection"]
+shape = SubResource("DetectionShape")
+
+[node name="Arrow" type="Node3D" parent="."]
+position = Vector3(0.58, 0.3, 0)
+
+[node name="Shaft" type="MeshInstance3D" parent="Arrow"]
+position = Vector3(0, 0.2, 0)
+mesh = SubResource("ShaftMesh")
+material_override = SubResource("ArrowMaterial")
+
+[node name="Tip" type="MeshInstance3D" parent="Arrow"]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("TipMesh")
+material_override = SubResource("ArrowMaterial")
+
+[editable path="Track/Model"]

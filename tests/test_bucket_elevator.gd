@@ -13,14 +13,14 @@ func test_bucket_elevator() -> void:
 	var definition = game.catalog.get_piece("bucket-elevator")
 	assert_true(definition != null and definition.category=="Mechanisms", "Elevator is registered in the existing catalog")
 	var lift = build.spawn(definition, Transform3D.IDENTITY)
-	assert_true(lift.mechanism_component.buckets.size()>=6, "One placed assembly has multiple reusable buckets")
+	assert_true(lift.behaviors[0].buckets.size()>=6, "One placed assembly has multiple reusable buckets")
 	assert_true(lift.bodies.size()>0 and lift.definition.reserve_bounds, "Frame/guide collision and complete mechanism volume are present")
 	var first_definition = lift.definition
 	build.select(lift)
 	assert_true(build.configure_selected({"elevator_height":6.0,"elevator_speed":1.2},"Elevator rise"), "Height is editable through the common build history")
 	assert_true(lift.position==Vector3.ZERO and lift.definition.connectors[1].position.y==6.25, "Height change anchors the inlet and updates the exact outlet")
 	assert_true(definition.connectors[1].position.y==4.25 and first_definition.connectors[1].position.y==4.25, "Instance resizing never changes shared catalog connector resources")
-	assert_true(is_equal_approx(lift.definition.bounds.end.y,8.1) and lift.mechanism_component.buckets.size()>6, "Height updates bounds, frames and bucket count")
+	assert_true(is_equal_approx(lift.definition.bounds.end.y,8.1) and lift.behaviors[0].buckets.size()>6, "Height updates bounds, frames and bucket count")
 	build.undo()
 	lift=build.pieces[0]
 	assert_true(lift.configuration.elevator_height==4.0 and lift.definition.connectors[1].position.y==4.25, "Undo restores configured geometry and output")
@@ -41,12 +41,12 @@ func test_bucket_elevator() -> void:
 	game.serializer.delete_track(saved)
 	build.select(lift); build.move_selected(true)
 	assert_true(build.ghost.configuration.elevator_height==6.0 and build.ghost.definition.connectors[1].position.y==6.25, "Duplicate preview preserves configured height")
-	assert_true(build.ghost.mechanism_component.preview_only and not build.ghost.mechanism_component.active, "Ghost is stationary and cannot capture or collide")
+	assert_true(build.ghost.behaviors[0].preview_only and not build.ghost.behaviors[0].active, "Ghost is stationary and cannot capture or collide")
 	build.cancel()
 	assert_true(build.pieces.size()==1, "Cancel leaves no duplicate mechanism")
 	assert_true(lift.model_node.get_node("Loading/Approach/Straight").scene_file_path.ends_with("straight.glb") and lift.model_node.get_node("Output/Track/Straight").scene_file_path.ends_with("straight.glb"), "Loading and Output use the actual kit straight model")
 	build.camera.set_process(false)
-	var tray: Node3D=lift.mechanism_component.buckets[0].get_node("Tray")
+	var tray: Node3D=lift.behaviors[0].buckets[0].get_node("Tray")
 	build.camera.global_position=tray.global_position+Vector3(0,0.25,-3)
 	build.camera.look_at(tray.global_position+Vector3(0,0.25,0))
 	await get_tree().physics_frame
@@ -87,9 +87,9 @@ func exercise_route(lift_height: float, conveyor_speed: float, quarter: int) -> 
 	build.spawn(game.catalog.get_piece("sandbox-finish"),Transform3D(rotation_basis*Basis(Vector3.UP,PI),rotation_basis*Vector3(0,lift_height,-3)))
 	var sim: SimulationManager=game.sandbox.simulation
 	assert_true(sim.start(), "Connected elevator route starts at height %.1f, rotation %d" % [lift_height,quarter])
-	var component=lift.mechanism_component
+	var component=lift.behaviors[0]
 	var discharge: Dictionary = {"age": -1.0, "speed": 0.0, "checked": false}
-	component.event_raised.connect(func(event: String, body: RigidBody3D):
+	component.output_raised.connect(func(event: String, body: RigidBody3D):
 		if event != "unloaded": return
 		discharge.age = 0.0
 		discharge.speed = body.linear_velocity.length()
@@ -145,13 +145,13 @@ func exercise_multiple() -> void:
 	game.enter_sandbox()
 	var build: BuildManager=game.sandbox.build
 	var lift=build.spawn(game.catalog.get_piece("bucket-elevator"),Transform3D.IDENTITY)
-	var component=lift.mechanism_component
+	var component=lift.behaviors[0]
 	build.spawn(game.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,4,-2)))
 	build.spawn(game.catalog.get_piece("sandbox-finish"),Transform3D(Basis(Vector3.UP,PI),Vector3(0,4,-3)))
 	var marbles: Array[RigidBody3D]=[]
 	var delivered: Array[int]=[]
 	var claimed: Array[int]=[]
-	component.event_raised.connect(func(event, body):
+	component.output_raised.connect(func(event, body):
 		if event == "loaded": claimed.append(body.get_instance_id())
 		elif event == "unloaded": delivered.append(body.get_instance_id()))
 	component.active=true

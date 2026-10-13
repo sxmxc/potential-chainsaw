@@ -1,0 +1,133 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/mechanisms/launcher.gd" id="Script"]
+
+[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
+
+[ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/straight.tres" id="TrackShape"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Setting_strength"]
+script = ExtResource("Setting")
+key = &"strength"
+label = "Added speed"
+description = "Launch speed added (m/s)"
+default_number = 4.0
+minimum = 0.5
+maximum = 8.0
+step = 0.1
+unit = "m/s"
+
+
+[sub_resource type="Resource" id="Setting_angle"]
+script = ExtResource("Setting")
+key = &"angle"
+label = "Launch angle"
+description = "Launch angle (degrees)"
+default_number = 25.0
+minimum = 0.0
+maximum = 65.0
+step = 1.0
+unit = "°"
+
+
+[sub_resource type="Resource" id="Setting_enabled"]
+script = ExtResource("Setting")
+key = &"enabled"
+label = "Enabled"
+kind = 1
+default_flag = true
+
+
+[sub_resource type="Resource" id="Setting_external"]
+script = ExtResource("Setting")
+key = &"external"
+label = "Wait for Fire trigger"
+kind = 1
+default_flag = false
+
+
+[sub_resource type="Resource" id="Setting_auto_rearm"]
+script = ExtResource("Setting")
+key = &"auto_rearm"
+label = "Automatically rearm"
+kind = 1
+default_flag = true
+
+
+[sub_resource type="PhysicsMaterial" id="TrackPhysics"]
+friction = 0.18
+bounce = 0.02
+
+[sub_resource type="BoxShape3D" id="DetectionShape"]
+resource_local_to_scene = true
+size = Vector3(0.5, 0.65, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="LoadingStopMaterial"]
+resource_local_to_scene = true
+albedo_color = Color(0.5019608, 0.7254902, 0.6862745, 1)
+
+[sub_resource type="BoxMesh" id="LoadingStopMesh"]
+size = Vector3(0.48, 0.55, 0.1)
+
+[sub_resource type="PhysicsMaterial" id="LoadingStopPhysics"]
+friction = 0.05
+
+[sub_resource type="BoxShape3D" id="LoadingStopShape"]
+size = Vector3(0.48, 0.55, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="ArrowMaterial"]
+resource_local_to_scene = true
+albedo_color = Color(1, 0.7764706, 0.427451, 1)
+
+[sub_resource type="BoxMesh" id="ArrowMesh"]
+size = Vector3(0.08, 0.08, 0.6)
+
+[node name="Launcher" type="Node3D" node_paths=PackedStringArray("area", "loading_stop", "arrow")]
+script = ExtResource("Script")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_strength"), SubResource("Setting_angle"), SubResource("Setting_enabled"), SubResource("Setting_external"), SubResource("Setting_auto_rearm")])
+area = NodePath("Detection")
+loading_stop = NodePath("LoadingStop")
+arrow = NodePath("Arrow")
+
+[node name="Track" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("TrackPhysics")
+collision_layer = 1
+collision_mask = 2
+
+[node name="Model" parent="Track" instance=ExtResource("Model")]
+
+
+[node name="Collision" type="CollisionShape3D" parent="Track"]
+shape = ExtResource("TrackShape")
+
+[node name="Detection" type="Area3D" parent="."]
+position = Vector3(0, 0.55, -0.55)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape3D" parent="Detection"]
+shape = SubResource("DetectionShape")
+
+[node name="LoadingStop" type="AnimatableBody3D" parent="."]
+position = Vector3(0, 1.25, -0.8)
+physics_material_override = SubResource("LoadingStopPhysics")
+collision_layer = 1
+collision_mask = 2
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="LoadingStop"]
+shape = SubResource("LoadingStopShape")
+
+[node name="Visual" type="MeshInstance3D" parent="LoadingStop"]
+mesh = SubResource("LoadingStopMesh")
+material_override = SubResource("LoadingStopMaterial")
+
+[node name="Arrow" type="MeshInstance3D" parent="."]
+position = Vector3(0.4, 0.65, -0.05)
+rotation = Vector3(-0.436332313, 0, 0)
+mesh = SubResource("ArrowMesh")
+material_override = SubResource("ArrowMaterial")
+
+[editable path="Track/Model"]
