@@ -86,8 +86,18 @@ func test_campaign_chapters() -> void:
 	authoring.get_node("%ChapterRequirements").text = "qa-main-2"
 	authoring.update_chapter()
 	assert_true(game.puzzle_session.puzzle.chapter.id == "chapter-3" and game.puzzle_session.puzzle.chapter.prerequisites == ["qa-main-2"], "Editor configures new chapter and unlock requirements")
+
+func test_campaign_export_from_authoring_dialog() -> void:
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	var store: PuzzleStore = game.puzzle_session.store
+	var levels := store.list_puzzles()
+	game.puzzle_session.editor(store.create())
+	var authoring: PanelContainer = game.get_node("%HUD").get_node("%PuzzleAuthoring")
 	var bundle_path = SavePaths.resolve("user://chapter-export.zip")
-	authoring.export_package(bundle_path)
+	authoring.get_node("%ExportDialog").file_selected.emit(bundle_path)
+	assert_eq(authoring.get_node("%Validation").text, "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % levels.size())
 	var bundle = ZIPReader.new()
 	assert_true(bundle.open(bundle_path) == OK, "Editor exports a readable campaign bundle")
 	var manifest: Dictionary = JSON.parse_string(bundle.read_file("campaign_chapters.json").get_string_from_utf8())

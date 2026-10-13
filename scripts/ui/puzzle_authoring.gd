@@ -79,7 +79,10 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Published to Campaign")
 	%Export.pressed.connect(func(): session.game.open_modal(); %ExportDialog.popup_centered(Vector2i(700, 500)))
 	%ExportDialog.canceled.connect(session.game.modal_closed)
-	%ExportDialog.file_selected.connect(export_package)
+	%ExportDialog.file_selected.connect(func(path: String):
+		session.game.modal_closed()
+		var count := session.store.export_campaign(path)
+		%Validation.text = session.store.last_error if count < 0 else "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count)
 	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
 	%OpenPuzzle.pressed.connect(func(): session.game.handle_action("open_puzzle"))
 	session.game.sandbox.build.changed.connect(func(): if visible: refresh_objects(); refresh_objectives(); refresh_publish())
@@ -257,33 +260,3 @@ func metadata_changed() -> void:
 	session.game.track_name = session.puzzle.name
 	session.game.update_name()
 	refresh_publish()
-
-func export_package(path: String) -> void:
-	session.game.modal_closed()
-	var zip = ZIPPacker.new()
-	if zip.open(path) != OK: %Validation.text = "Could not open export file"; return
-	var count = 0
-	for data in session.store.list_puzzles():
-		if not data.get("validation", {}).get("physics_success", false): continue
-		data = data.duplicate(true)
-		# Manifest membership is exported separately to preserve validated fingerprints.
-		var frozen := str(data.get("environment_snapshot", ""))
-		if not frozen.is_empty():
-			if not FileAccess.file_exists(frozen):
-				zip.close()
-				%Validation.text = "Published environment is missing"
-				return
-			var filename := frozen.get_file()
-			zip.start_file("environments/" + filename)
-			zip.write_file(FileAccess.get_file_as_bytes(frozen))
-			zip.close_file()
-			data.environment_snapshot = "res://resources/campaign/environments/" + filename
-		zip.start_file("campaign/" + data.id + ".json")
-		zip.write_file(JSON.stringify(data, "\t").to_utf8_buffer())
-		zip.close_file()
-		count += 1
-	zip.start_file("campaign_chapters.json")
-	zip.write_file(JSON.stringify({"version": 1, "chapters": session.store.list_chapters(session.store.list_puzzles())}, "\t").to_utf8_buffer())
-	zip.close_file()
-	zip.close()
-	%Validation.text = "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count

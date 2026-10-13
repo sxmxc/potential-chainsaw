@@ -121,6 +121,47 @@ func publish(data: Dictionary) -> bool:
 		published.environment_snapshot = snapshot_path
 	return write(published_directory + "/" + data.id + ".json", published)
 
+## Returns the exported puzzle count, or -1 with last_error on failure.
+func export_campaign(path: String) -> int:
+	last_error = ""
+	var levels := list_puzzles()
+	var files: Dictionary[String, PackedByteArray] = {}
+	var count := 0
+	for level in levels:
+		if not level.get("validation", {}).get("physics_success", false): continue
+		var data := level.duplicate(true)
+		var frozen := str(data.get("environment_snapshot", ""))
+		if not frozen.is_empty():
+			var snapshot := FileAccess.open(frozen, FileAccess.READ)
+			if snapshot == null:
+				last_error = "Published environment is missing"
+				return -1
+			var filename := frozen.get_file()
+			files["environments/" + filename] = snapshot.get_buffer(snapshot.get_length())
+			snapshot.close()
+			data.environment_snapshot = "res://resources/campaign/environments/" + filename
+		files["campaign/" + data.id + ".json"] = JSON.stringify(data, "\t").to_utf8_buffer()
+		count += 1
+	# Keep chapter metadata separate so export preserves validated puzzle content.
+	files["campaign_chapters.json"] = JSON.stringify({"version": 1, "chapters": list_chapters(levels)}, "\t").to_utf8_buffer()
+	var zip := ZIPPacker.new()
+	if zip.open(path) != OK:
+		last_error = "Could not open export file"
+		return -1
+	for filename in files:
+		var error := zip.start_file(filename)
+		if error == OK: error = zip.write_file(files[filename])
+		if error == OK: error = zip.close_file()
+		if error != OK:
+			zip.close()
+			last_error = "Could not write campaign bundle: " + error_string(error)
+			return -1
+	var close_error := zip.close()
+	if close_error != OK:
+		last_error = "Could not finish campaign bundle: " + error_string(close_error)
+		return -1
+	return count
+
 func list_puzzles(drafts: bool = false) -> Array[Dictionary]:
 	var by_id: Dictionary = {}
 	var directories = ["res://resources/puzzle_drafts", drafts_directory] if drafts else ["res://resources/campaign", published_directory]
