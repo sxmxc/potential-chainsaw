@@ -173,7 +173,6 @@ func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -
 	var excluded: Array[RID] = []
 	for piece in ignored:
 		for body in piece.bodies: excluded.append(body.get_rid())
-		if piece.rotor_component: excluded.append(piece.rotor_component.rotor.get_rid())
 	query.exclude=excluded
 	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return true

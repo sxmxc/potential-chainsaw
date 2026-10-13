@@ -180,13 +180,14 @@ func test_construction() -> void:
 	game.new_track()
 	var rotor=build.spawn(catalog.get_piece("fan-simple-two"),Transform3D(Basis.IDENTITY,Vector3(10,0,0)))
 	await get_tree().process_frame
-	assert_true(rotor.rotor_component!=null,"Imported fan attaches real rotating collision component")
-	var rest=rotor.rotor_component.mesh.transform
-	rotor.rotor_component.active=true
+	assert_true(rotor.mechanism_component is RotorComponent,"Imported fan attaches real rotating collision component")
+	assert_has(rotor.bodies, rotor.mechanism_component.rotor, "Moving blade collision participates in common ray exclusions")
+	var rest=rotor.mechanism_component.mesh.transform
+	rotor.mechanism_component.active=true
 	for i in 4: await get_tree().physics_frame
-	assert_true(not rotor.rotor_component.mesh.transform.is_equal_approx(rest),"Fan mechanism rotates during physics")
-	rotor.rotor_component.reset()
-	assert_true(rotor.rotor_component.mesh.transform.is_equal_approx(rest),"Mechanism reset restores original transform")
+	assert_true(not rotor.mechanism_component.mesh.transform.is_equal_approx(rest),"Fan mechanism rotates during physics")
+	rotor.mechanism_component.reset()
+	assert_true(rotor.mechanism_component.mesh.transform.is_equal_approx(rest),"Mechanism reset restores original transform")
 	for id in ["first-roll","spiral-crossing"]:
 		game.qa_example(id)
 		var original=build.snapshot()

@@ -1,7 +1,5 @@
-extends Node3D
-
-signal marble_loaded(body: RigidBody3D)
-signal marble_unloaded(body: RigidBody3D)
+class_name BucketElevator
+extends MarbleMechanism
 
 const BucketScene = preload("res://scenes/mechanisms/elevator_bucket.tscn")
 const FrameScene = preload("res://scenes/mechanisms/elevator_frame_section.tscn")
@@ -10,7 +8,6 @@ const TURN_RADIUS = 0.75
 const BUCKET_SPACING = 1.4
 var lift_height: float = ElevatorDefinition.DEFAULT_HEIGHT
 var travel_speed: float = ElevatorDefinition.DEFAULT_SPEED
-var active: bool = false
 var preview_only: bool = false
 var phase: float = 0.0
 var buckets: Array[Node3D] = []
@@ -18,16 +15,19 @@ var waiting: Array[RigidBody3D] = []
 var loaded_count: int = 0
 var unloaded_count: int = 0
 
+func _init() -> void:
+	actions = {"activate": func(): enabled = true, "deactivate": func(): enabled = false, "toggle": func(): enabled = not enabled}
+	events = ["activated", "loaded", "unloaded"]
+
 func _ready() -> void:
 	$LoadingSensor.body_entered.connect(_queue_marble)
 	$LoadingSensor.body_exited.connect(_remove_waiting)
-	configure(lift_height, travel_speed, false)
+	configure(config)
 
-func configure(new_height: float, new_speed: float, ghost: bool) -> void:
-	reset()
-	lift_height = new_height
-	travel_speed = new_speed
-	preview_only = ghost
+func configure(settings: Dictionary) -> void:
+	super.configure(settings)
+	lift_height = float(config.get("elevator_height", ElevatorDefinition.DEFAULT_HEIGHT))
+	travel_speed = float(config.get("elevator_speed", ElevatorDefinition.DEFAULT_SPEED))
 	for child in $Frames.get_children(): child.free()
 	var shaft_length = lift_height + 1.1
 	for index in ceili(shaft_length):
@@ -85,7 +85,7 @@ func arrange(delta: float) -> void:
 	$BottomDrive.rotation.x = -phase / TURN_RADIUS
 
 func _physics_process(delta: float) -> void:
-	if not active or preview_only: return
+	if not active or not enabled or preview_only: return
 	phase = fposmod(phase + travel_speed * delta, loop_length())
 	arrange(delta)
 	for index in buckets.size():
@@ -96,7 +96,7 @@ func _physics_process(delta: float) -> void:
 			# Give the tipped marble momentum onto the outlet even at slow belt speeds.
 			bucket.unload(global_basis * Vector3(0, 0, -clampf(travel_speed + 0.6, 1.4, 2.6)))
 			unloaded_count += 1
-			marble_unloaded.emit(released)
+			event_raised.emit("unloaded", released)
 		elif not bucket.occupied() and pose_data.point.y < 0.22 and pose_data.point.z < 0.48:
 			for body in waiting.duplicate():
 				if not is_instance_valid(body) or Capture.is_carried(body): waiting.erase(body); continue
@@ -105,7 +105,7 @@ func _physics_process(delta: float) -> void:
 				if bucket.capture(body):
 					waiting.erase(body)
 					loaded_count += 1
-					marble_loaded.emit(body)
+					event_raised.emit("loaded", body)
 					break
 
 func _queue_marble(body: Node3D) -> void:
@@ -115,7 +115,7 @@ func _remove_waiting(body: Node3D) -> void:
 	waiting.erase(body)
 
 func reset() -> void:
-	active = false
+	super.reset()
 	phase = 0
 	for bucket in buckets: bucket.reset()
 	waiting.clear()

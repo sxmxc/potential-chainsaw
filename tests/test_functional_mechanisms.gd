@@ -23,7 +23,7 @@ func test_functional_mechanisms() -> void:
 	for id in ["fan-two", "fan-four", "fan-standing-two", "fan-standing-four"]:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY, "", {"power": 0.2, "range": 2})
 		var airflow = piece.mechanism_component
-		assert_true(airflow != null and piece.rotor_component == null, id + " uses airflow without moving blade collision")
+		assert_true(airflow != null and not airflow is RotorComponent, id + " uses airflow without moving blade collision")
 		body = ball(Vector3(0, 0.7, -0.8) if id.contains("standing") else Vector3(0, 0.8, 0))
 		body.gravity_scale = 0
 		airflow.active = true
@@ -46,8 +46,8 @@ func test_functional_mechanisms() -> void:
 		await get_tree().process_frame
 	for id in ["fan-simple-two", "fan-simple-four"]:
 		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY)
-		var paddle = piece.rotor_component
-		assert_true(paddle != null and piece.mechanism_component == null, id + " is exclusively physical")
+		var paddle = piece.mechanism_component
+		assert_true(paddle is RotorComponent, id + " is exclusively physical")
 		body = ball(Vector3(0.38, 0.4, 0.0))
 		body.gravity_scale = 0
 		paddle.active = true
@@ -147,3 +147,57 @@ func test_functional_mechanisms() -> void:
 		assert_true(alternating.mechanism_component.left != expected_left, "Alternating fork rearms after marble exits")
 		body.queue_free()
 		await ticks(4)
+
+func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
+	game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	game.new_track()
+	build = game.sandbox.build
+	var sim: SimulationManager = game.sandbox.simulation
+	sim.puzzle = {"objectives": []}
+	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
+	var moving: Array[BuildingPiece] = []
+	var links: Array = []
+	for id in ["fan-simple-two", "bucket-elevator", "fan-two"]:
+		var piece = build.spawn(game.catalog.get_piece(id), Transform3D(Basis.IDENTITY, Vector3(moving.size() * 5 + 5, 0, 0)), id, {"enabled": false})
+		moving.append(piece)
+		links.append({"event": "entered", "target": id, "action": "activate"})
+	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": links})
+	var baseline = build.snapshot()
+	assert_true(sim.start())
+	await ticks(12)
+	for piece in moving:
+		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		assert_eq(progress, 0.0, "Initially disabled mechanism remains stationary")
+	sensor.mechanism_event.emit("entered", null)
+	await ticks(12)
+	for piece in moving:
+		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		assert_gt(progress, 0.0, "Sensor link activates physical motion")
+		assert_true(piece.perform_action("deactivate"))
+	sim.toggle_pause()
+	await ticks(4)
+	sim.toggle_pause()
+	var stopped: Array[float] = []
+	for piece in moving:
+		stopped.append(piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle"))
+	await ticks(12)
+	for index in moving.size():
+		var piece = moving[index]
+		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		assert_eq(progress, stopped[index], "Resume preserves linked deactivation")
+		assert_true(piece.perform_action("toggle"))
+	await ticks(12)
+	for index in moving.size():
+		var piece = moving[index]
+		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		assert_gt(progress, stopped[index], "Toggle restarts motion")
+	sim.reset()
+	assert_eq(build.snapshot(), baseline, "Runtime actions do not alter saved construction")
+	assert_true(sim.start())
+	await ticks(12)
+	for piece in moving:
+		var progress: float = piece.mechanism_component.get("phase" if piece.definition.behavior == "elevator" else "angle")
+		assert_eq(progress, 0.0, "New run restores configured disabled state")
+	sim.reset()

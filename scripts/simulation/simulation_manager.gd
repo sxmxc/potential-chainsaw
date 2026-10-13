@@ -65,9 +65,6 @@ func start() -> bool:
 		sensors.append(area)
 	for piece in build.pieces:
 		if piece.mechanism_component: piece.mechanism_component.active = true
-		piece.mechanism_enabled = bool(piece.configuration.get("enabled",true))
-		if piece.rotor_component: piece.rotor_component.active = piece.mechanism_enabled
-		if piece.elevator_component: piece.elevator_component.active = piece.mechanism_enabled
 	for piece in build.pieces:
 		var callback = _mechanism_event.bind(piece)
 		if not piece.mechanism_event.is_connected(callback): piece.mechanism_event.connect(callback)
@@ -130,8 +127,6 @@ func _end(result: State, message: String) -> void:
 	state = result
 	for piece in build.pieces:
 		if piece.mechanism_component: piece.mechanism_component.active = false
-		if piece.rotor_component: piece.rotor_component.active = false
-		if piece.elevator_component: piece.elevator_component.active = false
 	state_changed.emit(state,message)
 
 func toggle_pause() -> void:
@@ -152,14 +147,11 @@ func toggle_pause() -> void:
 	else: return
 	for piece in build.pieces:
 		if piece.mechanism_component: piece.mechanism_component.active = state == State.RUNNING
-		if piece.rotor_component: piece.rotor_component.active = state == State.RUNNING and piece.mechanism_enabled
-		if piece.elevator_component: piece.elevator_component.active = state == State.RUNNING and piece.mechanism_enabled
 	state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
 
 func reset() -> void:
 	if build:
 		for piece in build.pieces:
-			if piece.elevator_component: piece.elevator_component.reset()
 			if piece.mechanism_component: piece.mechanism_component.reset()
 	for body in marbles:
 		if is_instance_valid(body):
@@ -173,8 +165,6 @@ func reset() -> void:
 		sensor.queue_free()
 	sensors.clear()
 	if build:
-		for piece in build.pieces:
-			if piece.rotor_component: piece.rotor_component.reset()
 		build.enabled = true
 		build.refresh_grid()
 	state = State.BUILD

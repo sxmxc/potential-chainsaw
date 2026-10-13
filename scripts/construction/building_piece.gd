@@ -10,10 +10,7 @@ var meshes: Array[MeshInstance3D] = []
 var bodies: Array[StaticBody3D] = []
 var marker: MeshInstance3D
 var preview: bool = false
-var mechanism_enabled: bool = true
-var rotor_component: RotorComponent
 var mechanism_component: MarbleMechanism
-var elevator_component: Node3D
 var support_component: Node3D
 var tint_material: StandardMaterial3D
 
@@ -28,7 +25,9 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 	model_node.position += data.placement_offset
 	add_child(model_node)
 	if data.behavior == "elevator":
-		elevator_component = model_node
+		var elevator = model_node as BucketElevator
+		elevator.preview_only = ghost
+		mechanism_component = elevator
 		apply_configuration(config)
 	elif data.behavior == "resizable_support":
 		support_component = model_node
@@ -39,14 +38,8 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 	if data.behavior in ["gate", "diverter", "launcher", "sensor"] and not ghost:
 		mechanism_component = load("res://scripts/mechanisms/" + data.behavior + ".gd").new()
 		add_child(mechanism_component)
-		mechanism_component.configure(config)
-	if rotor_component:
-		rotor_component.speed = clampf(float(config.get("angular_speed", 1.3)), -6, 6)
-	if mechanism_component: mechanism_component.configure(config)
+	if mechanism_component and data.behavior != "elevator": mechanism_component.configure(config)
 	if mechanism_component: mechanism_component.event_raised.connect(func(event, marble): mechanism_event.emit(event, marble))
-	if elevator_component:
-		elevator_component.marble_loaded.connect(func(marble): mechanism_event.emit("loaded", marble))
-		elevator_component.marble_unloaded.connect(func(marble): mechanism_event.emit("unloaded", marble))
 	if data.component_scene and not ghost:
 		add_child(data.component_scene.instantiate())
 	if data.behavior in ["start", "finish"]:
@@ -73,9 +66,10 @@ func _collect(node: Node) -> void:
 	if node is MeshInstance3D:
 		if not meshes.has(node): meshes.append(node)
 		if definition.behavior == "rotor" and node.name == "fan" and not preview:
-			rotor_component = RotorComponent.new()
-			add_child(rotor_component)
-			rotor_component.configure(node)
+			var rotor = RotorComponent.new()
+			mechanism_component = rotor
+			add_child(rotor)
+			rotor.setup(node)
 		elif definition.behavior == "airflow" and node.name == "fan" and not preview:
 			mechanism_component = preload("res://scripts/mechanisms/airflow.gd").new()
 			add_child(mechanism_component)
@@ -101,11 +95,10 @@ func apply_configuration(config: Dictionary) -> void:
 	configuration = base_definition.normalized_configuration(config)
 	definition = base_definition.configured(configuration)
 	if base_definition.behavior == "elevator":
-		elevator_component.configure(configuration.elevator_height, configuration.elevator_speed, preview)
+		mechanism_component.configure(configuration)
 	elif base_definition.behavior == "resizable_support":
 		support_component.configure(configuration)
 	else:
-		if rotor_component: rotor_component.speed = clampf(float(config.get("angular_speed", 1.3)), -6, 6)
 		if mechanism_component: mechanism_component.configure(config)
 		return
 	meshes.clear()
@@ -128,23 +121,10 @@ func serialize() -> Dictionary:
 	return {"uid": instance_id, "piece": String(definition.id), "position": [position.x,position.y,position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4), "config": configuration.duplicate(true)}
 
 func supported_actions() -> Array:
-	if mechanism_component: return mechanism_component.actions.keys()
-	if elevator_component or rotor_component: return ["activate", "deactivate", "toggle"]
-	return []
+	return mechanism_component.actions.keys() if mechanism_component else []
 
 func supported_events() -> Array:
-	if mechanism_component: return mechanism_component.events
-	if elevator_component: return ["activated", "loaded", "unloaded"]
-	if rotor_component: return ["activated"]
-	return []
+	return mechanism_component.events if mechanism_component else []
 
 func perform_action(action: String) -> bool:
-	if mechanism_component: return mechanism_component.perform(action)
-	var component: Node = elevator_component
-	if not component:
-		component = rotor_component
-	if not component or action not in supported_actions(): return false
-	mechanism_enabled = not mechanism_enabled if action == "toggle" else action == "activate"
-	component.set("active", mechanism_enabled)
-	mechanism_event.emit("activated", null)
-	return true
+	return mechanism_component.perform(action) if mechanism_component else false

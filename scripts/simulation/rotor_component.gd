@@ -1,14 +1,21 @@
 class_name RotorComponent
-extends Node
+extends MarbleMechanism
 
 var rotor: AnimatableBody3D
 var mesh: MeshInstance3D
 var rest: Transform3D
-var active: bool = false
 var speed: float = 1.3
 var angle: float = 0.0
 
-func configure(target: MeshInstance3D) -> void:
+func _init() -> void:
+	actions = {"activate": func(): enabled = true, "deactivate": func(): enabled = false, "toggle": func(): enabled = not enabled}
+	events = ["activated"]
+
+func configure(settings: Dictionary) -> void:
+	speed = clampf(float(settings.get("angular_speed", 1.3)), -6, 6)
+	super.configure(settings)
+
+func setup(target: MeshInstance3D) -> void:
 	mesh = target
 	rest = mesh.transform
 	# Measured GLB blade extent is 0.676 m; separate arms leave the gaps open.
@@ -31,12 +38,12 @@ func configure(target: MeshInstance3D) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(mesh): return
-	if active: angle += speed*delta
+	if active and enabled: angle += speed*delta
 	mesh.transform = rest * Transform3D(Basis(Vector3.UP,angle),Vector3.ZERO)
 	rotor.global_transform = mesh.global_transform
 
 func reset() -> void:
-	active = false
+	super.reset()
 	angle = 0
 	if is_instance_valid(mesh):
 		mesh.transform = rest
