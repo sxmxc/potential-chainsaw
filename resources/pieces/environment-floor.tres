@@ -16,4 +16,3 @@ bounds = AABB(-1, 0, -1, 2, 0.1, 2)
 behavior = "decoration"
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-1, 0, -1, 2, 0.1, 2)])
-collision_enabled = false

@@ -2,13 +2,13 @@ class_name BuildManager
 extends Node3D
 
 signal changed
-signal selection_changed(piece: TrackPiece)
+signal selection_changed(piece: BuildingPiece)
 signal status_changed(message: String)
 signal options_changed
 signal marquee_changed(rectangle: Rect2, active: bool)
 signal extension_requested(target: Dictionary, screen: Vector2)
 
-const PIECE_SCENE = preload("res://scenes/track_piece.tscn")
+const PIECE_SCENE = preload("res://scenes/building_piece.tscn")
 const SupportGeometry = preload("res://scripts/construction/support_geometry.gd")
 @export var drag_threshold: float = 7.0
 @export_range(12,96,1) var connector_target_radius: float = 32.0
@@ -17,14 +17,14 @@ var catalog: PieceCatalog
 var camera: ConstructionCamera
 var snap = SnapManager.new()
 var history: UndoRedo = UndoRedo.new()
-var pieces: Array[TrackPiece] = []
-var selection: Array[TrackPiece] = []
-var selected: TrackPiece
+var pieces: Array[BuildingPiece] = []
+var selection: Array[BuildingPiece] = []
+var selected: BuildingPiece
 var chosen: PieceDefinition
-var ghost: TrackPiece
-var ghosts: Array[TrackPiece] = []
-var moving: TrackPiece
-var moving_group: Array[TrackPiece] = []
+var ghost: BuildingPiece
+var ghosts: Array[BuildingPiece] = []
+var moving: BuildingPiece
+var moving_group: Array[BuildingPiece] = []
 var preview_items: Array[Dictionary] = []
 var preview_ports: Array[Dictionary] = []
 var operation: String = ""
@@ -52,7 +52,7 @@ var dirty: bool = false
 var cursor_position: Vector2
 var pointer_down: bool = false
 var press_position: Vector2
-var press_piece: TrackPiece
+var press_piece: BuildingPiece
 var additive: bool = false
 var box_active: bool = false
 var direct_drag: bool = false
@@ -77,6 +77,11 @@ func snapshot(include_environment: bool = false) -> Array:
 		if include_environment or not piece.definition.authoring_only: result.append(piece.serialize())
 	return result
 
+func find_piece(uid: String) -> BuildingPiece:
+	for piece in pieces:
+		if piece.instance_id == uid: return piece
+	return null
+
 func restore(data: Array) -> void:
 	cancel()
 	snap.sample_indices.clear()
@@ -86,16 +91,15 @@ func restore(data: Array) -> void:
 		piece.queue_free()
 	pieces.clear()
 	for item in data:
-		var id: String = "environment_scene:" + item.scene if item.has("scene") else ("environment:" + item.asset if item.has("asset") else item.piece)
-		var definition=catalog.get_piece(id)
+		var definition=catalog.get_piece(item.piece)
 		if not definition or (definition.authoring_only and not authoring): continue
 		spawn(definition,Transform3D(Basis(Vector3.UP,int(item.rotation)*PI/2),Vector3(item.position[0],item.position[1],item.position[2])),item.uid,item.get("config",{}))
 	refresh_connectors()
 	changed.emit()
 
-func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = "", config: Dictionary = {}) -> TrackPiece:
+func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = "", config: Dictionary = {}) -> BuildingPiece:
 	if definition.authoring_only and not authoring: return null
-	var piece=PIECE_SCENE.instantiate() as TrackPiece
+	var piece=PIECE_SCENE.instantiate() as BuildingPiece
 	piece.instance_id=uid if not uid.is_empty() else "piece-%d-%d" % [Time.get_ticks_usec(),next_uid]
 	next_uid+=1
 	add_child(piece)
@@ -129,7 +133,7 @@ func choose_extension(definition: PieceDefinition, target: Dictionary) -> void:
 func make_ghost() -> void:
 	preview_ports=snap.boundary_sources(preview_items)
 	for item in preview_items:
-		var preview=PIECE_SCENE.instantiate() as TrackPiece
+		var preview=PIECE_SCENE.instantiate() as BuildingPiece
 		add_child(preview)
 		preview.setup(item.definition,true,item.config)
 		preview.visible=false
@@ -137,12 +141,12 @@ func make_ghost() -> void:
 	ghost=ghosts[0]
 	refresh_connectors()
 
-func select(piece: TrackPiece) -> void:
-	var values: Array[TrackPiece] = []
+func select(piece: BuildingPiece) -> void:
+	var values: Array[BuildingPiece] = []
 	if ConstructionSelection.editable(piece) and (authoring or not piece.definition.authoring_only): values.append(piece)
 	set_selection(values)
 
-func set_selection(values: Array[TrackPiece]) -> void:
+func set_selection(values: Array[BuildingPiece]) -> void:
 	for piece in selection:
 		if is_instance_valid(piece): piece.tint(Color.WHITE,false)
 	selection.clear()
@@ -153,7 +157,7 @@ func set_selection(values: Array[TrackPiece]) -> void:
 	selection_changed.emit(selected)
 	refresh_connectors()
 
-func select_connected(piece: TrackPiece) -> void:
+func select_connected(piece: BuildingPiece) -> void:
 	set_selection(ConstructionSelection.connected(piece,pieces,snap))
 	show_status("%d connected pieces · drag to move the assembly" % selection.size())
 
@@ -341,7 +345,7 @@ func commit() -> void:
 		if not rule_error.is_empty(): show_status(rule_error); return
 	var before=snapshot(true)
 	var mode=operation
-	var edited: Array[TrackPiece] = []
+	var edited: Array[BuildingPiece] = []
 	for index in preview_items.size():
 		var item: Dictionary=preview_items[index]
 		var placement: Transform3D=proposed*item.local
@@ -509,7 +513,7 @@ func restore_history(data: Array) -> void:
 	for item in data:
 		if item.uid not in previous: ids.append(item.uid)
 	restore(data)
-	var restored: Array[TrackPiece] = []
+	var restored: Array[BuildingPiece] = []
 	for piece in pieces:
 		if piece.instance_id in ids: restored.append(piece)
 	set_selection(restored)
@@ -523,14 +527,14 @@ func frame_pieces(values: Array) -> void:
 	for piece in values: bounds=bounds.merge(piece.transform*piece.definition.bounds)
 	camera.frame_point(bounds.get_center(),maxf(2,bounds.size.length()*0.65))
 
-func pick_piece(screen: Vector2) -> TrackPiece:
+func pick_piece(screen: Vector2) -> BuildingPiece:
 	var origin=camera.project_ray_origin(screen)
 	# Layer 4 supplies pick-only shapes on moving mechanism visuals.
 	var query=PhysicsRayQueryParameters3D.create(origin,origin+camera.project_ray_normal(screen)*250,5)
 	var hit=get_world_3d().direct_space_state.intersect_ray(query)
 	var node=hit.get("collider") as Node
-	while node and not node is TrackPiece: node=node.get_parent()
-	return node as TrackPiece
+	while node and not node is BuildingPiece: node=node.get_parent()
+	return node as BuildingPiece
 
 func extension_at(screen: Vector2) -> Dictionary:
 	var best=7.0

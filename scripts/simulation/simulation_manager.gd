@@ -24,8 +24,8 @@ var paused_angular: Vector3
 
 func start() -> bool:
 	reset()
-	var starts: Array[TrackPiece] = []
-	var finishes: Array[TrackPiece] = []
+	var starts: Array[BuildingPiece] = []
+	var finishes: Array[BuildingPiece] = []
 	for piece in build.pieces:
 		if piece.definition.behavior == "start": starts.append(piece)
 		if piece.definition.behavior == "finish": finishes.append(piece)
@@ -78,7 +78,7 @@ func start() -> bool:
 	return true
 
 func spawn_marble(release: Dictionary) -> void:
-	var start_piece: TrackPiece = release.piece
+	var start_piece: BuildingPiece = release.piece
 	var body: RigidBody3D = preload("res://scenes/marble.tscn").instantiate()
 	add_child(body)
 	body.position = start_piece.transform * start_piece.definition.spawn_position
@@ -90,7 +90,7 @@ func spawn_marble(release: Dictionary) -> void:
 	marbles.append(body)
 	if not is_instance_valid(marble): marble = body
 
-func _mechanism_event(event: String, body: RigidBody3D, piece: TrackPiece) -> void:
+func _mechanism_event(event: String, body: RigidBody3D, piece: BuildingPiece) -> void:
 	if state != State.RUNNING: return
 	objectives.activated(event, body, piece)
 	objective_progress.emit()

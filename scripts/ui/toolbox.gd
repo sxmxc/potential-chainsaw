@@ -1,6 +1,7 @@
 extends PanelContainer
 signal piece_chosen(definition: PieceDefinition)
 signal collapsed
+signal action_requested(action: String)
 const CARD=preload("res://scenes/ui/widgets/piece_card.tscn")
 var build: BuildManager
 var catalog: PieceCatalog
@@ -17,6 +18,7 @@ func configure(data: PieceCatalog, manager: BuildManager = null) -> void:
 	%Category.get_popup().transparent_bg=true
 	%Category.get_popup().transparent=true
 	%Collapse.pressed.connect(func():collapsed.emit())
+	%AddScenery.pressed.connect(func(): action_requested.emit("place_scenery"))
 	get_viewport().size_changed.connect(fit_content)
 	if get_parent() is Control: get_parent().resized.connect(fit_content)
 	%Category.item_selected.connect(func(_index):refresh())
@@ -66,8 +68,17 @@ func refresh() -> void:
 	size_flags_vertical = Control.SIZE_SHRINK_BEGIN if small_inventory else Control.SIZE_EXPAND_FILL
 	%Search.visible=not small_inventory
 	%Category.visible=not small_inventory
+	%AddScenery.visible=build != null and build.authoring
 	fit_content.call_deferred()
 	restore_scroll.call_deferred(refresh_generation)
+
+func place_scene(path: String) -> void:
+	if not build or not build.authoring or not build.enabled: return
+	var definition := catalog.get_piece("environment_scene:" + path)
+	if not definition:
+		build.show_status("Could not load this scenery scene")
+		return
+	piece_chosen.emit(definition)
 
 func restore_scroll(generation: int) -> void:
 	# Let the container and scrollbar settle before restoring a previous filter.

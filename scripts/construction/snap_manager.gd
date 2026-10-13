@@ -179,7 +179,7 @@ func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -
 	if hit.is_empty(): return true
 	# End caps/rails can intersect the last part of the ray to their own port.
 	var node := hit.collider as Node
-	while node and not node is TrackPiece: node=node.get_parent()
+	while node and not node is BuildingPiece: node=node.get_parent()
 	return node==target.piece and (hit.position as Vector3).distance_to(target.point)<0.65
 
 func world_to_grid(world: Vector3) -> Vector3i:
@@ -220,7 +220,7 @@ func connector_occupied(point: Vector3, normal: Vector3, connector: TrackConnect
 
 func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array, ignore: Node = null) -> String:
 	var box = placement * definition.bounds
-	if PuzzleEnvironment.blocked(definition, placement, environment_solids): return "Blocked by the environment"
+	if intersects_solids(definition, placement, environment_solids): return "Blocked by the environment"
 	# A reusable scene may have authored foundations below its placement origin.
 	var bottom: float = placement.origin.y if definition.authoring_only else box.position.y
 	if box.position.x < -boundary or box.end.x > boundary or box.position.z < -boundary or box.end.z > boundary or bottom < -0.01 or box.end.y > 32:
@@ -236,6 +236,18 @@ func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array
 func permits_overlap(a: PieceDefinition, b: PieceDefinition) -> bool:
 	return a.authoring_only and b.authoring_only and (a.overlap_with.has(b.id) or b.overlap_with.has(a.id))
 
+static func intersects_solids(definition: PieceDefinition, placement: Transform3D, solids: Array) -> bool:
+	var bounds: AABB = placement * definition.bounds
+	for solid: AABB in solids:
+		if not bounds.grow(-0.001).intersects(solid): continue
+		if definition.reserve_bounds or definition.surface_cells.is_empty(): return true
+		# Existing catalog samples represent occupied 10 cm cells. Test their
+		# volumes, not just centres: even a thin partition must block placement.
+		for point in definition.surface_cells:
+			var cell := placement * AABB(point - Vector3.ONE * 0.05, Vector3.ONE * 0.1)
+			if cell.grow(-0.001).intersects(solid): return true
+	return false
+
 func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: Transform3D) -> bool:
 	# A moving mechanism reserves its complete swept volume, including empty gaps.
 	if not a.collision_solids.is_empty():
@@ -246,7 +258,7 @@ func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: 
 				for other: AABB in solids:
 					if (bt * solid).grow(-0.001).intersects(other): return true
 			return false
-		return PuzzleEnvironment.blocked(b, bt, solids)
+		return intersects_solids(b, bt, solids)
 	if not b.collision_solids.is_empty(): return solid_overlap(b, bt, a, at)
 	if a.reserve_bounds or b.reserve_bounds:
 		return (at*a.bounds).grow(-0.015).intersects((bt*b.bounds).grow(-0.015))

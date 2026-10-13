@@ -116,7 +116,7 @@ func test_ui_workflows() -> void:
 	game.authoring.open()
 	await settle()
 	assert_true(game.authoring is PanelContainer and game.sandbox.build.enabled,"Authoring drawer keeps the construction world available")
-	for tab in 7:
+	for tab in game.authoring.get_node("%Tabs").get_tab_count():
 		game.authoring.get_node("%Tabs").current_tab=tab
 		await settle()
 		assert_true(game.authoring.size.x<520,"Authoring page %d stays within the drawer" % tab)

@@ -42,59 +42,6 @@ theme_type_variation = &"MutedLabel"
 text = "Piece properties"
 autowrap_mode = 3
 
-[node name="Actions" type="HBoxContainer" parent="Scroll/Contents" unique_id=1384570987]
-layout_mode = 2
-
-[node name="Move" type="Button" parent="Scroll/Contents/Actions" unique_id=2044015536]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Move"
-
-[node name="Rotate" type="Button" parent="Scroll/Contents/Actions" unique_id=263542338]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Rotate"
-
-[node name="Duplicate" type="Button" parent="Scroll/Contents/Actions" unique_id=2010360153]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Duplicate"
-
-[node name="Lower" type="Button" parent="Scroll/Contents/Actions" unique_id=832779949]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Lower selection 0.5 m; hold Shift for 0.125 m"
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Lower"
-
-[node name="Raise" type="Button" parent="Scroll/Contents/Actions" unique_id=162146298]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Raise selection 0.5 m; hold Shift for 0.125 m"
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Raise"
-
-[node name="Delete" type="Button" parent="Scroll/Contents/Actions" unique_id=228917619]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_type_variation = &"ToolbarButton"
-text = "Delete"
-
 [node name="SpeedLabel" type="Label" parent="Scroll/Contents" unique_id=1341065408]
 unique_name_in_owner = true
 layout_mode = 2
@@ -179,13 +126,6 @@ popup/item_0/id = 0
 popup/item_1/text = "Double"
 popup/item_1/id = 1
 
-[node name="Description" type="Label" parent="Scroll/Contents" unique_id=667827958]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Drag to move"
-autowrap_mode = 3
-
 [node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=1377873254]
 unique_name_in_owner = true
 layout_mode = 2
@@ -201,3 +141,157 @@ text = "Mechanism links ▾"
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("LinkSettings")
+
+[node name="LinkHelp" type="Label" parent="Scroll/Contents/LinkSettings"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "When this piece emits an event:"
+
+[node name="LinkEvent" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+fit_to_longest_item = false
+clip_text = true
+
+[node name="TargetLabel" type="Label" parent="Scroll/Contents/LinkSettings"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Target piece"
+
+[node name="LinkTarget" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+fit_to_longest_item = false
+clip_text = true
+
+[node name="LinkAction" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+fit_to_longest_item = false
+clip_text = true
+
+[node name="AddLink" type="Button" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Connect event"
+
+[node name="LinkList" type="ItemList" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="RemoveLink" type="Button" parent="Scroll/Contents/LinkSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Remove selected link"
+
+[node name="PermissionsToggle" type="Button" parent="Scroll/Contents"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Player permissions ▾"
+
+[node name="Permissions" type="VBoxContainer" parent="Scroll/Contents" unique_id=1894095581]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectionSummary" type="Label" parent="Scroll/Contents/Permissions" unique_id=1220504273]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Player permissions"
+autowrap_mode = 3
+
+[node name="Preset" type="OptionButton" parent="Scroll/Contents/Permissions" unique_id=147602235]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+selected = 0
+fit_to_longest_item = false
+item_count = 5
+popup/item_0/text = "Fixed"
+popup/item_0/id = 0
+popup/item_1/text = "Move Only"
+popup/item_1/id = 1
+popup/item_2/text = "Rotate Only"
+popup/item_2/id = 2
+popup/item_3/text = "Configure Only"
+popup/item_3/id = 3
+popup/item_4/text = "Fully Editable"
+popup/item_4/id = 4
+
+[node name="PermitMove" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1727848063]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Move"
+
+[node name="PermitRotate" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=536535483]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Rotate"
+
+[node name="PermitConfigure" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1812365343]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Configure"
+
+[node name="PermitRemove" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1900433264]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove"
+
+[node name="PermitDuplicate" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=413555304]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Duplicate"
+
+[node name="RestrictSetting" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1739899086]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Allow configuration of only the setting chosen below."
+text = "Limit one setting"
+
+[node name="ConfigKeys" type="OptionButton" parent="Scroll/Contents/Permissions" unique_id=2087016980]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+fit_to_longest_item = false
+
+[node name="SettingMinLabel" type="Label" parent="Scroll/Contents/Permissions" unique_id=1296357318]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Minimum allowed value"
+autowrap_mode = 3
+
+[node name="SettingMin" type="SpinBox" parent="Scroll/Contents/Permissions" unique_id=1838434882]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -30.0
+step = 0.1
+
+[node name="SettingMaxLabel" type="Label" parent="Scroll/Contents/Permissions" unique_id=1660143117]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Maximum allowed value"
+autowrap_mode = 3
+
+[node name="SettingMax" type="SpinBox" parent="Scroll/Contents/Permissions" unique_id=1249445637]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -30.0
+step = 0.1
+
+[node name="ApplyPermissions" type="Button" parent="Scroll/Contents/Permissions" unique_id=133982662]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Apply permissions"
+clip_text = true

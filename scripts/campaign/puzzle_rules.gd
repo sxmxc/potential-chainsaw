@@ -40,7 +40,7 @@ func validate(construction: Array) -> String:
 			var value = item.get("config", {}).get(key)
 			if value != null and (not (value is float or value is int) or float(value) < float(limits[0]) or float(value) > float(limits[1])): return "Mechanism setting exceeds puzzle limits: " + key
 		var placement := Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), Vector3(item.position[0], item.position[1], item.position[2]))
-		if PuzzleEnvironment.blocked(definition, placement, environment_solids): return "Blocked by the environment"
+		if SnapManager.intersects_solids(definition, placement, environment_solids): return "Blocked by the environment"
 		if initial.has(item.uid):
 			var original: Dictionary = initial[item.uid]
 			if item.piece != original.piece: return "Authored pieces cannot be replaced"

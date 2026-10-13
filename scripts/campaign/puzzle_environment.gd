@@ -11,8 +11,38 @@ static func scene_path(asset: String) -> String:
 static func instance_scene(item: Dictionary) -> String:
 	return str(item.scene) if item.get("scene") is String else scene_path(str(item.get("asset", "")))
 
-# Project legacy references into the same placed-object records without rewriting them.
-static func construction_instances(data: Dictionary) -> Array:
+# Saved environment records are decoded at the puzzle boundary, not by construction.
+static func construction(data: Dictionary) -> Array:
+	var result: Array = []
+	for item: Dictionary in _placements(data):
+		var id: String = "environment_scene:" + item.scene if item.has("scene") else "environment:" + item.asset
+		result.append({"uid": item.uid, "piece": id, "position": item.position.duplicate(), "rotation": item.rotation, "config": {}})
+	return result
+
+static func capture(data: Dictionary, objects: Array[BuildingPiece]) -> void:
+	data.pieces = []
+	data.environment_instances = []
+	data.erase("environment")
+	data.erase("environment_placement")
+	for object in objects:
+		var record := object.serialize()
+		if not object.definition.authoring_only:
+			data.pieces.append(record)
+			continue
+		var item := {"uid": record.uid, "position": record.position, "rotation": record.rotation}
+		if record.piece.begins_with("environment_scene:"):
+			item.scene = record.piece.trim_prefix("environment_scene:")
+		else:
+			item.asset = record.piece.trim_prefix("environment:")
+		if item.uid == LEGACY_UID:
+			data.environment = item.scene
+			if not transform_for(item).is_equal_approx(Transform3D.IDENTITY):
+				data.environment_placement = {"position": item.position, "rotation": item.rotation}
+		else:
+			data.environment_instances.append(item)
+	if not data.environment_instances.is_empty(): data.version = 2
+
+static func _placements(data: Dictionary) -> Array:
 	var instances: Array = data.get("environment_instances", []).duplicate(true)
 	var path := str(data.get("environment", ""))
 	if not path.is_empty():
@@ -35,7 +65,7 @@ static func inspect_definition(data: Dictionary) -> Dictionary:
 		result.errors.append("Invalid environment placement")
 		return result
 	var seen: Array[String] = []
-	for item in construction_instances(data):
+	for item in _placements(data):
 		if not item is Dictionary or instance_scene(item).is_empty():
 			result.errors.append("Unknown environment asset")
 			continue
@@ -46,7 +76,12 @@ static func inspect_definition(data: Dictionary) -> Dictionary:
 			result.errors.append("Invalid environment instance")
 			continue
 		seen.append(uid)
-		var asset := inspect(instance_scene(item))
+		var asset: Dictionary
+		if item.has("scene"):
+			asset = inspect(item.scene)
+		else:
+			var definition := PieceCatalog.REGISTRY.load_entry(StringName("environment:" + item.asset)) as PieceDefinition
+			asset = {"solids": definition.collision_solids, "errors": []}
 		result.errors.append_array(asset.errors)
 		for solid: AABB in asset.solids: result.solids.append(transform_for(item) * solid)
 	return result
@@ -54,8 +89,15 @@ static func inspect_definition(data: Dictionary) -> Dictionary:
 static func instantiate_definition(data: Dictionary) -> Node3D:
 	var root := Node3D.new()
 	root.name = "Environment"
-	for item in construction_instances(data):
-		var object: Node3D = ResourceLoader.load(instance_scene(item), "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP).instantiate()
+	for item in _placements(data):
+		var object: Node3D
+		if item.has("scene"):
+			object = ResourceLoader.load(item.scene, "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP).instantiate()
+		else:
+			var piece: BuildingPiece = load("res://scenes/building_piece.tscn").instantiate()
+			piece.instance_id = item.uid
+			piece.setup(PieceCatalog.REGISTRY.load_entry(StringName("environment:" + item.asset)))
+			object = piece
 		object.name = str(data.environment).get_file().get_basename() if item.uid == LEGACY_UID and data.has("environment") else item.uid
 		object.set_meta("environment_uid", item.uid)
 		object.transform = transform_for(item) * object.transform
@@ -68,7 +110,9 @@ static func definition_signature(data: Dictionary) -> String:
 	for item in data.get("environment_instances", []):
 		if item is Dictionary and not scene_path(str(item.get("asset", ""))).is_empty() and item.asset not in assets: assets.append(item.asset)
 	assets.sort()
-	for asset in assets: contents += asset + signature(scene_path(asset))
+	for asset in assets:
+		var definition := PieceCatalog.REGISTRY.load_entry(StringName("environment:" + asset)) as PieceDefinition
+		contents += asset + signature(definition.resource_path)
 	var scenes: Array[String] = []
 	for item in data.get("environment_instances", []):
 		if item is Dictionary and item.get("scene") is String and item.scene not in scenes: scenes.append(item.scene)
@@ -88,6 +132,8 @@ static func freeze(data: Dictionary, path: String) -> Error:
 
 static func _own(node: Node, root: Node) -> void:
 	if node != root: node.owner = root
+	# Published scenery keeps native geometry and collision, not construction behavior.
+	if node is BuildingPiece: node.set_script(null)
 	if node is Node3D: node.scene_file_path = ""
 	for child in node.get_children(): _own(child, root)
 static func inspect(path: String) -> Dictionary:
@@ -110,14 +156,14 @@ static func _collect(node: Node, parent_transform: Transform3D, result: Dictiona
 	var placement := parent_transform
 	if node is Node3D: placement *= node.transform
 	if node is CollisionShape3D and not node.disabled:
-		if not node.get_parent() is StaticBody3D or not node.shape is BoxShape3D:
-			result.errors.append("Environment collision must use static BoxShape3D solids")
+		if not node.get_parent() is StaticBody3D or not (node.shape is BoxShape3D or node.shape is ConcavePolygonShape3D):
+			result.errors.append("Scenery collision must use static boxes or triangle meshes")
 		elif node.get_parent().collision_layer != 1 or node.get_parent().collision_mask != 2:
 			result.errors.append("Environment bodies must use layer 1 and mask 2")
 		elif not placement.basis.is_equal_approx(Basis.IDENTITY) and not _axis_aligned(placement.basis):
 			result.errors.append("Environment solids must use quarter turns without scale; resize the box shape")
 		else:
-			result.solids.append(placement * AABB(-node.shape.size / 2, node.shape.size))
+			result.solids.append(placement * node.shape.get_debug_mesh().get_aabb())
 	for child in node.get_children(): _collect(child, placement, result)
 
 static func _axis_aligned(basis: Basis) -> bool:
@@ -125,18 +171,6 @@ static func _axis_aligned(basis: Basis) -> bool:
 		var absolute: Vector3 = axis.abs()
 		if not (absolute.is_equal_approx(Vector3.RIGHT) or absolute.is_equal_approx(Vector3.UP) or absolute.is_equal_approx(Vector3.BACK)): return false
 	return true
-
-static func blocked(definition: PieceDefinition, placement: Transform3D, solids: Array) -> bool:
-	var bounds: AABB = placement * definition.bounds
-	for solid: AABB in solids:
-		if not bounds.grow(-0.001).intersects(solid): continue
-		if definition.reserve_bounds or definition.surface_cells.is_empty(): return true
-		# Existing catalog samples represent occupied 10 cm cells. Test their
-		# volumes, not just centres: even a thin partition must block placement.
-		for point in definition.surface_cells:
-			var cell := placement * AABB(point - Vector3.ONE * 0.05, Vector3.ONE * 0.1)
-			if cell.grow(-0.001).intersects(solid): return true
-	return false
 
 static func signature(path: String) -> String:
 	if path.is_empty(): return ""

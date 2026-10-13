@@ -24,7 +24,7 @@ func test_reference_solution(index = use_parameters([0,1,2,3,4,5,6,7,8,9])) -> v
 	var build: BuildManager = game.sandbox.build
 	session.player(data, true)
 	for record in data.solution:
-		var existing: TrackPiece
+		var existing: BuildingPiece
 		for piece in build.pieces:
 			if piece.instance_id == record.uid: existing = piece; break
 		if existing:

@@ -7,7 +7,7 @@ const NUMBER = preload("res://scenes/ui/widgets/mechanism_number.tscn")
 const CAPTIONS={"power":"Air power","range":"Range","angular_speed":"Paddle speed","delay":"Open after","auto_close":"Close after","strength":"Added speed","angle":"Launch angle","quantity":"Marbles","interval":"Release interval","start_delay":"First release"}
 const UNITS={"power":"N","range":"m","angular_speed":"rad/s","delay":"s","auto_close":"s","strength":"m/s","angle":"°","interval":"s","start_delay":"s"}
 var build: BuildManager
-var displayed_piece: TrackPiece
+var displayed_piece: BuildingPiece
 var fields: Dictionary = {}
 
 func configure(manager: BuildManager) -> void:
@@ -20,7 +20,7 @@ func configure(manager: BuildManager) -> void:
 func refresh_current() -> void:
 	refresh(build.selected)
 
-func refresh(piece: TrackPiece) -> void:
+func refresh(piece: BuildingPiece) -> void:
 	if piece and piece == displayed_piece and build.selection.size() == 1:
 		for key in fields:
 			var input = fields[key]

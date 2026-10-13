@@ -17,4 +17,3 @@ behavior = "decoration"
 authoring_only = true
 overlap_with = Array[StringName]([&"environment:partition"])
 collision_solids = Array[AABB]([AABB(-0.25, 0, -0.25, 0.5, 2.4, 0.5)])
-collision_enabled = false

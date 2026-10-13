@@ -210,7 +210,7 @@ func test_construction() -> void:
 	game.new_track()
 	assert_true(not game.qa_test(),"Missing release/finish fails without leaving build mode")
 
-func check_connected_chain(pieces: Array[TrackPiece], title: String) -> void:
+func check_connected_chain(pieces: Array[BuildingPiece], title: String) -> void:
 	for i in range(0,pieces.size()-1):
 		var a=pieces[i]
 		var b=pieces[i+1]

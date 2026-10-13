@@ -17,6 +17,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%EditToolbar.configure(build)
 	%Toolbox.configure(build.catalog,build)
 	%Toolbox.piece_chosen.connect(build.choose)
+	%Toolbox.action_requested.connect(func(action): action_requested.emit(action))
 	%Toolbox.collapsed.connect(func():library_open=false; refresh())
 	%DismissGuidance.pressed.connect(func():
 		if session: guidance_done[session.puzzle.get("id","")]=true
@@ -40,6 +41,8 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 func configure_session(value: PuzzleSession) -> void:
 	session=value
 	%FileToolbar.session=value
+	%Inspector.session=value
+	session.mode_changed.connect(func(): %Inspector.refresh(build.selected))
 	simulation.objective_progress.connect(func():%FileToolbar.refresh())
 	refresh()
 
@@ -63,7 +66,7 @@ func refresh() -> void:
 		%Status.theme_type_variation=&"MutedLabel"
 	%Bottom.visible=not %Status.text.is_empty()
 	if build.chosen: %Bottom.hide()
-	%Inspector.visible=build.selection.size()==1 and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
+	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
 	if session and session.game.authoring and session.game.authoring.visible: %Inspector.hide()
 	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()

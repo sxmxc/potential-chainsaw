@@ -121,10 +121,10 @@ func test_environment_physically_blocks_marble_and_keeps_open_space() -> void:
 	var straight := game.catalog.get_piece("straight") as PieceDefinition
 	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)), []), "", "Space below canopy is usable")
 	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 2, 1)), []), "Blocked by the environment")
-	var lift = TrackPiece.ElevatorGeometry.configured(game.catalog.get_piece("bucket-elevator"), {"elevator_height": 4, "elevator_speed": 0.8})
+	var lift = BuildingPiece.ElevatorGeometry.configured(game.catalog.get_piece("bucket-elevator"), {"elevator_height": 4, "elevator_speed": 0.8})
 	assert_eq(game.sandbox.build.snap.validate(lift, Transform3D.IDENTITY, []), "Blocked by the environment", "A lift cannot grow through canopy")
 
-func place_object(definition: PieceDefinition, point: Vector3) -> TrackPiece:
+func place_object(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
 	var build: BuildManager = game.sandbox.build
 	build.choose(definition)
 	if not build.ghost: return null
@@ -157,7 +157,7 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	assert_eq(saved.environment_instances[0].position, [7.0, 0.5, 1.0])
 	assert_eq(saved.environment_instances[0].rotation, 1.0)
 	session.editor(saved)
-	var restored: TrackPiece = build.pieces.back()
+	var restored: BuildingPiece = build.pieces.back()
 	assert_eq(restored.instance_id, uid)
 	assert_almost_eq(restored.position, Vector3(7, 0.5, 1), Vector3.ONE * 0.001)
 	assert_eq(restored.bodies[0].collision_layer, 1)
@@ -169,7 +169,9 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	assert_null(build.ghost)
 	assert_null(build.spawn(game.catalog.get_piece("environment:partition"), Transform3D.IDENTITY))
 	assert_eq(build.pieces.size(), saved.pieces.size(), "Player construction excludes environment inventory")
-	assert_eq(session.environment_node.get_node(NodePath(uid + "/Body")).collision_layer, 1)
+	var fixed_bodies := session.environment_node.get_node(NodePath(uid)).find_children("*", "StaticBody3D", true, false)
+	assert_false(fixed_bodies.is_empty(), "Player scenery retains generated collision")
+	assert_true(fixed_bodies.all(func(body): return body.collision_layer == 1 and body.collision_mask == 2))
 	var invalid_inventory := saved.duplicate(true)
 	invalid_inventory.inventory["environment:partition"] = 1
 	assert_true(session.store.validate(invalid_inventory).has("Invalid inventory: environment:partition"), "Registry scenery cannot enter player stock")
@@ -260,7 +262,9 @@ func test_native_environment_snapshot_is_self_contained() -> void:
 	assert_eq(ResourceLoader.get_dependencies(path).size(), 0, "Published snapshot embeds mesh, texture and collision resources")
 	data.environment_snapshot = path
 	game.puzzle_session.player(data)
-	assert_not_null(game.puzzle_session.environment_node.get_node("env-test/Body/Solid"))
+	var solids: Array[Node] = game.puzzle_session.environment_node.get_node("env-test").find_children("*", "CollisionShape3D", true, false)
+	assert_false(solids.is_empty(), "Published scenery preserves native collision")
+	assert_true(solids.all(func(solid): return solid.shape is ConcavePolygonShape3D), "Published collision comes from the same mesh pipeline as other pieces")
 	assert_eq(game.sandbox.build.snap.environment_solids.size(), PuzzleEnvironment.inspect_definition(data).solids.size())
 
 func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
@@ -291,7 +295,7 @@ func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
 	assert_eq(session.capture().environment_instances.size(), 1, "Wall is placed through normal world input")
 	if session.capture().environment_instances.is_empty(): return
 	build.cancel()
-	var wall: TrackPiece = build.pieces.back()
+	var wall: BuildingPiece = build.pieces.back()
 	var initial := wall.position
 	var uid := wall.instance_id
 	for frame in 2: await get_tree().physics_frame
@@ -330,7 +334,7 @@ func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
 	session.editor(saved)
 	assert_eq(session.capture().environment_instances.size(), saved.environment_instances.size())
 	for record in saved.environment_instances:
-		var restored: Array[TrackPiece] = build.pieces.filter(func(piece): return piece.instance_id == record.uid)
+		var restored: Array[BuildingPiece] = build.pieces.filter(func(piece): return piece.instance_id == record.uid)
 		assert_eq(restored.size(), 1, "The saved instance ID survives reopening")
 		if restored.size() == 1:
 			assert_eq(restored[0].transform, PuzzleEnvironment.transform_for(record), "Saved placement survives reopening")
@@ -399,7 +403,7 @@ func test_scenery_surface_placement_through_world_input(example = use_parameters
 	await get_tree().process_frame
 	assert_eq(build.pieces.size(), 2, "Normal click commits the aligned object")
 	if build.pieces.size() != 2: return
-	var placed: TrackPiece = build.pieces.back()
+	var placed: BuildingPiece = build.pieces.back()
 	assert_eq(placed.transform, preview, "Placement matches the preview")
 	if not build.snap.permits_overlap(target.definition, placed.definition):
 		assert_false(build.snap.solid_overlap(target.definition, target.transform, placed.definition, placed.transform), "Collision solids do not overlap")
@@ -438,7 +442,7 @@ func test_column_overlaps_wall_corner_through_normal_placement() -> void:
 	build.cancel()
 	assert_eq(build.pieces.size(), 2, "Perpendicular walls form the starting corner")
 	if build.pieces.size() != 2: return
-	var second: TrackPiece = build.pieces.back()
+	var second: BuildingPiece = build.pieces.back()
 	build.camera.frame_point(Vector3(6, 1.2, 1), 6)
 	await wait_seconds(1.5)
 	var sender := GutInputSender.new(Input)
@@ -458,7 +462,7 @@ func test_column_overlaps_wall_corner_through_normal_placement() -> void:
 	await get_tree().process_frame
 	assert_eq(build.pieces.size(), 3, "Normal placement commits the intersecting column")
 	if build.pieces.size() != 3: return
-	var placed: TrackPiece = build.pieces.back()
+	var placed: BuildingPiece = build.pieces.back()
 	assert_eq(placed.transform, preview)
 	var column_box: AABB = placed.transform * column.collision_solids[0]
 	for target in [first, second]:
@@ -500,10 +504,10 @@ func test_legacy_scene_is_selected_dragged_and_persisted_by_shared_construction(
 	session.editor(data)
 	assert_null(session.environment_node, "The authored scene is inside shared construction")
 	assert_eq(build.snap.environment_solids.size(), 0, "No duplicate fixed collision remains")
-	var composites: Array[TrackPiece] = build.pieces.filter(func(piece): return piece.instance_id == PuzzleEnvironment.LEGACY_UID)
+	var composites: Array[BuildingPiece] = build.pieces.filter(func(piece): return piece.instance_id == PuzzleEnvironment.LEGACY_UID)
 	assert_eq(composites.size(), 1)
 	if composites.size() != 1: return
-	var composite: TrackPiece = composites[0]
+	var composite: BuildingPiece = composites[0]
 	assert_eq(composite.definition.collision_solids.size(), 6)
 	assert_gt(composite.meshes.size(), 0, "Composite meshes participate in selection highlighting")
 	assert_eq(session.store.fingerprint(session.capture()), data.validation.fingerprint, "Opening an existing scene preserves proof")

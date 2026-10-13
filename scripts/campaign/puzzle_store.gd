@@ -68,9 +68,9 @@ func validate(data: Dictionary) -> Array[String]:
 		if not definition: errors.append("Unknown piece: " + piece.piece)
 		elif definition.behavior == "start": starts += 1
 		if definition:
-			if definition.behavior == "elevator": definition = TrackPiece.ElevatorGeometry.configured(definition, piece.get("config", {}))
-			elif definition.behavior == "resizable_support": definition = TrackPiece.SupportGeometry.configured(definition, piece.get("config", {}))
-			if PuzzleEnvironment.blocked(definition, Transform3D(Basis(Vector3.UP, int(piece.rotation) * PI / 2), Vector3(piece.position[0], piece.position[1], piece.position[2])), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
+			if definition.behavior == "elevator": definition = BuildingPiece.ElevatorGeometry.configured(definition, piece.get("config", {}))
+			elif definition.behavior == "resizable_support": definition = BuildingPiece.SupportGeometry.configured(definition, piece.get("config", {}))
+			if SnapManager.intersects_solids(definition, Transform3D(Basis(Vector3.UP, int(piece.rotation) * PI / 2), Vector3(piece.position[0], piece.position[1], piece.position[2])), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
 	if starts == 0: errors.append("Place a marble release")
 	if data.get("objectives", []).is_empty(): errors.append("Add a completion objective")
 	for objective in data.get("objectives", []):

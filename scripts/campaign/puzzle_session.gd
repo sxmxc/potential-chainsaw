@@ -24,7 +24,6 @@ func configure(owner_game: Node) -> void:
 	game = owner_game
 	store = PuzzleStore.new(game.catalog)
 	game.sandbox.simulation.state_changed.connect(_result)
-	game.sandbox.build.changed.connect(func(): mode_changed.emit())
 	boundary_visual = MeshInstance3D.new()
 	boundary_visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	game.sandbox.add_child(boundary_visual)
@@ -39,7 +38,7 @@ func editor(data: Dictionary = {}) -> void:
 	game.sandbox.simulation.puzzle = {}
 	game.sandbox.build.dirty = false
 	reload_environment()
-	game.sandbox.load_construction(puzzle.pieces + PuzzleEnvironment.construction_instances(puzzle))
+	game.sandbox.load_construction(puzzle.pieces + PuzzleEnvironment.construction(puzzle))
 	game.track_name = puzzle.name
 	game.track_id = ""
 	game.enter_sandbox()
@@ -49,18 +48,7 @@ func editor(data: Dictionary = {}) -> void:
 
 func capture() -> Dictionary:
 	if mode == "editor":
-		puzzle.pieces = game.sandbox.build.snapshot()
-		var instances: Array = game.sandbox.build.snapshot(true).filter(func(item): return not item.has("piece"))
-		puzzle.erase("environment")
-		puzzle.erase("environment_placement")
-		puzzle.environment_instances = []
-		for item: Dictionary in instances:
-			if item.uid == PuzzleEnvironment.LEGACY_UID:
-				puzzle.environment = item.scene
-				if not PuzzleEnvironment.transform_for(item).is_equal_approx(Transform3D.IDENTITY):
-					puzzle.environment_placement = {"position": item.position.duplicate(), "rotation": item.rotation}
-			else: puzzle.environment_instances.append(item)
-		if not puzzle.environment_instances.is_empty(): puzzle.version = 2
+		PuzzleEnvironment.capture(puzzle, game.sandbox.build.pieces)
 		if puzzle.get("status") == "published" and store.fingerprint(puzzle) != opening_fingerprint:
 			puzzle.revision = opening_revision + 1
 			puzzle.status = "draft"
@@ -100,23 +88,6 @@ func sandbox() -> void:
 	boundary_visual.hide()
 	mode_changed.emit()
 
-func set_environment(path: String) -> bool:
-	if mode != "editor": return false
-	var build: BuildManager = game.sandbox.build
-	if not build.enabled: return false
-	var before := build.snapshot(true)
-	var construction: Array = before.filter(func(item): return item.uid != PuzzleEnvironment.LEGACY_UID)
-	if not path.is_empty():
-		var definition: PieceDefinition = game.catalog.get_piece("environment_scene:" + path)
-		if not definition: return false
-		var remaining: Array = build.pieces.filter(func(piece): return piece.instance_id != PuzzleEnvironment.LEGACY_UID)
-		var error := build.snap.validate(definition, Transform3D.IDENTITY, remaining)
-		if not error.is_empty(): build.show_status(error); return false
-		construction.append({"uid": PuzzleEnvironment.LEGACY_UID, "scene": path, "position": [0, 0, 0], "rotation": 0})
-	build.restore(construction)
-	build.record(before, "Change environment scene")
-	return true
-
 func reload_environment() -> bool:
 	game.sandbox.simulation.reset()
 	game.sandbox.build.cancel()
@@ -151,10 +122,9 @@ func reload_environment() -> bool:
 
 func test_player() -> bool:
 	if mode != "editor": return false
-	authored = capture()
-	var errors = store.validate(authored)
-	errors.append_array(MechanismLinks.validate(game.sandbox.build.pieces))
+	var errors := validate(false)
 	if not errors.is_empty(): game.show_message("\n".join(errors)); return false
+	authored = capture()
 	testing_fingerprint = store.fingerprint(authored)
 	player(authored, true)
 	return true
@@ -200,11 +170,20 @@ func save() -> bool:
 
 func publish() -> bool:
 	if mode != "editor": return false
-	var errors = MechanismLinks.validate(game.sandbox.build.pieces)
+	var errors := validate()
 	if not errors.is_empty(): game.show_message("\n".join(errors)); return false
 	if not store.publish(capture()): game.show_message(store.last_error); return false
 	game.sandbox.build.show_status("Published · available in Campaign")
 	return true
+
+func validate(require_solution: bool = true) -> Array[String]:
+	var data := capture()
+	var errors := store.validate(data)
+	errors.append_array(MechanismLinks.validate(game.sandbox.build.pieces))
+	var proof: Dictionary = data.get("validation", {})
+	if require_solution and (data.get("solution", []).is_empty() or not proof.get("physics_success", false) or proof.get("fingerprint", "") != store.fingerprint(data)):
+		errors.append("This revision needs a successful Test as Player solution")
+	return errors
 
 func set_permissions(values: Dictionary) -> void:
 	if mode != "editor": return

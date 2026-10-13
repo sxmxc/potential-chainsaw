@@ -1,7 +1,5 @@
 [gd_scene format=3 uid="uid://816wp88y5yxp"]
 
-[ext_resource type="Texture2D" uid="uid://drb7xaotmc8vy" path="res://assets/ui/icons/delete.svg" id="DeleteIcon"]
-[ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="EnvironmentIcon"]
 [ext_resource type="Script" uid="uid://d2s5cf04l5n1y" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
@@ -57,54 +55,33 @@ button_pressed = true
 text = "Setup"
 metadata/page = 0
 
-[node name="PieceRules" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=375339723]
-layout_mode = 2
-theme_type_variation = &"QuietButton"
-toggle_mode = true
-text = "Pieces"
-metadata/page = 1
-
 [node name="InventoryPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1854865023]
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 toggle_mode = true
 text = "Inventory"
-metadata/page = 2
+metadata/page = 1
 
 [node name="BoundsPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=559027482]
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 toggle_mode = true
 text = "Boundaries"
-metadata/page = 3
+metadata/page = 2
 
 [node name="ObjectivesPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1047432166]
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 toggle_mode = true
 text = "Objectives"
-metadata/page = 4
-
-[node name="LinksPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1260680995]
-layout_mode = 2
-theme_type_variation = &"QuietButton"
-toggle_mode = true
-text = "Links"
-metadata/page = 5
+metadata/page = 3
 
 [node name="PublishPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=372124276]
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 toggle_mode = true
 text = "Publish"
-metadata/page = 6
-
-[node name="EnvironmentPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=151025064]
-layout_mode = 2
-theme_type_variation = &"QuietButton"
-toggle_mode = true
-text = "Environment"
-metadata/page = 7
+metadata/page = 4
 
 [node name="Tabs" type="TabContainer" parent="Surface/Contents/Body" unique_id=1307822684]
 unique_name_in_owner = true
@@ -329,116 +306,11 @@ theme_type_variation = &"SecondaryButton"
 text = "Open puzzle"
 clip_text = true
 
-[node name="Permissions" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=98491790]
-visible = false
-layout_mode = 2
-horizontal_scroll_mode = 0
-metadata/_tab_index = 1
-
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Permissions" unique_id=1894095581]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SelectionSummary" type="Label" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1220504273]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Select pieces in the 3D world"
-autowrap_mode = 3
-
-[node name="Preset" type="OptionButton" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=147602235]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-selected = 0
-fit_to_longest_item = false
-item_count = 5
-popup/item_0/text = "Fixed"
-popup/item_0/id = 0
-popup/item_1/text = "Move Only"
-popup/item_1/id = 1
-popup/item_2/text = "Rotate Only"
-popup/item_2/id = 2
-popup/item_3/text = "Configure Only"
-popup/item_3/id = 3
-popup/item_4/text = "Fully Editable"
-popup/item_4/id = 4
-
-[node name="Move" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1727848063]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Move"
-
-[node name="Rotate" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=536535483]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Rotate"
-
-[node name="Configure" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1812365343]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Configure"
-
-[node name="Remove" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1900433264]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove"
-
-[node name="Duplicate" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=413555304]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Duplicate"
-
-[node name="RestrictSetting" type="CheckBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1739899086]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Allow configuration of only the setting chosen below."
-text = "Limit one setting"
-
-[node name="ConfigKeys" type="OptionButton" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=2087016980]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="SettingMinLabel" type="Label" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1296357318]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Minimum allowed value"
-autowrap_mode = 3
-
-[node name="SettingMin" type="SpinBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1838434882]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = -30.0
-step = 0.1
-
-[node name="SettingMaxLabel" type="Label" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1660143117]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Maximum allowed value"
-autowrap_mode = 3
-
-[node name="SettingMax" type="SpinBox" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=1249445637]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = -30.0
-step = 0.1
-
-[node name="ApplyPermissions" type="Button" parent="Surface/Contents/Body/Tabs/Permissions/Fields" unique_id=133982662]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Apply permissions"
-clip_text = true
-
 [node name="Inventory" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=590665169]
 visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
-metadata/_tab_index = 2
+metadata/_tab_index = 1
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Inventory" unique_id=589676644]
 layout_mode = 2
@@ -531,7 +403,7 @@ clip_text = true
 visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
-metadata/_tab_index = 3
+metadata/_tab_index = 2
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Boundaries" unique_id=291626821]
 layout_mode = 2
@@ -616,7 +488,7 @@ clip_text = true
 visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
-metadata/_tab_index = 4
+metadata/_tab_index = 3
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Objectives" unique_id=514147123]
 layout_mode = 2
@@ -719,72 +591,11 @@ theme_type_variation = &"SecondaryButton"
 text = "Remove selected objective"
 clip_text = true
 
-[node name="Links" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=1913687308]
-visible = false
-layout_mode = 2
-horizontal_scroll_mode = 0
-metadata/_tab_index = 5
-
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Links" unique_id=1850854713]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LinkHelp" type="Label" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=2066916447]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Source event → supported target action"
-autowrap_mode = 3
-
-[node name="LinkSource" type="OptionButton" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=1339008474]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="LinkEvent" type="OptionButton" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=51657714]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="LinkTarget" type="OptionButton" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=1210811572]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="LinkAction" type="OptionButton" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=602956163]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="AddLink" type="Button" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=39323025]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Connect event to action"
-clip_text = true
-
-[node name="LinkList" type="ItemList" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=1758010365]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 160)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="RemoveLink" type="Button" parent="Surface/Contents/Body/Tabs/Links/Fields" unique_id=2011145514]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Remove selected link"
-clip_text = true
-
 [node name="Publish" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=166026776]
 visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
-metadata/_tab_index = 6
+metadata/_tab_index = 4
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Publish" unique_id=2059793005]
 layout_mode = 2
@@ -858,58 +669,7 @@ theme_type_variation = &"SecondaryButton"
 text = "Export campaign"
 clip_text = true
 
-[node name="Environment" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=817384481]
-visible = false
-layout_mode = 2
-horizontal_scroll_mode = 0
-metadata/_tab_index = 7
-
-[node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Environment" unique_id=580160787]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LegacyEnvironmentLabel" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=37570712]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Reusable scene"
-
-[node name="EnvironmentRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Environment/Fields" unique_id=895290146]
-layout_mode = 2
-
-[node name="EnvironmentPath" type="Label" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=921747857]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"SmallMutedLabel"
-text = "No environment"
-clip_text = true
-text_overrun_behavior = 3
-
-[node name="ChooseEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=27158506]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-tooltip_text = "Choose environment scene"
-theme_type_variation = &"IconButton"
-icon = ExtResource("EnvironmentIcon")
-
-[node name="ClearEnvironment" type="Button" parent="Surface/Contents/Body/Tabs/Environment/Fields/EnvironmentRow" unique_id=513348645]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-tooltip_text = "Remove environment"
-theme_type_variation = &"IconButton"
-icon = ExtResource("DeleteIcon")
-
 [node name="ExportDialog" type="FileDialog" parent="." unique_id=1808200639]
 unique_name_in_owner = true
 access = 2
 filters = PackedStringArray("*.zip ; Campaign content bundle")
-
-[node name="EnvironmentDialog" type="FileDialog" parent="." unique_id=367484858]
-unique_name_in_owner = true
-title = "Open a File"
-file_mode = 0
-root_subfolder = "res://scenes/environments"
-filters = PackedStringArray("*.tscn ; Environment scene")

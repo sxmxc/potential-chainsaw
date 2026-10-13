@@ -13,7 +13,7 @@ func reset(data: Array) -> void:
 func delivered(collector: String, marble_id: String, source: String) -> void:
 	deliveries[marble_id] = {"collector": collector, "source": source}
 
-func activated(event: String, _body: RigidBody3D, piece: TrackPiece) -> void:
+func activated(event: String, _body: RigidBody3D, piece: BuildingPiece) -> void:
 	activations[piece.instance_id + ":" + event] = true
 
 func satisfied(elapsed: float) -> bool:

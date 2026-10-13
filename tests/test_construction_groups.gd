@@ -68,7 +68,7 @@ func test_group_editing_and_input() -> void:
 	var a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,0)))
 	var b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,2,2)))
 	b.configuration["release_speed"]=2.1
-	var group: Array[TrackPiece]=[a,b]
+	var group: Array[BuildingPiece]=[a,b]
 	build.set_selection(group)
 	var original=build.snapshot()
 	build.move_selected()

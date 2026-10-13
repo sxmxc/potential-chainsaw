@@ -1,10 +1,6 @@
 extends PanelContainer
 
 var session: PuzzleSession
-var object_ids: Array[String] = []
-var inventory_ids: Array[String] = []
-var source_ids: Array[String] = []
-var target_ids: Array[String] = []
 var refreshing: bool = false
 
 func configure(puzzle_session: PuzzleSession) -> void:
@@ -13,7 +9,7 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
 		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
-		if index==6: refresh_publish())
+		if %Tabs.get_tab_control(index).name == "Publish": refresh_publish())
 	for button in %Navigation.get_children(): button.pressed.connect(func(): %Tabs.current_tab=int(button.get_meta("page")))
 	session.mode_changed.connect(func(): if visible: refresh_publish())
 	%ChapterId.text_changed.connect(select_chapter)
@@ -32,31 +28,23 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%TimeLimit.value_changed.connect(func(value): if not refreshing: session.puzzle.time_limit = value)
 	%AwardTime.value_changed.connect(func(value): if not refreshing: session.puzzle.awards["time"] = value)
 	%AwardPieces.value_changed.connect(func(value): if not refreshing: session.puzzle.awards["pieces"] = int(value))
-	%Preset.item_selected.connect(_preset)
-	%ApplyPermissions.pressed.connect(_permissions)
-	%InventoryPiece.item_selected.connect(func(index): %Quantity.value = session.puzzle.inventory.get(inventory_ids[index], 0); refresh_inventory_settings())
+	%InventoryPiece.item_selected.connect(func(index): %Quantity.value = session.puzzle.inventory.get(%InventoryPiece.get_item_metadata(index), 0); refresh_inventory_settings())
 	%SetInventoryLimit.pressed.connect(func():
 		if %InventorySetting.item_count == 0: return
-		var id = inventory_ids[%InventoryPiece.selected]
+		var id = %InventoryPiece.get_item_metadata(%InventoryPiece.selected)
 		var limits: Dictionary = session.puzzle.get("configuration_limits", {})
 		var settings: Dictionary = limits.get(id, {})
 		settings[%InventorySetting.get_item_metadata(%InventorySetting.selected)] = [%InventoryMin.value, %InventoryMax.value]
 		limits[id] = settings
 		session.puzzle.configuration_limits = limits)
-	%ClearInventoryLimits.pressed.connect(func(): session.puzzle.get("configuration_limits", {}).erase(inventory_ids[%InventoryPiece.selected]))
+	%ClearInventoryLimits.pressed.connect(func(): session.puzzle.get("configuration_limits", {}).erase(%InventoryPiece.get_item_metadata(%InventoryPiece.selected)))
 	%SetQuantity.pressed.connect(func():
-		if inventory_ids.is_empty(): return
-		var id = inventory_ids[%InventoryPiece.selected]
+		if %InventoryPiece.item_count == 0: return
+		var id = %InventoryPiece.get_item_metadata(%InventoryPiece.selected)
 		if %Quantity.value <= 0: session.puzzle.inventory.erase(id)
 		else: session.puzzle.inventory[id] = int(%Quantity.value)
 		refresh_inventory())
 	%DrawBuild.pressed.connect(func(): hide(); session.begin_boundary())
-	%ChooseEnvironment.pressed.connect(func(): session.game.open_modal(); %EnvironmentDialog.popup_centered(Vector2i(700, 500)))
-	%EnvironmentDialog.canceled.connect(session.game.modal_closed)
-	%EnvironmentDialog.file_selected.connect(func(path):
-		session.game.modal_closed()
-		if session.set_environment(path): %EnvironmentPath.text = path.get_file())
-	%ClearEnvironment.pressed.connect(func(): session.set_environment(""); %EnvironmentPath.text = "No environment")
 	%DrawZone.pressed.connect(func(): hide(); session.begin_boundary(true))
 	%ClearZones.pressed.connect(func(): session.puzzle.restricted_zones = []; session.refresh_boundary())
 	%RemoveZone.pressed.connect(func():
@@ -84,12 +72,8 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%RemoveObjective.pressed.connect(func():
 		var selected = %ObjectiveList.get_selected_items()
 		if not selected.is_empty(): session.puzzle.objectives.remove_at(selected[0]); refresh_objectives())
-	%LinkSource.item_selected.connect(func(_index): refresh_events())
-	%LinkTarget.item_selected.connect(func(_index): refresh_actions())
-	%AddLink.pressed.connect(add_link)
-	%RemoveLink.pressed.connect(remove_link)
 	%CaptureCamera.pressed.connect(func(): session.capture_camera(); %CameraStatus.text = "Current camera saved")
-	%SaveDraft.pressed.connect(func(): session.save(); %Validation.text = "Draft saved")
+	%SaveDraft.pressed.connect(func(): %Validation.text = "Draft saved" if session.save() else "Could not save the draft")
 	%TestPlayer.pressed.connect(func(): hide(); session.test_player())
 	%Validate.pressed.connect(validate_puzzle)
 	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Published to Campaign")
@@ -98,11 +82,20 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%ExportDialog.file_selected.connect(export_package)
 	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
 	%OpenPuzzle.pressed.connect(func(): session.game.handle_action("open_puzzle"))
-	session.game.sandbox.build.selection_changed.connect(func(_piece): if visible: refresh_selection())
+	session.game.sandbox.build.changed.connect(func(): if visible: refresh_objects(); refresh_objectives(); refresh_publish())
+	for field in [%PuzzleName, %Order, %TimeLimit, %AwardTime, %AwardPieces, %MinHeight, %MaxHeight]:
+		if field is LineEdit: field.text_changed.connect(func(_text): metadata_changed())
+		else: field.value_changed.connect(func(_value): metadata_changed())
+	%Description.text_changed.connect(metadata_changed)
+	%Hint.text_changed.connect(metadata_changed)
+	%Difficulty.item_selected.connect(func(_index): metadata_changed())
+	%Prerequisites.multi_selected.connect(func(_index, _selected): metadata_changed())
+	for button in [%SetQuantity, %SetInventoryLimit, %ClearInventoryLimits, %ClearZones, %RemoveZone, %RemoveObjective, %CaptureCamera]:
+		button.pressed.connect(metadata_changed)
 	for definition in session.game.catalog.query():
 		if not definition.library_visible or definition.authoring_only: continue
-		inventory_ids.append(String(definition.id))
 		%InventoryPiece.add_icon_item(definition.thumbnail, definition.display_name)
+		%InventoryPiece.set_item_metadata(%InventoryPiece.item_count - 1, String(definition.id))
 
 func open() -> void:
 	refreshing = true
@@ -119,13 +112,10 @@ func open() -> void:
 	%AwardPieces.value = data.get("awards", {}).get("pieces", 0)
 	%MinHeight.value = data.bounds[4]
 	%MaxHeight.value = data.bounds[5]
-	%EnvironmentPath.text = str(data.get("environment", "")).get_file() if not str(data.get("environment", "")).is_empty() else "No environment"
-	refresh_selection()
 	refresh_inventory()
 	refresh_inventory_settings()
 	refresh_objects()
 	refresh_objectives()
-	refresh_links()
 	refresh_zones()
 	%Prerequisites.clear()
 	var available = session.store.list_puzzles()
@@ -159,7 +149,7 @@ func refresh_publish() -> void:
 	%TestStatus.text=("✓" if tested else "○")+" Player test completed"
 	%SolutionStatus.text=("✓" if solved else "○")+" Solution saved"
 	%RevisionStatus.text=("✓" if current else "○")+" Current draft verified"
-	%Publish.disabled=not (tested and solved and current) or not session.store.validate(data).is_empty() or not MechanismLinks.validate(session.game.sandbox.build.pieces).is_empty()
+	%Publish.disabled=not session.validate().is_empty()
 	%Publish.tooltip_text="Complete a player test and validate this draft to publish." if %Publish.disabled else "Publish this verified puzzle"
 
 func show_chapter(chapter: Dictionary) -> void:
@@ -188,43 +178,7 @@ func update_chapter() -> void:
 	for id in %ChapterRequirements.text.split(",", false):
 		if not id.strip_edges().is_empty(): requirements.append(id.strip_edges())
 	session.puzzle.chapter = {"id": %ChapterId.text.strip_edges(), "name": %ChapterName.text.strip_edges(), "order": int(%ChapterOrder.value), "optional": %ChapterOptional.button_pressed, "introduction": %ChapterIntroduction.button_pressed, "prerequisites": requirements}
-	session.game.sandbox.build.dirty = true
-
-func refresh_selection() -> void:
-	var build: BuildManager = session.game.sandbox.build
-	%SelectionSummary.text = "%d pieces selected in the world" % build.selection.size()
-	var permissions: Dictionary = {}
-	if build.selected: permissions = session.puzzle.permissions.get(build.selected.instance_id, {})
-	for action in ["move", "rotate", "configure", "remove", "duplicate"]: get_node("%" + action.capitalize()).button_pressed = permissions.get(action, false)
-	%ConfigKeys.clear()
-	var piece = build.selected
-	if piece:
-		var keys: Array = []
-		keys.append_array(load("res://scripts/ui/mechanism_settings.gd").NUMBERS.get(piece.definition.behavior, {}).keys())
-		keys.append_array(load("res://scripts/ui/mechanism_settings.gd").FLAGS.get(piece.definition.behavior, {}).keys())
-		keys.append_array(piece.configuration.keys())
-		if piece.elevator_component: keys.append_array(["elevator_height", "elevator_speed"])
-		if piece.definition.behavior == "start": keys.append("release_speed")
-		var seen: Dictionary = {}
-		for key in keys:
-			if seen.has(key): continue
-			seen[key] = true
-			%ConfigKeys.add_item(key.capitalize())
-			%ConfigKeys.set_item_metadata(%ConfigKeys.item_count - 1, key)
-
-func _preset(index: int) -> void:
-	for action in ["move", "rotate", "configure", "remove", "duplicate"]:
-		get_node("%" + action.capitalize()).button_pressed = index == 4 or (index == 1 and action == "move") or (index == 2 and action == "rotate") or (index == 3 and action == "configure")
-
-func _permissions() -> void:
-	var data: Dictionary = {}
-	for action in ["move", "rotate", "configure", "remove", "duplicate"]: data[action] = get_node("%" + action.capitalize()).button_pressed
-	if %RestrictSetting.button_pressed and %ConfigKeys.item_count > 0:
-		var key = %ConfigKeys.get_item_metadata(%ConfigKeys.selected)
-		data.config_keys = [key]
-		data.limits = {key: [%SettingMin.value, %SettingMax.value]}
-	session.set_permissions(data)
-	%SelectionSummary.text += " · permissions applied"
+	metadata_changed()
 
 func refresh_inventory() -> void:
 	%InventoryList.clear()
@@ -234,8 +188,8 @@ func refresh_inventory() -> void:
 
 func refresh_inventory_settings() -> void:
 	%InventorySetting.clear()
-	if inventory_ids.is_empty(): return
-	var definition = session.game.catalog.get_piece(inventory_ids[%InventoryPiece.selected])
+	if %InventoryPiece.item_count == 0: return
+	var definition = session.game.catalog.get_piece(%InventoryPiece.get_item_metadata(%InventoryPiece.selected))
 	var keys: Array = preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(definition.behavior, {}).keys()
 	if definition.behavior == "elevator": keys = ["elevator_height", "elevator_speed"]
 	if definition.behavior == "resizable_support": keys = ["support_height"]
@@ -248,31 +202,18 @@ func refresh_zones() -> void:
 	for zone in session.puzzle.restricted_zones: %RestrictedList.add_item("Region (%g, %g) · %g × %g m" % [zone[0], zone[2], zone[3], zone[5]])
 
 func refresh_objects() -> void:
-	object_ids.clear()
-	source_ids.clear()
-	target_ids.clear()
 	%ObjectiveTarget.clear()
 	%MarbleSource.clear()
 	%MarbleSource.add_item("Any marble release")
 	%MarbleSource.set_item_metadata(0, "")
-	%LinkSource.clear()
-	%LinkTarget.clear()
 	for piece in session.game.sandbox.build.pieces:
 		var object_label = piece.definition.display_name + " · " + piece.instance_id.right(6)
 		if (piece.definition.behavior == "finish" and %ObjectiveType.selected == 0) or (not piece.supported_events().is_empty() and %ObjectiveType.selected == 1):
-			object_ids.append(piece.instance_id)
 			%ObjectiveTarget.add_item(object_label)
+			%ObjectiveTarget.set_item_metadata(%ObjectiveTarget.item_count - 1, piece.instance_id)
 		if piece.definition.behavior == "start":
 			%MarbleSource.add_item(object_label)
 			%MarbleSource.set_item_metadata(%MarbleSource.item_count - 1, piece.instance_id)
-		if not piece.supported_events().is_empty():
-			source_ids.append(piece.instance_id)
-			%LinkSource.add_item(object_label)
-		if not piece.supported_actions().is_empty():
-			target_ids.append(piece.instance_id)
-			%LinkTarget.add_item(object_label)
-	refresh_events()
-	refresh_actions()
 	refresh_objective_events()
 
 func refresh_objective_events() -> void:
@@ -280,27 +221,12 @@ func refresh_objective_events() -> void:
 	%ObjectiveEvent.visible = not delivery
 	for control in [%MarbleSource, %MarbleSourceLabel, %RequiredCount, %RequiredCountLabel, %AllMarbles]: control.visible = delivery
 	%ObjectiveEvent.clear()
-	if object_ids.is_empty(): return
-	for event in find_piece(object_ids[%ObjectiveTarget.selected]).supported_events(): %ObjectiveEvent.add_item(event.capitalize())
-
-func find_piece(uid: String) -> TrackPiece:
-	for piece in session.game.sandbox.build.pieces:
-		if piece.instance_id == uid: return piece
-	return null
-
-func refresh_events() -> void:
-	%LinkEvent.clear()
-	if source_ids.is_empty(): return
-	for event in find_piece(source_ids[%LinkSource.selected]).supported_events(): %LinkEvent.add_item(event.capitalize())
-
-func refresh_actions() -> void:
-	%LinkAction.clear()
-	if target_ids.is_empty(): return
-	for action in find_piece(target_ids[%LinkTarget.selected]).supported_actions(): %LinkAction.add_item(action.capitalize())
+	if %ObjectiveTarget.item_count == 0: return
+	for event in session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected)).supported_events(): %ObjectiveEvent.add_item(event.capitalize())
 
 func add_objective() -> void:
-	if object_ids.is_empty(): return
-	var target = find_piece(object_ids[%ObjectiveTarget.selected])
+	if %ObjectiveTarget.item_count == 0: return
+	var target = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
 	var type = "deliver" if %ObjectiveType.selected == 0 else "activate"
 	if type == "deliver" and target.definition.behavior != "finish": %Validation.text = "Choose a collector for delivery"; return
 	var data = {"type": type, "target": target.instance_id, "count": int(%RequiredCount.value), "source": %MarbleSource.get_item_metadata(%MarbleSource.selected), "time_limit": %ObjectiveTime.value}
@@ -309,54 +235,25 @@ func add_objective() -> void:
 		if events.is_empty(): return
 		data.event = events[maxi(0, %ObjectiveEvent.selected)]
 	session.puzzle.objectives.append(data)
+	metadata_changed()
 	refresh_objectives()
 
 func refresh_objectives() -> void:
 	%ObjectiveList.clear()
 	for objective in session.puzzle.objectives:
-		var target = find_piece(objective.target)
+		var target = session.game.sandbox.build.find_piece(objective.target)
 		%ObjectiveList.add_item(("Deliver %d to " % objective.get("count", 1) if objective.type == "deliver" else "Activate ") + (target.definition.display_name if target else "Missing target"))
 
-func add_link() -> void:
-	if source_ids.is_empty() or target_ids.is_empty(): return
-	var source = find_piece(source_ids[%LinkSource.selected])
-	var target = find_piece(target_ids[%LinkTarget.selected])
-	var before = session.game.sandbox.build.snapshot(true)
-	var config = source.configuration.duplicate(true)
-	var links: Array = config.get("links", [])
-	links.append({"event": source.supported_events()[%LinkEvent.selected], "target": target.instance_id, "action": target.supported_actions()[%LinkAction.selected]})
-	config.links = links
-	source.apply_configuration(config)
-	session.game.sandbox.build.record(before, "Link mechanisms")
-	refresh_links()
-
-func refresh_links() -> void:
-	%LinkList.clear()
-	for source in session.game.sandbox.build.pieces:
-		for i in source.configuration.get("links", []).size():
-			var link: Dictionary = source.configuration.links[i]
-			var target = find_piece(link.target)
-			%LinkList.add_item(source.definition.display_name + " / " + link.event + " → " + (target.definition.display_name if target else "Missing") + " / " + link.action)
-			%LinkList.set_item_metadata(%LinkList.item_count - 1, {"source": source.instance_id, "index": i})
-
-func remove_link() -> void:
-	var selected = %LinkList.get_selected_items()
-	if selected.is_empty(): return
-	var data: Dictionary = %LinkList.get_item_metadata(selected[0])
-	var source = find_piece(data.source)
-	var before = session.game.sandbox.build.snapshot(true)
-	var config = source.configuration.duplicate(true)
-	config.links.remove_at(data.index)
-	source.apply_configuration(config)
-	session.game.sandbox.build.record(before, "Remove link")
-	refresh_links()
-
 func validate_puzzle() -> void:
-	var data = session.capture()
-	var errors = session.store.validate(data)
-	errors.append_array(MechanismLinks.validate(session.game.sandbox.build.pieces))
-	if data.get("validation", {}).get("fingerprint", "") != session.store.fingerprint(data): errors.append("This revision needs a successful Test as Player solution")
+	var errors := session.validate()
 	%Validation.text = "Ready to publish" if errors.is_empty() else "\n".join(errors)
+	refresh_publish()
+
+func metadata_changed() -> void:
+	if refreshing or session.mode != "editor": return
+	session.game.sandbox.build.dirty = true
+	session.game.track_name = session.puzzle.name
+	session.game.update_name()
 	refresh_publish()
 
 func export_package(path: String) -> void:

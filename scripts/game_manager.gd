@@ -16,6 +16,7 @@ var unsaved_dialog
 var menu_dialog
 var settings_dialog
 var message_dialog
+var scenery_dialog: FileDialog
 var save_as: bool = false
 var pending_action: Callable
 var after_save: Callable
@@ -58,6 +59,11 @@ func _ready() -> void:
 		%HUD.get_node("%Toolbox").refresh()
 		%HUD.refresh())
 	%HUD.configure_session(puzzle_session)
+	scenery_dialog = %HUD.get_node("%Toolbox").get_node("%SceneDialog")
+	scenery_dialog.canceled.connect(modal_closed)
+	scenery_dialog.file_selected.connect(func(path):
+		modal_closed()
+		%HUD.get_node("%Toolbox").place_scene(path))
 	new_track(false)
 	show_main_menu()
 	load_settings()
@@ -111,6 +117,12 @@ func handle_action(action: String) -> void:
 		"restart_puzzle": puzzle_session.player(puzzle_session.puzzle, puzzle_session.mode == "test"); modal_closed()
 		"levels": puzzle_browser.open()
 		"author": authoring.open()
+		"place_scenery":
+			if puzzle_session.mode != "editor": return
+			authoring.hide()
+			%HUD.refresh()
+			open_modal()
+			scenery_dialog.popup_centered(Vector2i(700, 500))
 		"open_puzzle":
 			if puzzle_session.mode != "editor": return
 			if sandbox.build.dirty and not puzzle_session.save():
@@ -126,7 +138,7 @@ func handle_action(action: String) -> void:
 		"reference": puzzle_session.restore_reference(); modal_closed()
 		"settings":
 			# Preserve an active modal rather than opening a second exclusive Window.
-			for dialog in [puzzle_browser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog]:
+			for dialog in [puzzle_browser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog,scenery_dialog]:
 				if dialog and dialog.visible and dialog.exclusive: return
 			open_modal()
 			settings_dialog.popup_centered()
@@ -244,7 +256,7 @@ func open_modal() -> void:
 	if sandbox.build.ghost: sandbox.build.ghost.visible=false
 
 func modal_closed() -> void:
-	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,puzzle_browser]:
+	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,puzzle_browser,scenery_dialog]:
 		if dialog and dialog.visible: return
 	sandbox.build.enabled=%HUD.visible and sandbox.simulation.state==SimulationManager.State.BUILD
 	sandbox.camera.enabled=%HUD.visible
