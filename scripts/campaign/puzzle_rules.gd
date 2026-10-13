@@ -30,11 +30,9 @@ func validate(construction: Array) -> String:
 		seen[item.uid] = item
 		var definition = catalog.get_piece(item.piece)
 		if not definition or definition.authoring_only: return "Unknown piece"
-		var bounds_changed = false
-		if definition.behavior in ["elevator", "resizable_support"]:
-			var geometry = load("res://scripts/mechanisms/elevator_geometry.gd") if definition.behavior == "elevator" else load("res://scripts/construction/support_geometry.gd")
-			if initial.has(item.uid): bounds_changed = geometry.configured(definition, item.get("config", {})).bounds != geometry.configured(definition, initial[item.uid].get("config", {})).bounds
-			definition = geometry.configured(definition, item.get("config", {}))
+		var configured_definition := definition.configured(item.get("config", {}))
+		var bounds_changed := initial.has(item.uid) and configured_definition.bounds != definition.configured(initial[item.uid].get("config", {})).bounds
+		definition = configured_definition
 		for key in puzzle.get("configuration_limits", {}).get(item.piece, {}):
 			var limits: Array = puzzle.configuration_limits[item.piece][key]
 			var value = item.get("config", {}).get(key)

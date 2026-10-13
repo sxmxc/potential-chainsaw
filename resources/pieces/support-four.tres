@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://btis3r7jpbmy4"]
+[gd_resource type="Resource" script_class="SupportDefinition" format=3 uid="uid://btis3r7jpbmy4"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_s2oft"]
-[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="Script" path="res://scripts/construction/support_definition.gd" id="Definition"]
 [ext_resource type="PackedScene" uid="uid://dfvp5hpyjbk8j" path="res://scenes/mechanisms/support-four.tscn" id="Model"]
 [ext_resource type="Texture2D" uid="uid://c4kd06vakfwpo" path="res://assets/models/build_pieces/previews/support-four-top.png" id="Preview"]
 

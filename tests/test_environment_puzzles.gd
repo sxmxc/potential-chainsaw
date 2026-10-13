@@ -121,7 +121,7 @@ func test_environment_physically_blocks_marble_and_keeps_open_space() -> void:
 	var straight := game.catalog.get_piece("straight") as PieceDefinition
 	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)), []), "", "Space below canopy is usable")
 	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 2, 1)), []), "Blocked by the environment")
-	var lift = BuildingPiece.ElevatorGeometry.configured(game.catalog.get_piece("bucket-elevator"), {"elevator_height": 4, "elevator_speed": 0.8})
+	var lift = game.catalog.get_piece("bucket-elevator").configured({"elevator_height": 4, "elevator_speed": 0.8})
 	assert_eq(game.sandbox.build.snap.validate(lift, Transform3D.IDENTITY, []), "Blocked by the environment", "A lift cannot grow through canopy")
 
 func place_object(definition: PieceDefinition, point: Vector3) -> BuildingPiece:

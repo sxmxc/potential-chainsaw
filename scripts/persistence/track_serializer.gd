@@ -58,11 +58,7 @@ func decode(text: String) -> Dictionary:
 		var uid = str(item.get("uid","loaded-%d" % clean.size()))
 		if uids.has(uid): uid += "-%d" % clean.size()
 		uids[uid] = true
-		var config: Dictionary = item.get("config",{}).duplicate(true)
-		if catalog.get_piece(item.piece).behavior == "elevator":
-			config = preload("res://scripts/mechanisms/elevator_geometry.gd").normalized(config)
-		elif catalog.get_piece(item.piece).behavior == "resizable_support":
-			config = preload("res://scripts/construction/support_geometry.gd").normalized(config)
+		var config := catalog.get_piece(item.piece).normalized_configuration(item.get("config", {}))
 		if config.has("release_speed"):
 			if not (config.release_speed is float or config.release_speed is int): last_error="Invalid release speed"; return {}
 			config.release_speed = clampf(float(config.release_speed),0,6)

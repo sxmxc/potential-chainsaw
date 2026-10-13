@@ -1,6 +1,5 @@
 extends "res://tests/support/scene_test.gd"
 
-const Geometry=preload("res://scripts/construction/support_geometry.gd")
 const FAMILIES=["support-single","support-two","support-four","support-color-single","support-color-two","support-color-four"]
 var game: Node
 
@@ -22,7 +21,7 @@ func test_resizable_supports() -> void:
 		for double_top in [false,true]:
 			for target_height in [1.0,2.0,3.125,30.0]:
 				var piece=build.spawn(definition,Transform3D.IDENTITY,"",{"support_height":target_height,"support_double_top":double_top})
-				var sections=Geometry.sections(family,piece.configuration)
+				var sections=(definition as SupportDefinition).sections(piece.configuration)
 				var top=piece.model_node.get_node("Top")
 				var bottom=piece.model_node.get_node("Bottom")
 				assert_true(top.scene_file_path.ends_with(family+("-top-double.glb" if double_top else "-top.glb")) and bottom.scene_file_path.ends_with(family+"-bottom.glb"),"Support uses its own top variant and matching bottom")

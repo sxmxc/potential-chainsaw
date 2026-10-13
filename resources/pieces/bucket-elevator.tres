@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bynmntijbt4v1"]
+[gd_resource type="Resource" script_class="ElevatorDefinition" format=3 uid="uid://bynmntijbt4v1"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="Connector"]
-[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="Script" path="res://scripts/construction/elevator_definition.gd" id="Definition"]
 [ext_resource type="PackedScene" uid="uid://uqy81fgdwkxh" path="res://scenes/mechanisms/bucket_elevator.tscn" id="Model"]
 [ext_resource type="Texture2D" uid="uid://c3etqh4j786km" path="res://resources/thumbnails/bucket-elevator.png" id="Preview"]
 

@@ -1,4 +1,5 @@
-extends RefCounted
+class_name SupportDefinition
+extends PieceDefinition
 
 const MIN_HEIGHT = 1.0
 const MAX_HEIGHT = 30.0
@@ -6,7 +7,7 @@ const HEIGHT_STEP = 0.125
 const DEFAULT_HEIGHT = 2.0
 const SEGMENT_HEIGHT = 0.5
 
-static func normalized(config: Dictionary) -> Dictionary:
+func normalized_configuration(config: Dictionary) -> Dictionary:
 	var result=config.duplicate(true)
 	var requested=config.get("support_height",DEFAULT_HEIGHT)
 	if not (requested is float or requested is int) or not is_finite(float(requested)): requested=DEFAULT_HEIGHT
@@ -14,8 +15,9 @@ static func normalized(config: Dictionary) -> Dictionary:
 	result.support_double_top=bool(config.get("support_double_top",false))
 	return result
 
-static func sections(family: String, config: Dictionary) -> Array[Dictionary]:
-	var settings=normalized(config)
+func sections(config: Dictionary) -> Array[Dictionary]:
+	var settings=normalized_configuration(config)
+	var family := String(id)
 	var result: Array[Dictionary]=[]
 	var bottom=PieceCatalog.REGISTRY.load_entry(StringName(family+"-bottom")) as PieceDefinition
 	var middle=PieceCatalog.REGISTRY.load_entry(StringName(family+"-middle")) as PieceDefinition
@@ -34,11 +36,11 @@ static func sections(family: String, config: Dictionary) -> Array[Dictionary]:
 	result.append({"definition":top,"transform":Transform3D(Basis.IDENTITY,Vector3(0,settings.support_height-0.5,0)),"name":"Top"})
 	return result
 
-static func configured(source: PieceDefinition, config: Dictionary) -> PieceDefinition:
-	var result=source.duplicate(false) as PieceDefinition
+func configured(config: Dictionary) -> PieceDefinition:
+	var result=duplicate(false) as PieceDefinition
 	var cells=PackedVector3Array()
 	var initialized=false
-	for section in sections(String(source.id),config):
+	for section in sections(config):
 		var box: AABB=section.transform*section.definition.bounds
 		result.bounds=box if not initialized else result.bounds.merge(box)
 		initialized=true

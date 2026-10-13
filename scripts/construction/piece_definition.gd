@@ -28,6 +28,12 @@ extends Resource
 @export var trigger_size: Vector3 = Vector3(0.7, 0.7, 0.7)
 @export var surface_cells: PackedVector3Array
 
+func normalized_configuration(config: Dictionary) -> Dictionary:
+	return config.duplicate(true)
+
+func configured(_config: Dictionary) -> PieceDefinition:
+	return self
+
 func footprint() -> Vector3:
 	return bounds.size
 

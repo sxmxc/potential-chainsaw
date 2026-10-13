@@ -9,7 +9,6 @@ signal marquee_changed(rectangle: Rect2, active: bool)
 signal extension_requested(target: Dictionary, screen: Vector2)
 
 const PIECE_SCENE = preload("res://scenes/building_piece.tscn")
-const SupportGeometry = preload("res://scripts/construction/support_geometry.gd")
 @export var drag_threshold: float = 7.0
 @export_range(12,96,1) var connector_target_radius: float = 32.0
 var rules: PuzzleRules
@@ -121,7 +120,7 @@ func choose(definition: PieceDefinition) -> void:
 	preview_items=[{"definition":definition,"local":Transform3D.IDENTITY,"config":{}}]
 	movement_height=height
 	make_ghost()
-	if definition.behavior=="resizable_support": resize_support_preview(maxf(SupportGeometry.MIN_HEIGHT,height))
+	if definition.behavior=="resizable_support": resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,height))
 	options_changed.emit()
 
 func choose_extension(definition: PieceDefinition, target: Dictionary) -> void:
@@ -197,7 +196,7 @@ func set_height(value: float) -> void:
 	if chosen:
 		movement_height=height
 		forced_target.clear()
-		if operation=="place" and chosen.behavior=="resizable_support": resize_support_preview(maxf(SupportGeometry.MIN_HEIGHT,height))
+		if operation=="place" and chosen.behavior=="resizable_support": resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,height))
 	refresh_grid()
 	options_changed.emit()
 
@@ -205,7 +204,7 @@ func resize_support_preview(value: float) -> void:
 	if ghosts.is_empty(): return
 	var config=ghost.configuration.duplicate(true)
 	config.support_height=value
-	config=SupportGeometry.normalized(config)
+	config=chosen.normalized_configuration(config)
 	if config==ghost.configuration: return
 	ghost.apply_configuration(config)
 	preview_items[0].definition=ghost.definition
@@ -277,8 +276,8 @@ func update_preview() -> void:
 			var flat=true
 			for port in under_cursor.definition.connectors:
 				if absf(port.position.y-level)>0.02: flat=false
-			if flat: preview_height=maxf(SupportGeometry.MIN_HEIGHT,under_cursor.position.y+level-0.25)
-		resize_support_preview(maxf(SupportGeometry.MIN_HEIGHT,preview_height))
+			if flat: preview_height=maxf(SupportDefinition.MIN_HEIGHT,under_cursor.position.y+level-0.25)
+		resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,preview_height))
 	var point=plane_point(cursor_position,preview_height)
 	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else proposed.origin
 	if operation=="place": free_position.y=height

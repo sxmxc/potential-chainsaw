@@ -1,9 +1,6 @@
 class_name BuildingPiece
 extends Node3D
 
-const ElevatorGeometry = preload("res://scripts/mechanisms/elevator_geometry.gd")
-const SupportGeometry = preload("res://scripts/construction/support_geometry.gd")
-
 var definition: PieceDefinition
 var base_definition: PieceDefinition
 var instance_id: String
@@ -101,14 +98,11 @@ func _collect(node: Node) -> void:
 
 func apply_configuration(config: Dictionary) -> void:
 	config = preload("res://scripts/mechanisms/settings_schema.gd").normalized(base_definition.behavior, config)
-	configuration = config.duplicate(true)
+	configuration = base_definition.normalized_configuration(config)
+	definition = base_definition.configured(configuration)
 	if base_definition.behavior == "elevator":
-		configuration = ElevatorGeometry.normalized(configuration)
-		definition = ElevatorGeometry.configured(base_definition, configuration)
 		elevator_component.configure(configuration.elevator_height, configuration.elevator_speed, preview)
 	elif base_definition.behavior == "resizable_support":
-		configuration = SupportGeometry.normalized(configuration)
-		definition = SupportGeometry.configured(base_definition, configuration)
 		support_component.configure(configuration)
 	else:
 		if rotor_component: rotor_component.speed = clampf(float(config.get("angular_speed", 1.3)), -6, 6)

@@ -3,14 +3,13 @@ extends Node3D
 signal marble_loaded(body: RigidBody3D)
 signal marble_unloaded(body: RigidBody3D)
 
-const Geometry = preload("res://scripts/mechanisms/elevator_geometry.gd")
 const BucketScene = preload("res://scenes/mechanisms/elevator_bucket.tscn")
 const FrameScene = preload("res://scenes/mechanisms/elevator_frame_section.tscn")
 const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
 const TURN_RADIUS = 0.75
 const BUCKET_SPACING = 1.4
-var lift_height: float = Geometry.DEFAULT_HEIGHT
-var travel_speed: float = Geometry.DEFAULT_SPEED
+var lift_height: float = ElevatorDefinition.DEFAULT_HEIGHT
+var travel_speed: float = ElevatorDefinition.DEFAULT_SPEED
 var active: bool = false
 var preview_only: bool = false
 var phase: float = 0.0

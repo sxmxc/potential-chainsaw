@@ -1,6 +1,5 @@
 extends "res://tests/support/scene_test.gd"
 
-const Geometry = preload("res://scripts/mechanisms/elevator_geometry.gd")
 const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
 var game: Node
 
@@ -67,7 +66,7 @@ func test_bucket_elevator() -> void:
 	var candidates=build.snap.screen_candidates(incoming,build.snap.boundary_sources(incoming),[upper_target],build.camera,build.camera.unproject_position(upper_point),build.pieces,[])
 	assert_true(not candidates.is_empty() and candidates[0].error.is_empty() and is_equal_approx(candidates[0].transform.origin.y,6.0),"Screen targeting attaches an exit track to the configured upper elevation automatically")
 	build.camera.set_process(true)
-	var normalized=Geometry.normalized({"elevator_height":999,"elevator_speed":-1})
+	var normalized=definition.normalized_configuration({"elevator_height":999,"elevator_speed":-1})
 	assert_true(normalized.elevator_height==12.0 and normalized.elevator_speed==0.25, "Configuration limits are enforced")
 	await exercise_route(2.0, 0.8, 0)
 	await exercise_route(2.0, 0.25, 3)
