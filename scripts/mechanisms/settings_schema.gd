@@ -5,7 +5,9 @@ const NUMBERS = {
 	"rotor": {"angular_speed": ["Paddle speed (rad/s)", 1.3, -6, 6, 0.1]},
 	"gate": {"delay": ["Timed opening (s; 0 = external)", 0, 0, 60, 0.25], "auto_close": ["Close after (s; 0 = stay open)", 0, 0, 60, 0.25]},
 	"launcher": {"strength": ["Launch speed added (m/s)", 4, 0.5, 8, 0.1], "angle": ["Launch angle (degrees)", 25, 0, 65, 1]},
-	"start": {"quantity": ["Marbles", 1, 1, 20, 1], "interval": ["Release interval (s)", 1, 0.6, 20, 0.1], "start_delay": ["First release delay (s)", 0, 0, 60, 0.25]}
+	"start": {"release_speed": ["Launch speed", 1.4, 0, 6, 0.1], "quantity": ["Marbles", 1, 1, 20, 1], "interval": ["Release interval (s)", 1, 0.6, 20, 0.1], "start_delay": ["First release delay (s)", 0, 0, 60, 0.25]},
+	"elevator": {"elevator_height": ["Elevator rise", ElevatorDefinition.DEFAULT_HEIGHT, ElevatorDefinition.MIN_HEIGHT, ElevatorDefinition.MAX_HEIGHT, ElevatorDefinition.HEIGHT_STEP], "elevator_speed": ["Bucket travel speed", ElevatorDefinition.DEFAULT_SPEED, ElevatorDefinition.MIN_SPEED, ElevatorDefinition.MAX_SPEED, 0.05]},
+	"resizable_support": {"support_height": ["Support bearing height", SupportDefinition.DEFAULT_HEIGHT, SupportDefinition.MIN_HEIGHT, SupportDefinition.MAX_HEIGHT, SupportDefinition.HEIGHT_STEP]}
 }
 const FLAGS = {
 	"airflow": {"enabled": ["Initially enabled", true], "reverse": ["Reverse airflow", false]},
@@ -13,7 +15,8 @@ const FLAGS = {
 	"gate": {"open": ["Initially open", false]},
 	"diverter": {"left": ["Route left", false], "alternating": ["Alternate after crossing", false]},
 	"launcher": {"enabled": ["Enabled", true], "external": ["Wait for Fire trigger", false], "auto_rearm": ["Automatically rearm", true]},
-	"sensor": {"detect_exit": ["Emit exit event", false]}
+	"sensor": {"detect_exit": ["Emit exit event", false]},
+	"resizable_support": {"support_double_top": ["Double top", false]}
 }
 
 static func normalized(behavior: String, settings: Dictionary) -> Dictionary:

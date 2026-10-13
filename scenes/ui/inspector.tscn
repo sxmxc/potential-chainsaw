@@ -4,8 +4,6 @@
 [ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
-
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
 custom_minimum_size = Vector2(280, 0)
 theme = ExtResource("Theme")
@@ -42,90 +40,6 @@ layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "Piece properties"
 autowrap_mode = 3
-
-[node name="SpeedLabel" type="Label" parent="Scroll/Contents" unique_id=1341065408]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Launch speed"
-
-[node name="Speed" parent="Scroll/Contents" unique_id=786022461 instance=ExtResource("Slider")]
-unique_name_in_owner = true
-layout_mode = 2
-max_value = 6.0
-step = 0.1
-value = 1.4
-suffix = "m/s"
-
-[node name="ElevatorSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=987620442]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="HeightLabel" type="Label" parent="Scroll/Contents/ElevatorSettings" unique_id=517139208]
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Elevator rise"
-
-[node name="ElevatorHeight" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724 instance=ExtResource("Slider")]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Height difference between the input and output; 2–12 m in 0.5 m steps"
-min_value = 2.0
-max_value = 12.0
-step = 0.5
-value = 4.0
-suffix = "m"
-
-[node name="SpeedLabel" type="Label" parent="Scroll/Contents/ElevatorSettings" unique_id=1217794640]
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Bucket travel speed"
-
-[node name="ElevatorSpeed" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412 instance=ExtResource("Slider")]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Continuous conveyor speed; edit in Build mode"
-min_value = 0.25
-max_value = 2.0
-step = 0.05
-value = 0.8
-suffix = "m/s"
-
-[node name="SupportSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=2139975683]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="HeightLabel" type="Label" parent="Scroll/Contents/SupportSettings" unique_id=1465431699]
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Support bearing height"
-
-[node name="SupportHeight" parent="Scroll/Contents/SupportSettings" unique_id=1096130528 instance=ExtResource("Slider")]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Bottom and top retain their shape; matching middle sections fill the height"
-min_value = 1.0
-max_value = 30.0
-step = 0.125
-value = 2.0
-suffix = "m"
-
-[node name="TopLabel" type="Label" parent="Scroll/Contents/SupportSettings" unique_id=2126349642]
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Top style"
-
-[node name="SupportTop" type="OptionButton" parent="Scroll/Contents/SupportSettings" unique_id=972456820]
-unique_name_in_owner = true
-layout_mode = 2
-selected = 0
-item_count = 2
-popup/item_0/text = "Single"
-popup/item_0/id = 0
-popup/item_1/text = "Double"
-popup/item_1/id = 1
 
 [node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=1377873254]
 unique_name_in_owner = true

@@ -72,6 +72,67 @@ func test_draft_player_hud_fits_small_windows() -> void:
 			assert_false(puzzle_bar.get_node("%SolutionActions").get_popup().visible, "References stay behind an explicit menu action")
 			session.return_editor()
 
+func test_selection_settings_share_editing_history_and_permissions() -> void:
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.enter_sandbox()
+	var build: BuildManager = game.sandbox.build
+	var inspector = game.get_node("%HUD").get_node("%Inspector")
+	var settings = inspector.get_node("%MechanismSettings")
+	for example in [
+		["sandbox-start", "release_speed", 1.4, 2.3, 0.0, 6.0, 0.1],
+		["bucket-elevator", "elevator_height", 4.0, 5.0, 2.0, 12.0, 0.5],
+		["bucket-elevator", "elevator_speed", 0.8, 1.0, 0.25, 2.0, 0.05],
+		["support-single", "support_height", 2.0, 3.125, 1.0, 30.0, 0.125]
+	]:
+		game.new_track()
+		var piece = build.spawn(game.catalog.get_piece(example[0]), Transform3D.IDENTITY)
+		build.select(piece)
+		await settle()
+		assert_true(inspector.visible)
+		var field: SettingSlider = settings.fields[example[1]]
+		assert_almost_eq(field.value, example[2], 0.001)
+		assert_eq(field.min_value, example[4])
+		assert_eq(field.max_value, example[5])
+		assert_eq(field.step, example[6])
+		field.value = example[3]
+		await settle()
+		assert_almost_eq(float(piece.configuration[example[1]]), example[3], 0.001)
+		assert_eq(settings.fields[example[1]], field, "An edit retains the active control")
+		assert_eq(build.history.get_history_count(), 1, "One property edit is one undo action")
+		build.undo()
+		await settle()
+		assert_almost_eq(settings.fields[example[1]].value, example[2], 0.001)
+		build.redo()
+		await settle()
+		assert_almost_eq(settings.fields[example[1]].value, example[3], 0.001)
+	game.new_track()
+	var support = build.spawn(game.catalog.get_piece("support-single"), Transform3D.IDENTITY)
+	build.select(support)
+	await settle()
+	settings.fields.support_double_top.button_pressed = true
+	await settle()
+	assert_true(support.configuration.support_double_top)
+	assert_true(support.model_node.get_node("Top").scene_file_path.ends_with("support-single-top-double.glb"))
+	var other = build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(5, 0, 0)))
+	build.set_selection([support, other])
+	await settle()
+	assert_true(settings.fields.is_empty(), "Groups do not expose individual settings")
+	build.select(support)
+	await settle()
+	assert_true(settings.fields.has("support_height"), "Returning to the same primary piece restores its controls")
+	var data = game.puzzle_session.store.create()
+	data.pieces = build.snapshot()
+	data.permissions = {support.instance_id: {"configure": false}}
+	game.puzzle_session.player(data)
+	build.select(build.pieces[0])
+	await settle()
+	assert_false(settings.fields.support_height.editable)
+	assert_true(settings.fields.support_double_top.disabled)
+	var baseline = build.snapshot()
+	settings.change(4.0, "support_height")
+	assert_eq(build.snapshot(), baseline, "The shared editing path enforces locked configuration")
+
 func test_ui_workflows() -> void:
 	get_tree().root.size=Vector2i(1280,720)
 	var game=load("res://scenes/main.tscn").instantiate()
@@ -112,7 +173,7 @@ func test_ui_workflows() -> void:
 	var release: BuildingPiece = game.sandbox.build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(14,0,0)))
 	game.sandbox.build.select(release)
 	await settle()
-	var speed: SettingSlider = inspector.get_node("%Speed")
+	var speed: SettingSlider = settings.fields["release_speed"]
 	assert_eq(speed.get_node("%Current").text, "1.4 m/s", "Launch slider shows its current speed")
 	assert_eq(speed.get_node("%Minimum").text, "0 m/s")
 	assert_eq(speed.get_node("%Maximum").text, "6 m/s")

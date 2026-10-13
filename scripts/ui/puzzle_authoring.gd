@@ -194,8 +194,6 @@ func refresh_inventory_settings() -> void:
 	if %InventoryPiece.item_count == 0: return
 	var definition = session.game.catalog.get_piece(%InventoryPiece.get_item_metadata(%InventoryPiece.selected))
 	var keys: Array = preload("res://scripts/mechanisms/settings_schema.gd").NUMBERS.get(definition.behavior, {}).keys()
-	if definition.behavior == "elevator": keys = ["elevator_height", "elevator_speed"]
-	if definition.behavior == "resizable_support": keys = ["support_height"]
 	for key in keys:
 		%InventorySetting.add_item(key.capitalize())
 		%InventorySetting.set_item_metadata(%InventorySetting.item_count - 1, key)

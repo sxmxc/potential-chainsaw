@@ -5,7 +5,7 @@ const NUMBERS = Schema.NUMBERS
 const FLAGS = Schema.FLAGS
 const NUMBER = preload("res://scenes/ui/widgets/mechanism_number.tscn")
 const CAPTIONS={"power":"Air power","range":"Range","angular_speed":"Paddle speed","delay":"Open after","auto_close":"Close after","strength":"Added speed","angle":"Launch angle","quantity":"Marbles","interval":"Release interval","start_delay":"First release"}
-const UNITS={"power":"N","range":"m","angular_speed":"rad/s","delay":"s","auto_close":"s","strength":"m/s","angle":"°","interval":"s","start_delay":"s"}
+const UNITS={"power":"N","range":"m","angular_speed":"rad/s","delay":"s","auto_close":"s","strength":"m/s","angle":"°","interval":"s","start_delay":"s","release_speed":"m/s","elevator_height":"m","elevator_speed":"m/s","support_height":"m"}
 var build: BuildManager
 var displayed_piece: BuildingPiece
 var fields: Dictionary = {}
@@ -32,7 +32,7 @@ func refresh(piece: BuildingPiece) -> void:
 				input.set_pressed_no_signal(piece.configuration.get(key, FLAGS[piece.definition.behavior][key][1]))
 				input.disabled = not editable
 		return
-	displayed_piece = piece
+	displayed_piece = piece if build.selection.size() == 1 else null
 	fields.clear()
 	for child in get_children(): remove_child(child); child.queue_free()
 	if not piece or build.selection.size() != 1: return
