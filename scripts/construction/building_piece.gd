@@ -35,7 +35,7 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 	model_node = data.model.instantiate()
 	model_node.position += data.placement_offset
 	if model_node is PieceBehavior: behaviors.append(model_node)
-	for behavior_node in model_node.find_children("*", "", true, false):
+	for behavior_node in model_node.find_children("*", "Node", true, false):
 		if behavior_node is PieceBehavior: behaviors.append(behavior_node)
 	for behavior_node in behaviors:
 		behavior_node.preview_only = ghost
