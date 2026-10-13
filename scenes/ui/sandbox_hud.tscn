@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
 [ext_resource type="PackedScene" uid="uid://816wp88y5yxp" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
+
 [node name="SandboxHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
 anchors_preset = 15
@@ -21,6 +23,10 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+
+
+[node name="MechanismWiring" parent="." instance=ExtResource("Wiring")]
+unique_name_in_owner = true
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1137512754]
 layout_mode = 0

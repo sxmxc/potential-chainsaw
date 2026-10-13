@@ -33,6 +33,19 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 	else:
 		configuration = config.duplicate(true)
 		_collect(model_node)
+	if not ghost and not data.collision_enabled and bodies.is_empty():
+		# Decorative objects remain selectable without blocking marble travel.
+		var pick_body := StaticBody3D.new()
+		pick_body.collision_layer = 4
+		pick_body.collision_mask = 0
+		var pick_shape := CollisionShape3D.new()
+		var box_shape := BoxShape3D.new()
+		box_shape.size = data.bounds.size
+		pick_shape.shape = box_shape
+		pick_shape.position = data.bounds.get_center()
+		pick_body.add_child(pick_shape)
+		add_child(pick_body)
+		bodies.append(pick_body)
 	if data.behavior in ["gate", "diverter", "launcher", "sensor"] and not ghost:
 		mechanism_component = load("res://scripts/mechanisms/" + data.behavior + ".gd").new()
 		add_child(mechanism_component)

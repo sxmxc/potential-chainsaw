@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/mechanism_wiring.gd" id="Script"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[node name="MechanismWiring" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("Theme")
+script = ExtResource("Script")
+
+[node name="Hint" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+mouse_filter = 2
+
+[node name="Text" type="Label" parent="Hint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="Context" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(260, 0)
+
+[node name="Contents" type="VBoxContainer" parent="Context"]
+layout_mode = 2
+
+[node name="Relationship" type="Label" parent="Context/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CardLabel"
+autowrap_mode = 3
+
+[node name="When" type="Label" parent="Context/Contents"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "When this happens"
+
+[node name="Events" type="HFlowContainer" parent="Context/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Do" type="Label" parent="Context/Contents"]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Do this"
+
+[node name="Actions" type="HFlowContainer" parent="Context/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Controls" type="HBoxContainer" parent="Context/Contents"]
+layout_mode = 2
+
+[node name="Apply" type="Button" parent="Context/Contents/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PrimaryButton"
+text = "Connect"
+
+[node name="Remove" type="Button" parent="Context/Contents/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Delete"
+
+[node name="Dismiss" type="Button" parent="Context/Contents/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Cancel"

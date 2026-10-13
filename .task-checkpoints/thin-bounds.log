@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+---  GUT  ---
+[1m[INFO]:  [0musing [C:/Users/steve/AppData/Roaming/Godot/app_userdata/MarbleEngineer] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+[4m
+
+res://tests/test_construction.gd.TestReservedBounds
+[0m* test_elevator_reserves_space_against_environment_solids_without_mesh_collision
+* test_thin_catwalk_solids_overlap_without_inverting_contact_bounds
+[1m2/2 passed.
+[0m
+
+
+
+[33m==============================================
+[0m[33m= Run Summary
+[0m[33m==============================================
+[0m
+Totals
+------
+Scripts               1
+Tests                 2
+Passing Tests         2
+Asserts              11
+Time              0.469s
+
+
+Ran Inner Classes matching "TestReservedBounds"
+[32m---- All tests passed! ----
+[0m

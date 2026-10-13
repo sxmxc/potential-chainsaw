@@ -9,7 +9,7 @@ class TestCatalog:
 
 	func test_catalog_models_and_previews_load() -> void:
 		var piece_catalog = PieceCatalog.new()
-		assert_eq(piece_catalog.query().size(), 173)
+		assert_eq(piece_catalog.query().size(), 207)
 		for definition in piece_catalog.query():
 			assert_not_null(definition.model, "%s model loads" % definition.id)
 			if definition.model:
@@ -26,7 +26,7 @@ class TestRegistry:
 	func test_registry_ids_and_indexed_queries_match_saved_definitions() -> void:
 		var definitions := PieceCatalog.new()
 		var registry := PieceCatalog.REGISTRY
-		assert_eq(registry.size(), 173, "Tracks, hidden support sections and scenery are registered")
+		assert_eq(registry.size(), 207, "Tracks, hidden support sections and scenery are registered")
 		assert_true(registry.is_property_indexed(&"category"))
 		assert_true(registry.is_property_indexed(&"behavior"))
 		var registered_ids := registry.get_all_string_ids()
@@ -47,7 +47,7 @@ class TestRegistry:
 			if not expected.has(definition.category): expected.append(definition.category)
 		assert_eq(definitions.categories().size(), expected.size(), "Category menu reflects registered content")
 
-	func test_registered_scenery_preserves_native_collision_and_legacy_asset_ids() -> void:
+	func test_registered_scenery_has_mesh_collision_and_legacy_asset_ids() -> void:
 		var definitions := PieceCatalog.new()
 		var scenery := definitions.query({&"category":"Scenery", &"behavior":"decoration"})
 		for asset in ["partition", "deck", "column", "machine"]:
@@ -56,13 +56,12 @@ class TestRegistry:
 			if not definition: continue
 			assert_true(scenery.has(definition))
 			assert_true(definition.authoring_only)
-			assert_false(definition.collision_enabled, "Native scene owns collision")
+			assert_true(definition.collision_enabled, "Imported scenery uses shared generated mesh collision")
 			assert_eq(PuzzleEnvironment.scene_path(asset), definition.model.resource_path)
-			var inspected := PuzzleEnvironment.inspect(definition.model.resource_path)
-			assert_eq(inspected.errors, [])
-			assert_eq(definition.collision_solids.size(), inspected.solids.size())
-			for index in definition.collision_solids.size():
-				assert_true(definition.collision_solids[index].is_equal_approx(inspected.solids[index]), "Indexed definition matches native solid")
+			var object := autofree(BuildManager.PIECE_SCENE.instantiate()) as BuildingPiece
+			object.setup(definition)
+			assert_false(object.bodies.is_empty(), "Imported scenery has physical mesh collision")
+			assert_false(definition.collision_solids.is_empty(), "Placement has measured occupied volumes")
 		assert_eq(PuzzleEnvironment.scene_path("unknown"), "")
 
 class TestPersistence:
@@ -89,7 +88,7 @@ class TestPersistence:
 func test_construction() -> void:
 	catalog=PieceCatalog.new()
 	snap=SnapManager.new()
-	assert_true(catalog.query().size()==173,"Tracks, mechanisms, supports and native scenery share a catalog")
+	assert_true(catalog.query().size()==207,"Tracks, mechanisms, supports and native scenery share a catalog")
 	for v in [Vector3.ZERO,Vector3(-3,1.125,2.5),Vector3(12.5,4,-8)]:
 		assert_true(snap.grid_to_world(snap.world_to_grid(v)).is_equal_approx(v),"Grid round trip "+str(v))
 	assert_true(snap.grid_position(Vector3(-0.76,0.2,-0.26)).is_equal_approx(Vector3(-1,0.25,-0.5)),"Negative grid rounding")
@@ -221,3 +220,38 @@ func check_connected_chain(pieces: Array[BuildingPiece], title: String) -> void:
 			for bc in b.definition.connectors:
 				if ac.compatible(bc) and (a.transform*ac.position).distance_to(b.transform*bc.position)<0.015 and (a.basis*ac.outward).dot(b.basis*bc.outward)<-0.995: connected=true
 		assert_true(connected,title+" transition "+String(a.definition.id)+" → "+String(b.definition.id))
+
+class TestReservedBounds:
+	extends GutTest
+
+	func test_elevator_reserves_space_against_environment_solids_without_mesh_collision() -> void:
+		var definitions := PieceCatalog.new()
+		var elevator := definitions.get_piece("bucket-elevator").configured({"elevator_height": 6.0})
+		var obstruction := AABB(Vector3(0, 3, 0.75), Vector3.ONE * 0.2)
+		assert_true(SnapManager.intersects_solids(elevator, Transform3D.IDENTITY, [obstruction]), "Environment solids block the elevator's swept area, including empty bucket gaps")
+		assert_false(SnapManager.intersects_solids(elevator, Transform3D(Basis.IDENTITY, Vector3(10, 0, 0)), [obstruction]), "Separated elevator placement remains allowed")
+		var display := definitions.get_piece("environment:factory-screen-panel-small")
+		assert_false(SnapManager.intersects_solids(display, Transform3D.IDENTITY, [display.bounds]), "Decoration without collision or reserved space remains freely placeable")
+
+	func test_thin_catwalk_solids_overlap_without_inverting_contact_bounds() -> void:
+		var definitions := PieceCatalog.new()
+		var catwalk := definitions.get_piece("environment:factory-catwalk-straight")
+		var thin: AABB = catwalk.collision_solids.filter(func(solid: AABB): return solid.size.x < 0.002)[0]
+		var probe := PieceDefinition.new()
+		probe.bounds = thin
+		probe.collision_solids = [thin]
+		var snap := SnapManager.new()
+		var touching := Transform3D(Basis.IDENTITY, Vector3(thin.size.x, 0, 0))
+		assert_true(snap.solid_overlap(probe, Transform3D.IDENTITY, probe, Transform3D.IDENTITY), "Thin authored solids still block overlapping placement")
+		assert_false(snap.solid_overlap(probe, Transform3D.IDENTITY, probe, touching), "Touching thin solids remain allowed")
+		var rotated := Transform3D(Basis(Vector3.UP, PI / 2), Vector3.ZERO)
+		assert_true(snap.solid_overlap(probe, rotated, probe, rotated), "Rotated thin solids retain overlap checks")
+		probe.reserve_bounds = true
+		assert_true(SnapManager.intersects_solids(probe, Transform3D.IDENTITY, [thin]), "Thin bounds work against environment solids")
+		probe.collision_solids.clear()
+		assert_true(snap.solid_overlap(probe, Transform3D.IDENTITY, probe, Transform3D.IDENTITY), "Reserved thin bounds remain usable")
+		assert_false(snap.solid_overlap(probe, Transform3D.IDENTITY, probe, touching), "Reserved touching bounds remain allowed")
+		var piece := autofree(BuildingPiece.new()) as BuildingPiece
+		piece.definition = probe
+		assert_false(snap.validate(probe, Transform3D.IDENTITY, [piece]).is_empty(), "Placement broad-phase retains thin overlapping pieces")
+		assert_eq(snap.validate(probe, touching, [piece]), "", "Placement broad-phase allows thin touching pieces")

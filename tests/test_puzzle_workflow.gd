@@ -73,9 +73,12 @@ func test_puzzle_workflow() -> void:
 	var sensor := build.pieces[-2]
 	var sensor_uid := sensor.instance_id
 	build.select(sensor)
-	inspector.get_node("%LinksToggle").pressed.emit()
-	inspector.get_node("%AddLink").pressed.emit()
-	assert_eq(sensor.configuration.links.size(), 1, "Authoring uses the ordinary mechanism link inspector")
+	var wiring: Control = game.get_node("%HUD").get_node("%MechanismWiring")
+	wiring.set_tool(true)
+	wiring.open_context(sensor_uid, build.pieces[-1].instance_id, "entered", -1, Vector2(700, 300))
+	wiring.context_action = "open"
+	wiring.get_node("%Apply").pressed.emit()
+	assert_eq(sensor.configuration.links.size(), 1, "Authoring uses the shared visual connection editor")
 	build.undo()
 	assert_true(build.find_piece(sensor_uid).configuration.get("links", []).is_empty(), "Link edits use shared configuration history")
 	build.redo()

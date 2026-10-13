@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+---  GUT  ---
+[1m[INFO]:  [0musing [C:/Users/steve/AppData/Roaming/Godot/app_userdata/MarbleEngineer] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+[4m
+
+res://tests/test_campaign_import.gd
+[0m* test_existing_ids_paths_and_chapters_survive_round_trip
+* test_future_chapters_preserve_existing_membership
+* test_invalid_bundle_leaves_destination_untouched
+* test_version_two_bundle_carries_fixed_native_environment
+* test_export_reports_missing_snapshot_without_overwriting_destination
+* test_export_skips_untested_content_and_reports_open_failure
+[1m6/6 passed.
+[0m
+
+
+
+[33m==============================================
+[0m[33m= Run Summary
+[0m[33m==============================================
+[0m
+Totals
+------
+Scripts               1
+Tests                 6
+Passing Tests         6
+Asserts             116
+Time              1.626s
+
+
+[32m---- All tests passed! ----
+[0m

@@ -3,7 +3,7 @@ extends RefCounted
 
 const REGISTRY: Registry = preload("res://resources/registries/piece_registry.tres")
 # Order is presentation only; category membership comes from registered resources.
-const CATEGORY_ORDER: Array[String] = ["Start & finish", "Straight tracks", "Curves & turns", "Elevation", "Junctions & transitions", "Waves & bumps", "Ends & drops", "Supports", "Mechanisms", "Scenery"]
+const CATEGORY_ORDER: Array[String] = ["Start & finish", "Straight tracks", "Curves & turns", "Elevation", "Junctions & transitions", "Waves & bumps", "Ends & drops", "Supports", "Mechanisms", "Scenery", "Architecture", "Platforms & stairs", "Factory structures", "Industrial props"]
 var scene_definitions: Dictionary = {}
 # ResourceLoader's cache is weak; retain loaded entries without a second ID map.
 var resident_definitions: Array[PieceDefinition] = []

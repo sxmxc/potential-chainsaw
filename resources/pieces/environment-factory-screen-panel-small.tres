@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaa8"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/screen-panel-small.glb" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/screen-panel-small.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"environment:factory-screen-panel-small"
+display_name = "Control display"
+category = "Industrial props"
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+placement_offset = Vector3(0, 0, 0)
+bounds = AABB(-0.3, 0, -0.32861, 0.6, 0.99131, 0.65722)
+behavior = "decoration"
+authoring_only = true
+collision_solids = Array[AABB]([])
+collision_enabled = false
+description = "Decorative display; marbles pass through it."

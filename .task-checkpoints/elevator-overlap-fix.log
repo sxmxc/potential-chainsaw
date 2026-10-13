@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+---  GUT  ---
+[1m[INFO]:  [0musing [C:/Users/steve/AppData/Roaming/Godot/app_userdata/MarbleEngineer] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+[4m
+
+res://tests/test_bucket_elevator.gd
+[0m* test_bucket_elevator
+Elevator route H=2.0 q=0 state=3 captures=1 exits=1 marble=(-0.001755, 2.449952, -2.467856)
+Elevator route H=2.0 q=3 state=3 captures=1 exits=1 marble=(2.467449, 2.449955, -0.001817)
+Elevator route H=4.0 q=1 state=3 captures=1 exits=1 marble=(-2.474508, 4.45, 0.000022)
+Elevator route H=12.0 q=2 state=3 captures=1 exits=1 marble=(0.000021, 12.45, 2.474595)
+[1m1/1 passed.
+[0m[4m
+
+res://tests/test_precision_placement.gd
+[0m* test_representative_editor_construction_workflow
+[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 3.0 seconds  ---
+[0m* test_precision_faces_and_elevated_surfaces
+[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m* test_curated_geometry_and_decorative_selection
+[1m3/3 passed.
+[0m
+
+
+
+[33m==============================================
+[0m[33m= Run Summary
+[0m[33m==============================================
+[0m
+Totals
+------
+Scripts               2
+Tests                 4
+Passing Tests         4
+Asserts             261
+Time              85.701s
+
+
+[32m---- All tests passed! ----
+[0m

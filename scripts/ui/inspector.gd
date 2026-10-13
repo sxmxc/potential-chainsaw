@@ -14,14 +14,12 @@ func has_properties() -> bool:
 func configure(manager: BuildManager) -> void:
 	build=manager
 	%MechanismSettings.configure(manager)
-	%LinkSettings.configure(manager)
-	%LinksToggle.pressed.connect(func(): %LinkSettings.visible=not %LinkSettings.visible; fit_content.call_deferred())
 	get_viewport().size_changed.connect(fit_content)
 	%Scroll.get_child(0).minimum_size_changed.connect(func():fit_content.call_deferred())
-	%Speed.value_changed.connect(func(value): change_setting("release_speed", value, "Release speed"))
-	%ElevatorHeight.value_changed.connect(func(value): change_setting("elevator_height", value, "Elevator rise"))
-	%ElevatorSpeed.value_changed.connect(func(value): change_setting("elevator_speed", value, "Elevator speed"))
-	%SupportHeight.value_changed.connect(func(value): change_setting("support_height", value, "Support height"))
+	%Speed.setting_changed.connect(func(value): change_setting("release_speed", value, "Release speed"))
+	%ElevatorHeight.setting_changed.connect(func(value): change_setting("elevator_height", value, "Elevator rise"))
+	%ElevatorSpeed.setting_changed.connect(func(value): change_setting("elevator_speed", value, "Elevator speed"))
+	%SupportHeight.setting_changed.connect(func(value): change_setting("support_height", value, "Support height"))
 	%SupportTop.item_selected.connect(func(index): change_setting("support_double_top", index == 1, "Support top style"))
 	%PermissionsToggle.pressed.connect(func(): %Permissions.visible = not %Permissions.visible; fit_content.call_deferred())
 	%Preset.item_selected.connect(set_permission_preset)
@@ -48,10 +46,18 @@ func refresh(piece: BuildingPiece) -> void:
 	%SupportTop.select(1 if piece.configuration.get("support_double_top",false) else 0)
 	%Details.visible = count == 1
 	var editable: bool=not build.rules or build.rules.permits(piece.instance_id,"configure")
-	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
+	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]:
+		field.editable=editable
+		field.refresh_labels()
 	%SupportTop.disabled=not editable
-	if selection_changed: %LinkSettings.hide()
-	%LinksToggle.visible=count==1 and piece.mechanism_component != null and not piece.mechanism_component.events.is_empty()
+	%Capabilities.visible = count == 1 and piece.mechanism_component != null
+	if %Capabilities.visible:
+		var mechanism := piece.mechanism_component
+		var roles: PackedStringArray = []
+		if not mechanism.events.is_empty(): roles.append("Output · " + ", ".join(mechanism.events.map(func(event): return preload("res://scripts/ui/mechanism_wiring.gd").readable(event))))
+		if not mechanism.actions.is_empty(): roles.append("Input · " + ", ".join(mechanism.actions.keys().map(func(action): return preload("res://scripts/ui/mechanism_wiring.gd").readable(action))))
+		if roles.is_empty(): roles.append("Operates independently")
+		%Capabilities.text = "\n".join(roles)
 	refresh_permissions(selection_changed)
 	refreshing=false
 	fit_content.call_deferred()

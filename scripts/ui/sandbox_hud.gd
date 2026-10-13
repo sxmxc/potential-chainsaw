@@ -12,6 +12,8 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	simulation=simulator
 	%FileToolbar.configure(build,simulation)
 	%FileToolbar.action_requested.connect(func(action):action_requested.emit(action))
+	%MechanismWiring.configure(build,simulation)
+	%BuildToolbar.wiring = %MechanismWiring
 	%BuildToolbar.configure(build,simulation)
 	%BuildToolbar.library_toggled.connect(func():library_open=not library_open; refresh())
 	%EditToolbar.configure(build)
@@ -28,6 +30,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar.get_node("%Placement"),%EditToolbar,%Bottom])
 	for control in %BuildToolbar.get_node("%Common").get_children():
 		%SelectionOverlay.exclusions.append(control)
+	%MechanismWiring.exclusions = %SelectionOverlay.exclusions
 	build.marquee_changed.connect(%SelectionOverlay.set_marquee)
 	%ExtensionPicker.configure(build)
 	build.status_changed.connect(show_status)
@@ -72,7 +75,7 @@ func refresh() -> void:
 	%Bottom.visible=not %Status.text.is_empty()
 	if build.chosen: %Bottom.hide()
 	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
-	if %PuzzleAuthoring.visible: %Inspector.hide()
+	if %PuzzleAuthoring.visible or build.connect_mode: %Inspector.hide()
 	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()
 	else: %Toolbox.set_choice(build.chosen.id)

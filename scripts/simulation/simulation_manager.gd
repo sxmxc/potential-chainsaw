@@ -7,6 +7,7 @@ enum State { BUILD, RUNNING, PAUSED, SUCCESS, FAILED }
 signal state_changed(state: State, message: String)
 signal arrived
 signal objective_progress
+var connect_before_run: bool = false
 var dispatching_links: bool = false
 var state: State = State.BUILD
 var build: BuildManager
@@ -35,6 +36,7 @@ func start() -> bool:
 	if finishes.is_empty() and (puzzle.is_empty() or puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver")):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
 		return false
+	connect_before_run = build.connect_mode
 	build.cancel()
 	build.select(null)
 	build.enabled = false
@@ -169,6 +171,8 @@ func toggle_pause() -> void:
 	state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
 
 func reset() -> void:
+	var restore_connect := state != State.BUILD and connect_before_run
+	connect_before_run = false
 	if build:
 		for piece in build.pieces:
 			if piece.mechanism_component: piece.mechanism_component.reset()
@@ -187,6 +191,7 @@ func reset() -> void:
 		build.enabled = true
 		build.refresh_grid()
 	state = State.BUILD
+	if restore_connect: build.set_connect_mode(true)
 	elapsed = 0
 	objectives.reset(puzzle.get("objectives", []))
 	state_changed.emit(state,"")

@@ -1,0 +1,53 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+---  GUT  ---
+[1m[INFO]:  [0musing [C:/Users/steve/AppData/Roaming/Godot/app_userdata/MarbleEngineer] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+[4m
+
+res://tests/test_precision_placement.gd
+[0m* test_representative_editor_construction_workflow
+[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 0.8 seconds  ---
+[0m[33m    --- Awaiting 3.0 seconds  ---
+[0m* test_precision_faces_and_elevated_surfaces
+[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m[33m    --- Awaiting 0.6 seconds  ---
+[0m* test_curated_geometry_and_decorative_selection
+[1m3/3 passed.
+[0m[4m
+
+res://tests/test_mechanism_wiring.gd
+[0m* test_visual_wiring_construction_and_physics
+[33m    --- Awaiting 0.6 seconds  ---
+[0m* test_cancellation_and_locked_configuration
+[33m    --- Awaiting 0.6 seconds  ---
+[0m[1m2/2 passed.
+[0m
+
+
+
+[33m==============================================
+[0m[33m= Run Summary
+[0m[33m==============================================
+[0m
+Totals
+------
+Scripts               2
+Tests                 5
+Passing Tests         5
+Asserts             238
+Time              26.509s
+
+
+[32m---- All tests passed! ----
+[0m

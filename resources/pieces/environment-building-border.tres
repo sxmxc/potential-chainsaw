@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaak"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/border.glb" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/border.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"environment:building-border"
+display_name = "Low border"
+category = "Architecture"
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+placement_offset = Vector3(-0.15, 0, 0)
+bounds = AABB(-0.1, 0, -1, 0.2, 0.3, 2)
+behavior = "decoration"
+authoring_only = true
+collision_solids = Array[AABB]([AABB(-0.1, 0, -1, 0.1, 0.3, 2), AABB(0, 0.2, -1, 0.1, 0.1, 2)])

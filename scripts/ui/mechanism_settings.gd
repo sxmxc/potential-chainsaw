@@ -12,8 +12,7 @@ var fields: Dictionary = {}
 
 func configure(manager: BuildManager) -> void:
 	build = manager
-	# A SpinBox starts its repeat timer after emitting value_changed. Keep it
-	# in the tree until that input callback has returned before rebuilding rows.
+	# Preserve active controls until their input callback has returned.
 	build.selection_changed.connect(func(_piece): refresh_current.call_deferred())
 	refresh(null)
 
@@ -25,9 +24,10 @@ func refresh(piece: BuildingPiece) -> void:
 		for key in fields:
 			var input = fields[key]
 			var editable: bool = not build.rules or build.rules.permits(piece.instance_id, "configure")
-			if input is SpinBox:
+			if input is SettingSlider:
 				input.set_value_no_signal(piece.configuration.get(key, NUMBERS[piece.definition.behavior][key][1]))
 				input.editable = editable
+				input.refresh_labels()
 			else:
 				input.set_pressed_no_signal(piece.configuration.get(key, FLAGS[piece.definition.behavior][key][1]))
 				input.disabled = not editable
@@ -42,7 +42,7 @@ func refresh(piece: BuildingPiece) -> void:
 		var row=NUMBER.instantiate()
 		add_child(row)
 		row.get_node("%Caption").text=CAPTIONS.get(key,field[0])
-		var input: SpinBox=row.get_node("%Value")
+		var input: SettingSlider=row.get_node("%Value")
 		input.suffix=UNITS.get(key,"")
 		input.tooltip_text="0 waits for a linked Open action." if key=="delay" else ("0 keeps the gate open." if key=="auto_close" else field[0])
 		input.min_value = field[2]
@@ -50,7 +50,7 @@ func refresh(piece: BuildingPiece) -> void:
 		input.step = field[4]
 		input.value = piece.configuration.get(key, field[1])
 		input.editable = not build.rules or build.rules.permits(piece.instance_id, "configure")
-		input.value_changed.connect(change.bind(key))
+		input.setting_changed.connect(change.bind(key))
 		fields[key] = input
 	for key in FLAGS.get(behavior, {}):
 		var field: Array = FLAGS[behavior][key]

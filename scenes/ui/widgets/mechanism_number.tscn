@@ -1,16 +1,19 @@
 [gd_scene format=3 uid="uid://cblu43kba2jad"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
+
 [node name="MechanismNumber" type="HBoxContainer" unique_id=294910398]
 custom_minimum_size = Vector2(0, 44)
 
 [node name="Caption" type="Label" parent="." unique_id=410152058]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 16)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Setting"
 autowrap_mode = 3
 
-[node name="Value" type="SpinBox" parent="." unique_id=1239011625]
+[node name="Value" parent="." unique_id=619951167 instance=ExtResource("Slider")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(104, 40)
+custom_minimum_size = Vector2(132, 56)
 layout_mode = 2

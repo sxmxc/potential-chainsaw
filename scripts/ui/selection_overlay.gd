@@ -18,7 +18,7 @@ func _draw() -> void:
 		# Projected world feedback is genuinely dynamic; styles come from the Theme.
 		draw_rect(rectangle,get_theme_color("marquee_fill","ConstructionOverlay"),true)
 		draw_rect(rectangle,get_theme_color("marquee_border","ConstructionOverlay"),false,2.0)
-	if not build or not build.enabled or not build.snapping: return
+	if not build or not build.enabled or not build.snapping or build.connect_mode: return
 	for target in build.targets:
 		if not build.chosen and target.piece not in build.selection: continue
 		if build.chosen:

@@ -30,20 +30,24 @@ var operation: String = ""
 var turn: int = 0
 var height: float = 0
 var movement_height: float = 0
+var grab_height: float = 0
 var pointer_offset: Vector3 = Vector3.ZERO
 var grid_visible: bool = true
 var snapping: bool = true
 var authoring: bool = false
+var connect_mode: bool = false
 var enabled: bool = false
 var proposed: Transform3D = Transform3D.IDENTITY
 var valid: bool = false
 var is_snapped: bool = false
 var validation_message: String = ""
 var grid_mesh: MeshInstance3D
+var contact_marker: MeshInstance3D
 var connector_markers: Node3D
 var targets: Array[Dictionary] = []
 var candidates: Array[Dictionary] = []
 var candidate_key: String = ""
+var candidate_cycled: bool = false
 var sticky_target: String = ""
 var forced_target: Dictionary = {}
 var next_uid: int = 1
@@ -68,6 +72,18 @@ func _ready() -> void:
 	add_child(grid_mesh)
 	connector_markers=Node3D.new()
 	add_child(connector_markers)
+	contact_marker=MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius=0.055
+	sphere.height=0.11
+	contact_marker.mesh=sphere
+	var material := StandardMaterial3D.new()
+	material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.no_depth_test=true
+	material.albedo_color=Color("55e4ba")
+	contact_marker.material_override=material
+	contact_marker.hide()
+	add_child(contact_marker)
 	refresh_grid()
 
 func snapshot(include_environment: bool = false) -> Array:
@@ -163,7 +179,16 @@ func select_connected(piece: BuildingPiece) -> void:
 func select_all() -> void:
 	set_selection(pieces)
 
+func set_connect_mode(active: bool) -> void:
+	if active and not enabled: return
+	cancel()
+	connect_mode = active
+	refresh_connectors()
+	options_changed.emit()
+
 func cancel() -> void:
+	connect_mode = false
+	if contact_marker: contact_marker.hide()
 	for preview in ghosts:
 		if is_instance_valid(preview): preview.queue_free()
 	ghosts.clear()
@@ -179,6 +204,7 @@ func cancel() -> void:
 	forced_target.clear()
 	candidates.clear()
 	candidate_key=""
+	candidate_cycled=false
 	sticky_target=""
 	pointer_offset=Vector3.ZERO
 	pointer_down=false
@@ -234,7 +260,7 @@ func refresh_connectors() -> void:
 		connector_markers.remove_child(child)
 		child.queue_free()
 	targets=snap.exposed(pieces,moving_group)
-	if not snapping or not enabled: return
+	if not snapping or not enabled or connect_mode: return
 	for target in targets:
 		if not chosen and target.piece not in selection: continue
 		var marker=MeshInstance3D.new()
@@ -251,7 +277,9 @@ func refresh_connectors() -> void:
 		connector_markers.add_child(marker)
 
 func _process(_delta: float) -> void:
-	if not enabled: return
+	if not enabled:
+		contact_marker.hide()
+		return
 	if is_instance_valid(ghost): update_preview()
 	update_marker_feedback()
 
@@ -266,6 +294,7 @@ func update_preview() -> void:
 	if not chosen or ghosts.is_empty(): return
 	if get_viewport().gui_get_hovered_control()!=null or camera.drag_button!=0:
 		for preview in ghosts: preview.hide()
+		contact_marker.hide()
 		return
 	var preview_height=movement_height
 	var support_placement=operation=="place" and chosen.behavior=="resizable_support"
@@ -278,24 +307,28 @@ func update_preview() -> void:
 				if absf(port.position.y-level)>0.02: flat=false
 			if flat: preview_height=maxf(SupportDefinition.MIN_HEIGHT,under_cursor.position.y+level-0.25)
 		resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,preview_height))
-	var point=plane_point(cursor_position,preview_height)
+	var point=plane_point(cursor_position,grab_height if direct_drag else preview_height)
 	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else proposed.origin
 	if operation=="place": free_position.y=height
 	else: free_position.y=movement_height
 	if support_placement: free_position.y=0
 	proposed=Transform3D(Basis(Vector3.UP,turn*PI/2),free_position)
-	candidates=snap.screen_candidates(preview_items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,proposed) if snapping else []
+	var grab_offset: Variant = null
+	if direct_drag: grab_offset = pointer_offset
+	candidates=snap.screen_candidates(preview_items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,proposed,grab_offset) if snapping else []
 	is_snapped=not candidates.is_empty()
 	if is_snapped:
+		if not candidates.any(func(value: Dictionary): return value.key==candidate_key): candidate_cycled=false
 		var candidate: Dictionary=candidates[0]
 		for value in candidates:
-			if value.key==candidate_key and (value.error.is_empty() or not candidate.error.is_empty()): candidate=value; break
+			if value.key==candidate_key and (value.error.is_empty() or not candidate.error.is_empty()) and (not value.target.get("surface",false) or candidate_cycled): candidate=value; break
 		proposed=candidate.transform
 		candidate_key=candidate.key
 		sticky_target=candidate.target.key
 		validation_message=candidate.error
 	else:
 		candidate_key=""
+		candidate_cycled=false
 		sticky_target=""
 		validation_message=snap.validate_group(preview_items,proposed,pieces,moving_group)
 		if point==null:
@@ -310,6 +343,10 @@ func update_preview() -> void:
 	show_status(message)
 
 func apply_preview() -> void:
+	contact_marker.visible=is_snapped and not candidates.is_empty()
+	if contact_marker.visible:
+		contact_marker.position=candidates[candidate_index()].point
+		contact_marker.material_override.albedo_color=Color("55e4ba") if valid else Color("ff5660")
 	for index in ghosts.size():
 		ghosts[index].transform=proposed*preview_items[index].local
 		ghosts[index].visible=true
@@ -323,6 +360,7 @@ func candidate_index() -> int:
 func cycle_candidate() -> void:
 	if candidates.size()<2: return
 	candidate_key=candidates[(candidate_index()+1)%candidates.size()].key
+	candidate_cycled=true
 	update_preview()
 
 func update_marker_feedback() -> void:
@@ -366,6 +404,7 @@ func commit() -> void:
 	else:
 		forced_target.clear()
 		candidate_key=""
+		candidate_cycled=false
 		sticky_target=""
 		refresh_connectors()
 	record(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
@@ -389,32 +428,56 @@ func record(before: Array, label: String) -> void:
 	changed.emit()
 
 func configure_selected(config: Dictionary, label: String) -> bool:
-	if not enabled or selection.size()!=1 or chosen or not selection_permitted("configure"): return false
-	if rules and not rules.permits(selected.instance_id, "configure"):
+	if selection.size()!=1 or not selection_permitted("configure"): return false
+	return configure_piece(selected, config, label)
+
+func configure_piece(piece: BuildingPiece, config: Dictionary, label: String) -> bool:
+	if not enabled or piece not in pieces or chosen: return false
+	if rules and not rules.permits(piece.instance_id, "configure"):
 		show_status("Configuration is locked")
 		return false
 	var before=snapshot(true)
-	var previous=selected.configuration.duplicate(true)
-	snap.sample_indices.erase(selected.definition.get_instance_id())
-	selected.apply_configuration(config)
-	var problem=snap.validate(selected.definition,selected.transform,pieces,selected) if selected.definition.behavior in ["elevator", "resizable_support"] else ""
+	var previous=piece.configuration.duplicate(true)
+	snap.sample_indices.erase(piece.definition.get_instance_id())
+	piece.apply_configuration(config)
+	var problem=snap.validate(piece.definition,piece.transform,pieces,piece) if piece.definition.behavior in ["elevator", "resizable_support"] else ""
 	if not problem.is_empty():
-		selected.apply_configuration(previous)
+		piece.apply_configuration(previous)
 		show_status("✕  "+problem)
 		selection_changed.emit(selected)
 		return false
 	if rules:
 		var rule_error = rules.validate(snapshot())
 		if not rule_error.is_empty():
-			selected.apply_configuration(previous)
+			piece.apply_configuration(previous)
 			show_status(rule_error)
 			selection_changed.emit(selected)
 			return false
-	if selected.configuration==previous: return true
-	selected.tint(Color(1,0.78,0.25,0.4))
+	if piece.configuration==previous: return true
+	if piece in selection: piece.tint(Color(1,0.78,0.25,0.4))
 	record(before,label)
 	selection_changed.emit(selected)
 	return true
+
+func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
+	var source := find_piece(source_id)
+	if not source or not source.mechanism_component: return false
+	var config := source.configuration.duplicate(true)
+	var links: Array = config.get("links", [])
+	if index < -1 or index >= links.size(): return false
+	if not link.is_empty():
+		var target := find_piece(link.get("target", ""))
+		if not target or not target.mechanism_component: return false
+		if link.get("event", "") not in source.mechanism_component.events or not target.mechanism_component.actions.has(link.get("action", "")): return false
+		for other in links.size():
+			if other != index and links[other] == link: return false
+		if index == -1: links.append(link.duplicate(true))
+		else: links[index] = link.duplicate(true)
+	else:
+		if index == -1: return false
+		links.remove_at(index)
+	config.links = links
+	return configure_piece(source, config, "Remove connection" if link.is_empty() else ("Connect mechanisms" if index == -1 else "Edit connection"))
 
 func delete_selected() -> void:
 	if not enabled or selection.is_empty() or not selection_permitted("remove"): return
@@ -462,9 +525,10 @@ func rotate_piece() -> void:
 	if chosen:
 		if is_snapped and candidates.size()>1 and not chosen.connectors.is_empty(): cycle_candidate()
 		else:
-			turn=posmod(turn+1,4)
+			turn=posmod(turn+1,maxi(1,chosen.rotation_steps))
 			forced_target.clear()
 			candidate_key=""
+			candidate_cycled=false
 	elif selected:
 		if not selection_permitted("rotate"): return
 		var pivot=selection_pivot()
@@ -504,6 +568,7 @@ func redo() -> void:
 	history.redo()
 
 func restore_history(data: Array) -> void:
+	var was_connecting := connect_mode
 	dirty=true
 	var ids: Array[String] = []
 	var previous: Array[String] = []
@@ -516,6 +581,9 @@ func restore_history(data: Array) -> void:
 	for piece in pieces:
 		if piece.instance_id in ids: restored.append(piece)
 	set_selection(restored)
+	connect_mode = was_connecting
+	refresh_connectors()
+	options_changed.emit()
 
 func frame_all() -> void:
 	frame_pieces(pieces)
@@ -586,7 +654,7 @@ func finish_pointer(screen: Vector2, over_ui: bool = false) -> void:
 	marquee_changed.emit(Rect2(),false)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not enabled or ConstructionInput.typing(get_viewport()): return
+	if not enabled or connect_mode or ConstructionInput.typing(get_viewport()): return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index==MOUSE_BUTTON_LEFT and camera.drag_button==0:
 			if chosen:
@@ -616,10 +684,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.position.distance_to(press_position)>=drag_threshold:
 			if press_piece and not chosen and press_piece in selection:
 				var anchor=selection_pivot()
+				var grabbed := snap.surface_hit(camera,press_position,[],5)
 				move_selected()
 				pointer_down=true
 				direct_drag=true
-				var point=plane_point(press_position,movement_height)
+				grab_height=grabbed.position.y if not grabbed.is_empty() else movement_height
+				var point=plane_point(press_position,grab_height)
 				pointer_offset=anchor-point if point!=null else Vector3.ZERO
 			elif not press_piece:
 				box_active=true

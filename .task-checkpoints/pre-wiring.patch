@@ -1,0 +1,952 @@
+diff --git a/docs/ARCHITECTURE.md b/docs/ARCHITECTURE.md
+index 46b3f8e..bbf9517 100644
+--- a/docs/ARCHITECTURE.md
++++ b/docs/ARCHITECTURE.md
+@@ -4,6 +4,7 @@ ## Shared construction and simulation
+ 
+ - `scenes/world.tscn` and `scripts/world_manager.gd` provide the shared construction world. Sandbox, campaign, puzzle editing and Test as Player use the same BuildManager and SimulationManager.
+ - BuildManager owns placement, connector snapping, selection, configuration and snapshot history. Validate complete proposed edits before committing. Group edits are atomic; one forbidden member rejects the whole operation.
++- SnapManager owns one candidate/validation path: exposed compatible track connectors, cursor-directed physical surface hits for scenery, then grid fallback. Surface hits select the target; measured occupied volumes and world-space edges decide rigid attachment without changing rotation. Edge-adjacent faces are alternatives, Tab chooses deliberately, and short hysteresis stabilizes the default. Two-pixel ray sampling handles exact silhouette misses. BuildManager preserves the actual grab-plane height and offset for direct dragging. Both preview and commit validate the complete group.
+ - Construction history uses Godot's `UndoRedo` with complete layout snapshots. BuildManager registers validated edits without replaying them; undo/redo restores selection by stable IDs. UI and mode resets use the engine's history API.
+ - `BuildingPiece` is the common placed-object node for tracks and scenery. PieceDefinition resources own catalog metadata, connectors, bounds and thumbnails. Changing an adjustable piece must update its geometry, collision, connectors and placement bounds together. Reject conflicting changes without leaving partial state.
+ - PieceDefinition also owns `normalized_configuration` and `configured`: ordinary definitions retain their geometry; ElevatorDefinition and SupportDefinition derive instance geometry without changing shared resources. BuildingPiece, save loading and puzzle validation call the resource directly. SupportDefinition supplies the matching model sections to the support scene.
+diff --git a/docs/PUZZLE_AUTHORING.md b/docs/PUZZLE_AUTHORING.md
+index c3508c9..445c7be 100644
+--- a/docs/PUZZLE_AUTHORING.md
++++ b/docs/PUZZLE_AUTHORING.md
+@@ -35,7 +35,13 @@ ## Saves and shipping content
+ 
+ ### Scenery pieces
+ 
+-Use **Scenery** in the left construction toolbox for kit decorations, Wall, Floor, Column and Factory machine. All objects share one searchable catalog and placement previews. Walls and columns align visible solid faces and edges; R keeps quarter-turn rotation and Tab cycles nearby alignments. Aim at a column's top to stack another column without changing the active elevation. Free placement uses the construction grid. Click and drag, Shift-click or box-select, rotate, move, duplicate and delete using the normal construction controls. Mixed groups preserve their relative transforms and elevations. Escape cancels a pending edit. The shared contextual toolbar provides rotation, duplication, deletion and elevation for every selection; drag to move.
++The searchable construction toolbox includes **Scenery**, **Architecture**, **Platforms & stairs**, **Factory structures** and **Industrial props**. The curated Building Kit entries include wall variants, square doorways and windows, floor sections, columns, borders, a roof and stairs. Factory Kit entries include crates, catwalks and stairs, support frames, factory doorways, machine props, pipes, a safety cone and a decorative control display. These are fixed scenery during player tests; industrial props do not add working mechanisms.
++
++Aim at an object's visible surface to attach to it. Surface snapping uses the actual collision ray hit and measured occupied volumes; near an edge it also offers the adjacent face. Walls align their ends, floor rims offer flush joins, and top surfaces resolve elevation without changing the active building height. R keeps deliberate quarter-turn rotation; Tab cycles available attachments. Track connectors retain compatible full-3D alignment and connector cycling. When there is no attachment target, placement uses the horizontal grid and active elevation; toggling snapping off provides free grid placement.
++
++Blue previews indicate grid placement, green indicates attachment, and red indicates a blocked placement. A small dot marks the attachment target. Preview and placement use the same overlap checks. Face contact is allowed; penetrating solids is rejected. Doorway/window volumes preserve their openings. Sloping and curved faces do not automatically provide rectangular face attachments; use grid placement or a suitable flat surface. Machinery placement volumes approximate its mesh, while physical collision uses the imported triangles. The control display is decorative and pickable but does not block marbles.
++
++Click and drag, Shift-click or box-select, rotate, duplicate and delete with the shared construction controls. Dragging preserves the grabbed surface height and cursor offset; free movement retains the original elevation. Mixed groups retain their internal transforms and elevation differences, exclude themselves as snap targets, and commit as one undoable edit. Escape cancels a pending edit. Reusable scene composites use these same operations; their internal hierarchy is not edited.
+ 
+ Scenery and track edits share one undo/redo history, including atomic group operations. Columns can intersect walls to form corner posts; their registered definition permits this joint and snapping can centre the column on it. Other scenery and track overlaps remain rejected before committing. Selecting an object does not invalidate its proof. **Save draft** preserves both collections; reopening reconstructs the same objects and native collision. During Test as Player and Campaign, scenery is fixed, excluded from inventory and unavailable to player selection or shortcuts.
+ 
+diff --git a/docs/UI_DESIGN.md b/docs/UI_DESIGN.md
+index b576b84..d24fa3c 100644
+--- a/docs/UI_DESIGN.md
++++ b/docs/UI_DESIGN.md
+@@ -10,6 +10,7 @@ ## Layouts and workflows
+ 
+ - Main menu: unboxed left navigation around the animated real-3D showcase, with Campaign emphasized, Sandbox, saves, examples, Puzzle Editor, settings and a separated Quit action.
+ - Build: separate content-sized file/history and test/menu islands. A bottom-left library uses recognizable model thumbnails, search and categories for larger catalogs, and a compact one-column layout for single-piece inventories. Bottom contextual strips expose placement helpers and selection actions. Drag selected pieces directly. The right inspector appears only for configurable single pieces; group actions live in the selection strip. Temporary status and Introduction hints occupy bounded contextual cards.
++- Bounded numeric piece settings use the shared `setting_slider.tscn`: live value and units above the slider, minimum and maximum below. Dragging updates the displayed number and commits one configuration/history change on release; arrow keys retain the setting's step size. Authoring limits and inventory counts remain numeric fields.
+ - Simulation: hide the library and inspector, emphasize test state and pause/restart/return controls. Preserve camera navigation. No world editing.
+ - Track browser: one modal list with load, rename and confirmed deletion. Empty state explains how to create a save. Examples use the same browser.
+ - Settings: audio levels, display/graphics options, camera controls, rebindable keyboard shortcuts, and restore defaults. Saved native controls in a scrollable, tabbed modal with predictable focus and Escape behavior.
+diff --git a/resources/registries/piece_registry.tres b/resources/registries/piece_registry.tres
+index ed881ac..0db8755 100644
+--- a/resources/registries/piece_registry.tres
++++ b/resources/registries/piece_registry.tres
+@@ -150,6 +150,40 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
+ &"uid://dlaqt3kbbex75": &"ramp-long-b",
+ &"uid://dlfo7821j33mo": &"split-solid-right",
+ &"uid://dlyb5fvu1qy02": &"helix-quarter-left",
++&"uid://dmeenvnewaa0": &"environment:factory-structure-doorway-wide",
++&"uid://dmeenvnewaa1": &"environment:factory-machine-fortified",
++&"uid://dmeenvnewaa2": &"environment:factory-machine-bed",
++&"uid://dmeenvnewaa3": &"environment:factory-pipe-large",
++&"uid://dmeenvnewaa4": &"environment:factory-pipe-large-long",
++&"uid://dmeenvnewaa5": &"environment:factory-pipe-large-curve",
++&"uid://dmeenvnewaa6": &"environment:factory-pipe-large-junction",
++&"uid://dmeenvnewaa7": &"environment:factory-cone",
++&"uid://dmeenvnewaa8": &"environment:factory-screen-panel-small",
++&"uid://dmeenvnewaaa": &"environment:building-wall-half",
++&"uid://dmeenvnewaab": &"environment:building-wall-low",
++&"uid://dmeenvnewaac": &"environment:building-wall-corner",
++&"uid://dmeenvnewaad": &"environment:building-wall-doorway-square",
++&"uid://dmeenvnewaae": &"environment:building-wall-doorway-wide-square",
++&"uid://dmeenvnewaaf": &"environment:building-wall-window-square",
++&"uid://dmeenvnewaag": &"environment:building-floor-half",
++&"uid://dmeenvnewaah": &"environment:building-floor-quarter",
++&"uid://dmeenvnewaai": &"environment:building-column-thin",
++&"uid://dmeenvnewaaj": &"environment:building-column-wide",
++&"uid://dmeenvnewaak": &"environment:building-border",
++&"uid://dmeenvnewaal": &"environment:building-border-high",
++&"uid://dmeenvnewaam": &"environment:building-roof-flat-square",
++&"uid://dmeenvnewaan": &"environment:building-stairs-closed-short",
++&"uid://dmeenvnewaao": &"environment:factory-box-small",
++&"uid://dmeenvnewaap": &"environment:factory-box-wide",
++&"uid://dmeenvnewaaq": &"environment:factory-box-long",
++&"uid://dmeenvnewaar": &"environment:factory-box-large",
++&"uid://dmeenvnewaas": &"environment:factory-catwalk-straight",
++&"uid://dmeenvnewaat": &"environment:factory-catwalk-corner",
++&"uid://dmeenvnewaau": &"environment:factory-catwalk-stairs",
++&"uid://dmeenvnewaav": &"environment:factory-structure-short",
++&"uid://dmeenvnewaaw": &"environment:factory-structure-medium",
++&"uid://dmeenvnewaax": &"environment:factory-structure-tall",
++&"uid://dmeenvnewaay": &"environment:factory-structure-doorway",
+ &"uid://dmrexmgh4bur4": &"slant-c",
+ &"uid://dpcvj4wrdk8o0": &"support-color-single-top-double",
+ &"uid://dpogbgfje4x3x": &"support-color-four",
+@@ -228,8 +262,42 @@ _string_ids_to_uids = Dictionary[StringName, StringName]({
+ &"end-hole-square": &"uid://d1cruuvd3gdxn",
+ &"end-rounded": &"uid://7ked5bvmcnib",
+ &"end-square": &"uid://bioowdds15egt",
++&"environment:building-border": &"uid://dmeenvnewaak",
++&"environment:building-border-high": &"uid://dmeenvnewaal",
++&"environment:building-column-thin": &"uid://dmeenvnewaai",
++&"environment:building-column-wide": &"uid://dmeenvnewaaj",
++&"environment:building-floor-half": &"uid://dmeenvnewaag",
++&"environment:building-floor-quarter": &"uid://dmeenvnewaah",
++&"environment:building-roof-flat-square": &"uid://dmeenvnewaam",
++&"environment:building-stairs-closed-short": &"uid://dmeenvnewaan",
++&"environment:building-wall-corner": &"uid://dmeenvnewaac",
++&"environment:building-wall-doorway-square": &"uid://dmeenvnewaad",
++&"environment:building-wall-doorway-wide-square": &"uid://dmeenvnewaae",
++&"environment:building-wall-half": &"uid://dmeenvnewaaa",
++&"environment:building-wall-low": &"uid://dmeenvnewaab",
++&"environment:building-wall-window-square": &"uid://dmeenvnewaaf",
+ &"environment:column": &"uid://bmeenvcol001",
+ &"environment:deck": &"uid://bmeenvfloor1",
++&"environment:factory-box-large": &"uid://dmeenvnewaar",
++&"environment:factory-box-long": &"uid://dmeenvnewaaq",
++&"environment:factory-box-small": &"uid://dmeenvnewaao",
++&"environment:factory-box-wide": &"uid://dmeenvnewaap",
++&"environment:factory-catwalk-corner": &"uid://dmeenvnewaat",
++&"environment:factory-catwalk-stairs": &"uid://dmeenvnewaau",
++&"environment:factory-catwalk-straight": &"uid://dmeenvnewaas",
++&"environment:factory-cone": &"uid://dmeenvnewaa7",
++&"environment:factory-machine-bed": &"uid://dmeenvnewaa2",
++&"environment:factory-machine-fortified": &"uid://dmeenvnewaa1",
++&"environment:factory-pipe-large": &"uid://dmeenvnewaa3",
++&"environment:factory-pipe-large-curve": &"uid://dmeenvnewaa5",
++&"environment:factory-pipe-large-junction": &"uid://dmeenvnewaa6",
++&"environment:factory-pipe-large-long": &"uid://dmeenvnewaa4",
++&"environment:factory-screen-panel-small": &"uid://dmeenvnewaa8",
++&"environment:factory-structure-doorway": &"uid://dmeenvnewaay",
++&"environment:factory-structure-doorway-wide": &"uid://dmeenvnewaa0",
++&"environment:factory-structure-medium": &"uid://dmeenvnewaaw",
++&"environment:factory-structure-short": &"uid://dmeenvnewaav",
++&"environment:factory-structure-tall": &"uid://dmeenvnewaax",
+ &"environment:machine": &"uid://bmeenvmach01",
+ &"environment:partition": &"uid://bmeenvwall01",
+ &"fan-four": &"uid://dfgqh1my1b5yc",
+@@ -380,8 +448,42 @@ _property_index = Dictionary[StringName, Dictionary]({
+ &"banner-hanging-double-high": true,
+ &"banner-hanging-high": true,
+ &"banner-high": true,
++&"environment:building-border": true,
++&"environment:building-border-high": true,
++&"environment:building-column-thin": true,
++&"environment:building-column-wide": true,
++&"environment:building-floor-half": true,
++&"environment:building-floor-quarter": true,
++&"environment:building-roof-flat-square": true,
++&"environment:building-stairs-closed-short": true,
++&"environment:building-wall-corner": true,
++&"environment:building-wall-doorway-square": true,
++&"environment:building-wall-doorway-wide-square": true,
++&"environment:building-wall-half": true,
++&"environment:building-wall-low": true,
++&"environment:building-wall-window-square": true,
+ &"environment:column": true,
+ &"environment:deck": true,
++&"environment:factory-box-large": true,
++&"environment:factory-box-long": true,
++&"environment:factory-box-small": true,
++&"environment:factory-box-wide": true,
++&"environment:factory-catwalk-corner": true,
++&"environment:factory-catwalk-stairs": true,
++&"environment:factory-catwalk-straight": true,
++&"environment:factory-cone": true,
++&"environment:factory-machine-bed": true,
++&"environment:factory-machine-fortified": true,
++&"environment:factory-pipe-large": true,
++&"environment:factory-pipe-large-curve": true,
++&"environment:factory-pipe-large-junction": true,
++&"environment:factory-pipe-large-long": true,
++&"environment:factory-screen-panel-small": true,
++&"environment:factory-structure-doorway": true,
++&"environment:factory-structure-doorway-wide": true,
++&"environment:factory-structure-medium": true,
++&"environment:factory-structure-short": true,
++&"environment:factory-structure-tall": true,
+ &"environment:machine": true,
+ &"environment:partition": true,
+ &"tree": true,
+@@ -566,6 +668,18 @@ _property_index = Dictionary[StringName, Dictionary]({
+ }
+ },
+ &"category": {
++"Architecture": {
++&"environment:building-border": true,
++&"environment:building-border-high": true,
++&"environment:building-column-thin": true,
++&"environment:building-column-wide": true,
++&"environment:building-wall-corner": true,
++&"environment:building-wall-doorway-square": true,
++&"environment:building-wall-doorway-wide-square": true,
++&"environment:building-wall-half": true,
++&"environment:building-wall-low": true,
++&"environment:building-wall-window-square": true
++},
+ "Curves & turns": {
+ &"bend": true,
+ &"bend-large": true,
+@@ -651,6 +765,27 @@ _property_index = Dictionary[StringName, Dictionary]({
+ &"end-rounded": true,
+ &"end-square": true
+ },
++"Factory structures": {
++&"environment:factory-structure-doorway": true,
++&"environment:factory-structure-doorway-wide": true,
++&"environment:factory-structure-medium": true,
++&"environment:factory-structure-short": true,
++&"environment:factory-structure-tall": true
++},
++"Industrial props": {
++&"environment:factory-box-large": true,
++&"environment:factory-box-long": true,
++&"environment:factory-box-small": true,
++&"environment:factory-box-wide": true,
++&"environment:factory-cone": true,
++&"environment:factory-machine-bed": true,
++&"environment:factory-machine-fortified": true,
++&"environment:factory-pipe-large": true,
++&"environment:factory-pipe-large-curve": true,
++&"environment:factory-pipe-large-junction": true,
++&"environment:factory-pipe-large-long": true,
++&"environment:factory-screen-panel-small": true
++},
+ "Junctions & transitions": {
+ &"cross": true,
+ &"funnel": true,
+@@ -682,6 +817,15 @@ _property_index = Dictionary[StringName, Dictionary]({
+ &"launcher": true,
+ &"sensor": true
+ },
++"Platforms & stairs": {
++&"environment:building-floor-half": true,
++&"environment:building-floor-quarter": true,
++&"environment:building-roof-flat-square": true,
++&"environment:building-stairs-closed-short": true,
++&"environment:factory-catwalk-corner": true,
++&"environment:factory-catwalk-stairs": true,
++&"environment:factory-catwalk-straight": true
++},
+ "Scenery": {
+ &"banner": true,
+ &"banner-double": true,
+diff --git a/scenes/ui/inspector.tscn b/scenes/ui/inspector.tscn
+index 06a323b..59bb8b7 100644
+--- a/scenes/ui/inspector.tscn
++++ b/scenes/ui/inspector.tscn
+@@ -5,6 +5,8 @@
+ [ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
+ [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+ 
++[ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
++
+ [node name="Inspector" type="PanelContainer" unique_id=462449109]
+ custom_minimum_size = Vector2(280, 0)
+ theme = ExtResource("Theme")
+@@ -48,7 +50,7 @@ layout_mode = 2
+ theme_type_variation = &"SmallMutedLabel"
+ text = "Launch speed"
+ 
+-[node name="Speed" type="SpinBox" parent="Scroll/Contents" unique_id=786022461]
++[node name="Speed" parent="Scroll/Contents" unique_id=786022461 instance=ExtResource("Slider")]
+ unique_name_in_owner = true
+ layout_mode = 2
+ max_value = 6.0
+@@ -66,7 +68,7 @@ layout_mode = 2
+ theme_type_variation = &"SmallMutedLabel"
+ text = "Elevator rise"
+ 
+-[node name="ElevatorHeight" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724]
++[node name="ElevatorHeight" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724 instance=ExtResource("Slider")]
+ unique_name_in_owner = true
+ layout_mode = 2
+ tooltip_text = "Height difference between the input and output; 2–12 m in 0.5 m steps"
+@@ -81,7 +83,7 @@ layout_mode = 2
+ theme_type_variation = &"SmallMutedLabel"
+ text = "Bucket travel speed"
+ 
+-[node name="ElevatorSpeed" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412]
++[node name="ElevatorSpeed" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412 instance=ExtResource("Slider")]
+ unique_name_in_owner = true
+ layout_mode = 2
+ tooltip_text = "Continuous conveyor speed; edit in Build mode"
+@@ -101,7 +103,7 @@ layout_mode = 2
+ theme_type_variation = &"SmallMutedLabel"
+ text = "Support bearing height"
+ 
+-[node name="SupportHeight" type="SpinBox" parent="Scroll/Contents/SupportSettings" unique_id=1096130528]
++[node name="SupportHeight" parent="Scroll/Contents/SupportSettings" unique_id=1096130528 instance=ExtResource("Slider")]
+ unique_name_in_owner = true
+ layout_mode = 2
+ tooltip_text = "Bottom and top retain their shape; matching middle sections fill the height"
+diff --git a/scenes/ui/widgets/mechanism_number.tscn b/scenes/ui/widgets/mechanism_number.tscn
+index 89a6fd7..080f57f 100644
+--- a/scenes/ui/widgets/mechanism_number.tscn
++++ b/scenes/ui/widgets/mechanism_number.tscn
+@@ -1,16 +1,19 @@
+ [gd_scene format=3 uid="uid://cblu43kba2jad"]
+ 
++[ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
++
+ [node name="MechanismNumber" type="HBoxContainer" unique_id=294910398]
+ custom_minimum_size = Vector2(0, 44)
+ 
+ [node name="Caption" type="Label" parent="." unique_id=410152058]
+ unique_name_in_owner = true
++custom_minimum_size = Vector2(64, 16)
+ layout_mode = 2
+ size_flags_horizontal = 3
+ text = "Setting"
+ autowrap_mode = 3
+ 
+-[node name="Value" type="SpinBox" parent="." unique_id=1239011625]
++[node name="Value" parent="." unique_id=619951167 instance=ExtResource("Slider")]
+ unique_name_in_owner = true
+-custom_minimum_size = Vector2(104, 40)
++custom_minimum_size = Vector2(132, 56)
+ layout_mode = 2
+diff --git a/scripts/construction/build_manager.gd b/scripts/construction/build_manager.gd
+index c99c327..a252f35 100644
+--- a/scripts/construction/build_manager.gd
++++ b/scripts/construction/build_manager.gd
+@@ -30,6 +30,7 @@ var operation: String = ""
+ var turn: int = 0
+ var height: float = 0
+ var movement_height: float = 0
++var grab_height: float = 0
+ var pointer_offset: Vector3 = Vector3.ZERO
+ var grid_visible: bool = true
+ var snapping: bool = true
+@@ -40,10 +41,12 @@ var valid: bool = false
+ var is_snapped: bool = false
+ var validation_message: String = ""
+ var grid_mesh: MeshInstance3D
++var contact_marker: MeshInstance3D
+ var connector_markers: Node3D
+ var targets: Array[Dictionary] = []
+ var candidates: Array[Dictionary] = []
+ var candidate_key: String = ""
++var candidate_cycled: bool = false
+ var sticky_target: String = ""
+ var forced_target: Dictionary = {}
+ var next_uid: int = 1
+@@ -68,6 +71,18 @@ func _ready() -> void:
+ 	add_child(grid_mesh)
+ 	connector_markers=Node3D.new()
+ 	add_child(connector_markers)
++	contact_marker=MeshInstance3D.new()
++	var sphere := SphereMesh.new()
++	sphere.radius=0.055
++	sphere.height=0.11
++	contact_marker.mesh=sphere
++	var material := StandardMaterial3D.new()
++	material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
++	material.no_depth_test=true
++	material.albedo_color=Color("55e4ba")
++	contact_marker.material_override=material
++	contact_marker.hide()
++	add_child(contact_marker)
+ 	refresh_grid()
+ 
+ func snapshot(include_environment: bool = false) -> Array:
+@@ -164,6 +179,7 @@ func select_all() -> void:
+ 	set_selection(pieces)
+ 
+ func cancel() -> void:
++	if contact_marker: contact_marker.hide()
+ 	for preview in ghosts:
+ 		if is_instance_valid(preview): preview.queue_free()
+ 	ghosts.clear()
+@@ -179,6 +195,7 @@ func cancel() -> void:
+ 	forced_target.clear()
+ 	candidates.clear()
+ 	candidate_key=""
++	candidate_cycled=false
+ 	sticky_target=""
+ 	pointer_offset=Vector3.ZERO
+ 	pointer_down=false
+@@ -251,7 +268,9 @@ func refresh_connectors() -> void:
+ 		connector_markers.add_child(marker)
+ 
+ func _process(_delta: float) -> void:
+-	if not enabled: return
++	if not enabled:
++		contact_marker.hide()
++		return
+ 	if is_instance_valid(ghost): update_preview()
+ 	update_marker_feedback()
+ 
+@@ -266,6 +285,7 @@ func update_preview() -> void:
+ 	if not chosen or ghosts.is_empty(): return
+ 	if get_viewport().gui_get_hovered_control()!=null or camera.drag_button!=0:
+ 		for preview in ghosts: preview.hide()
++		contact_marker.hide()
+ 		return
+ 	var preview_height=movement_height
+ 	var support_placement=operation=="place" and chosen.behavior=="resizable_support"
+@@ -278,24 +298,26 @@ func update_preview() -> void:
+ 				if absf(port.position.y-level)>0.02: flat=false
+ 			if flat: preview_height=maxf(SupportDefinition.MIN_HEIGHT,under_cursor.position.y+level-0.25)
+ 		resize_support_preview(maxf(SupportDefinition.MIN_HEIGHT,preview_height))
+-	var point=plane_point(cursor_position,preview_height)
++	var point=plane_point(cursor_position,grab_height if direct_drag else preview_height)
+ 	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else proposed.origin
+ 	if operation=="place": free_position.y=height
+ 	else: free_position.y=movement_height
+ 	if support_placement: free_position.y=0
+ 	proposed=Transform3D(Basis(Vector3.UP,turn*PI/2),free_position)
+-	candidates=snap.screen_candidates(preview_items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,proposed) if snapping else []
++	candidates=snap.screen_candidates(preview_items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,proposed,pointer_offset if direct_drag else null) if snapping else []
+ 	is_snapped=not candidates.is_empty()
+ 	if is_snapped:
++		if not candidates.any(func(value: Dictionary): return value.key==candidate_key): candidate_cycled=false
+ 		var candidate: Dictionary=candidates[0]
+ 		for value in candidates:
+-			if value.key==candidate_key and (value.error.is_empty() or not candidate.error.is_empty()): candidate=value; break
++			if value.key==candidate_key and (value.error.is_empty() or not candidate.error.is_empty()) and (not value.target.get("surface",false) or candidate_cycled): candidate=value; break
+ 		proposed=candidate.transform
+ 		candidate_key=candidate.key
+ 		sticky_target=candidate.target.key
+ 		validation_message=candidate.error
+ 	else:
+ 		candidate_key=""
++		candidate_cycled=false
+ 		sticky_target=""
+ 		validation_message=snap.validate_group(preview_items,proposed,pieces,moving_group)
+ 		if point==null:
+@@ -310,6 +332,10 @@ func update_preview() -> void:
+ 	show_status(message)
+ 
+ func apply_preview() -> void:
++	contact_marker.visible=is_snapped and not candidates.is_empty()
++	if contact_marker.visible:
++		contact_marker.position=candidates[candidate_index()].point
++		contact_marker.material_override.albedo_color=Color("55e4ba") if valid else Color("ff5660")
+ 	for index in ghosts.size():
+ 		ghosts[index].transform=proposed*preview_items[index].local
+ 		ghosts[index].visible=true
+@@ -323,6 +349,7 @@ func candidate_index() -> int:
+ func cycle_candidate() -> void:
+ 	if candidates.size()<2: return
+ 	candidate_key=candidates[(candidate_index()+1)%candidates.size()].key
++	candidate_cycled=true
+ 	update_preview()
+ 
+ func update_marker_feedback() -> void:
+@@ -366,6 +393,7 @@ func commit() -> void:
+ 	else:
+ 		forced_target.clear()
+ 		candidate_key=""
++		candidate_cycled=false
+ 		sticky_target=""
+ 		refresh_connectors()
+ 	record(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
+@@ -462,9 +490,10 @@ func rotate_piece() -> void:
+ 	if chosen:
+ 		if is_snapped and candidates.size()>1 and not chosen.connectors.is_empty(): cycle_candidate()
+ 		else:
+-			turn=posmod(turn+1,4)
++			turn=posmod(turn+1,maxi(1,chosen.rotation_steps))
+ 			forced_target.clear()
+ 			candidate_key=""
++			candidate_cycled=false
+ 	elif selected:
+ 		if not selection_permitted("rotate"): return
+ 		var pivot=selection_pivot()
+@@ -616,10 +645,12 @@ func _unhandled_input(event: InputEvent) -> void:
+ 		if event.position.distance_to(press_position)>=drag_threshold:
+ 			if press_piece and not chosen and press_piece in selection:
+ 				var anchor=selection_pivot()
++				var grabbed := snap.surface_hit(camera,press_position,[],5)
+ 				move_selected()
+ 				pointer_down=true
+ 				direct_drag=true
+-				var point=plane_point(press_position,movement_height)
++				grab_height=grabbed.position.y if not grabbed.is_empty() else movement_height
++				var point=plane_point(press_position,grab_height)
+ 				pointer_offset=anchor-point if point!=null else Vector3.ZERO
+ 			elif not press_piece:
+ 				box_active=true
+diff --git a/scripts/construction/building_piece.gd b/scripts/construction/building_piece.gd
+index 0d4a5ff..aaafd73 100644
+--- a/scripts/construction/building_piece.gd
++++ b/scripts/construction/building_piece.gd
+@@ -33,6 +33,19 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {})
+ 	else:
+ 		configuration = config.duplicate(true)
+ 		_collect(model_node)
++	if not ghost and not data.collision_enabled and bodies.is_empty():
++		# Decorative objects remain selectable without blocking marble travel.
++		var pick_body := StaticBody3D.new()
++		pick_body.collision_layer = 4
++		pick_body.collision_mask = 0
++		var pick_shape := CollisionShape3D.new()
++		var box_shape := BoxShape3D.new()
++		box_shape.size = data.bounds.size
++		pick_shape.shape = box_shape
++		pick_shape.position = data.bounds.get_center()
++		pick_body.add_child(pick_shape)
++		add_child(pick_body)
++		bodies.append(pick_body)
+ 	if data.behavior in ["gate", "diverter", "launcher", "sensor"] and not ghost:
+ 		mechanism_component = load("res://scripts/mechanisms/" + data.behavior + ".gd").new()
+ 		add_child(mechanism_component)
+diff --git a/scripts/construction/piece_catalog.gd b/scripts/construction/piece_catalog.gd
+index bc7d94b..2798f73 100644
+--- a/scripts/construction/piece_catalog.gd
++++ b/scripts/construction/piece_catalog.gd
+@@ -3,7 +3,7 @@ extends RefCounted
+ 
+ const REGISTRY: Registry = preload("res://resources/registries/piece_registry.tres")
+ # Order is presentation only; category membership comes from registered resources.
+-const CATEGORY_ORDER: Array[String] = ["Start & finish", "Straight tracks", "Curves & turns", "Elevation", "Junctions & transitions", "Waves & bumps", "Ends & drops", "Supports", "Mechanisms", "Scenery"]
++const CATEGORY_ORDER: Array[String] = ["Start & finish", "Straight tracks", "Curves & turns", "Elevation", "Junctions & transitions", "Waves & bumps", "Ends & drops", "Supports", "Mechanisms", "Scenery", "Architecture", "Platforms & stairs", "Factory structures", "Industrial props"]
+ var scene_definitions: Dictionary = {}
+ # ResourceLoader's cache is weak; retain loaded entries without a second ID map.
+ var resident_definitions: Array[PieceDefinition] = []
+diff --git a/scripts/construction/piece_definition.gd b/scripts/construction/piece_definition.gd
+index d86f1dd..ba57b59 100644
+--- a/scripts/construction/piece_definition.gd
++++ b/scripts/construction/piece_definition.gd
+@@ -12,8 +12,9 @@ extends Resource
+ @export var rotation_steps: int = 4
+ @export var connectors: Array[TrackConnector] = []
+ @export_enum("static", "start", "finish", "rotor", "decoration", "support", "elevator", "resizable_support", "airflow", "gate", "diverter", "launcher", "sensor") var behavior: String = "static"
+-# Environment scenes supply native collision rather than generated mesh collision.
++# Scenery is editable only in authoring; imported models use common mesh collision.
+ @export var authoring_only: bool = false
++# Measured occupied volumes for placement; openings are represented by separate solids.
+ @export var collision_solids: Array[AABB] = []
+ # Authored scenery joints may interpenetrate these registered piece types.
+ @export var overlap_with: Array[StringName] = []
+diff --git a/scripts/construction/snap_manager.gd b/scripts/construction/snap_manager.gd
+index b709705..da2d5ca 100644
+--- a/scripts/construction/snap_manager.gd
++++ b/scripts/construction/snap_manager.gd
+@@ -58,7 +58,7 @@ func validate_group(items: Array, placement: Transform3D, pieces: Array, ignored
+ 	# Internal geometry is preserved by a rigid transform; it was validated when built.
+ 	return ""
+ 
+-func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camera3D, cursor: Vector2, pieces: Array, ignored: Array, sticky: String = "", forced: Dictionary = {}, preferred: Transform3D = Transform3D.IDENTITY) -> Array[Dictionary]:
++func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camera3D, cursor: Vector2, pieces: Array, ignored: Array, sticky: String = "", forced: Dictionary = {}, preferred: Transform3D = Transform3D.IDENTITY, grab_offset: Variant = null) -> Array[Dictionary]:
+ 	var results: Array[Dictionary] = []
+ 	var permitted_turns: Array[int] = []
+ 	for quarter in 4:
+@@ -89,7 +89,7 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
+ 				score+=minf(100,(preferred*port.point).distance_to(target.point))*0.08
+ 				if target.key==sticky: score-=8.0
+ 				results.append({"transform":placement,"point":target.point,"target":target,"key":target.key+"/"+str(port_index)+"/"+str(quarter),"error":"","score":score})
+-	if forced.is_empty(): results.append_array(surface_candidates(items, preferred, pieces, ignored, camera, cursor, sticky))
++	if forced.is_empty(): results.append_array(surface_candidates(items, preferred, pieces, ignored, camera, cursor, sticky, grab_offset))
+ 	results.sort_custom(func(a,b):return a.score<b.score)
+ 	# Limit expensive solid validation to plausible nearby alternatives.
+ 	if results.size()>candidate_budget: results.resize(candidate_budget)
+@@ -99,74 +99,104 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
+ 	results.sort_custom(func(a,b):return a.score<b.score)
+ 	return results
+ 
+-# Native solids align opposing faces using their measured edges and centres.
+-# They share candidate selection and validation with tracks without track ports.
+-func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String) -> Array[Dictionary]:
++# The cursor selects one physical surface. Alignment uses measured world geometry;
++# camera projection never decides the attachment transform or its elevation.
++func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String, grab_offset: Variant = null) -> Array[Dictionary]:
++	var hit := surface_hit(camera, cursor, ignored)
++	if hit.is_empty() or hit.piece not in pieces or not hit.piece.definition.authoring_only: return []
++	return face_candidates(items, preferred, hit.piece, hit.position, hit.normal, sticky, grab_offset)
++
++func surface_hit(camera: Camera3D, cursor: Vector2, ignored: Array = [], collision_mask: int = 1) -> Dictionary:
++	var excluded: Array[RID] = []
++	for piece in ignored:
++		for body in piece.bodies: excluded.append(body.get_rid())
++	# Exact silhouette edges can fall between collision triangles. A two-pixel
++	# pick tolerance resolves those misses without searching projected anchors.
++	for offset in [Vector2.ZERO, Vector2(0,-2), Vector2(2,0), Vector2(-2,0), Vector2(0,2)]:
++		var screen: Vector2 = cursor + offset
++		var origin := camera.project_ray_origin(screen)
++		var query := PhysicsRayQueryParameters3D.create(origin, origin + camera.project_ray_normal(screen) * 250, collision_mask)
++		query.exclude = excluded
++		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
++		if hit.is_empty(): continue
++		var node := hit.collider as Node
++		while node and not node is BuildingPiece: node = node.get_parent()
++		if not node: continue
++		hit.piece = node
++		return hit
++	return {}
++
++func face_candidates(items: Array, preferred: Transform3D, target_piece: BuildingPiece, point: Vector3, normal: Vector3, sticky: String = "", grab_offset: Variant = null) -> Array[Dictionary]:
+ 	var results: Array[Dictionary] = []
+ 	var placements: Dictionary = {}
+-	var source_boxes: Array[Dictionary] = []
+-	for item in items:
+-		for solid in item.definition.collision_solids:
+-			source_boxes.append({"box":Transform3D(preferred.basis, Vector3.ZERO) * item.local * solid, "definition":item.definition})
+-	if source_boxes.is_empty(): return results
+-	for piece in pieces:
+-		if piece in ignored: continue
+-		for solid_index in piece.definition.collision_solids.size():
+-			var target_box: AABB = piece.transform * piece.definition.collision_solids[solid_index]
+-			for axis in 3:
+-				for side in 2:
+-					var anchors := face_anchors(target_box, axis, side)
+-					for anchor_index in anchors.size():
+-						var point: Vector3 = anchors[anchor_index]
+-						if (camera.global_position[axis] - point[axis]) * (side * 2 - 1) <= 0: continue
+-						var key: String = "%s/solid%d/%d/%d/%d" % [piece.instance_id, solid_index, axis, side, anchor_index]
+-						if camera.is_position_behind(point): continue
+-						var pixels: float = cursor.distance_to(camera.unproject_position(point))
+-						if pixels > target_radius * (1.4 if key == sticky else 1.0): continue
+-						var target := {"piece":piece, "point":point, "key":key}
+-						if not target_visible(target, camera, ignored): continue
+-						for source_item in source_boxes:
+-							var source_box: AABB = source_item.box
+-							var sources := face_anchors(source_box, axis, 1 - side)
+-							if axis != 1 and permits_overlap(source_item.definition, piece.definition):
+-								# Centre a column on the wall joint instead of pushing it outside.
+-								for level in 3:
+-									var centre := source_box.get_center()
+-									centre.y = source_box.position.y + source_box.size.y * level * 0.5
+-									sources.append(centre)
+-							for source: Vector3 in sources:
+-								var placement := Transform3D(preferred.basis, point - source)
+-								# Side attachments retain elevation; top/bottom faces can stack.
+-								if axis != 1 and not is_equal_approx(placement.origin.y, preferred.origin.y): continue
+-								# Thin walls join at their ends rather than crossing at a midpoint.
+-								var length_axis: int = 0 if source_box.size.x > source_box.size.z else 2
+-								var width_axis: int = 2 if length_axis == 0 else 0
+-								if axis == width_axis and source_box.size[length_axis] > source_box.size[width_axis] * 4.0 and is_equal_approx(source[length_axis], source_box.get_center()[length_axis]): continue
+-								var offset := placement.origin - preferred.origin
+-								var score: float = pixels + Vector2(offset.x, offset.z).length() * 2.0 + absf(offset.y) * 0.1
+-								if not camera.is_position_behind(placement.origin): score += cursor.distance_to(camera.unproject_position(placement.origin)) * 0.5
+-								if key == sticky: score -= 8.0
+-								# Different face anchors can describe the same rigid placement.
+-								var placement_key := str(placement.origin)
+-								if placements.has(placement_key) and placements[placement_key].score <= score: continue
+-								var candidate := {"transform":placement, "point":point, "target":target, "key":key+"/"+str(source), "error":"", "score":score}
+-								placements[placement_key] = candidate
++	var hit_axis := normal.abs().max_axis_index()
++	# Sloping and curved faces are not rectangular attachment planes.
++	if absf(normal[hit_axis]) < 0.98: return results
++	var solids: Array[AABB] = target_piece.definition.collision_solids
++	for solid_index in solids.size():
++		var target_box: AABB = target_piece.transform * solids[solid_index]
++		var target_bounds: AABB = target_piece.transform * target_piece.definition.bounds
++		if not target_box.grow(0.003).has_point(point): continue
++		for axis in 3:
++			for side in 2:
++				var plane: float = target_box.position[axis] + target_box.size[axis] * side
++				var edge_distance := absf(point[axis] - plane)
++				var directly_hit := axis == hit_axis and normal[axis] * (side * 2 - 1) > 0
++				if directly_hit:
++					plane = point[axis]
++					edge_distance = 0.0
++				# A visible edge also offers its adjacent face, so thin floors can
++				# join at an edge without having to orbit below the top surface.
++				if not directly_hit and (axis == hit_axis or edge_distance > 0.18): continue
++				var key := "%s/solid%d/%d/%d" % [target_piece.instance_id, solid_index, axis, side]
++				for item_index in items.size():
++					var item: Dictionary = items[item_index]
++					var source_box: AABB = Transform3D(preferred.basis, Vector3.ZERO) * item.local * item.definition.bounds
++					var origin: Vector3 = point + grab_offset if grab_offset != null else point - source_box.get_center()
++					origin[axis] = plane - (source_box.position[axis] if side == 1 else source_box.end[axis])
++					for tangent in 3:
++						if tangent == axis: continue
++						if tangent == 1:
++							# Side joins align bases at the target's elevation, including
++							# platforms placed between construction grid levels.
++							origin.y = target_bounds.position.y - source_box.position.y
++						else:
++							origin[tangent] = target_bounds.position[tangent] + snappedf(origin[tangent] - target_bounds.position[tangent], horizontal_step)
++							var best := 0.26
++							var reference: float = origin[tangent]
++							for target_fraction in [0.0, 0.5, 1.0]:
++								for source_fraction in [0.0, 0.5, 1.0]:
++									if is_equal_approx(source_box.size[tangent], target_bounds.size[tangent]) and source_fraction != target_fraction: continue
++									var aligned_origin: float = target_bounds.position[tangent] + target_bounds.size[tangent] * target_fraction - source_box.position[tangent] - source_box.size[tangent] * source_fraction
++									var distance := absf(aligned_origin - reference)
++									if distance < best:
++										best = distance
++										origin[tangent] = aligned_origin
++					var variants: Array[Vector3] = [origin]
++					if axis != 1 and permits_overlap(item.definition, target_piece.definition):
++						var joint := origin
++						joint[axis] = plane - source_box.get_center()[axis]
++						variants.push_front(joint)
++					for variant_index in variants.size():
++						var placement := Transform3D(preferred.basis, variants[variant_index])
++						var score := edge_distance * 10.0
++						# Near a thin floor's rim, joining its edge is the useful default.
++						if directly_hit: score += 2.0 if hit_axis == 1 and target_bounds.size.y < 0.2 else -2.0
++						var length_axis := 0 if source_box.size.x > source_box.size.z else 2
++						var width_axis := 2 if length_axis == 0 else 0
++						if axis == width_axis and source_box.size[length_axis] > source_box.size[width_axis] * 4.0:
++							var end_distance := minf(absf(point[length_axis] - target_bounds.position[length_axis]), absf(point[length_axis] - target_bounds.end[length_axis]))
++							if end_distance < 0.18: score += 4.0
++						if key == sticky: score -= 0.4
++						score += variant_index * 0.1 + item_index * 0.01
++						var placement_key := str(placement.origin)
++						if placements.has(placement_key) and placements[placement_key].score <= score: continue
++						var contact := point
++						contact[axis] = plane
++						placements[placement_key] = {"transform":placement, "point":contact, "target":{"piece":target_piece, "point":contact, "key":key, "surface":true}, "key":key+"/"+str(item_index)+"/"+str(variant_index), "error":"", "score":score}
+ 	results.assign(placements.values())
+ 	return results
+ 
+-func face_anchors(box: AABB, axis: int, side: int) -> Array[Vector3]:
+-	var result: Array[Vector3] = []
+-	var first: int = (axis + 1) % 3
+-	var second: int = (axis + 2) % 3
+-	for u in 3:
+-		for v in 3:
+-			var point := box.position
+-			point[axis] += box.size[axis] * side
+-			point[first] += box.size[first] * u * 0.5
+-			point[second] += box.size[second] * v * 0.5
+-			result.append(point)
+-	return result
+-
+ func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -> bool:
+ 	var origin := camera.global_position
+ 	var query := PhysicsRayQueryParameters3D.create(origin,target.point,1)
+@@ -236,6 +266,7 @@ func permits_overlap(a: PieceDefinition, b: PieceDefinition) -> bool:
+ 	return a.authoring_only and b.authoring_only and (a.overlap_with.has(b.id) or b.overlap_with.has(a.id))
+ 
+ static func intersects_solids(definition: PieceDefinition, placement: Transform3D, solids: Array) -> bool:
++	if not definition.collision_enabled and definition.collision_solids.is_empty(): return false
+ 	var bounds: AABB = placement * definition.bounds
+ 	for solid: AABB in solids:
+ 		if not bounds.grow(-0.001).intersects(solid): continue
+@@ -248,6 +279,7 @@ static func intersects_solids(definition: PieceDefinition, placement: Transform3
+ 	return false
+ 
+ func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: Transform3D) -> bool:
++	if (not a.collision_enabled and a.collision_solids.is_empty()) or (not b.collision_enabled and b.collision_solids.is_empty()): return false
+ 	# A moving mechanism reserves its complete swept volume, including empty gaps.
+ 	if not a.collision_solids.is_empty():
+ 		var solids: Array = []
+diff --git a/scripts/ui/inspector.gd b/scripts/ui/inspector.gd
+index 7fab5b6..2029a5e 100644
+--- a/scripts/ui/inspector.gd
++++ b/scripts/ui/inspector.gd
+@@ -18,10 +18,10 @@ func configure(manager: BuildManager) -> void:
+ 	%LinksToggle.pressed.connect(func(): %LinkSettings.visible=not %LinkSettings.visible; fit_content.call_deferred())
+ 	get_viewport().size_changed.connect(fit_content)
+ 	%Scroll.get_child(0).minimum_size_changed.connect(func():fit_content.call_deferred())
+-	%Speed.value_changed.connect(func(value): change_setting("release_speed", value, "Release speed"))
+-	%ElevatorHeight.value_changed.connect(func(value): change_setting("elevator_height", value, "Elevator rise"))
+-	%ElevatorSpeed.value_changed.connect(func(value): change_setting("elevator_speed", value, "Elevator speed"))
+-	%SupportHeight.value_changed.connect(func(value): change_setting("support_height", value, "Support height"))
++	%Speed.setting_changed.connect(func(value): change_setting("release_speed", value, "Release speed"))
++	%ElevatorHeight.setting_changed.connect(func(value): change_setting("elevator_height", value, "Elevator rise"))
++	%ElevatorSpeed.setting_changed.connect(func(value): change_setting("elevator_speed", value, "Elevator speed"))
++	%SupportHeight.setting_changed.connect(func(value): change_setting("support_height", value, "Support height"))
+ 	%SupportTop.item_selected.connect(func(index): change_setting("support_double_top", index == 1, "Support top style"))
+ 	%PermissionsToggle.pressed.connect(func(): %Permissions.visible = not %Permissions.visible; fit_content.call_deferred())
+ 	%Preset.item_selected.connect(set_permission_preset)
+@@ -48,7 +48,9 @@ func refresh(piece: BuildingPiece) -> void:
+ 	%SupportTop.select(1 if piece.configuration.get("support_double_top",false) else 0)
+ 	%Details.visible = count == 1
+ 	var editable: bool=not build.rules or build.rules.permits(piece.instance_id,"configure")
+-	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]: field.editable=editable
++	for field in [%Speed,%ElevatorHeight,%ElevatorSpeed,%SupportHeight]:
++		field.editable=editable
++		field.refresh_labels()
+ 	%SupportTop.disabled=not editable
+ 	if selection_changed: %LinkSettings.hide()
+ 	%LinksToggle.visible=count==1 and piece.mechanism_component != null and not piece.mechanism_component.events.is_empty()
+diff --git a/scripts/ui/mechanism_settings.gd b/scripts/ui/mechanism_settings.gd
+index ca50200..ccf9498 100644
+--- a/scripts/ui/mechanism_settings.gd
++++ b/scripts/ui/mechanism_settings.gd
+@@ -12,8 +12,7 @@ var fields: Dictionary = {}
+ 
+ func configure(manager: BuildManager) -> void:
+ 	build = manager
+-	# A SpinBox starts its repeat timer after emitting value_changed. Keep it
+-	# in the tree until that input callback has returned before rebuilding rows.
++	# Preserve active controls until their input callback has returned.
+ 	build.selection_changed.connect(func(_piece): refresh_current.call_deferred())
+ 	refresh(null)
+ 
+@@ -25,9 +24,10 @@ func refresh(piece: BuildingPiece) -> void:
+ 		for key in fields:
+ 			var input = fields[key]
+ 			var editable: bool = not build.rules or build.rules.permits(piece.instance_id, "configure")
+-			if input is SpinBox:
++			if input is SettingSlider:
+ 				input.set_value_no_signal(piece.configuration.get(key, NUMBERS[piece.definition.behavior][key][1]))
+ 				input.editable = editable
++				input.refresh_labels()
+ 			else:
+ 				input.set_pressed_no_signal(piece.configuration.get(key, FLAGS[piece.definition.behavior][key][1]))
+ 				input.disabled = not editable
+@@ -42,7 +42,7 @@ func refresh(piece: BuildingPiece) -> void:
+ 		var row=NUMBER.instantiate()
+ 		add_child(row)
+ 		row.get_node("%Caption").text=CAPTIONS.get(key,field[0])
+-		var input: SpinBox=row.get_node("%Value")
++		var input: SettingSlider=row.get_node("%Value")
+ 		input.suffix=UNITS.get(key,"")
+ 		input.tooltip_text="0 waits for a linked Open action." if key=="delay" else ("0 keeps the gate open." if key=="auto_close" else field[0])
+ 		input.min_value = field[2]
+@@ -50,7 +50,7 @@ func refresh(piece: BuildingPiece) -> void:
+ 		input.step = field[4]
+ 		input.value = piece.configuration.get(key, field[1])
+ 		input.editable = not build.rules or build.rules.permits(piece.instance_id, "configure")
+-		input.value_changed.connect(change.bind(key))
++		input.setting_changed.connect(change.bind(key))
+ 		fields[key] = input
+ 	for key in FLAGS.get(behavior, {}):
+ 		var field: Array = FLAGS[behavior][key]
+diff --git a/tests/test_construction.gd b/tests/test_construction.gd
+index 5281b79..fd27f3c 100644
+--- a/tests/test_construction.gd
++++ b/tests/test_construction.gd
+@@ -9,7 +9,7 @@ class TestCatalog:
+ 
+ 	func test_catalog_models_and_previews_load() -> void:
+ 		var piece_catalog = PieceCatalog.new()
+-		assert_eq(piece_catalog.query().size(), 173)
++		assert_eq(piece_catalog.query().size(), 207)
+ 		for definition in piece_catalog.query():
+ 			assert_not_null(definition.model, "%s model loads" % definition.id)
+ 			if definition.model:
+@@ -26,7 +26,7 @@ class TestRegistry:
+ 	func test_registry_ids_and_indexed_queries_match_saved_definitions() -> void:
+ 		var definitions := PieceCatalog.new()
+ 		var registry := PieceCatalog.REGISTRY
+-		assert_eq(registry.size(), 173, "Tracks, hidden support sections and scenery are registered")
++		assert_eq(registry.size(), 207, "Tracks, hidden support sections and scenery are registered")
+ 		assert_true(registry.is_property_indexed(&"category"))
+ 		assert_true(registry.is_property_indexed(&"behavior"))
+ 		var registered_ids := registry.get_all_string_ids()
+@@ -47,7 +47,7 @@ class TestRegistry:
+ 			if not expected.has(definition.category): expected.append(definition.category)
+ 		assert_eq(definitions.categories().size(), expected.size(), "Category menu reflects registered content")
+ 
+-	func test_registered_scenery_preserves_native_collision_and_legacy_asset_ids() -> void:
++	func test_registered_scenery_has_mesh_collision_and_legacy_asset_ids() -> void:
+ 		var definitions := PieceCatalog.new()
+ 		var scenery := definitions.query({&"category":"Scenery", &"behavior":"decoration"})
+ 		for asset in ["partition", "deck", "column", "machine"]:
+@@ -56,13 +56,12 @@ class TestRegistry:
+ 			if not definition: continue
+ 			assert_true(scenery.has(definition))
+ 			assert_true(definition.authoring_only)
+-			assert_false(definition.collision_enabled, "Native scene owns collision")
++			assert_true(definition.collision_enabled, "Imported scenery uses shared generated mesh collision")
+ 			assert_eq(PuzzleEnvironment.scene_path(asset), definition.model.resource_path)
+-			var inspected := PuzzleEnvironment.inspect(definition.model.resource_path)
+-			assert_eq(inspected.errors, [])
+-			assert_eq(definition.collision_solids.size(), inspected.solids.size())
+-			for index in definition.collision_solids.size():
+-				assert_true(definition.collision_solids[index].is_equal_approx(inspected.solids[index]), "Indexed definition matches native solid")
++			var object := autofree(BuildManager.PIECE_SCENE.instantiate()) as BuildingPiece
++			object.setup(definition)
++			assert_false(object.bodies.is_empty(), "Imported scenery has physical mesh collision")
++			assert_false(definition.collision_solids.is_empty(), "Placement has measured occupied volumes")
+ 		assert_eq(PuzzleEnvironment.scene_path("unknown"), "")
+ 
+ class TestPersistence:
+@@ -89,7 +88,7 @@ class TestPersistence:
+ func test_construction() -> void:
+ 	catalog=PieceCatalog.new()
+ 	snap=SnapManager.new()
+-	assert_true(catalog.query().size()==173,"Tracks, mechanisms, supports and native scenery share a catalog")
++	assert_true(catalog.query().size()==207,"Tracks, mechanisms, supports and native scenery share a catalog")
+ 	for v in [Vector3.ZERO,Vector3(-3,1.125,2.5),Vector3(12.5,4,-8)]:
+ 		assert_true(snap.grid_to_world(snap.world_to_grid(v)).is_equal_approx(v),"Grid round trip "+str(v))
+ 	assert_true(snap.grid_position(Vector3(-0.76,0.2,-0.26)).is_equal_approx(Vector3(-1,0.25,-0.5)),"Negative grid rounding")
+diff --git a/tests/test_settings_and_input.gd b/tests/test_settings_and_input.gd
+index bcb6385..fbbcd93 100644
+--- a/tests/test_settings_and_input.gd
++++ b/tests/test_settings_and_input.gd
+@@ -173,7 +173,7 @@ func test_right_drag_keeps_selection_and_placement() -> void:
+ 	await settle()
+ 	assert_null(build.chosen, "Escape cancels placement")
+ 
+-func test_real_repeated_spinbox_clicks_keep_inspector_open() -> void:
++func test_real_slider_clicks_keep_inspector_open() -> void:
+ 	var build: BuildManager = game.sandbox.build
+ 	var piece = build.spawn(game.catalog.get_piece("fan-standing-two"), Transform3D.IDENTITY)
+ 	if not piece:
+@@ -183,20 +183,38 @@ func test_real_repeated_spinbox_clicks_keep_inspector_open() -> void:
+ 	await settle()
+ 	get_window().grab_focus()
+ 	var inspector = game.get_node("%HUD").get_node("%Inspector")
+-	var field: SpinBox = inspector.get_node("%MechanismSettings").fields["power"]
++	var field: SettingSlider = inspector.get_node("%MechanismSettings").fields["power"]
+ 	var initial = field.value
+ 	for click in 3:
+-		var point = field.get_global_rect().position + Vector2(field.size.x - 8, 8)
++		var point = field.get_global_rect().position + Vector2(field.size.x * (0.45 + click * 0.1), field.size.y * 0.5)
+ 		await mouse_button(point, MOUSE_BUTTON_LEFT, true)
+ 		await settle()
+ 		await mouse_button(point, MOUSE_BUTTON_LEFT, false)
+ 	assert_eq(build.selected, piece)
+ 	assert_true(inspector.visible)
+-	assert_almost_eq(field.value, initial + field.step * 3, 0.001)
++	assert_gt(field.value, initial)
++	assert_almost_eq(float(piece.configuration.power), field.value, 0.001)
+ 	assert_eq(inspector.get_node("%MechanismSettings").fields.power, field, "The same input survives every click")
++	var previous_power: float = piece.configuration.power
++	var actions := build.history.get_history_count()
++	var grab := field.get_global_rect().position + Vector2(8 + (field.size.x - 16) * field.ratio, field.size.y * 0.5)
++	var destination := field.get_global_rect().position + Vector2(field.size.x * 0.85, field.size.y * 0.5)
++	await mouse_button(grab, MOUSE_BUTTON_LEFT, true)
++	sender.mouse_motion(destination)
++	await settle()
++	assert_eq(field.get_node("%Current").text, String.num(field.value, 2).trim_suffix(".0") + " N", "Number follows the thumb during dragging")
++	assert_almost_eq(float(piece.configuration.power), previous_power, 0.001, "Dragging does not commit intermediate values")
++	await mouse_button(destination, MOUSE_BUTTON_LEFT, false)
++	await settle()
++	assert_eq(build.history.get_history_count(), actions + 1, "A complete drag is one undoable setting edit")
++	assert_almost_eq(float(piece.configuration.power), field.value, 0.001)
++	assert_eq(field.get_node("%Minimum").text, "0 N")
++	assert_eq(field.get_node("%Maximum").text, "5 N")
++	await wait_seconds(2.0)
+ 	build.undo()
+ 	await settle()
+ 	assert_true(inspector.visible, "Undo keeps properties visible on the restored piece")
++	assert_almost_eq(float(build.selected.configuration.power), previous_power, 0.001, "Undo restores the value before dragging")
+ 	build.redo()
+ 	await settle()
+ 	assert_true(inspector.visible, "Redo keeps properties visible")
+diff --git a/tests/test_ui_workflows.gd b/tests/test_ui_workflows.gd
+index 232038e..722c6ef 100644
+--- a/tests/test_ui_workflows.gd
++++ b/tests/test_ui_workflows.gd
+@@ -101,14 +101,24 @@ func test_ui_workflows() -> void:
+ 	game.sandbox.build.select(gate)
+ 	await settle()
+ 	var settings = inspector.get_node("%MechanismSettings")
+-	var number: SpinBox = settings.get_child(0).get_node("%Value")
++	var number: SettingSlider = settings.get_child(0).get_node("%Value")
+ 	number.value = 0.25
+-	assert_true(number.is_inside_tree(), "Number edit keeps SpinBox and its repeat timer in the tree during the callback")
++	assert_true(number.is_inside_tree(), "Slider edit keeps its control in the tree during the callback")
+ 	await settle()
+-	assert_true(gate.configuration.delay == 0.25 and settings.get_child(0).get_node("%Value") == number, "Property edit preserves its original SpinBox across frames")
++	assert_true(gate.configuration.delay == 0.25 and settings.get_child(0).get_node("%Value") == number, "Property edit preserves its original slider across frames")
+ 	number.value = 0.5
+ 	await settle()
+ 	assert_true(inspector.visible and game.sandbox.build.selected == gate and gate.configuration.delay == 0.5, "Repeated property increments retain selection and the inspector")
++	var release: BuildingPiece = game.sandbox.build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(14,0,0)))
++	game.sandbox.build.select(release)
++	await settle()
++	var speed: SettingSlider = inspector.get_node("%Speed")
++	assert_eq(speed.get_node("%Current").text, "1.4 m/s", "Launch slider shows its current speed")
++	assert_eq(speed.get_node("%Minimum").text, "0 m/s")
++	assert_eq(speed.get_node("%Maximum").text, "6 m/s")
++	speed.value = 2.3
++	await settle()
++	assert_almost_eq(float(release.configuration.release_speed), 2.3, 0.001, "Launch slider edits the existing configuration")
+ 	game.sandbox.build.select_all()
+ 	await settle()
+ 	assert_true(not inspector.visible,"Group selection has no redundant properties panel")

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaan"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/stairs-closed-short.glb" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/stairs-closed-short.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"environment:building-stairs-closed-short"
+display_name = "Short stairs"
+category = "Platforms & stairs"
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+placement_offset = Vector3(0, 0, 1)
+bounds = AABB(-0.65, 0, -1, 1.3, 1.3, 2)
+behavior = "decoration"
+authoring_only = true
+collision_solids = Array[AABB]([AABB(-0.65, 0.3, -1, 1.3, 0.1, 0.6), AABB(-0.65, 0.6, -0.5, 1.3, 0.1, 0.6), AABB(-0.65, 0.9, 0, 1.3, 0.1, 0.6), AABB(-0.65, 1.2, 0.5, 1.3, 0.1, 0.5)])

@@ -12,7 +12,7 @@ func configure(manager: BuildManager) -> void:
 	%Lower.pressed.connect(func():build.elevate_selected(-build.height_step(Input.is_key_pressed(KEY_SHIFT))))
 	%Raise.pressed.connect(func():build.elevate_selected(build.height_step(Input.is_key_pressed(KEY_SHIFT))))
 func refresh() -> void:
-	visible=build.enabled and build.chosen==null and build.selected!=null
+	visible=build.enabled and not build.connect_mode and build.chosen==null and build.selected!=null
 	%Move.disabled=build.selected==null
 	%Duplicate.disabled=build.selected==null
 	%Delete.disabled=build.selected==null

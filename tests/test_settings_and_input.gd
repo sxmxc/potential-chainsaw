@@ -173,7 +173,7 @@ func test_right_drag_keeps_selection_and_placement() -> void:
 	await settle()
 	assert_null(build.chosen, "Escape cancels placement")
 
-func test_real_repeated_spinbox_clicks_keep_inspector_open() -> void:
+func test_real_slider_clicks_keep_inspector_open() -> void:
 	var build: BuildManager = game.sandbox.build
 	var piece = build.spawn(game.catalog.get_piece("fan-standing-two"), Transform3D.IDENTITY)
 	if not piece:
@@ -183,20 +183,38 @@ func test_real_repeated_spinbox_clicks_keep_inspector_open() -> void:
 	await settle()
 	get_window().grab_focus()
 	var inspector = game.get_node("%HUD").get_node("%Inspector")
-	var field: SpinBox = inspector.get_node("%MechanismSettings").fields["power"]
+	var field: SettingSlider = inspector.get_node("%MechanismSettings").fields["power"]
 	var initial = field.value
 	for click in 3:
-		var point = field.get_global_rect().position + Vector2(field.size.x - 8, 8)
+		var point = field.get_global_rect().position + Vector2(field.size.x * (0.45 + click * 0.1), field.size.y * 0.5)
 		await mouse_button(point, MOUSE_BUTTON_LEFT, true)
 		await settle()
 		await mouse_button(point, MOUSE_BUTTON_LEFT, false)
 	assert_eq(build.selected, piece)
 	assert_true(inspector.visible)
-	assert_almost_eq(field.value, initial + field.step * 3, 0.001)
+	assert_gt(field.value, initial)
+	assert_almost_eq(float(piece.configuration.power), field.value, 0.001)
 	assert_eq(inspector.get_node("%MechanismSettings").fields.power, field, "The same input survives every click")
+	var previous_power: float = piece.configuration.power
+	var actions := build.history.get_history_count()
+	var grab := field.get_global_rect().position + Vector2(8 + (field.size.x - 16) * field.ratio, field.size.y * 0.5)
+	var destination := field.get_global_rect().position + Vector2(field.size.x * 0.85, field.size.y * 0.5)
+	await mouse_button(grab, MOUSE_BUTTON_LEFT, true)
+	sender.mouse_motion(destination)
+	await settle()
+	assert_eq(field.get_node("%Current").text, String.num(field.value, 2).trim_suffix(".0") + " N", "Number follows the thumb during dragging")
+	assert_almost_eq(float(piece.configuration.power), previous_power, 0.001, "Dragging does not commit intermediate values")
+	await mouse_button(destination, MOUSE_BUTTON_LEFT, false)
+	await settle()
+	assert_eq(build.history.get_history_count(), actions + 1, "A complete drag is one undoable setting edit")
+	assert_almost_eq(float(piece.configuration.power), field.value, 0.001)
+	assert_eq(field.get_node("%Minimum").text, "0 N")
+	assert_eq(field.get_node("%Maximum").text, "5 N")
+	await wait_seconds(2.0)
 	build.undo()
 	await settle()
 	assert_true(inspector.visible, "Undo keeps properties visible on the restored piece")
+	assert_almost_eq(float(build.selected.configuration.power), previous_power, 0.001, "Undo restores the value before dragging")
 	build.redo()
 	await settle()
 	assert_true(inspector.visible, "Redo keeps properties visible")

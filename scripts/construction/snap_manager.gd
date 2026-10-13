@@ -58,7 +58,7 @@ func validate_group(items: Array, placement: Transform3D, pieces: Array, ignored
 	# Internal geometry is preserved by a rigid transform; it was validated when built.
 	return ""
 
-func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camera3D, cursor: Vector2, pieces: Array, ignored: Array, sticky: String = "", forced: Dictionary = {}, preferred: Transform3D = Transform3D.IDENTITY) -> Array[Dictionary]:
+func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camera3D, cursor: Vector2, pieces: Array, ignored: Array, sticky: String = "", forced: Dictionary = {}, preferred: Transform3D = Transform3D.IDENTITY, grab_offset: Variant = null) -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	var permitted_turns: Array[int] = []
 	for quarter in 4:
@@ -89,7 +89,7 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
 				score+=minf(100,(preferred*port.point).distance_to(target.point))*0.08
 				if target.key==sticky: score-=8.0
 				results.append({"transform":placement,"point":target.point,"target":target,"key":target.key+"/"+str(port_index)+"/"+str(quarter),"error":"","score":score})
-	if forced.is_empty(): results.append_array(surface_candidates(items, preferred, pieces, ignored, camera, cursor, sticky))
+	if forced.is_empty(): results.append_array(surface_candidates(items, preferred, pieces, ignored, camera, cursor, sticky, grab_offset))
 	results.sort_custom(func(a,b):return a.score<b.score)
 	# Limit expensive solid validation to plausible nearby alternatives.
 	if results.size()>candidate_budget: results.resize(candidate_budget)
@@ -99,73 +99,103 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
 	results.sort_custom(func(a,b):return a.score<b.score)
 	return results
 
-# Native solids align opposing faces using their measured edges and centres.
-# They share candidate selection and validation with tracks without track ports.
-func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String) -> Array[Dictionary]:
+# The cursor selects one physical surface. Alignment uses measured world geometry;
+# camera projection never decides the attachment transform or its elevation.
+func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String, grab_offset: Variant = null) -> Array[Dictionary]:
+	var hit := surface_hit(camera, cursor, ignored)
+	if hit.is_empty() or hit.piece not in pieces or not hit.piece.definition.authoring_only: return []
+	return face_candidates(items, preferred, hit.piece, hit.position, hit.normal, sticky, grab_offset)
+
+func surface_hit(camera: Camera3D, cursor: Vector2, ignored: Array = [], collision_mask: int = 1) -> Dictionary:
+	var excluded: Array[RID] = []
+	for piece in ignored:
+		for body in piece.bodies: excluded.append(body.get_rid())
+	# Exact silhouette edges can fall between collision triangles. A two-pixel
+	# pick tolerance resolves those misses without searching projected anchors.
+	for offset in [Vector2.ZERO, Vector2(0,-2), Vector2(2,0), Vector2(-2,0), Vector2(0,2)]:
+		var screen: Vector2 = cursor + offset
+		var origin := camera.project_ray_origin(screen)
+		var query := PhysicsRayQueryParameters3D.create(origin, origin + camera.project_ray_normal(screen) * 250, collision_mask)
+		query.exclude = excluded
+		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		if hit.is_empty(): continue
+		var node := hit.collider as Node
+		while node and not node is BuildingPiece: node = node.get_parent()
+		if not node: continue
+		hit.piece = node
+		return hit
+	return {}
+
+func face_candidates(items: Array, preferred: Transform3D, target_piece: BuildingPiece, point: Vector3, normal: Vector3, sticky: String = "", grab_offset: Variant = null) -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	var placements: Dictionary = {}
-	var source_boxes: Array[Dictionary] = []
-	for item in items:
-		for solid in item.definition.collision_solids:
-			source_boxes.append({"box":Transform3D(preferred.basis, Vector3.ZERO) * item.local * solid, "definition":item.definition})
-	if source_boxes.is_empty(): return results
-	for piece in pieces:
-		if piece in ignored: continue
-		for solid_index in piece.definition.collision_solids.size():
-			var target_box: AABB = piece.transform * piece.definition.collision_solids[solid_index]
-			for axis in 3:
-				for side in 2:
-					var anchors := face_anchors(target_box, axis, side)
-					for anchor_index in anchors.size():
-						var point: Vector3 = anchors[anchor_index]
-						if (camera.global_position[axis] - point[axis]) * (side * 2 - 1) <= 0: continue
-						var key: String = "%s/solid%d/%d/%d/%d" % [piece.instance_id, solid_index, axis, side, anchor_index]
-						if camera.is_position_behind(point): continue
-						var pixels: float = cursor.distance_to(camera.unproject_position(point))
-						if pixels > target_radius * (1.4 if key == sticky else 1.0): continue
-						var target := {"piece":piece, "point":point, "key":key}
-						if not target_visible(target, camera, ignored): continue
-						for source_item in source_boxes:
-							var source_box: AABB = source_item.box
-							var sources := face_anchors(source_box, axis, 1 - side)
-							if axis != 1 and permits_overlap(source_item.definition, piece.definition):
-								# Centre a column on the wall joint instead of pushing it outside.
-								for level in 3:
-									var centre := source_box.get_center()
-									centre.y = source_box.position.y + source_box.size.y * level * 0.5
-									sources.append(centre)
-							for source: Vector3 in sources:
-								var placement := Transform3D(preferred.basis, point - source)
-								# Side attachments retain elevation; top/bottom faces can stack.
-								if axis != 1 and not is_equal_approx(placement.origin.y, preferred.origin.y): continue
-								# Thin walls join at their ends rather than crossing at a midpoint.
-								var length_axis: int = 0 if source_box.size.x > source_box.size.z else 2
-								var width_axis: int = 2 if length_axis == 0 else 0
-								if axis == width_axis and source_box.size[length_axis] > source_box.size[width_axis] * 4.0 and is_equal_approx(source[length_axis], source_box.get_center()[length_axis]): continue
-								var offset := placement.origin - preferred.origin
-								var score: float = pixels + Vector2(offset.x, offset.z).length() * 2.0 + absf(offset.y) * 0.1
-								if not camera.is_position_behind(placement.origin): score += cursor.distance_to(camera.unproject_position(placement.origin)) * 0.5
-								if key == sticky: score -= 8.0
-								# Different face anchors can describe the same rigid placement.
-								var placement_key := str(placement.origin)
-								if placements.has(placement_key) and placements[placement_key].score <= score: continue
-								var candidate := {"transform":placement, "point":point, "target":target, "key":key+"/"+str(source), "error":"", "score":score}
-								placements[placement_key] = candidate
+	var hit_axis := normal.abs().max_axis_index()
+	# Sloping and curved faces are not rectangular attachment planes.
+	if absf(normal[hit_axis]) < 0.98: return results
+	var solids: Array[AABB] = target_piece.definition.collision_solids
+	for solid_index in solids.size():
+		var target_box: AABB = target_piece.transform * solids[solid_index]
+		var target_bounds: AABB = target_piece.transform * target_piece.definition.bounds
+		if not target_box.grow(0.003).has_point(point): continue
+		for axis in 3:
+			for side in 2:
+				var plane: float = target_box.position[axis] + target_box.size[axis] * side
+				var edge_distance := absf(point[axis] - plane)
+				var directly_hit := axis == hit_axis and normal[axis] * (side * 2 - 1) > 0
+				if directly_hit:
+					plane = point[axis]
+					edge_distance = 0.0
+				# A visible edge also offers its adjacent face, so thin floors can
+				# join at an edge without having to orbit below the top surface.
+				if not directly_hit and (axis == hit_axis or edge_distance > 0.18): continue
+				var key := "%s/solid%d/%d/%d" % [target_piece.instance_id, solid_index, axis, side]
+				for item_index in items.size():
+					var item: Dictionary = items[item_index]
+					var source_box: AABB = Transform3D(preferred.basis, Vector3.ZERO) * item.local * item.definition.bounds
+					var origin: Vector3 = point + grab_offset if grab_offset != null else point - source_box.get_center()
+					origin[axis] = plane - (source_box.position[axis] if side == 1 else source_box.end[axis])
+					for tangent in 3:
+						if tangent == axis: continue
+						if tangent == 1:
+							# Side joins align bases at the target's elevation, including
+							# platforms placed between construction grid levels.
+							origin.y = target_bounds.position.y - source_box.position.y
+						else:
+							origin[tangent] = target_bounds.position[tangent] + snappedf(origin[tangent] - target_bounds.position[tangent], horizontal_step)
+							var best := 0.26
+							var alignment_origin: float = origin[tangent]
+							for target_fraction in [0.0, 0.5, 1.0]:
+								for source_fraction in [0.0, 0.5, 1.0]:
+									if is_equal_approx(source_box.size[tangent], target_bounds.size[tangent]) and source_fraction != target_fraction: continue
+									var aligned_origin: float = target_bounds.position[tangent] + target_bounds.size[tangent] * target_fraction - source_box.position[tangent] - source_box.size[tangent] * source_fraction
+									var distance := absf(aligned_origin - alignment_origin)
+									if distance < best:
+										best = distance
+										origin[tangent] = aligned_origin
+					var variants: Array[Vector3] = [origin]
+					if axis != 1 and permits_overlap(item.definition, target_piece.definition):
+						var joint := origin
+						joint[axis] = plane - source_box.get_center()[axis]
+						variants.push_front(joint)
+					for variant_index in variants.size():
+						var placement := Transform3D(preferred.basis, variants[variant_index])
+						var score := edge_distance * 10.0
+						# Near a thin floor's rim, joining its edge is the useful default.
+						if directly_hit: score += 2.0 if hit_axis == 1 and target_bounds.size.y < 0.2 else -2.0
+						var length_axis := 0 if source_box.size.x > source_box.size.z else 2
+						var width_axis := 2 if length_axis == 0 else 0
+						if axis == width_axis and source_box.size[length_axis] > source_box.size[width_axis] * 4.0:
+							var end_distance := minf(absf(point[length_axis] - target_bounds.position[length_axis]), absf(point[length_axis] - target_bounds.end[length_axis]))
+							if end_distance < 0.18: score += 4.0
+						if key == sticky: score -= 0.4
+						score += variant_index * 0.1 + item_index * 0.01
+						var placement_key := str(placement.origin)
+						if placements.has(placement_key) and placements[placement_key].score <= score: continue
+						var contact := point
+						contact[axis] = plane
+						placements[placement_key] = {"transform":placement, "point":contact, "target":{"piece":target_piece, "point":contact, "key":key, "surface":true}, "key":key+"/"+str(item_index)+"/"+str(variant_index), "error":"", "score":score}
 	results.assign(placements.values())
 	return results
-
-func face_anchors(box: AABB, axis: int, side: int) -> Array[Vector3]:
-	var result: Array[Vector3] = []
-	var first: int = (axis + 1) % 3
-	var second: int = (axis + 2) % 3
-	for u in 3:
-		for v in 3:
-			var point := box.position
-			point[axis] += box.size[axis] * side
-			point[first] += box.size[first] * u * 0.5
-			point[second] += box.size[second] * v * 0.5
-			result.append(point)
-	return result
 
 func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -> bool:
 	var origin := camera.global_position
@@ -227,7 +257,7 @@ func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array
 	for piece in pieces:
 		if piece == ignore: continue
 		if permits_overlap(definition, piece.definition): continue
-		if not box.grow(-0.015).intersects(piece.transform * piece.definition.bounds): continue
+		if not inset_bounds(box, 0.015).intersects(piece.transform * piece.definition.bounds): continue
 		if solid_overlap(definition, placement, piece.definition, piece.transform):
 			return "Physical overlap with " + piece.definition.display_name
 	return ""
@@ -235,19 +265,26 @@ func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array
 func permits_overlap(a: PieceDefinition, b: PieceDefinition) -> bool:
 	return a.authoring_only and b.authoring_only and (a.overlap_with.has(b.id) or b.overlap_with.has(a.id))
 
+static func inset_bounds(bounds: AABB, margin: float) -> AABB:
+	# Keep at least half of each thin dimension; a fixed shrink can invert it.
+	var inset := (bounds.size * 0.25).min(Vector3.ONE * margin)
+	return AABB(bounds.position + inset, bounds.size - inset * 2.0)
+
 static func intersects_solids(definition: PieceDefinition, placement: Transform3D, solids: Array) -> bool:
+	if not definition.collision_enabled and not definition.reserve_bounds and definition.collision_solids.is_empty(): return false
 	var bounds: AABB = placement * definition.bounds
 	for solid: AABB in solids:
-		if not bounds.grow(-0.001).intersects(solid): continue
+		if not inset_bounds(bounds, 0.001).intersects(solid): continue
 		if definition.reserve_bounds or definition.surface_cells.is_empty(): return true
 		# Existing catalog samples represent occupied 10 cm cells. Test their
 		# volumes, not just centres: even a thin partition must block placement.
 		for point in definition.surface_cells:
 			var cell := placement * AABB(point - Vector3.ONE * 0.05, Vector3.ONE * 0.1)
-			if cell.grow(-0.001).intersects(solid): return true
+			if inset_bounds(cell, 0.001).intersects(solid): return true
 	return false
 
 func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: Transform3D) -> bool:
+	if (not a.collision_enabled and not a.reserve_bounds and a.collision_solids.is_empty()) or (not b.collision_enabled and not b.reserve_bounds and b.collision_solids.is_empty()): return false
 	# A moving mechanism reserves its complete swept volume, including empty gaps.
 	if not a.collision_solids.is_empty():
 		var solids: Array = []
@@ -255,12 +292,12 @@ func solid_overlap(a: PieceDefinition, at: Transform3D, b: PieceDefinition, bt: 
 		if not b.collision_solids.is_empty():
 			for solid in b.collision_solids:
 				for other: AABB in solids:
-					if (bt * solid).grow(-0.001).intersects(other): return true
+					if inset_bounds(bt * solid, 0.001).intersects(other): return true
 			return false
 		return intersects_solids(b, bt, solids)
 	if not b.collision_solids.is_empty(): return solid_overlap(b, bt, a, at)
 	if a.reserve_bounds or b.reserve_bounds:
-		return (at*a.bounds).grow(-0.015).intersects((bt*b.bounds).grow(-0.015))
+		return inset_bounds(at * a.bounds, 0.015).intersects(inset_bounds(bt * b.bounds, 0.015))
 	# Right-angle rigid transforms preserve the per-axis sample tolerance. Index
 	# each immutable definition once, then query in B's local space.
 	var id=b.get_instance_id()

@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://khlp72i5rsq2"]
 
-[ext_resource type="Script" uid="uid://bd8mw8dtowbwn" path="res://scripts/ui/mechanism_link_settings.gd" id="LinkSettings"]
 [ext_resource type="Script" uid="uid://u8738hesllf" path="res://scripts/ui/mechanism_settings.gd" id="MechanismSettings"]
 [ext_resource type="Script" uid="uid://co67b1kb4y0ob" path="res://scripts/ui/inspector.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
 
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
 custom_minimum_size = Vector2(280, 0)
@@ -48,7 +49,7 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Launch speed"
 
-[node name="Speed" type="SpinBox" parent="Scroll/Contents" unique_id=786022461]
+[node name="Speed" parent="Scroll/Contents" unique_id=786022461 instance=ExtResource("Slider")]
 unique_name_in_owner = true
 layout_mode = 2
 max_value = 6.0
@@ -66,7 +67,7 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Elevator rise"
 
-[node name="ElevatorHeight" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724]
+[node name="ElevatorHeight" parent="Scroll/Contents/ElevatorSettings" unique_id=2081147724 instance=ExtResource("Slider")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Height difference between the input and output; 2–12 m in 0.5 m steps"
@@ -81,7 +82,7 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Bucket travel speed"
 
-[node name="ElevatorSpeed" type="SpinBox" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412]
+[node name="ElevatorSpeed" parent="Scroll/Contents/ElevatorSettings" unique_id=1365837412 instance=ExtResource("Slider")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Continuous conveyor speed; edit in Build mode"
@@ -101,7 +102,7 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Support bearing height"
 
-[node name="SupportHeight" type="SpinBox" parent="Scroll/Contents/SupportSettings" unique_id=1096130528]
+[node name="SupportHeight" parent="Scroll/Contents/SupportSettings" unique_id=1096130528 instance=ExtResource("Slider")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Bottom and top retain their shape; matching middle sections fill the height"
@@ -131,61 +132,11 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("MechanismSettings")
 
-[node name="LinksToggle" type="Button" parent="Scroll/Contents" unique_id=414533236]
+[node name="Capabilities" type="Label" parent="Scroll/Contents"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"QuietButton"
-text = "Mechanism links ▾"
-
-[node name="LinkSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=792289605]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("LinkSettings")
-
-[node name="LinkHelp" type="Label" parent="Scroll/Contents/LinkSettings"]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-text = "When this piece emits an event:"
-
-[node name="LinkEvent" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-layout_mode = 2
-fit_to_longest_item = false
-clip_text = true
-
-[node name="TargetLabel" type="Label" parent="Scroll/Contents/LinkSettings"]
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Target piece"
-
-[node name="LinkTarget" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-layout_mode = 2
-fit_to_longest_item = false
-clip_text = true
-
-[node name="LinkAction" type="OptionButton" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-layout_mode = 2
-fit_to_longest_item = false
-clip_text = true
-
-[node name="AddLink" type="Button" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-text = "Connect event"
-
-[node name="LinkList" type="ItemList" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-
-[node name="RemoveLink" type="Button" parent="Scroll/Contents/LinkSettings"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"QuietButton"
-text = "Remove selected link"
+autowrap_mode = 3
 
 [node name="PermissionsToggle" type="Button" parent="Scroll/Contents"]
 unique_name_in_owner = true

@@ -1,10 +1,13 @@
 extends VBoxContainer
 signal library_toggled
+var wiring: Control
 var build: BuildManager
 var simulation: SimulationManager
 func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build=manager
 	simulation=simulator
+	%Connect.pressed.connect(func(): wiring.set_tool(not build.connect_mode))
+	%Connections.pressed.connect(wiring.toggle_overlay)
 	%Grid.icon=get_theme_icon("grid","SandboxIcons")
 	%Snap.icon=get_theme_icon("snap","SandboxIcons")
 	%Select.pressed.connect(build.cancel)
@@ -19,6 +22,8 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%FrameAll.pressed.connect(build.frame_all)
 	build.status_changed.connect(func(_message):refresh_placement())
 func refresh(library_open: bool) -> void:
+	%Connect.button_pressed=build.connect_mode
+	%Connections.button_pressed=wiring.overlay_enabled
 	%Grid.button_pressed=build.grid_visible
 	%Snap.button_pressed=build.snapping
 	%Library.button_pressed=library_open

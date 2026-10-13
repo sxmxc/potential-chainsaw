@@ -1,0 +1,583 @@
+{
+  "awards": {},
+  "bounds": [
+    -5.0,
+    -6.0,
+    5.0,
+    5.0,
+    0.0,
+    4.0
+  ],
+  "camera": {
+    "distance": 17.0,
+    "focus": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "pitch": 0.65,
+    "yaw": 0.65
+  },
+  "chapter": {
+    "id": "chapter-1",
+    "introduction": false,
+    "name": "Chapter 1",
+    "optional": false,
+    "order": 1.0,
+    "prerequisites": []
+  },
+  "description": "Deliver each batch to its labelled collector.",
+  "difficulty": "Workshop",
+  "environment_instances": [
+    {
+      "asset": "building-column-thin",
+      "position": [
+        -1.0,
+        0.0,
+        -5.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-418175937-12"
+    },
+    {
+      "asset": "building-column-thin",
+      "position": [
+        1.0,
+        0.0,
+        -5.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-425824874-13"
+    },
+    {
+      "asset": "building-column-thin",
+      "position": [
+        -4.0,
+        0.0,
+        1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-488317124-18"
+    },
+    {
+      "asset": "building-column-thin",
+      "position": [
+        4.0,
+        0.0,
+        1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-499665818-19"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        -3.5,
+        0.0,
+        -1.0
+      ],
+      "rotation": 1.0,
+      "uid": "piece-838746670-40"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        4.0,
+        0.0,
+        -1.0
+      ],
+      "rotation": 1.0,
+      "uid": "piece-848580534-41"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        -3.0,
+        0.0,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-859369067-42"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        -3.0,
+        0.0,
+        -3.5
+      ],
+      "rotation": 2.0,
+      "uid": "piece-861274385-43"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        -3.0,
+        0.0,
+        -5.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-863032455-44"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        3.5,
+        0.0,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-868142519-45"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        3.5,
+        0.0,
+        -3.5
+      ],
+      "rotation": 2.0,
+      "uid": "piece-869292811-46"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        3.5,
+        0.0,
+        -5.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-871651850-47"
+    },
+    {
+      "asset": "factory-structure-medium",
+      "position": [
+        -4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-981806294-51"
+    },
+    {
+      "asset": "factory-structure-medium",
+      "position": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-986914032-52"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        -1.0,
+        0.0,
+        -4.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1030412610-53"
+    },
+    {
+      "asset": "factory-structure-tall",
+      "position": [
+        1.0,
+        0.0,
+        -4.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1034848405-54"
+    },
+    {
+      "asset": "building-column-thin",
+      "position": [
+        1.0,
+        2.39999914169312,
+        -5.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1438608385-111"
+    },
+    {
+      "asset": "building-column-thin",
+      "position": [
+        -1.0,
+        2.40000009536743,
+        -5.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1440138414-112"
+    },
+    {
+      "asset": "building-border",
+      "position": [
+        -4.0,
+        2.5,
+        0.999999821186066
+      ],
+      "rotation": 1.0,
+      "uid": "piece-1512997368-118"
+    },
+    {
+      "asset": "building-border",
+      "position": [
+        -2.0,
+        2.5,
+        0.999999761581421
+      ],
+      "rotation": 1.0,
+      "uid": "piece-1515184885-119"
+    },
+    {
+      "asset": "building-border",
+      "position": [
+        0.0,
+        2.5,
+        1.0
+      ],
+      "rotation": 1.0,
+      "uid": "piece-1517834092-120"
+    },
+    {
+      "asset": "building-border",
+      "position": [
+        1.99999904632568,
+        2.5,
+        0.999999940395355
+      ],
+      "rotation": 1.0,
+      "uid": "piece-1520057486-121"
+    },
+    {
+      "asset": "building-border",
+      "position": [
+        3.99999904632568,
+        2.5,
+        0.999999821186066
+      ],
+      "rotation": 1.0,
+      "uid": "piece-1521873565-122"
+    },
+    {
+      "asset": "building-wall-corner",
+      "position": [
+        4.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1602657707-123"
+    },
+    {
+      "asset": "building-wall-corner",
+      "position": [
+        -4.0,
+        0.0,
+        0.5
+      ],
+      "rotation": 3.0,
+      "uid": "piece-1633289999-124"
+    }
+  ],
+  "environment_snapshot": "res://resources/campaign/environments/chapter1-shared-clearance-488d71b72e467a6eaf0f7c4383dab1ff80534d3d5a83eb9366d83e161161af76.tscn",
+  "hints": [],
+  "id": "chapter1-shared-clearance",
+  "inventory": {
+    "bucket-elevator": 1.0,
+    "corner": 4.0,
+    "curve": 8.0,
+    "ramp-long-a": 6.0,
+    "ramp-long-b": 4.0,
+    "ramp-long-c": 4.0,
+    "ramp-long-d": 4.0,
+    "straight": 18.0
+  },
+  "name": "Shared clearance",
+  "objectives": [
+    {
+      "count": 2.0,
+      "source": "release-a",
+      "target": "goal-a",
+      "type": "deliver"
+    },
+    {
+      "count": 2.0,
+      "source": "release-b",
+      "target": "goal-b",
+      "type": "deliver"
+    }
+  ],
+  "order": 3.0,
+  "permissions": {},
+  "pieces": [
+    {
+      "config": {
+        "interval": 1.4,
+        "quantity": 2.0,
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        -4.0,
+        1.0,
+        0.0
+      ],
+      "rotation": 3.0,
+      "uid": "release-a"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        4.0,
+        1.0,
+        0.0
+      ],
+      "rotation": 1.0,
+      "uid": "goal-a"
+    },
+    {
+      "config": {
+        "interval": 1.4,
+        "quantity": 2.0,
+        "release_speed": 0.8
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        3.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "release-b"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        0.0,
+        0.75,
+        -5.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal-b"
+    },
+    {
+      "config": {
+        "support_double_top": false,
+        "support_height": 3.0
+      },
+      "piece": "support-single",
+      "position": [
+        0.0,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1328051526-107"
+    }
+  ],
+  "prerequisites": [],
+  "restricted_zones": [],
+  "revision": 1.0,
+  "solution": [
+    {
+      "config": {
+        "interval": 1.4,
+        "quantity": 2.0,
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        -4.0,
+        1.0,
+        0.0
+      ],
+      "rotation": 3.0,
+      "uid": "release-a"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        4.0,
+        1.0,
+        0.0
+      ],
+      "rotation": 1.0,
+      "uid": "goal-a"
+    },
+    {
+      "config": {
+        "interval": 1.4,
+        "quantity": 2.0,
+        "release_speed": 0.8
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        3.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "release-b"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        0.0,
+        0.75,
+        -5.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal-b"
+    },
+    {
+      "config": {
+        "support_double_top": false,
+        "support_height": 3.0
+      },
+      "piece": "support-single",
+      "position": [
+        0.0,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-1328051526-107"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        3.0,
+        1.0,
+        -1.98418792e-09
+      ],
+      "rotation": 3.0,
+      "uid": "piece-78363291-36"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        2.0,
+        1.0,
+        9.94069448e-09
+      ],
+      "rotation": 3.0,
+      "uid": "piece-78937441-37"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        1.0,
+        1.0,
+        2.186557779e-08
+      ],
+      "rotation": 3.0,
+      "uid": "piece-79519612-38"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        1.0,
+        3.37904602e-08
+      ],
+      "rotation": 3.0,
+      "uid": "piece-80444499-39"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        -1.0,
+        1.0,
+        4.571534262e-08
+      ],
+      "rotation": 3.0,
+      "uid": "piece-81146426-40"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        -2.0,
+        1.0,
+        5.764022859e-08
+      ],
+      "rotation": 3.0,
+      "uid": "piece-81841488-41"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        -3.0,
+        1.0,
+        6.9565111e-08
+      ],
+      "rotation": 3.0,
+      "uid": "piece-82475624-42"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-d",
+      "position": [
+        0.0,
+        1.5,
+        2.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-163423936-50"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-b",
+      "position": [
+        -5.762045418e-08,
+        1.49998474121094,
+        0.5
+      ],
+      "rotation": 2.0,
+      "uid": "piece-292838548-56"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-a",
+      "position": [
+        -1.7484555314e-07,
+        1.74998092651367,
+        -1.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-306559427-57"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-c",
+      "position": [
+        -1.7484555314e-07,
+        0.749992370605469,
+        -3.5
+      ],
+      "rotation": 0.0,
+      "uid": "piece-308963243-58"
+    }
+  ],
+  "status": "published",
+  "time_limit": 60.0,
+  "validation": {
+    "engine": "4.7.2-stable (official)",
+    "fingerprint": "488d71b72e467a6eaf0f7c4383dab1ff80534d3d5a83eb9366d83e161161af76",
+    "physics_success": true,
+    "seconds": 9.94166666666674,
+    "tested_at": "2026-10-13T22:17:53"
+  },
+  "version": 2.0
+}

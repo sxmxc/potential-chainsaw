@@ -12,6 +12,9 @@
 [ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/icons/connect.svg" id="ConnectIcon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/connections.svg" id="ConnectionsIcon"]
+
 [node name="BuildToolbar" type="VBoxContainer" unique_id=1199303520]
 mouse_filter = 2
 theme = ExtResource("Theme")
@@ -156,3 +159,23 @@ theme_type_variation = &"IconButton"
 icon = ExtResource("11_3xug4")
 script = ExtResource("IconScript")
 icon_name = &"frame"
+
+[node name="Connect" type="Button" parent="Common"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Connect mechanisms · drag outputs to inputs"
+theme_type_variation = &"IconButton"
+toggle_mode = true
+icon = ExtResource("ConnectIcon")
+script = ExtResource("IconScript")
+
+[node name="Connections" type="Button" parent="Common"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Show mechanism connections"
+theme_type_variation = &"IconButton"
+toggle_mode = true
+icon = ExtResource("ConnectionsIcon")
+script = ExtResource("IconScript")
