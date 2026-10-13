@@ -28,9 +28,169 @@
   },
   "description": "Deliver the marble to the far collector.",
   "difficulty": "Workshop",
-  "environment": "res://scenes/environments/service_block.tscn",
-  "environment_instances": [],
-  "environment_snapshot": "res://resources/campaign/environments/chapter1-service-block-0d796e111c3e81dbb4fbaaba995cb8e8535e3d6cc74f1923b4669066619b6247.tscn",
+  "environment_instances": [
+    {
+      "asset": "deck",
+      "position": [
+        -1.5,
+        0.0,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-226966652-129"
+    },
+    {
+      "asset": "deck",
+      "position": [
+        0.5,
+        0.0,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-231491265-130"
+    },
+    {
+      "asset": "deck",
+      "position": [
+        0.5,
+        0.0,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-233514402-131"
+    },
+    {
+      "asset": "deck",
+      "position": [
+        -1.5,
+        0.0,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-234826608-132"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        1.54999995231628,
+        0.100000001490116,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-239430299-133"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        1.54999995231628,
+        0.100000001490116,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-241836073-134"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        0.5,
+        0.100000001490116,
+        -0.949999928474426
+      ],
+      "rotation": 1.0,
+      "uid": "piece-265930488-135"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        -1.5,
+        0.100000001490116,
+        -0.949999928474426
+      ],
+      "rotation": 1.0,
+      "uid": "piece-368363228-138"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        -2.55000019073486,
+        0.100000001490116,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-381700109-139"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        -2.55000019073486,
+        0.100000001490116,
+        -4.0
+      ],
+      "rotation": 2.0,
+      "uid": "piece-383294033-140"
+    },
+    {
+      "asset": "column",
+      "position": [
+        -2.5,
+        0.100000001490116,
+        -1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-412721025-141"
+    },
+    {
+      "asset": "column",
+      "position": [
+        1.5,
+        0.100000001490116,
+        -1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-423756355-142"
+    },
+    {
+      "asset": "column",
+      "position": [
+        -2.5,
+        0.100000001490116,
+        -4.75
+      ],
+      "rotation": 0.0,
+      "uid": "piece-445794960-143"
+    },
+    {
+      "asset": "column",
+      "position": [
+        1.5,
+        0.100000001490116,
+        -5.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-452346345-144"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        -1.5,
+        0.100000001490116,
+        -4.94999980926514
+      ],
+      "rotation": 1.0,
+      "uid": "piece-492063048-145"
+    },
+    {
+      "asset": "partition",
+      "position": [
+        0.5,
+        0.100000001490116,
+        -4.94999980926514
+      ],
+      "rotation": 1.0,
+      "uid": "piece-506165691-146"
+    }
+  ],
+  "environment_snapshot": "res://resources/campaign/environments/chapter1-service-block-aca107a1b85b6b5cdff6823f9b4e3e574d7b69762e1b2fcc00b9d5674488fd36.tscn",
   "hints": [],
   "id": "chapter1-service-block",
   "inventory": {
@@ -75,6 +235,61 @@
       ],
       "rotation": 2.0,
       "uid": "goal"
+    },
+    {
+      "config": {},
+      "piece": "banner-hanging-double-high",
+      "position": [
+        4.0,
+        1.5,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-405348527-12"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall-large",
+      "position": [
+        -2.0,
+        0.0,
+        1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-450158393-14"
+    },
+    {
+      "config": {},
+      "piece": "tree",
+      "position": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-172951568-22"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall",
+      "position": [
+        3.0,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-188895647-23"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall",
+      "position": [
+        -2.5,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-190818154-24"
     }
   ],
   "prerequisites": [],
@@ -107,69 +322,113 @@
     },
     {
       "config": {},
-      "piece": "ramp-long-a",
+      "piece": "banner-hanging-double-high",
+      "position": [
+        4.0,
+        1.5,
+        -4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-405348527-12"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall-large",
+      "position": [
+        -2.0,
+        0.0,
+        1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-450158393-14"
+    },
+    {
+      "config": {},
+      "piece": "tree",
       "position": [
         0.0,
-        1.24999618530273,
+        0.0,
+        3.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-172951568-22"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall",
+      "position": [
+        3.0,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-188895647-23"
+    },
+    {
+      "config": {},
+      "piece": "tree-tall",
+      "position": [
+        -2.5,
+        0.0,
+        4.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-190818154-24"
+    },
+    {
+      "config": {},
+      "piece": "ramp-long-b",
+      "position": [
+        0.0,
+        1.0,
         2.5
       ],
       "rotation": 0.0,
-      "uid": "piece-520027684-5"
+      "uid": "piece-34405099-32"
     },
     {
       "config": {},
       "piece": "curve",
       "position": [
         0.499992311000824,
-        1.25,
+        0.999992370605469,
         0.5
       ],
       "rotation": 2.0,
-      "uid": "piece-526823929-6"
+      "uid": "piece-45802459-33"
     },
     {
       "config": {},
       "piece": "straight",
       "position": [
         1.99999225139618,
-        1.25,
+        0.999992370605469,
         7.51912375562e-06
       ],
       "rotation": 3.0,
-      "uid": "piece-531785736-7"
+      "uid": "piece-49074591-34"
     },
     {
       "config": {},
       "piece": "straight",
       "position": [
         2.99999237060547,
-        1.25,
+        0.999992370605469,
         7.50719846109e-06
       ],
       "rotation": 3.0,
-      "uid": "piece-533350482-8"
+      "uid": "piece-49740080-35"
     },
     {
       "config": {},
       "piece": "corner",
       "position": [
         3.99999237060547,
-        1.25,
+        0.999992370605469,
         7.50123581383e-06
       ],
       "rotation": 0.0,
-      "uid": "piece-535361754-9"
-    },
-    {
-      "config": {},
-      "piece": "ramp-long-a",
-      "position": [
-        3.99999237060547,
-        0.999996185302734,
-        -1.49999248981476
-      ],
-      "rotation": 0.0,
-      "uid": "piece-540755598-10"
+      "uid": "piece-54373418-36"
     },
     {
       "config": {},
@@ -180,17 +439,39 @@
         -3.0
       ],
       "rotation": 0.0,
-      "uid": "piece-543009651-11"
+      "uid": "piece-86996323-39"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        4.0,
+        1.0,
+        -2.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-87638507-40"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        4.0,
+        1.0,
+        -1.0
+      ],
+      "rotation": 0.0,
+      "uid": "piece-101372249-41"
     }
   ],
   "status": "published",
   "time_limit": 60.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "0d796e111c3e81dbb4fbaaba995cb8e8535e3d6cc74f1923b4669066619b6247",
+    "fingerprint": "aca107a1b85b6b5cdff6823f9b4e3e574d7b69762e1b2fcc00b9d5674488fd36",
     "physics_success": true,
-    "seconds": 7.70000000000017,
-    "tested_at": "2026-10-12T22:48:26"
+    "seconds": 8.71666666666681,
+    "tested_at": "2026-10-13T04:14:37"
   },
   "version": 2.0
 }
