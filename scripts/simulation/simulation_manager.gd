@@ -7,7 +7,7 @@ enum State { BUILD, RUNNING, PAUSED, SUCCESS, FAILED }
 signal state_changed(state: State, message: String)
 signal arrived
 signal objective_progress
-var links = MechanismLinks.new()
+var dispatching_links: bool = false
 var state: State = State.BUILD
 var build: BuildManager
 var marble: RigidBody3D
@@ -69,7 +69,6 @@ func start() -> bool:
 		if not piece.mechanism_component: continue
 		var callback = _mechanism_event.bind(piece)
 		if not piece.mechanism_component.event_raised.is_connected(callback): piece.mechanism_component.event_raised.connect(callback)
-	links.bind(build.pieces, func(): return state == State.RUNNING)
 	elapsed = 0
 	state = State.RUNNING
 	state_changed.emit(state,"Testing")
@@ -92,6 +91,25 @@ func _mechanism_event(event: String, body: RigidBody3D, piece: BuildingPiece) ->
 	if state != State.RUNNING: return
 	objectives.activated(event, body, piece)
 	objective_progress.emit()
+	# Actions emit events synchronously. Record those for objectives, but do not
+	# dispatch another link chain until this source event has finished.
+	if dispatching_links: return
+	dispatching_links = true
+	for link in piece.configuration.get("links", []):
+		if link.get("event") != event: continue
+		var target := build.find_piece(link.get("target", ""))
+		if is_instance_valid(target) and target.mechanism_component:
+			target.mechanism_component.perform(link.get("action", ""))
+	dispatching_links = false
+
+func validate_links() -> Array[String]:
+	var errors: Array[String] = []
+	for source in build.pieces:
+		for link in source.configuration.get("links", []):
+			var target := build.find_piece(link.get("target", ""))
+			if not target or not target.mechanism_component or not source.mechanism_component or not target.mechanism_component.actions.has(link.get("action")) or link.get("event") not in source.mechanism_component.events:
+				errors.append("Invalid mechanism link on " + source.instance_id)
+	return errors
 
 func _physics_process(delta: float) -> void:
 	if state != State.RUNNING: return

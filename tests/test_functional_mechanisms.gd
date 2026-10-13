@@ -105,14 +105,15 @@ func test_functional_mechanisms() -> void:
 	gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "gate")
 	var events: Array = []
 	sensor.mechanism_component.event_raised.connect(func(event, _body): events.append(event))
-	sensor.mechanism_component.active = true
-	gate.mechanism_component.active = true
-	var links = MechanismLinks.new()
-	links.bind(build.pieces, func(): return true)
+	var sim: SimulationManager = game.sandbox.simulation
+	sim.puzzle = {"objectives": []}
+	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "release", {"start_delay": 60})
+	assert_true(sim.start())
 	body = ball(Vector3(0, 0.46, 0.4), Vector3(0, 0, -0.6))
 	await ticks(80)
 	assert_true(events.count("entered") == 1 and gate.mechanism_component.open, "Sensor crossing dispatches one persistent Open link")
-	assert_true(MechanismLinks.validate(build.pieces).is_empty(), "Link validation")
+	assert_true(sim.validate_links().is_empty(), "Link validation")
+	sim.reset()
 	body.queue_free()
 	build.restore([])
 	await get_tree().process_frame
@@ -147,6 +148,44 @@ func test_functional_mechanisms() -> void:
 		assert_true(alternating.mechanism_component.left != expected_left, "Alternating fork rearms after marble exits")
 		body.queue_free()
 		await ticks(4)
+
+func test_link_dispatch_records_action_events_without_recursive_chains() -> void:
+	game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	game.new_track()
+	build = game.sandbox.build
+	var sim: SimulationManager = game.sandbox.simulation
+	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
+	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "sensor", {"links": [{"event": "entered", "target": "gate", "action": "toggle"}]})
+	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "gate", "action": "close"}]})
+	sim.puzzle = {"objectives": [{"type": "activate", "target": "gate", "event": "opened"}]}
+	assert_true(sim.validate_links().is_empty())
+	assert_true(sim.start())
+	sensor.mechanism_component.event_raised.emit("entered", null)
+	assert_true(gate.mechanism_component.open, "Synchronous action events cannot recursively dispatch the Close link")
+	assert_true(sim.objectives.satisfied(0), "The linked gate's Opened event still counts toward objectives")
+	sim.reset()
+	sensor.mechanism_component.event_raised.emit("entered", null)
+	assert_false(gate.mechanism_component.open, "Build mode ignores mechanism links")
+	assert_false(sim.objectives.satisfied(0), "Reset clears activation progress")
+	assert_true(sim.start())
+	sim.toggle_pause()
+	sensor.mechanism_component.event_raised.emit("entered", null)
+	assert_false(gate.mechanism_component.open, "Paused simulation ignores mechanism links")
+	assert_false(sim.objectives.satisfied(0), "Paused events do not count toward objectives")
+	sim.toggle_pause()
+	sensor.mechanism_component.event_raised.emit("entered", null)
+	assert_true(gate.mechanism_component.open, "Restart handles the source event once, without duplicate toggles")
+	sim.reset()
+	for invalid_link in [
+		{"event": "entered", "target": "missing", "action": "open"},
+		{"event": "unknown", "target": "gate", "action": "open"},
+		{"event": "entered", "target": "release", "action": "open"},
+		{"event": "entered", "target": "gate", "action": "unknown"}
+	]:
+		sensor.configuration.links = [invalid_link]
+		assert_false(sim.validate_links().is_empty(), "Reject invalid target, event or action")
 
 func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
