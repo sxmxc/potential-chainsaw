@@ -30,6 +30,7 @@ func test_puzzle_workflow() -> void:
 	assert_true(session.mode == "editor" and build.rules == null, "Editor uses unrestricted existing construction")
 	var hud := game.get_node("%HUD")
 	var inspector := hud.get_node("%Inspector")
+	var authoring: PanelContainer = hud.get_node("%PuzzleAuthoring")
 	build.select(build.pieces[0])
 	inspector.get_node("%PermissionsToggle").pressed.emit()
 	inspector.get_node("%Preset").select(3)
@@ -42,18 +43,18 @@ func test_puzzle_workflow() -> void:
 	inspector.get_node("%SettingMax").value = 2.0
 	inspector.get_node("%ApplyPermissions").pressed.emit()
 	assert_true(session.puzzle.permissions.start.configure, "The shared selection inspector authors player permissions")
-	game.authoring.open()
-	assert_true(game.authoring.visible, "Complete native visual authoring panel opens")
-	game.authoring.get_node("%PuzzleName").text = "Shared construction workflow"
+	authoring.open()
+	assert_true(authoring.visible, "Complete native visual authoring panel opens")
+	authoring.get_node("%PuzzleName").text = "Shared construction workflow"
 	assert_true(build.dirty, "Metadata edits participate in draft saving")
-	var inventory: OptionButton = game.authoring.get_node("%InventoryPiece")
+	var inventory: OptionButton = authoring.get_node("%InventoryPiece")
 	for index in inventory.item_count:
 		if inventory.get_item_metadata(index) == "straight": inventory.select(index)
-	game.authoring.get_node("%Quantity").value = 1
-	game.authoring.get_node("%SetQuantity").pressed.emit()
-	game.authoring.get_node("%AddObjective").pressed.emit()
+	authoring.get_node("%Quantity").value = 1
+	authoring.get_node("%SetQuantity").pressed.emit()
+	authoring.get_node("%AddObjective").pressed.emit()
 	assert_eq(session.puzzle.objectives[0].target, "finish", "Objectives use placed construction objects")
-	game.authoring.hide()
+	authoring.hide()
 	place(build, "environment:partition", Vector3(10, 0, 6))
 	game.handle_action("place_scenery")
 	assert_true(game.scenery_dialog.visible and not build.enabled, "Scene import suspends world input")

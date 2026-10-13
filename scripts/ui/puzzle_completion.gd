@@ -10,12 +10,12 @@ func configure(value: PuzzleSession) -> void:
 	%Preserve.pressed.connect(func():
 		if session.preserve_solution(): %Result.text = "Solution saved.")
 	%ReturnEditor.pressed.connect(func(): hide(); session.return_editor())
-	%LevelSelection.pressed.connect(func(): hide(); session.game.puzzle_browser.open())
+	%LevelSelection.pressed.connect(func(): hide(); session.game.get_node("%PuzzleBrowser").open())
 	%Next.pressed.connect(func():
 		hide()
 		var next = session.store.next_level(session.puzzle)
 		if not next.is_empty(): session.player(next); return
-		session.game.puzzle_browser.open())
+		session.game.get_node("%PuzzleBrowser").open())
 	session.game.sandbox.simulation.state_changed.connect(result)
 	session.mode_changed.connect(func(): if session.game.sandbox.simulation.state != SimulationManager.State.SUCCESS: hide())
 

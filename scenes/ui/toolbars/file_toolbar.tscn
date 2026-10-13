@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b8e0wtmi6l0cv" path="res://assets/ui/icons/next_marble.svg" id="NextIcon"]
 [ext_resource type="Script" uid="uid://bc0luytdo7dg5" path="res://scripts/ui/file_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="PackedScene" uid="uid://cla2de6nd36p7" path="res://scenes/ui/puzzle_bar.tscn" id="PuzzleBar"]
 
 [node name="FileToolbar" type="HBoxContainer" unique_id=21099837]
 anchors_preset = 10
@@ -199,6 +200,11 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"IconButton"
 icon = ExtResource("NextIcon")
 script = ExtResource("IconScript")
+
+[node name="PuzzleBar" parent="RightIsland/Controls" instance=ExtResource("PuzzleBar")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
 
 [node name="Menu" type="Button" parent="RightIsland/Controls" unique_id=292477012]
 unique_name_in_owner = true

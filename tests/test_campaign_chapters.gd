@@ -10,6 +10,8 @@ func test_campaign_chapters() -> void:
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
+	var browser: Window = game.get_node("%PuzzleBrowser")
+	var authoring: PanelContainer = game.get_node("%HUD").get_node("%PuzzleAuthoring")
 	var store: PuzzleStore = game.puzzle_session.store
 	store.progress = {}
 	store.campaign = {}
@@ -22,21 +24,21 @@ func test_campaign_chapters() -> void:
 	var chapters = store.list_chapters(levels)
 	assert_true(chapters.size() == 2 and chapters[0].optional and not chapters[1].optional, "Optional Introduction and separate Chapter 1")
 	assert_true(store.chapter_unlocked(chapters[1]), "Chapter 1 available without Introduction")
-	game.puzzle_browser.open_campaign()
-	assert_true(game.puzzle_browser.get_node("%StartChoice").visible, "Fresh campaign offers introduction choice")
-	game.puzzle_browser.get_node("%SkipIntroduction").pressed.emit()
+	browser.open_campaign()
+	assert_true(browser.get_node("%StartChoice").visible, "Fresh campaign offers introduction choice")
+	browser.get_node("%SkipIntroduction").pressed.emit()
 	assert_true(store.campaign.introduction_skipped and store.progress.is_empty(), "Skipping records choice without completion")
 	assert_true(store.campaign.current_chapter == "chapter-1", "Skipping enters empty Chapter 1")
-	assert_true(not game.puzzle_browser.get_node("%StartChoice").visible, "Existing campaign hides choice")
-	assert_true(game.puzzle_browser.get_node("%Levels").item_count == 0, "Main chapter does not reuse tutorial puzzles")
+	assert_true(not browser.get_node("%StartChoice").visible, "Existing campaign hides choice")
+	assert_true(browser.get_node("%Levels").item_count == 0, "Main chapter does not reuse tutorial puzzles")
 	var target = store.start_campaign(true)
 	assert_true(target.id == "campaign-01", "Play Introduction starts at Level 1")
 	game.puzzle_session.player(target)
 	var reopened = PuzzleStore.new(game.catalog)
 	assert_true(reopened.resume_level().id == target.id, "Current campaign resumes after reload")
-	game.puzzle_browser.open()
-	game.puzzle_browser.show_chapter(0)
-	assert_true(game.puzzle_browser.get_node("%Levels").item_count == 10, "Level Select shows all ten introduction puzzles")
+	browser.open()
+	browser.show_chapter(0)
+	assert_true(browser.get_node("%Levels").item_count == 10, "Level Select shows all ten introduction puzzles")
 	var main1 = {"id": "qa-main-1", "order": 1, "prerequisites": ["campaign-10"], "chapter": {"id": "chapter-1", "name": "Chapter 1", "order": 1}}
 	var main2 = {"id": "qa-main-2", "order": 2, "prerequisites": [], "chapter": main1.chapter}
 	var future = {"id": "qa-future", "order": 1, "prerequisites": [], "chapter": {"id": "chapter-2", "name": "Chapter 2", "order": 2, "optional": false, "prerequisites": ["qa-main-2"]}}
@@ -77,15 +79,15 @@ func test_campaign_chapters() -> void:
 	assert_true(reopened.progress["campaign-01"].best_time == 3.5 and reopened.progress["campaign-01"].custom_record == "preserve" and "time" in reopened.progress["campaign-01"].awards, "Recompletion preserves best results, awards, and extra fields")
 	var authored = store.create()
 	game.puzzle_session.editor(authored)
-	game.authoring.open()
-	game.authoring.get_node("%ChapterId").text = "chapter-3"
-	game.authoring.get_node("%ChapterName").text = "Machines"
-	game.authoring.get_node("%ChapterOrder").value = 3
-	game.authoring.get_node("%ChapterRequirements").text = "qa-main-2"
-	game.authoring.update_chapter()
+	authoring.open()
+	authoring.get_node("%ChapterId").text = "chapter-3"
+	authoring.get_node("%ChapterName").text = "Machines"
+	authoring.get_node("%ChapterOrder").value = 3
+	authoring.get_node("%ChapterRequirements").text = "qa-main-2"
+	authoring.update_chapter()
 	assert_true(game.puzzle_session.puzzle.chapter.id == "chapter-3" and game.puzzle_session.puzzle.chapter.prerequisites == ["qa-main-2"], "Editor configures new chapter and unlock requirements")
 	var bundle_path = SavePaths.resolve("user://chapter-export.zip")
-	game.authoring.export_package(bundle_path)
+	authoring.export_package(bundle_path)
 	var bundle = ZIPReader.new()
 	assert_true(bundle.open(bundle_path) == OK, "Editor exports a readable campaign bundle")
 	var manifest: Dictionary = JSON.parse_string(bundle.read_file("campaign_chapters.json").get_string_from_utf8())

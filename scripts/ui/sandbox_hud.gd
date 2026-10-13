@@ -40,8 +40,13 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	refresh()
 func configure_session(value: PuzzleSession) -> void:
 	session=value
-	%FileToolbar.session=value
+	%FileToolbar.configure_session(value)
 	%Inspector.session=value
+	%PuzzleAuthoring.configure(value)
+	session.mode_changed.connect(func():
+		if session.mode != "editor": %PuzzleAuthoring.hide()
+		%Toolbox.refresh()
+		refresh())
 	session.mode_changed.connect(func(): %Inspector.refresh(build.selected))
 	simulation.objective_progress.connect(func():%FileToolbar.refresh())
 	refresh()
@@ -67,7 +72,7 @@ func refresh() -> void:
 	%Bottom.visible=not %Status.text.is_empty()
 	if build.chosen: %Bottom.hide()
 	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
-	if session and session.game.authoring and session.game.authoring.visible: %Inspector.hide()
+	if %PuzzleAuthoring.visible: %Inspector.hide()
 	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()
 	else: %Toolbox.set_choice(build.chosen.id)

@@ -31,6 +31,10 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%Pause.pressed.connect(simulation.toggle_pause)
 	%Reset.pressed.connect(simulation.reset)
 	refresh()
+func configure_session(value: PuzzleSession) -> void:
+	session = value
+	%PuzzleBar.configure(value)
+	refresh()
 func refresh() -> void:
 	%Undo.disabled=not build.enabled or not build.history.has_undo()
 	%Redo.disabled=not build.enabled or not build.history.has_redo()

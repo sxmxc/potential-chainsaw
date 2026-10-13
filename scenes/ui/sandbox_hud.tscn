@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
+[ext_resource type="PackedScene" uid="uid://816wp88y5yxp" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
 
 [node name="SandboxHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
@@ -124,6 +125,10 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
+
+[node name="PuzzleAuthoring" parent="Margin/Layout/Body" instance=ExtResource("Authoring")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="SelectionOverlay" parent="." unique_id=676437620 instance=ExtResource("Overlay")]
 unique_name_in_owner = true

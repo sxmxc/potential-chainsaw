@@ -30,6 +30,7 @@
 
 ## Native scenes and UI
 
+- Main owns the saved PuzzleSession, campaign browser and completion window. SandboxHUD owns its authoring drawer; FileToolbar owns the player-test actions. GameManager binds the session to these existing nodes at startup. Each UI scene owns its layout and mode-dependent visibility; permanent campaign UI is never assembled or reordered from code.
 - Keep presentation in saved `.tscn` scenes and the shared `resources/sandbox_theme.tres`. Scenes must be inspectable and previewable before `_ready()` runs. Do not generate scene files at runtime.
 - The selection inspector owns object settings, player permissions and mechanism links. The contextual toolbar owns ordinary object actions. Puzzle authoring owns only definition-wide settings, inventory, boundaries, objectives and publication; it has no alternate object or link editor. Reusable scenery scenes enter the toolbox's normal placement preview.
 - UI scripts bind data, connect signals and update visibility, enabled states and Theme variations. Keep game logic, persistence, physics, snapping and history out of presentation code.
