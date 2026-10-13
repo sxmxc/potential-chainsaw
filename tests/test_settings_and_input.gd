@@ -74,7 +74,7 @@ func test_legacy_sensitivity_and_invalid_values() -> void:
 func test_restore_defaults_restores_bindings_and_audio() -> void:
 	var event = InputEventKey.new()
 	event.keycode = KEY_J
-	game.settings.set_binding("build_rotate", event)
+	ConstructionInput.set_binding("build_rotate", event)
 	game.settings_dialog.get_node("%Music").value = 0.0
 	game.settings_dialog.get_node("%InvertX").set_pressed(true)
 	game.settings_dialog.get_node("%Defaults").pressed.emit()
@@ -85,7 +85,9 @@ func test_restore_defaults_restores_bindings_and_audio() -> void:
 	var restored = Settings.new()
 	restored.load_saved()
 	assert_eq(restored.values, Settings.DEFAULTS)
-	assert_true(restored.bindings.is_empty())
+	var config = ConfigFile.new()
+	assert_eq(config.load(SavePaths.resolve(Settings.PATH)), OK)
+	assert_false(config.has_section("bindings"), "Defaults need no saved binding overrides")
 
 func test_key_rebinding_conflicts_and_escape() -> void:
 	game.handle_action("settings")
@@ -103,9 +105,10 @@ func test_key_rebinding_conflicts_and_escape() -> void:
 	dialog._input(event)
 	assert_eq(dialog.pending_action, "")
 	assert_eq(InputMap.action_get_events("build_rotate")[0].keycode, KEY_J)
+	ConstructionInput.install(true)
 	var restored = Settings.new()
 	restored.load_saved()
-	assert_eq(restored.bindings.build_rotate.keycode, KEY_J)
+	assert_eq(InputMap.action_get_events("build_rotate")[0].keycode, KEY_J, "Saved binding replaces the default on reload")
 	var piece = game.sandbox.build.spawn(game.catalog.get_piece("straight"), Transform3D.IDENTITY)
 	dialog.close()
 	game.sandbox.build.select(piece)
@@ -117,6 +120,32 @@ func test_key_rebinding_conflicts_and_escape() -> void:
 	dialog._input(event)
 	assert_eq(dialog.pending_action, "")
 	assert_true(dialog.visible, "Escape cancels rebinding before closing settings")
+
+func test_binding_persistence_uses_live_input_map() -> void:
+	var redo = InputEventKey.new()
+	redo.keycode = KEY_J
+	redo.ctrl_pressed = true
+	ConstructionInput.set_binding("build_redo", redo)
+	var camera = InputEventKey.new()
+	camera.physical_keycode = KEY_UP
+	ConstructionInput.set_binding("camera_forward", camera)
+	assert_eq(game.settings.save(), OK)
+	ConstructionInput.install(true)
+	game.settings.load_saved()
+	assert_eq(InputMap.action_get_events("build_redo").size(), 1, "Rebound redo replaces both default shortcuts")
+	assert_true(InputMap.action_has_event("build_redo", redo))
+	assert_eq(InputMap.action_get_events("camera_forward")[0].physical_keycode, KEY_UP, "Physical bindings retain their key type")
+	ConstructionInput.install()
+	assert_eq(InputMap.action_get_events("build_redo").size(), 1, "Installing actions preserves a rebound redo")
+	ConstructionInput.install(true)
+	assert_eq(InputMap.action_get_events("build_redo").size(), 2, "Restore defaults restores both redo shortcuts")
+	var conflict = InputEventKey.new()
+	conflict.keycode = KEY_W
+	assert_eq(ConstructionInput.binding_conflict("build_rotate", conflict), "camera_forward", "Logical shortcuts conflict with physical camera keys")
+	conflict.keycode = KEY_P
+	conflict.ctrl_pressed = true
+	conflict.shift_pressed = true
+	assert_eq(ConstructionInput.binding_conflict("build_rotate", conflict), "puzzle_editor")
 
 func test_right_drag_keeps_selection_and_placement() -> void:
 	var build: BuildManager = game.sandbox.build

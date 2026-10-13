@@ -99,17 +99,14 @@ func _input(event: InputEvent) -> void:
 	binding.shift_pressed = event.shift_pressed
 	binding.alt_pressed = event.alt_pressed
 	binding.meta_pressed = event.meta_pressed
-	# Ctrl+Shift+P remains the developer editor shortcut.
-	if binding.keycode == KEY_P and binding.ctrl_pressed and binding.shift_pressed:
+	var conflict = ConstructionInput.binding_conflict(pending_action, binding)
+	if conflict == "puzzle_editor":
 		%BindingStatus.text = "That shortcut opens the Puzzle Editor. Choose another."
 		return
-	for action in binding_buttons:
-		if action == pending_action: continue
-		for existing in InputMap.action_get_events(action):
-			if existing is InputEventKey and (existing.keycode == binding.keycode or existing.physical_keycode == binding.keycode) and existing.ctrl_pressed == binding.ctrl_pressed and existing.shift_pressed == binding.shift_pressed and existing.alt_pressed == binding.alt_pressed and existing.meta_pressed == binding.meta_pressed:
-				%BindingStatus.text = "Already used by %s. Choose another." % binding_buttons[action].get_parent().get_node("%Caption").text.to_lower()
-				return
-	settings.set_binding(pending_action, binding)
+	if not conflict.is_empty():
+		%BindingStatus.text = "Already used by %s. Choose another." % binding_buttons[conflict].get_parent().get_node("%Caption").text.to_lower()
+		return
+	ConstructionInput.set_binding(pending_action, binding)
 	cancel_binding()
 	settings_changed.emit(false)
 

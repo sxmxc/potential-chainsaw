@@ -9,7 +9,6 @@ const DEFAULTS = {
 const RESOLUTIONS = [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const FPS_LIMITS = [0, 30, 60, 120, 144, 240]
 var values: Dictionary = DEFAULTS.duplicate(true)
-var bindings: Dictionary = {}
 
 func load_saved() -> void:
 	var config = ConfigFile.new()
@@ -28,26 +27,17 @@ func load_saved() -> void:
 	values.display.fps = clampi(values.display.fps, 0, FPS_LIMITS.size() - 1)
 	values.display.msaa = clampi(values.display.msaa, 0, 3)
 	values.display.render_scale = clampf(values.display.render_scale, 0.5, 1.0)
-	for action in config.get_section_keys("bindings") if config.has_section("bindings") else PackedStringArray():
-		var event: Variant = config.get_value("bindings", action)
-		if event is InputEventKey and (action.trim_prefix("build_") in ConstructionInput.SHORTCUTS or action in ConstructionInput.CAMERA_SHORTCUTS) and action != "build_cancel" and (event.keycode != 0 or event.physical_keycode != 0):
-			set_binding(action, event)
+	ConstructionInput.load_bindings(config)
 
 func save() -> Error:
 	var config = ConfigFile.new()
 	for section in values:
 		for key in values[section]: config.set_value(section, key, values[section][key])
-	for action in bindings: config.set_value("bindings", action, bindings[action])
+	ConstructionInput.save_bindings(config)
 	return config.save(SavePaths.resolve(PATH))
-
-func set_binding(action: String, event: InputEventKey) -> void:
-	InputMap.action_erase_events(action)
-	InputMap.action_add_event(action, event)
-	bindings[action] = event
 
 func reset_defaults() -> void:
 	values = DEFAULTS.duplicate(true)
-	bindings.clear()
 	ConstructionInput.install(true)
 
 func apply(game: Node, apply_window: bool = true) -> void:
