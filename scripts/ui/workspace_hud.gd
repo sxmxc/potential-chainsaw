@@ -85,9 +85,9 @@ func refresh_guidance() -> void:
 	%Guidance.hide()
 	if not session or session.context != ConstructionSession.Context.PUZZLE_PLAY or session.puzzle.is_empty(): return
 	if simulation.state != SimulationManager.State.BUILD: return
-	if not session.store.is_official(session.puzzle): return
+	if not PuzzleStore.is_official(session.puzzle): return
 	var id: String = session.puzzle.id
-	if session.store.completed(id) or guidance_done.has(id): return
+	if session.progress.records.get(id, {}).get("completed", false) or guidance_done.has(id): return
 	var copy: Dictionary=Copy.introduction(session.puzzle)
 	if copy.is_empty() and not session.puzzle.campaign.chapter.get("introduction",false): return
 	if build.dirty:

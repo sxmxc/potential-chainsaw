@@ -30,7 +30,7 @@ func _ready() -> void:
 	%PuzzleBrowser.modal_opened.connect(open_modal)
 	%PuzzleBrowser.closed.connect(modal_closed)
 	%PuzzleCompletion.configure(workspace.session)
-	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open(false, not workspace.session.store.is_official(workspace.session.puzzle)))
+	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open(false, not PuzzleStore.is_official(workspace.session.puzzle)))
 	show_main_menu()
 	load_settings()
 
@@ -91,7 +91,7 @@ func handle_action(action: String) -> void:
 			open_modal()
 			menu_dialog.configure_context(workspace.session)
 			menu_dialog.popup_centered()
-		"levels": %PuzzleBrowser.open(false, not workspace.session.store.is_official(workspace.session.puzzle))
+		"levels": %PuzzleBrowser.open(false, not PuzzleStore.is_official(workspace.session.puzzle))
 		"open_puzzle":
 			if not workspace.session.is_authoring: return
 			guard(func(): workspace.authoring.hide(); %PuzzleBrowser.open(true))

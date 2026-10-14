@@ -49,8 +49,8 @@ func test_community_author_publish_share_import_and_play() -> void:
 	assert_eq(shared.creator, "GUT fixture")
 	assert_has(shared.required_assets, "straight")
 	assert_has(shared.required_assets, "environment:column")
-	var official_progress := session.store.progress.duplicate(true)
-	var official_state := session.store.campaign.duplicate(true)
+	var official_progress := session.progress.records.duplicate(true)
+	var official_state := session.progress.route.duplicate(true)
 	# A receiving installation with isolated library directories.
 	session.store.community_directory = test_directory.path_join("receiver/community")
 	session.store.published_directory = test_directory.path_join("receiver/published")
@@ -65,7 +65,7 @@ func test_community_author_publish_share_import_and_play() -> void:
 	var installed := session.store.import_puzzle(portable)
 	assert_false(installed.is_empty())
 	assert_eq(installed.id, "campaign-01")
-	assert_false(session.store.is_official(installed))
+	assert_false(PuzzleStore.is_official(installed))
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	browser.open(false, true)
 	assert_true(browser.community and browser.get_node("%Import").visible)
@@ -77,12 +77,12 @@ func test_community_author_publish_share_import_and_play() -> void:
 	assert_true(game.workspace.world.simulation.start())
 	await wait_until(func(): return game.workspace.world.simulation.state == SimulationManager.State.SUCCESS, 12.0)
 	assert_eq(game.workspace.world.simulation.state, SimulationManager.State.SUCCESS)
-	assert_true(session.store.community_progress[installed.id].completed)
-	assert_eq(session.store.progress, official_progress)
-	assert_eq(session.store.campaign, official_state)
+	assert_true(session.progress.community_records[installed.id].completed)
+	assert_eq(session.progress.records, official_progress)
+	assert_eq(session.progress.route, official_state)
 	assert_false(game.get_node("%PuzzleCompletion").get_node("%Next").visible)
-	assert_true(PuzzleStore.new(game.workspace.catalog).community_progress[installed.id].completed)
-	assert_almost_eq(float(PuzzleStore.new(game.workspace.catalog).community_progress[installed.id].best_time), float(session.store.community_progress[installed.id].best_time), 0.00001)
+	assert_true(PuzzleProgress.new(session.store.load_campaign()).community_records[installed.id].completed)
+	assert_almost_eq(float(PuzzleProgress.new(session.store.load_campaign()).community_records[installed.id].best_time), float(session.progress.community_records[installed.id].best_time), 0.00001)
 	assert_false(session.store.import_puzzle(portable).is_empty(), "Identical reimport is safe")
 	shared.name = "Conflicting puzzle"
 	shared.validation.fingerprint = session.store.fingerprint(shared)
@@ -92,6 +92,7 @@ func test_community_author_publish_share_import_and_play() -> void:
 
 func test_campaign_promotion_preserves_unlocks_and_rejects_stale_revisions() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
+	var progress := PuzzleProgress.new(store.load_campaign())
 	var data :Dictionary= store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
 	store.campaign_directory = test_directory.path_join("project/campaign")
 	store.manifest_path = test_directory.path_join("project/manifest.json")
@@ -102,10 +103,10 @@ func test_campaign_promotion_preserves_unlocks_and_rejects_stale_revisions() -> 
 	assert_true(store.add_to_campaign(data))
 	var levels := store.load_campaign().levels
 	assert_eq(levels.size(), 1)
-	assert_false(store.load_campaign().unlocked(levels[0], store.progress))
+	assert_false(store.load_campaign().unlocked(levels[0], progress.records))
 	assert_eq(levels[0].campaign.prerequisites, ["required-level"])
-	store.progress["required-level"] = {"completed": true}
-	assert_true(store.load_campaign().unlocked(levels[0], store.progress))
+	progress.records["required-level"] = {"completed": true}
+	assert_true(store.load_campaign().unlocked(levels[0], progress.records))
 	assert_true(store.add_to_campaign(data), "Identical promotion is idempotent")
 	assert_eq(store.load_campaign().levels.size(), 1)
 	var original := FileAccess.get_file_as_bytes(store.campaign_directory.path_join(data.id + ".json"))
@@ -152,7 +153,7 @@ func test_unsafe_and_malformed_imports_are_rejected_before_resource_loading() ->
 func test_registration_owns_metadata_and_local_files_cannot_override_campaign() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
 	var official :Dictionary= store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
-	assert_true(store.is_official(official))
+	assert_true(PuzzleStore.is_official(official))
 	assert_false(official.has("prerequisites"))
 	assert_false(official.has("chapter"))
 	assert_eq(store.load_campaign().chapter_for(official).id, "introduction")
@@ -161,7 +162,7 @@ func test_registration_owns_metadata_and_local_files_cannot_override_campaign() 
 	forged._source = "campaign"
 	assert_true(store.write(store.published_directory.path_join(official.id + ".json"), forged))
 	assert_eq(store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0].name, official.name)
-	assert_false(store.is_official(store.list_community()[0]))
+	assert_false(PuzzleStore.is_official(store.list_community()[0]))
 
 func test_record_validation_preserves_drafts_and_checks_distributed_solutions() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())

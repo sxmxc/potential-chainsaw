@@ -4,17 +4,11 @@ extends RefCounted
 var drafts_directory: String = SavePaths.resolve("user://puzzles/drafts")
 var published_directory: String = SavePaths.resolve("user://puzzles/published")
 var community_directory: String = SavePaths.resolve("user://puzzles/community")
-var community_progress_path: String = SavePaths.resolve("user://community_progress.json")
-var community_progress: Dictionary = {}
 var manifest_path: String = "res://resources/campaign_manifest.json"
 var chapters_path: String = CHAPTERS
 var campaign_directory: String = "res://resources/campaign"
-var progress_path: String = SavePaths.resolve("user://campaign_progress.json")
-var campaign_state_path: String = SavePaths.resolve("user://campaign_state.json")
 const CHAPTERS = "res://resources/campaign_chapters.json"
 var catalog: PieceCatalog
-var progress: Dictionary = {}
-var campaign: Dictionary = {}
 var last_error: String = ""
 
 func _init(definitions: PieceCatalog) -> void:
@@ -22,23 +16,6 @@ func _init(definitions: PieceCatalog) -> void:
 	DirAccess.make_dir_recursive_absolute(drafts_directory)
 	DirAccess.make_dir_recursive_absolute(published_directory)
 	DirAccess.make_dir_recursive_absolute(community_directory)
-	var local_progress = JSON.parse_string(FileAccess.get_file_as_string(community_progress_path)) if FileAccess.file_exists(community_progress_path) else null
-	if local_progress is Dictionary: community_progress = local_progress
-	var saved = JSON.parse_string(FileAccess.get_file_as_string(progress_path)) if FileAccess.file_exists(progress_path) else null
-	if saved is Dictionary: progress = saved
-	var state = JSON.parse_string(FileAccess.get_file_as_string(campaign_state_path)) if FileAccess.file_exists(campaign_state_path) else null
-	if state is Dictionary:
-		campaign = state
-	elif not progress.is_empty():
-		# Legacy progress remains in place, including IDs, records, and awards.
-		campaign = {"version": 1, "started": true, "introduction_skipped": false}
-		var definition := load_campaign()
-		for data in definition.levels:
-			if not completed(data.id) and definition.unlocked(data, progress):
-				campaign.current_level = data.id
-				campaign.current_chapter = definition.chapter_for(data).id
-				break
-		if not campaign.has("current_chapter"): campaign.current_chapter = definition.first_chapter(false).get("id", "")
 
 func create() -> Dictionary:
 	return {"version": 2, "environment_instances": [], "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "creator": "", "difficulty": "Workshop", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
@@ -356,7 +333,7 @@ func list_community() -> Array[Dictionary]:
 	result.sort_custom(func(a, b): return str(a.name).naturalnocasecmp_to(str(b.name)) < 0)
 	return result
 
-func is_official(data: Dictionary) -> bool:
+static func is_official(data: Dictionary) -> bool:
 	return data.get("_source", "") == "campaign"
 
 func export_puzzle(data: Dictionary, path: String) -> bool:
@@ -398,9 +375,6 @@ func required_assets(data: Dictionary) -> Array[String]:
 	ids.sort()
 	return ids
 
-func completed(id: String) -> bool:
-	return progress.get(id, {}).get("completed", false)
-
 func base_chapters() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var data = JSON.parse_string(FileAccess.get_file_as_string(chapters_path))
@@ -408,39 +382,3 @@ func base_chapters() -> Array[Dictionary]:
 		for chapter in data.get("chapters", []): result.append(chapter)
 	result.sort_custom(func(a, b): return int(a.get("order", 1)) < int(b.get("order", 1)))
 	return result
-
-func start_campaign(play_introduction: bool) -> Dictionary:
-	var definition := load_campaign()
-	var chapter := definition.first_chapter(play_introduction)
-	campaign = {"version": 1, "started": true, "introduction_skipped": not play_introduction, "current_chapter": chapter.get("id", ""), "current_level": ""}
-	var target := definition.resume_level(campaign, progress)
-	if not target.is_empty(): campaign.current_level = target.id
-	write(campaign_state_path, campaign)
-	return target
-
-func remember_level(data: Dictionary) -> void:
-	if not is_official(data): return
-	if not campaign.get("started", false):
-		campaign = {"version": 1, "started": true, "introduction_skipped": false}
-	var chapter: Dictionary = data.campaign.chapter
-	campaign.current_level = data.id
-	campaign.current_chapter = chapter.id
-	campaign["introduction_level" if chapter.get("introduction", false) else "main_level"] = data.id
-	write(campaign_state_path, campaign)
-
-func complete(data: Dictionary, seconds: float, count: int) -> void:
-	var records := progress if is_official(data) else community_progress
-	var previous: Dictionary = records.get(data.id, {})
-	records[data.id] = previous.duplicate(true)
-	records[data.id].merge({"completed": true, "revision": data.get("revision", 1), "best_time": minf(seconds, float(previous.get("best_time", INF))), "fewest_pieces": mini(count, int(previous.get("fewest_pieces", 99999)))}, true)
-	var awards: Array = previous.get("awards", []).duplicate()
-	var goals: Dictionary = data.get("awards", {})
-	if float(goals.get("time", 0)) > 0 and seconds <= float(goals.time) and "time" not in awards: awards.append("time")
-	if int(goals.get("pieces", 0)) > 0 and count <= int(goals.pieces) and "pieces" not in awards: awards.append("pieces")
-	records[data.id].awards = awards
-	write(progress_path if is_official(data) else community_progress_path, records)
-	if not is_official(data): return
-	var step := load_campaign().next_step(data, progress)
-	campaign.current_level = step.level.get("id", "")
-	campaign.current_chapter = step.chapter.get("id", campaign.get("current_chapter", ""))
-	write(campaign_state_path, campaign)

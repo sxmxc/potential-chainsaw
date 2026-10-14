@@ -30,20 +30,20 @@ func configure(value: ConstructionSession) -> void:
 
 func open_campaign() -> void:
 	open()
-	if not session.store.campaign.get("started", false):
+	if not session.progress.route.get("started", false):
 		%StartChoice.show()
 		%Heading.text = "Campaign"
 		fit_contents.call_deferred()
 
 func start_campaign(play_introduction: bool) -> void:
-	var target = session.store.start_campaign(play_introduction)
+	var target = session.progress.start_campaign(campaign_definition, play_introduction)
 	if not target.is_empty():
 		hide()
 		session.player(target)
 	else: open()
 
 func resume_campaign() -> void:
-	var target = campaign_definition.resume_level(session.store.campaign, session.store.progress)
+	var target = campaign_definition.resume_level(session.progress.route, session.progress.records)
 	if target.is_empty(): open(); return
 	hide()
 	session.player(target)
@@ -55,7 +55,7 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	title = "Puzzle library" if editing else ("Community puzzles" if community else "Campaign")
 	%Heading.text = title
 	%StartChoice.hide()
-	%Resume.visible = not editing and not community and session.store.campaign.get("started", false)
+	%Resume.visible = not editing and not community and session.progress.route.get("started", false)
 	%Open.text = "Edit" if editing else "Play"
 	campaign_definition = session.store.load_campaign()
 	var all_levels := session.store.list_community() if community else campaign_definition.levels.duplicate()
@@ -79,16 +79,16 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	var selected = 0
 	for i in campaign_definition.chapters.size():
 		var chapter = campaign_definition.chapters[i]
-		var counts = campaign_definition.chapter_progress(chapter.id, session.store.progress)
+		var counts = campaign_definition.chapter_progress(chapter.id, session.progress.records)
 		var status = "%d / %d complete" % [counts.completed,counts.total] if counts.total > 0 else "No levels yet"
 		if chapter.get("optional",false) and counts.total>0: status="%d / %d" % [counts.completed,counts.total]
-		if not campaign_definition.chapter_unlocked(chapter, session.store.progress): status = "Locked"
+		if not campaign_definition.chapter_unlocked(chapter, session.progress.records): status = "Locked"
 		var button=CHAPTER_BUTTON.instantiate()
 		%Chapters.add_child(button)
 		button.get_node("%ChapterTitle").text=chapter.name
 		button.get_node("%ChapterProgress").text=("Optional · " if chapter.get("optional",false) else "")+status
 		button.pressed.connect(show_chapter.bind(i))
-		if chapter.id == session.store.campaign.get("current_chapter", ""): selected = i
+		if chapter.id == session.progress.route.get("current_chapter", ""): selected = i
 	if not campaign_definition.chapters.is_empty():
 		show_chapter(selected)
 	fit_contents.call_deferred()
@@ -107,8 +107,8 @@ func show_chapter(index: int) -> void:
 		return str(a.id) < str(b.id))
 	%Levels.clear()
 	for data in levels:
-		var status = "Draft" if data.status != "published" else ("Complete" if is_completed(data) else ("Ready" if (community or campaign_definition.unlocked(data, session.store.progress)) else "Locked"))
-		var records: Dictionary = session.store.community_progress if community else session.store.progress
+		var status = "Draft" if data.status != "published" else ("Complete" if is_completed(data) else ("Ready" if (community or campaign_definition.unlocked(data, session.progress.records)) else "Locked"))
+		var records: Dictionary = session.progress.community_records if community else session.progress.records
 		var awards: Array = records.get(data.id, {}).get("awards", [])
 		if not awards.is_empty(): status += " · %d awards" % awards.size()
 		if community and data.get("_source") != "draft": status = ("Imported · " if data.get("_source") == "community" else "Local · ") + status
@@ -125,13 +125,13 @@ func show_chapter(index: int) -> void:
 	%Details.visible=%Levels.visible
 	%Open.visible=%Levels.visible
 	%Empty.visible=levels.is_empty()
-	%Empty.text="No levels available yet." if campaign_definition.chapter_unlocked(chapter, session.store.progress) else "Complete the required levels to unlock this chapter."
+	%Empty.text="No levels available yet." if campaign_definition.chapter_unlocked(chapter, session.progress.records) else "Complete the required levels to unlock this chapter."
 	%Details.text = "Select a level."
 	%Open.disabled = true
 	if not levels.is_empty():
 		var selected=0
 		for i in levels.size():
-			if not is_completed(levels[i]) and (community or campaign_definition.unlocked(levels[i], session.store.progress)):
+			if not is_completed(levels[i]) and (community or campaign_definition.unlocked(levels[i], session.progress.records)):
 				selected=i
 				break
 		%Levels.select(selected)
@@ -144,9 +144,9 @@ func fit_contents() -> void:
 
 func select_level(index: int) -> void:
 	%Details.text = Copy.objective(levels[index])
-	%Open.disabled = not editing and not community and not campaign_definition.unlocked(levels[index], session.store.progress)
+	%Open.disabled = not editing and not community and not campaign_definition.unlocked(levels[index], session.progress.records)
 	if %Open.disabled: %Details.text += "\nComplete the required levels to unlock this level."
-	var resume: Dictionary=campaign_definition.resume_level(session.store.campaign, session.store.progress)
+	var resume: Dictionary=campaign_definition.resume_level(session.progress.route, session.progress.records)
 	%Resume.visible=not editing and not community and not resume.is_empty() and resume.id!=levels[index].id
 	%Open.text="Edit" if editing else ("Continue" if not community and not resume.is_empty() and resume.id==levels[index].id else "Play")
 
@@ -155,9 +155,9 @@ func open_selected() -> void:
 	if selected.is_empty(): return
 	var data = levels[selected[0]]
 	if editing: session.editor(data, session.official_authoring)
-	elif (community or campaign_definition.unlocked(data, session.store.progress)): session.player(data)
+	elif (community or campaign_definition.unlocked(data, session.progress.records)): session.player(data)
 	else: return
 	hide()
 
 func is_completed(data: Dictionary) -> bool:
-	return session.store.community_progress.get(data.id, {}).get("completed", false) if community else session.store.completed(data.id)
+	return session.progress.community_records.get(data.id, {}).get("completed", false) if community else session.progress.records.get(data.id, {}).get("completed", false)

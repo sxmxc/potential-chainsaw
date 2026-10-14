@@ -8,7 +8,7 @@ func test_campaign_browser_fits_and_buttons_keep_their_geometry() -> void:
 	add_child_autoqfree(game)
 	await settle()
 	var browser: Window = game.get_node("%PuzzleBrowser")
-	game.workspace.session.store.campaign.clear()
+	game.workspace.session.progress.route.clear()
 	for resolution in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080)]:
 		game.qa_resolution(resolution.x, resolution.y)
 		browser.open_campaign()
@@ -267,7 +267,7 @@ func test_ui_workflows() -> void:
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var session: ConstructionSession=game.workspace.session
 	var levels=session.store.load_campaign().levels.filter(func(data): return data.id.begins_with("campaign-"))
-	session.store.progress.clear()
+	session.progress.records.clear()
 	game.handle_action("sandbox")
 	await settle()
 	assert_true(not hud.get_node("%Bottom").visible,"Idle sandbox has no instruction panel")

@@ -11,6 +11,7 @@ var serializer: TrackSerializer
 var track_name: String = "Untitled track"
 var track_id: String = ""
 var store: PuzzleStore
+var progress: PuzzleProgress
 var context: Context = Context.SANDBOX
 var is_sandbox: bool:
 	get: return context == Context.SANDBOX
@@ -37,6 +38,7 @@ func configure(construction_world: WorldManager, piece_catalog: PieceCatalog) ->
 	catalog = piece_catalog
 	serializer = TrackSerializer.new(catalog)
 	store = PuzzleStore.new(catalog)
+	progress = PuzzleProgress.new(store.load_campaign())
 	world.simulation.state_changed.connect(_result)
 
 # A context transition clears the old run and editing state before loading data.
@@ -95,7 +97,7 @@ func capture() -> Dictionary:
 	return puzzle.duplicate(true)
 
 func player(data: Dictionary, testing: bool = false) -> void:
-	if not testing: store.remember_level(data)
+	if not testing: progress.remember_level(data)
 	_clear_runtime()
 	context = Context.PLAYER_TEST if testing else Context.PUZZLE_PLAY
 	if not testing:
@@ -216,7 +218,7 @@ func _result(state: int, _message: String) -> void:
 		successful_time = world.simulation.elapsed
 		successful_fingerprint = store.fingerprint(authored)
 	else:
-		store.complete(puzzle, world.simulation.elapsed, world.build.pieces.size())
+		progress.complete(puzzle, world.simulation.elapsed, world.build.pieces.size(), store.load_campaign())
 	changed.emit()
 
 func save_draft() -> bool:

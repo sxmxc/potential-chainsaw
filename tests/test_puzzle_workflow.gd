@@ -239,7 +239,7 @@ func test_shared_workspace_workflow() -> void:
 	assert_true(session.publish(), "Verified revision publishes")
 	var levels = session.store.load_campaign().levels
 	assert_true(levels.any(func(level): return level.id == data.id), "Published content appears in campaign")
-	assert_true(session.store.load_campaign().unlocked(levels[0], session.store.progress), "First registered level is unlocked")
+	assert_true(session.store.load_campaign().unlocked(levels[0], session.progress.records), "First registered level is unlocked")
 	assert_eq(levels[0].campaign.chapter.id, "chapter-1")
 	assert_false(JSON.parse_string(FileAccess.get_file_as_string(session.store.campaign_directory.path_join(data.id + ".json"))).has("campaign"), "Packaged gameplay definition excludes registration")
 	assert_true(session.publish(), "Identical promotion is idempotent")
@@ -250,9 +250,9 @@ func test_shared_workspace_workflow() -> void:
 	for frame in 1500:
 		await get_tree().physics_frame
 		if game.workspace.world.simulation.state in [SimulationManager.State.SUCCESS, SimulationManager.State.FAILED]: break
-	assert_true(game.workspace.world.simulation.state == SimulationManager.State.SUCCESS and session.store.progress.has(data.id), "Campaign completion records progress")
-	var reopened = PuzzleStore.new(game.workspace.catalog)
-	assert_true(reopened.progress.has(data.id), "Progress persists across store reload")
+	assert_true(game.workspace.world.simulation.state == SimulationManager.State.SUCCESS and session.progress.records.has(data.id), "Campaign completion records progress")
+	var reopened = PuzzleProgress.new(session.store.load_campaign())
+	assert_true(reopened.records.has(data.id), "Progress persists across progress reload")
 	game.handle_action("sandbox")
 	assert_true(session.is_sandbox and build.rules == null and not build.authoring, "Campaign restrictions are cleared before Sandbox")
 	session.editor(original)

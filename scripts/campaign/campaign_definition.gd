@@ -90,7 +90,7 @@ func resume_level(route: Dictionary, progress: Dictionary) -> Dictionary:
 	return {}
 
 # Return the destination explicitly, including an empty chapter. Reading Next
-# must never move the saved route; PuzzleStore applies it when recording a win.
+# must never move the saved route; PuzzleProgress applies it when recording a win.
 func next_step(data: Dictionary, progress: Dictionary) -> Dictionary:
 	var chapter := chapter_for(data)
 	var after := false

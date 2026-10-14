@@ -15,7 +15,7 @@ func configure(value: ConstructionSession) -> void:
 	%LevelSelection.pressed.connect(func(): hide(); levels_requested.emit())
 	%Next.pressed.connect(func():
 		hide()
-		var next = session.store.load_campaign().next_step(session.puzzle, session.store.progress).level
+		var next = session.store.load_campaign().next_step(session.puzzle, session.progress.records).level
 		if not next.is_empty(): session.player(next); return
 		levels_requested.emit())
 	session.world.simulation.state_changed.connect(result)
@@ -28,10 +28,10 @@ func result(state: int, _message: String) -> void:
 	%Result.text = "Completed in %.1f seconds." % session.world.simulation.elapsed
 	%Preserve.visible = session.is_testing
 	%ReturnEditor.visible = session.is_testing
-	%Next.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY and session.store.is_official(session.puzzle)
+	%Next.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY and PuzzleStore.is_official(session.puzzle)
 	%LevelSelection.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY
-	%LevelSelection.text = "Campaign levels" if session.store.is_official(session.puzzle) else "Community puzzles"
-	var records: Dictionary = session.store.progress if session.store.is_official(session.puzzle) else session.store.community_progress
+	%LevelSelection.text = "Campaign levels" if PuzzleStore.is_official(session.puzzle) else "Community puzzles"
+	var records: Dictionary = session.progress.records if PuzzleStore.is_official(session.puzzle) else session.progress.community_records
 	var awards: Array = records.get(session.puzzle.id, {}).get("awards", [])
 	%Awards.text = "Awards: " + ", ".join(awards)
 	%Awards.visible = not awards.is_empty()

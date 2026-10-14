@@ -110,11 +110,12 @@ func test_campaign_rules() -> void:
 	assert_true(game.qa_test(), "Activation objective works without a collector")
 	await ticks(150)
 	assert_true(game.workspace.world.simulation.state == SimulationManager.State.SUCCESS, "Timed gate event fulfills activation objective")
-	session.store.progress.clear()
+	session.progress.records.clear()
 	var levels: Array = [{"id": "qa-first", "prerequisites": []}, {"id": "qa-second", "prerequisites": ["qa-first"]}]
 	var definition := CampaignDefinition.new(session.store.base_chapters(), levels)
-	assert_true(definition.unlocked(levels[0], session.store.progress) and not definition.unlocked(levels[1], session.store.progress), "New progress unlocks only the first level")
+	assert_true(definition.unlocked(levels[0], session.progress.records) and not definition.unlocked(levels[1], session.progress.records), "New progress unlocks only the first level")
+	levels[0]._source = "campaign"
 	levels[0].awards = {"time": 10, "pieces": 5}
-	session.store.complete(levels[0], 4, 3)
-	assert_true(definition.unlocked(levels[1], session.store.progress), "Completion unlocks prerequisite level")
-	assert_true(session.store.progress["qa-first"].awards.size() == 2, "Optional awards persist without gating progression")
+	session.progress.complete(levels[0], 4, 3, definition)
+	assert_true(definition.unlocked(levels[1], session.progress.records), "Completion unlocks prerequisite level")
+	assert_true(session.progress.records["qa-first"].awards.size() == 2, "Optional awards persist without gating progression")
