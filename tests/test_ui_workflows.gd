@@ -3,7 +3,7 @@ extends "res://tests/support/scene_test.gd"
 func settle() -> void:
 	for i in 4: await get_tree().process_frame
 
-func test_sandbox_open_loads_personal_tracks_only() -> void:
+func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	var game: Node = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
@@ -33,6 +33,22 @@ func test_sandbox_open_loads_personal_tracks_only() -> void:
 	assert_eq(build.snapshot(), saved_pieces)
 	assert_true(session.is_sandbox and session.puzzle.is_empty() and build.rules == null)
 	assert_true(build.enabled, "Loading returns to unrestricted construction")
+	open_button.pressed.emit()
+	browser.get_node("%List").select(0)
+	browser.get_node("%List").item_selected.emit(0)
+	var delete_button: Button = browser.get_node("%Delete")
+	assert_true(delete_button.is_visible_in_tree() and not delete_button.disabled)
+	delete_button.pressed.emit()
+	assert_true(browser.confirmation.visible, "Deleting a saved track requires confirmation")
+	browser.confirmation.get_cancel_button().pressed.emit()
+	assert_eq(session.serializer.list_tracks().size(), 1, "Cancelling preserves the saved track")
+	delete_button.pressed.emit()
+	browser.confirmation.get_ok_button().pressed.emit()
+	assert_true(session.serializer.list_tracks().is_empty(), "Confirmed deletion removes the saved track")
+	assert_true(browser.rows.is_empty(), "The browser refreshes after deletion")
+	assert_eq(build.snapshot(), saved_pieces, "Deleting the file preserves the open construction")
+	assert_true(session.store.list_puzzles(true).any(func(data): return data.id == puzzle.id), "Track deletion leaves puzzle drafts untouched")
+	browser.close()
 
 func test_workspace_runs_without_application_navigation() -> void:
 	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
