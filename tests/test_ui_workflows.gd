@@ -3,6 +3,37 @@ extends "res://tests/support/scene_test.gd"
 func settle() -> void:
 	for i in 4: await get_tree().process_frame
 
+func test_sandbox_open_loads_personal_tracks_only() -> void:
+	var game: Node = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
+	await get_tree().process_frame
+	game.handle_action("sandbox")
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
+	build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY)
+	assert_true(session.save_track("Personal track"))
+	var saved_id := session.track_id
+	var saved_pieces := build.snapshot()
+	var puzzle := session.store.create()
+	puzzle.name = "Separate puzzle draft"
+	assert_true(session.store.save_draft(puzzle))
+	session.sandbox()
+	var open_button: Button = game.workspace.hud.get_node("%FileToolbar").get_node("%Open")
+	assert_true(open_button.is_visible_in_tree(), "Sandbox exposes Open beside Save")
+	assert_eq(open_button.tooltip_text, "Load saved track")
+	open_button.pressed.emit()
+	var browser = game.get_node("%TrackBrowser")
+	assert_true(browser.visible and not browser.examples)
+	assert_false(game.get_node("%PuzzleBrowser").visible, "Sandbox Open never opens the puzzle library")
+	assert_eq(browser.rows.size(), 1, "Only personal tracks appear, even when puzzle drafts exist")
+	assert_eq(browser.rows[0].id, saved_id)
+	browser.get_node("%List").select(0)
+	browser.get_node("%Load").pressed.emit()
+	assert_eq(build.snapshot(), saved_pieces)
+	assert_true(session.is_sandbox and session.puzzle.is_empty() and build.rules == null)
+	assert_true(build.enabled, "Loading returns to unrestricted construction")
+
 func test_workspace_runs_without_application_navigation() -> void:
 	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
 	add_child_autoqfree(workspace)
