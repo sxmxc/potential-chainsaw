@@ -39,6 +39,105 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/phantom_c
 
 theme/custom="res://resources/sandbox_theme.tres"
 
+[input]
+
+build_cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194305)]
+}
+build_remove={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194312)]
+}
+build_rotate={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":82)]
+}
+build_move_piece={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":77)]
+}
+build_select_tool={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":86)]
+}
+build_grid={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":71)]
+}
+build_snap={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":67)]
+}
+build_frame={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":70)]
+}
+build_frame_all={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194317)]
+}
+build_height_up={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194323)]
+}
+build_height_down={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194324)]
+}
+build_height_up_fine={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194323,"shift_pressed":true)]
+}
+build_height_down_fine={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194324,"shift_pressed":true)]
+}
+build_undo={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":90,"ctrl_pressed":true)]
+}
+build_redo={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":89,"ctrl_pressed":true), Object(InputEventKey,"keycode":90,"ctrl_pressed":true,"shift_pressed":true)]
+}
+build_duplicate={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":68,"ctrl_pressed":true)]
+}
+build_save_track={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":83,"ctrl_pressed":true)]
+}
+build_test_track={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":32)]
+}
+build_select_all={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":65,"ctrl_pressed":true)]
+}
+build_cycle_snap={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194306)]
+}
+camera_forward={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":87)]
+}
+camera_back={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":83)]
+}
+camera_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":65)]
+}
+camera_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":68)]
+}
+
 [physics]
 
 common/physics_ticks_per_second=120

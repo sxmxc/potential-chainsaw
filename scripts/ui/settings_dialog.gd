@@ -4,10 +4,11 @@ signal settings_changed(window_changed: bool)
 signal reset_camera
 const BINDING_ROW = preload("res://scenes/ui/widgets/key_binding.tscn")
 const ACTION_NAMES = {
-	"cancel": "Cancel / clear selection", "remove": "Delete", "rotate": "Rotate", "move_piece": "Move", "select_tool": "Selection tool",
-	"grid": "Show grid", "snap": "Magnetic snapping", "frame": "Frame selection", "frame_all": "Frame construction",
-	"height_up": "Raise build height", "height_down": "Lower build height", "height_up_fine": "Raise height (fine)", "height_down_fine": "Lower height (fine)",
-	"undo": "Undo", "redo": "Redo", "duplicate": "Duplicate", "save_track": "Save", "test_track": "Test / pause", "select_all": "Select all", "cycle_snap": "Attachment alternatives"
+	"build_cancel": "Cancel / clear selection", "build_remove": "Delete", "build_rotate": "Rotate", "build_move_piece": "Move", "build_select_tool": "Selection tool",
+	"build_grid": "Show grid", "build_snap": "Magnetic snapping", "build_frame": "Frame selection", "build_frame_all": "Frame construction",
+	"build_height_up": "Raise build height", "build_height_down": "Lower build height", "build_height_up_fine": "Raise height (fine)", "build_height_down_fine": "Lower height (fine)",
+	"build_undo": "Undo", "build_redo": "Redo", "build_duplicate": "Duplicate", "build_save_track": "Save", "build_test_track": "Test / pause", "build_select_all": "Select all", "build_cycle_snap": "Attachment alternatives",
+	"camera_forward": "Pan forward", "camera_back": "Pan back", "camera_left": "Pan left", "camera_right": "Pan right"
 }
 var settings: RefCounted
 var binding_buttons: Dictionary = {}
@@ -35,10 +36,8 @@ func _ready() -> void:
 
 func configure(model: RefCounted) -> void:
 	settings = model
-	for action in ConstructionInput.SHORTCUTS:
-		add_binding("build_" + action, ACTION_NAMES[action])
-	for action in ConstructionInput.CAMERA_SHORTCUTS:
-		add_binding(action, {"camera_forward":"Pan forward","camera_back":"Pan back","camera_left":"Pan left","camera_right":"Pan right"}[action])
+	for action in ConstructionInput.actions():
+		add_binding(action, ACTION_NAMES[action])
 	refresh_values()
 
 func add_binding(action: String, caption: String) -> void:

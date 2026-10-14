@@ -1,50 +1,20 @@
 class_name ConstructionInput
 extends RefCounted
 
-const SHORTCUTS = {
-	"cancel": [KEY_ESCAPE], "remove": [KEY_DELETE], "rotate": [KEY_R],
-	"move_piece": [KEY_M], "select_tool": [KEY_V], "grid": [KEY_G],
-	"snap": [KEY_C], "frame": [KEY_F], "frame_all": [KEY_HOME],
-	"height_up": [KEY_PAGEUP], "height_down": [KEY_PAGEDOWN],
-	"height_up_fine": [KEY_PAGEUP, false, true], "height_down_fine": [KEY_PAGEDOWN, false, true],
-	"undo": [KEY_Z, true], "redo": [KEY_Y, true], "duplicate": [KEY_D, true],
-	"save_track": [KEY_S, true], "test_track": [KEY_SPACE],
-	"select_all": [KEY_A, true], "cycle_snap": [KEY_TAB]
-}
-
-const CAMERA_SHORTCUTS = {"camera_forward": KEY_W, "camera_back": KEY_S, "camera_left": KEY_A, "camera_right": KEY_D}
-
-static func install(reset: bool = false) -> void:
-	for action in actions():
-		if InputMap.has_action(action):
-			if not reset: continue
-			InputMap.action_erase_events(action)
-		else: InputMap.add_action(action)
-		for event in default_events(action): InputMap.action_add_event(action, event)
-
+# Defaults are authored in Project Settings > Input Map and loaded by Godot.
 static func actions() -> Array[String]:
 	var result: Array[String] = []
-	for shortcut in SHORTCUTS: result.append("build_" + shortcut)
-	for action in CAMERA_SHORTCUTS: result.append(action)
+	for property in ProjectSettings.get_property_list():
+		var path: String = property.name
+		if path.begins_with("input/build_") or path.begins_with("input/camera_"):
+			result.append(path.trim_prefix("input/"))
 	return result
 
-static func default_events(action: String) -> Array[InputEventKey]:
-	var event = InputEventKey.new()
-	if action in CAMERA_SHORTCUTS:
-		event.physical_keycode = CAMERA_SHORTCUTS[action]
-	else:
-		var data: Array = SHORTCUTS[action.trim_prefix("build_")]
-		event.keycode = data[0]
-		event.ctrl_pressed = data.size() > 1 and bool(data[1])
-		event.shift_pressed = data.size() > 2 and bool(data[2])
-	var result: Array[InputEventKey] = [event]
-	if action == "build_redo":
-		var shift_redo = InputEventKey.new()
-		shift_redo.keycode = KEY_Z
-		shift_redo.ctrl_pressed = true
-		shift_redo.shift_pressed = true
-		result.append(shift_redo)
-	return result
+static func reset_bindings() -> void:
+	for action in actions():
+		InputMap.action_erase_events(action)
+		for event: InputEvent in ProjectSettings.get_setting("input/" + action).events:
+			InputMap.action_add_event(action, event)
 
 static func set_binding(action: String, event: InputEventKey) -> void:
 	InputMap.action_erase_events(action)
@@ -72,7 +42,7 @@ static func save_bindings(config: ConfigFile) -> void:
 	for action in actions():
 		if action == "build_cancel": continue
 		var events = InputMap.action_get_events(action)
-		var defaults = default_events(action)
+		var defaults: Array = ProjectSettings.get_setting("input/" + action).events
 		var unchanged = events.size() == defaults.size()
 		for index in events.size():
 			if not unchanged: break

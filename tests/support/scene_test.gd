@@ -1,6 +1,6 @@
 extends "res://tests/support/game_test.gd"
 
-# main.tscn installs actions, applies settings and starts music. Snapshot only;
+# main.tscn applies settings and starts music. Snapshot only;
 # tests choose their own display/input setup instead of changing it here.
 var previous_window: Dictionary
 var previous_actions: Dictionary
@@ -22,9 +22,7 @@ func before_each() -> void:
 		previous_window[property] = get_window().get(property)
 	previous_vsync = DisplayServer.window_get_vsync_mode(get_window().get_window_id())
 	previous_actions = {}
-	var actions: Array = ConstructionInput.CAMERA_SHORTCUTS.keys()
-	for shortcut in ConstructionInput.SHORTCUTS: actions.append("build_" + shortcut)
-	for action in actions:
+	for action in ConstructionInput.actions():
 		if InputMap.has_action(action):
 			previous_actions[action] = {"deadzone": InputMap.action_get_deadzone(action), "events": InputMap.action_get_events(action)}
 		else:

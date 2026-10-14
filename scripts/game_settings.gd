@@ -38,7 +38,7 @@ func save() -> Error:
 
 func reset_defaults() -> void:
 	values = DEFAULTS.duplicate(true)
-	ConstructionInput.install(true)
+	ConstructionInput.reset_bindings()
 
 func apply(game: Node, apply_window: bool = true) -> void:
 	var camera: ConstructionCamera = game.workspace.world.camera

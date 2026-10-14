@@ -14,7 +14,6 @@ signal modal_closed
 var catalog: PieceCatalog
 
 func _ready() -> void:
-	ConstructionInput.install()
 	catalog = PieceCatalog.new()
 	world.configure(catalog)
 	session.configure(world, catalog)
