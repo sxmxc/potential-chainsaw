@@ -49,7 +49,6 @@ script = ExtResource("Setting")
 key = &"display_label"
 label = "Display Label"
 kind = 2
-default_string = "A"
 
 [sub_resource type="PhysicsMaterial" id="Physics"]
 friction = 0.18
@@ -64,7 +63,7 @@ emission = Color(0.3490196, 0.8980392, 0.6941177, 1)
 inner_radius = 0.24
 outer_radius = 0.29
 
-[node name="Release" type="Node3D" node_paths=PackedStringArray("display_label") unique_id=55945394]
+[node name="Release" type="Node3D" unique_id=55945394 node_paths=PackedStringArray("display_label")]
 script = ExtResource("Behavior")
 display_label = NodePath("Track/Model/BillboardLabel3D")
 configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_release_speed"), SubResource("Setting_quantity"), SubResource("Setting_interval"), SubResource("Setting_start_delay"), SubResource("Resource_har4k")])

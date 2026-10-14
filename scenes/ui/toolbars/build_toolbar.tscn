@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bxo0prqjwsv8i"]
 
 [ext_resource type="Texture2D" uid="uid://c51nm6qenlph7" path="res://assets/ui/icons/rotate.svg" id="3_2yj2p"]
+[ext_resource type="Texture2D" uid="uid://b05gflfkgdaxw" path="res://assets/ui/icons/cancel.svg" id="5_7qm3r"]
 [ext_resource type="Texture2D" uid="uid://1ujj36d70eor" path="res://assets/ui/icons/pieces.svg" id="5_tapjn"]
 [ext_resource type="Texture2D" uid="uid://8ckag0e4j8fi" path="res://assets/ui/icons/grid.svg" id="6_em0ps"]
 [ext_resource type="Texture2D" uid="uid://b5yyyv6d87ynr" path="res://assets/ui/icons/snap.svg" id="7_jjtym"]
@@ -8,14 +9,29 @@
 [ext_resource type="Texture2D" uid="uid://qhb7mybcy267" path="res://assets/ui/icons/raise.svg" id="9_islu6"]
 [ext_resource type="Texture2D" uid="uid://drq7krlx6234a" path="res://assets/ui/icons/ground.svg" id="10_48cqi"]
 [ext_resource type="Texture2D" uid="uid://cqs0f25u7u4kv" path="res://assets/ui/icons/frame.svg" id="11_3xug4"]
+[ext_resource type="Texture2D" uid="uid://bevrvsopo25s" path="res://assets/ui/icons/connect.svg" id="ConnectIcon"]
+[ext_resource type="Texture2D" uid="uid://gro2tkn8maid" path="res://assets/ui/icons/connections.svg" id="ConnectionsIcon"]
 [ext_resource type="Script" uid="uid://buakbbyctigdy" path="res://scripts/ui/icon_button.gd" id="IconScript"]
 [ext_resource type="Script" uid="uid://bov3saygrmjbr" path="res://scripts/ui/build_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[ext_resource type="Texture2D" path="res://assets/ui/icons/connect.svg" id="ConnectIcon"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/connections.svg" id="ConnectionsIcon"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjtym"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.07058824, 0.14901961, 0.18039216, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.18)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
 
 [node name="BuildToolbar" type="VBoxContainer" unique_id=1199303520]
+offset_right = 686.0
+offset_bottom = 96.0
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
@@ -35,6 +51,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 theme_type_variation = &"CardLabel"
+theme_override_styles/normal = SubResource("StyleBoxFlat_jjtym")
 vertical_alignment = 1
 text_overrun_behavior = 3
 
@@ -54,6 +71,7 @@ custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 tooltip_text = "Cancel placement Â· Esc or right-click"
 theme_type_variation = &"IconButton"
+icon = ExtResource("5_7qm3r")
 script = ExtResource("IconScript")
 icon_name = &"cancel"
 
@@ -108,6 +126,7 @@ icon_name = &"snap"
 
 [node name="Elevation" type="HBoxContainer" parent="Common" unique_id=1843841569]
 layout_mode = 2
+theme_override_constants/separation = -4
 
 [node name="Lower" type="Button" parent="Common/Elevation" unique_id=258019263]
 unique_name_in_owner = true
@@ -122,8 +141,8 @@ icon_name = &"lower"
 
 [node name="Height" type="Label" parent="Common/Elevation" unique_id=628266016]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 theme_type_variation = &"SmallMutedLabel"
 text = "0 m"
 
@@ -160,24 +179,24 @@ icon = ExtResource("11_3xug4")
 script = ExtResource("IconScript")
 icon_name = &"frame"
 
-[node name="Connect" type="Button" parent="Common"]
+[node name="Connect" type="Button" parent="Common" unique_id=611849843]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(124, 40)
 layout_mode = 2
 tooltip_text = "Edit connections · drag a send handle onto a piece"
-text = "Connect"
 theme_type_variation = &"SecondaryButton"
 toggle_mode = true
+text = "Connect"
 icon = ExtResource("ConnectIcon")
 script = ExtResource("IconScript")
 
-[node name="Connections" type="Button" parent="Common"]
+[node name="Connections" type="Button" parent="Common" unique_id=495712543]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(104, 40)
 layout_mode = 2
 tooltip_text = "View connections while building"
-text = "Wires"
 theme_type_variation = &"SecondaryButton"
 toggle_mode = true
+text = "Wires"
 icon = ExtResource("ConnectionsIcon")
 script = ExtResource("IconScript")

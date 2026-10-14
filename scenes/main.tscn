@@ -8,16 +8,15 @@
 [ext_resource type="PackedScene" uid="uid://bmym4mtcvags0" path="res://scenes/ui/dialogs/name_dialog.tscn" id="NameDialog"]
 [ext_resource type="PackedScene" uid="uid://px6kesj8ilb" path="res://scenes/ui/puzzle_browser.tscn" id="PuzzleBrowser"]
 [ext_resource type="PackedScene" uid="uid://bi8u26xkl55hb" path="res://scenes/ui/puzzle_completion.tscn" id="PuzzleCompletion"]
-[ext_resource type="PackedScene" uid="uid://c1vx4521f13vd" path="res://scenes/ui/dialogs/workspace_menu.tscn" id="WorkspaceMenu"]
 [ext_resource type="PackedScene" uid="uid://blbttp8rrula7" path="res://scenes/ui/dialogs/settings_dialog.tscn" id="SettingsDialog"]
 [ext_resource type="PackedScene" uid="uid://c00rd135nmp83" path="res://scenes/ui/dialogs/unsaved_dialog.tscn" id="UnsavedDialog"]
-
 [ext_resource type="PackedScene" path="res://scenes/construction_workspace.tscn" id="Workspace"]
+[ext_resource type="PackedScene" uid="uid://c1vx4521f13vd" path="res://scenes/ui/dialogs/workspace_menu.tscn" id="WorkspaceMenu"]
 
 [node name="MarbleEngineer" type="Node" unique_id=673644068]
 script = ExtResource("1")
 
-[node name="Workspace" parent="." instance=ExtResource("Workspace")]
+[node name="Workspace" parent="." unique_id=1246225992 instance=ExtResource("Workspace")]
 
 [node name="Interface" type="CanvasLayer" parent="." unique_id=1394294467]
 
