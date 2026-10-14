@@ -6,20 +6,17 @@
 [node name="PuzzleBrowser" type="Window" unique_id=335018945]
 transparent_bg = true
 title = "Campaign"
-size = Vector2i(920, 560)
 visible = false
 transient = true
 exclusive = true
 borderless = true
 transparent = true
-min_size = Vector2i(800, 300)
+wrap_controls = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=497165524]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+custom_minimum_size = Vector2(800, 0)
 theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1569012700]
@@ -84,7 +81,6 @@ layout_mode = 2
 size_flags_vertical = 3
 max_columns = 2
 same_column_width = true
-fixed_column_width = 408
 fixed_icon_size = Vector2i(20, 32)
 
 [node name="Empty" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=1676400485]
@@ -128,3 +124,21 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "Play"
+
+[node name="Import" type="Button" parent="Surface/Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Import puzzle"
+
+[node name="NewPuzzle" type="Button" parent="Surface/Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Create puzzle"
+
+[node name="ImportDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+access = 2
+file_mode = 0
+filters = PackedStringArray("*.json ; Marble Engineer puzzle")

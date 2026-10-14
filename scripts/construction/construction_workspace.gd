@@ -10,8 +10,7 @@ signal modal_closed
 @onready var world: WorldManager = $World
 @onready var session: ConstructionSession = $Session
 @onready var hud: WorkspaceHUD = $Interface/HUD
-@onready var authoring: PanelContainer = %PuzzleAuthoring
-@onready var scenery_dialog: FileDialog = $SceneDialog
+@onready var authoring: PanelContainer = hud.get_node("%PuzzleAuthoring")
 var catalog: PieceCatalog
 
 func _ready() -> void:
@@ -31,10 +30,6 @@ func _ready() -> void:
 	hud.action_requested.connect(_request_action)
 	session.context_changed.connect(_context_changed)
 	session.message_requested.connect(message_requested.emit)
-	scenery_dialog.canceled.connect(modal_closed.emit)
-	scenery_dialog.file_selected.connect(func(path):
-		modal_closed.emit()
-		hud.get_node("%Toolbox").place_scene(path))
 	session.sandbox()
 
 func _context_changed() -> void:
@@ -70,7 +65,7 @@ func resume_input() -> void:
 	hud.refresh()
 
 func has_modal() -> bool:
-	return scenery_dialog.visible or authoring.get_node("%ExportDialog").visible
+	return authoring.get_node("%ExportDialog").visible
 
 func _request_action(action: String) -> void:
 	if not handle_action(action): action_requested.emit(action)
@@ -81,11 +76,6 @@ func handle_action(action: String) -> bool:
 	match action:
 		"author":
 			if session.is_authoring: authoring.open()
-		"place_scenery":
-			if session.is_authoring:
-				authoring.hide()
-				modal_opened.emit()
-				scenery_dialog.popup_centered(Vector2i(700, 500))
 		"test": session.start_simulation()
 		"test_player":
 			if session.is_authoring: session.test_player()

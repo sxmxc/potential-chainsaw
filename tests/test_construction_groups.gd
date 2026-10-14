@@ -216,7 +216,7 @@ func test_group_editing_and_input() -> void:
 	await mouse(to,false)
 	assert_true(build.selection.size()==2,"Marquee selects pieces at different elevations through viewport input")
 	var count=build.pieces.size()
-	var ui=game.get_node("Interface/Root/HUD").get_node("%Toolbox")
+	var ui=game.workspace.hud.get_node("%Toolbox")
 	var ui_point=ui.get_global_rect().position+Vector2(12,12)
 	await motion(ui_point)
 	await mouse(ui_point,true)

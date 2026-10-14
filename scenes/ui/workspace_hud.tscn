@@ -12,6 +12,8 @@
 
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
+
 [node name="WorkspaceHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
 anchors_preset = 15
@@ -149,3 +151,7 @@ grow_vertical = 1
 [node name="ExtensionPicker" parent="." unique_id=787953607 instance=ExtResource("Extension")]
 unique_name_in_owner = true
 visible = false
+
+[node name="PuzzleAuthoring" parent="Margin/Layout/Body/AuthoringSlot" instance=ExtResource("Authoring")]
+unique_name_in_owner = true
+layout_mode = 2

@@ -1,36 +1,41 @@
 {
-  "version": 1,
-  "chapters": [
-    {
-      "description": "Optional: learn the tools through ten short puzzles.",
-      "id": "introduction",
-      "introduction": true,
-      "levels": [
-        "campaign-01",
-        "campaign-02",
-        "campaign-03",
-        "campaign-04",
-        "campaign-05",
-        "campaign-06",
-        "campaign-07",
-        "campaign-08",
-        "campaign-09",
-        "campaign-10"
-      ],
-      "name": "Introduction",
-      "optional": true,
-      "order": 0.0,
-      "prerequisites": []
-    },
-    {
-      "description": "Main Campaign: engineering puzzles combining limited inventory, elevation, momentum, and interacting mechanisms. Puzzles are being prepared.",
-      "id": "chapter-1",
-      "introduction": false,
-      "levels": [],
-      "name": "Chapter 1",
-      "optional": false,
-      "order": 1.0,
-      "prerequisites": []
-    }
-  ]
+	"chapters": [
+		{
+			"description": "Optional: learn the tools through ten short puzzles.",
+			"id": "introduction",
+			"introduction": true,
+			"levels": [
+				"campaign-01",
+				"campaign-02",
+				"campaign-03",
+				"campaign-04",
+				"campaign-05",
+				"campaign-06",
+				"campaign-07",
+				"campaign-08",
+				"campaign-09",
+				"campaign-10"
+			],
+			"name": "Introduction",
+			"optional": true,
+			"order": 0.0,
+			"prerequisites": []
+		},
+		{
+			"description": "Main Campaign: engineering puzzles combining limited inventory, elevation, momentum, and interacting mechanisms. Puzzles are being prepared.",
+			"id": "chapter-1",
+			"introduction": false,
+			"levels": [
+				"chapter1-loading-loft",
+				"chapter1-service-block",
+				"chapter1-shared-clearance",
+				"chapter1-jwytyk"
+			],
+			"name": "Chapter 1",
+			"optional": false,
+			"order": 1.0,
+			"prerequisites": []
+		}
+	],
+	"version": 1
 }

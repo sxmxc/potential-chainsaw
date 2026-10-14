@@ -124,6 +124,30 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 wrap_mode = 1
 
+[node name="DestinationLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Publish to"
+
+[node name="Destination" type="OptionButton" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Community library"
+popup/item_0/id = 0
+popup/item_1/text = "Official campaign"
+popup/item_1/id = 1
+
+[node name="CreatorLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+layout_mode = 2
+text = "Creator"
+
+[node name="Creator" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+unique_name_in_owner = true
+layout_mode = 2
+max_length = 80
+
 [node name="Advanced" type="Button" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=850354016]
 unique_name_in_owner = true
 layout_mode = 2
@@ -149,6 +173,7 @@ layout_mode = 2
 wrap_mode = 1
 
 [node name="ChapterIdLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1146824171]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Chapter ID"
@@ -159,6 +184,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="ChapterOrderLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=408014562]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Chapter navigation order"
@@ -180,6 +206,7 @@ layout_mode = 2
 text = "Introduction / tutorial chapter"
 
 [node name="ChapterRequirementsLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1781893259]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Chapter prerequisites (IDs)"
@@ -257,6 +284,7 @@ layout_mode = 2
 max_value = 999.0
 
 [node name="PrerequisiteLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=957307808]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Prerequisites (select completed puzzles required to unlock)"
@@ -269,6 +297,7 @@ layout_mode = 2
 select_mode = 1
 
 [node name="ChapterNameLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1983620346]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Chapter name"
@@ -601,14 +630,6 @@ metadata/_tab_index = 4
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LifecycleHelp" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=218967212]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Save draft → Test as player → preserve successful solution → return here → Validate → Publish. Editing any starting content invalidates the prior proof."
-autowrap_mode = 3
-
 [node name="TestStatus" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=2043475286]
 unique_name_in_owner = true
 layout_mode = 2
@@ -666,10 +687,10 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Export campaign"
+text = "Export puzzle"
 clip_text = true
 
 [node name="ExportDialog" type="FileDialog" parent="." unique_id=1808200639]
 unique_name_in_owner = true
 access = 2
-filters = PackedStringArray("*.zip ; Campaign content bundle")
+filters = PackedStringArray("*.json ; Marble Engineer puzzle")

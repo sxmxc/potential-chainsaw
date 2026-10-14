@@ -23,6 +23,16 @@ class TestCatalog:
 class TestRegistry:
 	extends GutTest
 
+	func test_fixed_piece_positions_survive_json_precision_round_trip() -> void:
+		var original := {"uid":"fixed", "piece":"straight", "position":[3.49997711181641, 0.0, 1.99997687339783], "rotation":0}
+		var rules := PuzzleRules.new({"pieces":[original]}, PieceCatalog.new())
+		var current := original.duplicate(true)
+		var position := Vector3(original.position[0], original.position[1], original.position[2])
+		current.position = [position.x, position.y, position.z]
+		assert_eq(rules.validate([current]), "", "Engine position precision preserves fixed placements")
+		current.position[0] += 0.001
+		assert_eq(rules.validate([current]), "This piece is fixed in place", "Actual movement remains forbidden")
+
 	func test_registry_ids_and_indexed_queries_match_saved_definitions() -> void:
 		var definitions := PieceCatalog.new()
 		var registry := PieceCatalog.REGISTRY
@@ -42,14 +52,16 @@ class TestRegistry:
 			assert_true(definitions.query({&"category":definition.category, &"behavior":definition.behavior}).has(definition), "AND query finds " + String(id))
 		assert_null(definitions.get_piece("unregistered-piece"))
 		assert_true(definitions.query({&"category":"Unknown category"}).is_empty())
-		var expected: Array[String] = ["All pieces"]
+		var expected: Array[String] = []
 		for definition in definitions.query():
 			if not expected.has(definition.category): expected.append(definition.category)
-		assert_eq(definitions.categories().size(), expected.size(), "Category menu reflects registered content")
+		expected.sort_custom(func(a: String, b: String): return a.naturalnocasecmp_to(b) < 0)
+		expected.push_front("All pieces")
+		assert_eq(definitions.categories(), expected, "Only registered categories appear, alphabetically, after All pieces")
 
 	func test_registered_scenery_has_mesh_collision_and_legacy_asset_ids() -> void:
 		var definitions := PieceCatalog.new()
-		var scenery := definitions.query({&"category":"Scenery", &"behavior":"decoration"})
+		var scenery := definitions.query({&"behavior":"decoration"}).filter(func(definition): return definition.authoring_only)
 		for asset in ["partition", "deck", "column", "machine"]:
 			var definition := definitions.get_piece("environment:" + asset)
 			assert_not_null(definition)
@@ -57,12 +69,12 @@ class TestRegistry:
 			assert_true(scenery.has(definition))
 			assert_true(definition.authoring_only)
 			assert_true(definition.collision_enabled, "Imported scenery uses shared generated mesh collision")
-			assert_eq(PuzzleEnvironment.scene_path(asset), definition.model.resource_path)
+			assert_eq(PuzzleEnvironment.get_asset(asset), definition)
 			var object := autofree(BuildManager.PIECE_SCENE.instantiate()) as BuildingPiece
 			object.setup(definition)
 			assert_false(object.bodies.is_empty(), "Imported scenery has physical mesh collision")
 			assert_false(definition.collision_solids.is_empty(), "Placement has measured occupied volumes")
-		assert_eq(PuzzleEnvironment.scene_path("unknown"), "")
+		assert_null(PuzzleEnvironment.get_asset("unknown"))
 
 class TestPersistence:
 	extends "res://tests/support/game_test.gd"

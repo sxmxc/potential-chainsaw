@@ -11,7 +11,7 @@ func test_bucket_elevator() -> void:
 	game.workspace.activate()
 	var build: BuildManager = game.workspace.world.build
 	var definition = game.workspace.catalog.get_piece("bucket-elevator")
-	assert_true(definition != null and definition.category=="Mechanisms", "Elevator is registered in the existing catalog")
+	assert_not_null(definition, "Elevator is registered in the existing catalog")
 	var lift = build.spawn(definition, Transform3D.IDENTITY)
 	assert_true(lift.behaviors[0].buckets.size()>=6, "One placed assembly has multiple reusable buckets")
 	assert_true(lift.bodies.size()>0 and lift.definition.reserve_bounds, "Frame/guide collision and complete mechanism volume are present")

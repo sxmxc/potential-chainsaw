@@ -28,9 +28,11 @@ func result(state: int, _message: String) -> void:
 	%Result.text = "Completed in %.1f seconds." % session.world.simulation.elapsed
 	%Preserve.visible = session.is_testing
 	%ReturnEditor.visible = session.is_testing
-	%Next.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY
+	%Next.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY and session.store.is_official(session.puzzle)
 	%LevelSelection.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY
-	var awards: Array = session.store.progress.get(session.puzzle.id, {}).get("awards", [])
+	%LevelSelection.text = "Campaign levels" if session.store.is_official(session.puzzle) else "Community puzzles"
+	var records: Dictionary = session.store.progress if session.store.is_official(session.puzzle) else session.store.community_progress
+	var awards: Array = records.get(session.puzzle.id, {}).get("awards", [])
 	%Awards.text = "Awards: " + ", ".join(awards)
 	%Awards.visible = not awards.is_empty()
 	popup_centered(Vector2i(480,int(%Surface.get_combined_minimum_size().y)))

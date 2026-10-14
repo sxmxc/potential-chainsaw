@@ -8,13 +8,13 @@ Previously `PuzzleStore` returned one global ordered list, implicit unlocking de
 
 ## Chapters and authoring
 
-`resources/campaign_chapters.json` defines chapter IDs, display names, chapter order, optional/introduction classification, puzzle prerequisites, descriptions, and membership lists. Its Introduction membership assigns the ten existing levels without changing their content or fingerprints. Chapter 1 is a distinct empty collection; no new puzzles were generated.
+`resources/campaign_chapters.json` defines chapter IDs, display names, chapter order, optional/introduction classification, puzzle prerequisites, descriptions, and membership lists. Its Introduction membership assigns the ten existing levels without changing their content or fingerprints. Chapter 1 is separate from Introduction and now contains four published puzzles.
 
-Puzzle Editor Settings exposes Chapter ID, Chapter display name, Chapter navigation order, Optional chapter, Introduction / tutorial chapter, and Chapter unlock requirements. Reusing a known ID populates its metadata; entering a new ID defines another chapter. The existing Order field orders levels within their chapter. The existing prerequisite selector continues to configure individual puzzle requirements. New drafts default to the main campaign. Metadata is stored in the puzzle's `chapter` dictionary, with explicit membership taking precedence over manifest membership. Published puzzles automatically introduce their chapters into navigation, without navigation-code changes.
+Official Puzzle Editor Settings exposes Chapter ID, Chapter display name, Chapter navigation order, Optional chapter, Introduction / tutorial chapter, Chapter unlock requirements, level order and prerequisites. New community drafts have no mandatory campaign registration. Official settings live in draft-only `campaign` metadata and are promoted to project registration. The campaign manifest determines official membership, paths, level order and requirements; conflicting legacy chapter overrides remain in registration for authoring, while runtime chapter order comes from the shared chapter definitions. Portable puzzle JSON omits these fields.
 
 Introduction puzzles are independently accessible. Main chapters unlock by their own prerequisites and level sequence; introduction requirements never gate the main route. Awards never unlock levels. On completion, navigation proceeds within a chapter and then through eligible main chapters. The final Introduction level joins the main route. Empty chapters show their description and an explicit lack of published puzzles.
 
-Editor bundles include `campaign_chapters.json`; the importer merges chapter membership while preserving existing assignments. Existing puzzle IDs and filenames remain stable on import.
+Current distribution uses direct developer **Add to Campaign** promotion and `campaign_manifest.json` registration. The former bundle/importer path has been removed; see [Puzzle authoring](PUZZLE_AUTHORING.md#publication-and-distribution). Chapter assignments, IDs, filenames and prerequisites are preserved in registration.
 
 ## Saves and resume
 
@@ -28,16 +28,12 @@ Legacy saves without route state infer an existing campaign and resume at the fi
 
 Chapter 1 needs separately authored and physics-verified engineering puzzles. Prefer multiple viable layouts under limited inventory, route planning across elevations, managing speed and momentum, and interactions between gates, sensors, diverters, launchers, fans, and elevators. Combine several constraints in each puzzle rather than presenting isolated component demonstrations. Preserve reference solutions separately from starting layouts, make success depend on the authored objectives, and use optional efficiency awards rather than award-gated progression.
 
-There is no Chapter 1 Level 1 yet. Skip Introduction therefore opens Chapter 1's empty collection. When its first puzzle is published, the saved main route resumes there automatically. Completing Introduction reaches that same collection. Shipping an immediately playable main campaign requires separate content authoring.
+Skip Introduction opens the registered Chapter 1 route without completing tutorials. Completing Introduction reaches that same route. Further campaign content still requires separate authoring and playtesting.
 
 ## Verification
 
 Use the GUT panel or `godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit`. Campaign suites cover stable IDs, migration, Introduction choice and skipping, chapter grouping, unlocks, resume, authoring metadata, and all ten positive/negative physics cases. Fixtures isolate player saves; tests never republish puzzle files.
 
-The revised runner redirects only application saves through `SavePaths` and `MARBLE_ENGINEER_TEST_DATA`. Logs go into the same uniquely named OS temporary directory. Its `finally` block verifies the cleanup path, removes that invocation's files, and reports their size. `APPDATA` is unchanged; `.local-user` is never created. No project, Godot installation, model imports, or asset caches are copied.
+GUT persistence fixtures redirect application saves through `SavePaths` and `MARBLE_ENGINEER_TEST_DATA`, and restore them with the shared fixture lifecycle. Logs can be written under `.godot/`; the old custom runner is no longer used.
 
-Chapter verification passed 71 checks, including real editor ZIP export and untouched validation fingerprints. `python -B tests/test_campaign_import.py` passed three importer checks for round trips, future chapters, and rejection without partial staging. Hera inspected runtime PID 13660: at 1024×720, the new-campaign choice and empty Chapter 1 showed no screenshot clipping; a click on Skip Introduction removed the choice and selected Chapter 1 with zero introduction completions. The editor's chapter fields were inspected in its existing scrollable Settings tab. The review process exited and its nine temporary files, including three screenshots, were removed (311,836 bytes total).
-
-The headless gate exposed a fragile audio-bus UID lookup; `project.godot` now references the same unchanged audio-bus resource by path. This permits fresh or isolated caches to load it consistently.
-
-Final regression: 71 scripts compiled; music (8), construction (169), elevator (62), supports (1,160), mechanisms (53), campaign rules (24), puzzle workflow (29), and chapter (71) checks all passed. All ten reference solutions completed and all ten incomplete layouts failed as expected. The runner removed its 22 files totaling 8,335 bytes. A Git comparison against checkpoint `436a335` confirmed no changes to any original campaign puzzle file.
+The original chapter UI was verified when this restructure was introduced. Its ZIP/Python checks described the former distribution workflow and have been replaced by native GUT promotion/import tests. The current campaign also contains four published Chapter 1 puzzles; the earlier empty-chapter observations are historical.

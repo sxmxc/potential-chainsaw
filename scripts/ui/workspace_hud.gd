@@ -21,7 +21,6 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	%EditToolbar.configure(build)
 	%Toolbox.configure(build.catalog,build)
 	%Toolbox.piece_chosen.connect(build.choose)
-	%Toolbox.action_requested.connect(func(action): action_requested.emit(action))
 	%Toolbox.collapsed.connect(func():library_open=false; refresh())
 	%DismissGuidance.pressed.connect(func():
 		if session: guidance_done[session.puzzle.get("id","")]=true
@@ -86,6 +85,7 @@ func refresh_guidance() -> void:
 	%Guidance.hide()
 	if not session or session.context != ConstructionSession.Context.PUZZLE_PLAY or session.puzzle.is_empty(): return
 	if simulation.state != SimulationManager.State.BUILD: return
+	if not session.store.is_official(session.puzzle): return
 	var id: String = session.puzzle.id
 	if session.store.completed(id) or guidance_done.has(id): return
 	var copy: Dictionary=Copy.introduction(session.puzzle)

@@ -36,7 +36,7 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Follow Godot-native conventions: typed GDScript where practical, focused scenes, reusable Resources, signals, InputMap actions, and explicit state ownership.
 - Keep scene composition, data, presentation, and behavior separate. Avoid monolithic scripts, duplicate state machines, sprawling autoloads, and hardcoded node paths scattered across unrelated files.
 - Use stable IDs for piece definitions and placed instances. Maintain backward compatibility for existing saved constructions, puzzle definitions, and progress; introduce migrations when formats change.
-- YARD's `resources/registries/piece_registry.tres` is authoritative for piece membership and indexed metadata. Resolve pieces through its runtime API and the existing PieceCatalog; do not add filesystem scans or parallel catalogs. Registry entry IDs must match `PieceDefinition.id`. Indexing is automatic on editor Play/export; headless tests consume the saved index. Preserve legacy scene-reference placements and authoring-only permissions.
+- YARD's `resources/registries/piece_registry.tres` is authoritative for piece membership and indexed metadata. Resolve pieces through its runtime API and the existing PieceCatalog; do not add filesystem scans or parallel catalogs. Registry entry IDs must match `PieceDefinition.id`. Indexing is automatic on editor Play/export; headless tests consume the saved index. Preserve catalog placement IDs and authoring-only permissions; puzzle data must not load unregistered scenes.
 - Prefer a small, understandable implementation over general-purpose frameworks. New components must solve an existing need.
 - Do not edit original imported assets destructively. Wrap assets in reusable scenes and add companion collision, connectors, or behavior there.
 - Test both headless parsing/resource loading and real interactive/physics workflows when relevant. Compilation alone is not verification.
@@ -72,7 +72,7 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Do not fill a campaign quota with generic gaps, superficial variations, or mechanism-showcase exercises. A mechanically working level is not automatically a good puzzle.
 - Validate outcomes through simulation objectives, **not** by comparing the player's construction to one prescribed layout. Legitimate alternate solutions are welcome.
 - Keep player retries unlimited unless explicitly directed otherwise. Testing a puzzle must not erase the player's build.
-- Environment placements belong in puzzle data; registered reusable scenes own meshes/collision. Edit instances through the shared construction toolbox and controls. Preserve legacy fixed scene references and published native resource snapshots; never count scenery as track inventory.
+- Environment placements belong in puzzle data; registered reusable scenes own meshes/collision. Edit instances through the shared construction toolbox and controls. Use catalog-only placements in every mode; arbitrary scene references and published scenery snapshots are retired. Never count scenery as track inventory.
 - Puzzle Editor must use actual in-game construction and support draft → test as player → validation → publish, with isolated test copies. Do not require hand-editing JSON or GDScript to author levels.
 - Publishing requires tested completion conditions and a known-good solution. Do not claim fun has been established without human playtesting.
 
@@ -86,6 +86,42 @@ Do not silently expand scope. When behavior is ambiguous or involves a new game-
 - Keep the construction and marble simulation as the visual priority. Avoid full-width instruction banners, unnecessarily tall empty toolboxes, always-open inspector panels, and duplicated status text.
 - Make the piece toolbox catalog-driven with recognizable thumbnails, clear selection states, scrolling for larger inventories, and sensible sizing for small ones.
 - Verify UI by running the project and reviewing actual screens at 1280×720, 1600×900, and 1920×1080 when possible. Report honestly if visual inspection is unavailable.
+
+## Godot UI Layout Requirements
+
+Use Godot 4's native Control layout, Container, anchoring, sizing, and Theme systems.
+
+**Do not manually implement layouts that Godot already handles.**
+
+- Build UI composition using appropriate Containers, anchors, size flags, and minimum sizes.
+- Use shared Theme resources for typography, spacing, margins, colors, and control styling.
+- Prefer scene-authored layouts over programmatically positioning and sizing every control.
+- Do not scatter arbitrary pixel dimensions, offsets, and spacing values throughout scripts.
+- Do not calculate ordinary UI positions from viewport dimensions or hardcoded screen resolutions.
+- Do not use `_process()` to continuously reposition normal interface controls.
+- Do not override Container-managed positioning and sizing with manual offsets.
+- Do not use nested Containers unnecessarily or introduce abstractions for simple layout problems.
+- Use intentional fixed dimensions only when justified by design, such as icon sizes, minimum interaction targets, and bounded panel widths.
+- For world-anchored interaction elements, such as mechanism connection handles, use proper 3D-to-screen projection. Keep their visual dimensions consistent and centralize presentation parameters rather than scattering magic numbers.
+- Account for labels, content growth, and available space using Godot's layout capabilities instead of implementing individual screen-resolution exceptions.
+
+### Existing UI Cleanup
+
+When modifying an existing interface, identify and remove obsolete manual sizing, positioning hacks, and duplicated styling where native Godot layout features can replace them.
+
+Do not simply wrap hardcoded calculations in helper functions or move magic numbers into another script.
+
+Do not refactor unrelated interfaces without reason.
+
+### Verification
+
+Design and review primarily at 1920×1080.
+
+Do not create hardcoded 1080p layouts. Native layout behavior should accommodate ordinary desktop window resizing without requiring resolution-specific code.
+
+Only test additional resolutions when the change actually concerns window scaling or layout behavior.
+
+**The goal is a deliberately designed interface using Godot's existing layout tools—not a collection of manually positioned controls that happen to look acceptable at one resolution.**
 
 ## Player-facing writing
 

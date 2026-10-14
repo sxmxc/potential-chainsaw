@@ -4,6 +4,7 @@ signal modal_opened
 
 var session: ConstructionSession
 var editing: bool = false
+var community: bool = false
 var levels: Array[Dictionary] = []
 var all_levels: Array[Dictionary] = []
 var chapters: Array[Dictionary] = []
@@ -12,7 +13,15 @@ const CHAPTER_BUTTON = preload("res://scenes/ui/widgets/chapter_button.tscn")
 
 func configure(value: ConstructionSession) -> void:
 	session = value
+	$Surface.minimum_size_changed.connect(func():
+		if visible: fit_contents.call_deferred())
 	%Back.pressed.connect(close)
+	%Import.pressed.connect(func(): %ImportDialog.popup_centered(Vector2i(700, 500)))
+	%ImportDialog.file_selected.connect(func(path):
+		var imported := session.store.import_puzzle(path)
+		if imported.is_empty(): session.message_requested.emit(session.store.last_error)
+		else: open(false, true))
+	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
 	%Open.pressed.connect(open_selected)
 	%Levels.item_activated.connect(func(_index): open_selected())
 	%PlayIntroduction.pressed.connect(func(): start_campaign(true))
@@ -25,6 +34,7 @@ func open_campaign() -> void:
 	if not session.store.campaign.get("started", false):
 		%StartChoice.show()
 		%Heading.text = "Campaign"
+		fit_contents.call_deferred()
 
 func start_campaign(play_introduction: bool) -> void:
 	var target = session.store.start_campaign(play_introduction)
@@ -39,15 +49,18 @@ func resume_campaign() -> void:
 	hide()
 	session.player(target)
 
-func open(editor_mode: bool = false) -> void:
+func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	editing = editor_mode
+	community = community_mode or (editing and not session.official_authoring)
 	modal_opened.emit()
-	title = "Puzzle library" if editing else "Campaign"
+	title = "Puzzle library" if editing else ("Community puzzles" if community else "Campaign")
 	%Heading.text = title
 	%StartChoice.hide()
-	%Resume.visible = not editing and session.store.campaign.get("started", false)
+	%Resume.visible = not editing and not community and session.store.campaign.get("started", false)
 	%Open.text = "Edit" if editing else "Play"
-	all_levels = session.store.list_puzzles()
+	all_levels = session.store.list_community() if community else session.store.list_puzzles()
+	%Import.visible = community
+	%NewPuzzle.visible = community and not editing
 	if editing:
 		var drafts = session.store.list_puzzles(true)
 		var ids: Array = []
@@ -55,7 +68,10 @@ func open(editor_mode: bool = false) -> void:
 		for i in range(all_levels.size() - 1, -1, -1):
 			if all_levels[i].id in ids: all_levels.remove_at(i)
 		all_levels.append_array(drafts)
-	chapters = session.store.list_chapters(all_levels)
+	chapters.clear()
+	if community: chapters.append({"id": "local", "name": "Community puzzles", "prerequisites": []})
+	else: chapters.assign(session.store.list_chapters(all_levels))
+	%Chapters.get_parent().visible = not community
 	for button in %Chapters.get_children():
 		%Chapters.remove_child(button)
 		button.queue_free()
@@ -74,7 +90,7 @@ func open(editor_mode: bool = false) -> void:
 		if chapter.id == session.store.campaign.get("current_chapter", ""): selected = i
 	if not chapters.is_empty():
 		show_chapter(selected)
-	popup_centered(size)
+	fit_contents.call_deferred()
 
 func show_chapter(index: int) -> void:
 	var chapter = chapters[index]
@@ -83,19 +99,23 @@ func show_chapter(index: int) -> void:
 	%ChapterName.hide()
 	levels.clear()
 	for data in all_levels:
-		if session.store.chapter_for(data).id == chapter.id: levels.append(data)
+		if community or session.store.chapter_for(data).id == chapter.id: levels.append(data)
 	levels.sort_custom(func(a, b):
-		if int(a.order) != int(b.order): return int(a.order) < int(b.order)
+		if community: return str(a.name).naturalnocasecmp_to(str(b.name)) < 0
+		if session.store.level_order(a) != session.store.level_order(b): return session.store.level_order(a) < session.store.level_order(b)
 		return str(a.id) < str(b.id))
 	%Levels.clear()
 	for data in levels:
-		var status = "Draft" if data.status != "published" else ("Complete" if session.store.completed(data.id) else ("Ready" if session.store.unlocked(data, all_levels) else "Locked"))
-		var awards: Array = session.store.progress.get(data.id, {}).get("awards", [])
+		var status = "Draft" if data.status != "published" else ("Complete" if is_completed(data) else ("Ready" if (community or session.store.unlocked(data, all_levels)) else "Locked"))
+		var records: Dictionary = session.store.community_progress if community else session.store.progress
+		var awards: Array = records.get(data.id, {}).get("awards", [])
 		if not awards.is_empty(): status += " · %d awards" % awards.size()
+		if community and data.get("_source") != "draft": status = ("Imported · " if data.get("_source") == "community" else "Local · ") + status
 		var icon: Texture2D=null
-		if session.store.completed(data.id): icon=load("res://assets/ui/icons/complete.svg")
+		if is_completed(data): icon=load("res://assets/ui/icons/complete.svg")
 		elif status=="Locked": icon=load("res://assets/ui/icons/locked.svg")
-		%Levels.add_item("%02d  %s%s" % [data.order, data.name," · Draft" if data.status!="published" else ""],icon)
+		var label: String = data.name if community else "%02d  %s" % [session.store.level_order(data), data.name]
+		%Levels.add_item(label + (" · Draft" if data.status != "published" else ""), icon)
 		%Levels.set_item_tooltip(%Levels.item_count-1,status)
 		if status=="Locked":
 			%Levels.set_item_custom_fg_color(%Levels.item_count-1,get_theme_color("font_disabled_color","ItemList"))
@@ -110,27 +130,33 @@ func show_chapter(index: int) -> void:
 	if not levels.is_empty():
 		var selected=0
 		for i in levels.size():
-			if not session.store.completed(levels[i].id) and session.store.unlocked(levels[i],all_levels):
+			if not is_completed(levels[i]) and (community or session.store.unlocked(levels[i],all_levels)):
 				selected=i
 				break
 		%Levels.select(selected)
 		select_level(selected)
-	size=Vector2i(920,320 if levels.is_empty() else 500)
-	if visible: popup_centered(size)
+	fit_contents.call_deferred()
+
+func fit_contents() -> void:
+	reset_size()
+	popup_centered()
 
 func select_level(index: int) -> void:
 	%Details.text = Copy.objective(levels[index])
-	%Open.disabled = not editing and not session.store.unlocked(levels[index], all_levels)
+	%Open.disabled = not editing and not community and not session.store.unlocked(levels[index], all_levels)
 	if %Open.disabled: %Details.text += "\nComplete the required levels to unlock this level."
 	var resume: Dictionary=session.store.resume_level()
-	%Resume.visible=not editing and not resume.is_empty() and resume.id!=levels[index].id
-	%Open.text="Edit" if editing else ("Continue" if not resume.is_empty() and resume.id==levels[index].id else "Play")
+	%Resume.visible=not editing and not community and not resume.is_empty() and resume.id!=levels[index].id
+	%Open.text="Edit" if editing else ("Continue" if not community and not resume.is_empty() and resume.id==levels[index].id else "Play")
 
 func open_selected() -> void:
 	var selected = %Levels.get_selected_items()
 	if selected.is_empty(): return
 	var data = levels[selected[0]]
-	if editing: session.editor(data)
-	elif session.store.unlocked(data, all_levels): session.player(data)
+	if editing: session.editor(data, session.official_authoring)
+	elif (community or session.store.unlocked(data, all_levels)): session.player(data)
 	else: return
 	hide()
+
+func is_completed(data: Dictionary) -> bool:
+	return session.store.community_progress.get(data.id, {}).get("completed", false) if community else session.store.completed(data.id)

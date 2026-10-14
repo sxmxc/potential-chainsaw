@@ -250,7 +250,7 @@ func connector_occupied(point: Vector3, normal: Vector3, connector: TrackConnect
 func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array, ignore: Node = null) -> String:
 	var box = placement * definition.bounds
 	if intersects_solids(definition, placement, environment_solids): return "Blocked by the environment"
-	# A reusable scene may have authored foundations below its placement origin.
+	# Catalog scenery may have geometry below its placement origin.
 	var bottom: float = placement.origin.y if definition.authoring_only else box.position.y
 	if box.position.x < -boundary or box.end.x > boundary or box.position.z < -boundary or box.end.z > boundary or bottom < -0.01 or box.end.y > 32:
 		return "Outside the build area (±48 m, 0–32 m high)"

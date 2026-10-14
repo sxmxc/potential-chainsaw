@@ -9,10 +9,10 @@
 script = ExtResource("3_sgqko")
 id = &"banner-high"
 display_name = "Banner High"
-category = "Scenery"
+category = "Props"
 description = "Scenery · 0.93 × 0.08 m footprint · 1.00 m tall. Physical scenery. Tunnel arches can surround an existing channel."
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("2_eiymr")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.4625, 0, -0.0375, 0.925, 1, 0.075)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."

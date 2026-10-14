@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/simulation/rotor_component.gd" id="Script"]
+[ext_resource type="Script" path="res://scripts/mechanisms/rotor_component.gd" id="Script"]
 
 [ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/fan-simple-four.glb" id="Model"]
 

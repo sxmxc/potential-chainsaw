@@ -9,11 +9,11 @@
 script = ExtResource("Definition")
 id = &"environment:deck"
 display_name = "Floor"
-category = "Scenery"
+category = "Architecture"
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("2_lt56y")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-1, 0, -1, 2, 0.1, 2)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-1, 0, -1, 2, 0.1, 2)])

@@ -189,5 +189,3 @@ func reset() -> void:
 	elapsed = 0
 	objectives.reset(puzzle.get("objectives", []))
 	state_changed.emit(state,"")
-
-

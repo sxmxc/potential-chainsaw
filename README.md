@@ -48,9 +48,9 @@ The Bucket Elevator is available under Mechanisms, with a playable example. Sele
 
 ## Campaign and Puzzle Editor
 
-Choose **Campaign** from the main menu for ten puzzles with restricted construction, physical objectives, and saved progression. Sandbox retains the same building controls and unlimited inventory.
+Choose **Campaign** from the main menu for the preserved Introduction and registered campaign puzzles with restricted construction, physical objectives, and saved progression. Sandbox retains the same building controls and unlimited inventory.
 
-Press **Ctrl+Shift+P** to enter the developer Puzzle Editor. Build with the sandbox tools, then use **Authoring tools** to set permissions, inventory, boundaries, objectives and mechanism links. **Test as Player** applies the actual campaign rules. A successful physical run can be preserved as a separate solution reference; publishing requires a current validated reference.
+Choose **Puzzle Editor** to author community content. In project runs, **Ctrl+Shift+P** enters official authoring; the Settings destination selector can switch the same draft between Community and Campaign. Build with the sandbox tools, then use **Authoring tools** to set permissions, inventory, boundaries, objectives and mechanism links. **Test as Player** applies the actual campaign rules. A successful physical run can be preserved as a separate solution reference; publishing requires a current validated reference.
 
 See [Puzzle authoring](docs/PUZZLE_AUTHORING.md), [architecture rules](docs/ARCHITECTURE.md), and [UI design rules](docs/UI_DESIGN.md).
 
@@ -66,6 +66,6 @@ godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit
 
 To run just settings and input regressions, add `-gselect=settings_and_input`. GUT reports assertions, engine errors, and exit status. Physics integration tests use the project's 120 Hz simulation. Persistence tests use `tests/support/game_test.gd` for unique `user://gut-tests/` directories and safe teardown. Tests loading `main.tscn` use `scene_test.gd` to snapshot and restore settings and bindings through public APIs. Pure resource and camera tests extend `GutTest` and use GUT autofree. Tests set display dimensions only when their assertions require them; player tracks, progress, drafts, and settings are isolated. Publication regressions write only into the isolated fixture; tests never publish real campaign content or rewrite bundled solutions.
 
-`tools/import_campaign.py` remains the utility for importing published campaign bundles. The custom verification runner, warning-forcing checker, and one-off benchmark have been removed.
+Official authors use **Add to Campaign** to write project content and register it directly. Community authors use **Publish locally**, then **Export puzzle**; recipients choose **Community puzzles > Import puzzle**. Both retain the versioned JSON puzzle format. See [Puzzle authoring](docs/PUZZLE_AUTHORING.md) for storage, compatibility and export filters.
 
 Settings include audio bus volumes, window mode and size, VSync, frame limits, MSAA, 3D render resolution, camera sensitivity and axis inversion, and keyboard rebinding. Changes save automatically; Restore defaults resets settings and bindings. Escape cancels placement or clears selection; right drag always controls the camera.

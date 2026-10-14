@@ -19,6 +19,7 @@ func configure_context(session: ConstructionSession) -> void:
 	for control in [%New,%Rename,%Load,%Examples]: control.visible=session.is_sandbox
 	%Restart.visible=session.is_playing
 	%Levels.visible=session.context == ConstructionSession.Context.PUZZLE_PLAY
+	%Levels.text = "Campaign levels" if session.store.is_official(session.puzzle) else "Community puzzles"
 	%Author.visible=session.is_authoring
 	%SaveDraft.visible=session.is_authoring
 	%TestPlayer.visible=session.is_authoring

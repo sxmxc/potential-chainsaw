@@ -42,7 +42,7 @@ func validate(construction: Array) -> String:
 		if initial.has(item.uid):
 			var original: Dictionary = initial[item.uid]
 			if item.piece != original.piece: return "Authored pieces cannot be replaced"
-			if item.position != original.position and not permits(item.uid, "move"): return "This piece is fixed in place"
+			if placement.origin != Vector3(original.position[0], original.position[1], original.position[2]) and not permits(item.uid, "move"): return "This piece is fixed in place"
 			if posmod(int(item.rotation), 4) != posmod(int(original.rotation), 4) and not permits(item.uid, "rotate"): return "Rotation is locked"
 			var settings: Dictionary = item.get("config", {})
 			var old: Dictionary = original.get("config", {}).duplicate(true)
@@ -57,7 +57,7 @@ func validate(construction: Array) -> String:
 						var limits: Array = permission.limits[key]
 						if not (settings.get(key) is float or settings.get(key) is int): return "Invalid setting"
 						if float(settings[key]) < float(limits[0]) or float(settings[key]) > float(limits[1]): return "Setting exceeds puzzle limits: " + key
-		if not initial.has(item.uid) or item.position != initial[item.uid].position or item.rotation != initial[item.uid].rotation or bounds_changed:
+		if not initial.has(item.uid) or placement.origin != Vector3(initial[item.uid].position[0], initial[item.uid].position[1], initial[item.uid].position[2]) or item.rotation != initial[item.uid].rotation or bounds_changed:
 			var position = Vector3(item.position[0], item.position[1], item.position[2])
 			var volume = Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), position) * definition.bounds
 			var bounds = puzzle.get("bounds", [-12, -12, 12, 12, 0, 12])

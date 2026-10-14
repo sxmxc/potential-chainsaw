@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaam"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/roof-flat-square.glb" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/roof-flat-square.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_n8iy3"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://udyhao30b418" path="res://assets/models/environment/kenney_building/GLB format/roof-flat-square.glb" id="Model"]
+[ext_resource type="Texture2D" uid="uid://bjx58nsct3n4k" path="res://assets/models/environment/kenney_building/Previews/roof-flat-square.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
 id = &"environment:building-roof-flat-square"
 display_name = "Flat roof"
-category = "Platforms & stairs"
+category = "Architecture"
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-placement_offset = Vector3(0, 0, 0)
 bounds = AABB(-1.19726, 0, -1.19726, 2.39452, 0.4, 2.39452)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-1.19726, 0.3, -1.19726, 2.39452, 0.1, 0.1), AABB(-1.19726, 0.3, 1.09726, 2.39452, 0.1, 0.1), AABB(-1.19726, 0.3, -1.09726, 0.1, 0.1, 2.19452), AABB(1.09726, 0.3, -1.09726, 0.1, 0.1, 2.19452), AABB(-1.09726, 0.2833, -1.09726, 2.19452, 0.1167, 0.02226), AABB(-1.09726, 0.2833, 1.075, 2.19452, 0.1167, 0.02226), AABB(-1.09726, 0.2833, -1.075, 0.02226, 0.1167, 2.15), AABB(1.075, 0.2833, -1.075, 0.02226, 0.1167, 2.15), AABB(-1.075, 0, -1.075, 2.15, 0.125, 0.07774), AABB(-1.075, 0, 0.99726, 2.15, 0.125, 0.07774), AABB(-1.075, 0.2083, -1.075, 2.15, 0.1917, 0.07774), AABB(-1.075, 0.2083, 0.99726, 2.15, 0.1917, 0.07774), AABB(-1.075, 0, -0.99726, 0.07774, 0.125, 1.99452), AABB(0.99726, 0, -0.99726, 0.07774, 0.125, 1.99452), AABB(-1.075, 0.2083, -0.99726, 0.07774, 0.1917, 1.99452), AABB(0.99726, 0.2083, -0.99726, 0.07774, 0.1917, 1.99452), AABB(-0.99726, 0, -0.99726, 1.99452, 0.4, 0.3), AABB(-0.99726, 0, 0.69726, 1.99452, 0.4, 0.3), AABB(-0.99726, 0, -0.69726, 0.3, 0.4, 1.39452), AABB(0.69726, 0, -0.69726, 0.3, 0.4, 1.39452), AABB(-0.69726, 0, -0.69726, 1.39452, 0.15, 0.2), AABB(-0.69726, 0, 0.49726, 1.39452, 0.15, 0.2), AABB(-0.69726, 0, -0.49726, 0.2, 0.15, 0.99452), AABB(0.49726, 0, -0.49726, 0.2, 0.15, 0.99452), AABB(-0.49726, 0, -0.49726, 0.99452, 0.1, 0.99452)])

@@ -13,7 +13,7 @@ func test_resizable_supports() -> void:
 	var available=0
 	for definition in game.workspace.catalog.query():
 		assert_true(definition.thumbnail!=null,"Preview resource exists for "+String(definition.id))
-		if definition.category=="Supports" and definition.library_visible: available+=1
+		if definition is SupportDefinition and definition.library_visible: available+=1
 	assert_true(available==6,"Inventory shows six support families instead of separate stack sections")
 	for family in FAMILIES:
 		var definition=game.workspace.catalog.get_piece(family)
@@ -60,7 +60,7 @@ func test_resizable_supports() -> void:
 	assert_true(build.ghost.configuration.support_height==3.125,"Changing building level resizes the existing preview")
 	build.cancel()
 	var track=build.spawn(game.workspace.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(2,5,0)))
-	game.get_node("Interface/Root/HUD").hide()
+	game.workspace.hud.hide()
 	build.camera.global_position=Vector3(7,10,8)
 	build.camera.look_at(track.position+Vector3(0,0.25,0))
 	build.camera.enabled=false;build.camera.set_process(false)

@@ -13,6 +13,13 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	boundary = session.world.boundary
 	boundary.edited.connect(func(): refresh_zones(); refresh_publish())
 	%Close.pressed.connect(hide)
+	%Destination.item_selected.connect(func(index):
+		if refreshing or not session.store.can_add_to_campaign(): return
+		session.official_authoring = index == 1
+		if session.official_authoring and not session.puzzle.has("campaign"):
+			session.puzzle.campaign = {"chapter": session.store.first_chapter(false), "order": 1, "prerequisites": []}
+		session.metadata_changed()
+		open())
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
 		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
@@ -30,7 +37,7 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	%PuzzleName.text_changed.connect(func(text): if not refreshing: session.puzzle.name = text)
 	%Description.text_changed.connect(func(): if not refreshing: session.puzzle.description = %Description.text)
 	%Hint.text_changed.connect(func(): if not refreshing: session.puzzle.hints = [%Hint.text])
-	%Order.value_changed.connect(func(value): if not refreshing: session.puzzle.order = int(value))
+	%Order.value_changed.connect(func(value): if not refreshing and session.official_authoring: session.puzzle.campaign.order = int(value))
 	%Difficulty.item_selected.connect(func(index): if not refreshing: session.puzzle.difficulty = %Difficulty.get_item_text(index))
 	%TimeLimit.value_changed.connect(func(value): if not refreshing: session.puzzle.time_limit = value)
 	%AwardTime.value_changed.connect(func(value): if not refreshing: session.puzzle.awards["time"] = value)
@@ -61,10 +68,10 @@ func configure(puzzle_session: ConstructionSession) -> void:
 		var selected = %RestrictedList.get_selected_items()
 		if not selected.is_empty(): hide(); boundary.begin(true, selected[0]))
 	%Prerequisites.multi_selected.connect(func(index, selected):
-		if refreshing: return
+		if refreshing or not session.official_authoring: return
 		var id = %Prerequisites.get_item_metadata(index)
-		if selected and id not in session.puzzle.prerequisites: session.puzzle.prerequisites.append(id)
-		elif not selected: session.puzzle.prerequisites.erase(id))
+		if selected and id not in session.puzzle.campaign.prerequisites: session.puzzle.campaign.prerequisites.append(id)
+		elif not selected: session.puzzle.campaign.prerequisites.erase(id))
 	%MinHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[4] = value; boundary.refresh())
 	%MaxHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[5] = value; boundary.refresh())
 	%AddObjective.pressed.connect(add_objective)
@@ -83,19 +90,19 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	%SaveDraft.pressed.connect(func(): %Validation.text = "Draft saved" if session.save_draft() else "Could not save the draft")
 	%TestPlayer.pressed.connect(func(): hide(); session.test_player())
 	%Validate.pressed.connect(validate_puzzle)
-	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Published to Campaign")
+	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Added to Campaign" if session.official_authoring else "Published locally")
 	%Export.pressed.connect(func(): modal_opened.emit(); %ExportDialog.popup_centered(Vector2i(700, 500)))
 	%ExportDialog.canceled.connect(modal_closed.emit)
 	%ExportDialog.file_selected.connect(func(path: String):
 		modal_closed.emit()
-		var count := session.store.export_campaign(path)
-		%Validation.text = session.store.last_error if count < 0 else "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count)
-	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
+		%Validation.text = "Puzzle exported" if session.store.export_puzzle(session.capture(), path) else session.store.last_error)
+	%NewPuzzle.pressed.connect(func(): hide(); session.editor({}, session.official_authoring))
 	%OpenPuzzle.pressed.connect(func(): action_requested.emit("open_puzzle"))
 	session.world.build.changed.connect(func(): if visible: refresh_objects(); refresh_objectives(); refresh_publish())
 	for field in [%PuzzleName, %Order, %TimeLimit, %AwardTime, %AwardPieces, %MinHeight, %MaxHeight]:
 		if field is LineEdit: field.text_changed.connect(func(_text): metadata_changed())
 		else: field.value_changed.connect(func(_value): metadata_changed())
+	%Creator.text_changed.connect(func(value): if not refreshing: session.puzzle.creator = value; metadata_changed())
 	%Description.text_changed.connect(metadata_changed)
 	%Hint.text_changed.connect(metadata_changed)
 	%Difficulty.item_selected.connect(func(_index): metadata_changed())
@@ -110,11 +117,19 @@ func configure(puzzle_session: ConstructionSession) -> void:
 func open() -> void:
 	refreshing = true
 	var data = session.capture()
+	%Destination.visible = session.store.can_add_to_campaign()
+	%DestinationLabel.visible = %Destination.visible
+	%Destination.select(1 if session.official_authoring else 0)
 	%PuzzleName.text = data.name
 	%Description.text = data.description
 	%Hint.text = "\n".join(data.get("hints", []))
+	for field in [%ChapterId, %ChapterIdLabel, %ChapterName, %ChapterNameLabel, %ChapterOrder, %ChapterOrderLabel, %ChapterOptional, %ChapterIntroduction, %ChapterRequirements, %ChapterRequirementsLabel, %Order, %OrderLabel, %Prerequisites, %PrerequisiteLabel]:
+		field.visible = session.official_authoring
+	%Publish.text = "Add to Campaign" if session.official_authoring else "Publish locally"
+	%Export.visible = not session.official_authoring
+	%Creator.text = data.get("creator", "")
 	show_chapter(session.store.chapter_for(data))
-	%Order.value = data.order
+	%Order.value = session.store.level_order(data)
 	for index in %Difficulty.item_count:
 		if %Difficulty.get_item_text(index) == data.get("difficulty", "Introduction"): %Difficulty.select(index)
 	%TimeLimit.value = data.get("time_limit", 90)
@@ -137,7 +152,7 @@ func open() -> void:
 		%Prerequisites.add_item(level.name)
 		var index = %Prerequisites.item_count - 1
 		%Prerequisites.set_item_metadata(index, level.id)
-		if level.id in data.get("prerequisites", []): %Prerequisites.select(index, false)
+		if level.id in data.get("campaign", {}).get("prerequisites", []): %Prerequisites.select(index, false)
 	refreshing = false
 	show()
 	refresh_publish()
@@ -158,6 +173,7 @@ func refresh_publish() -> void:
 	%SolutionStatus.text=("✓" if solved else "○")+" Solution saved"
 	%RevisionStatus.text=("✓" if current else "○")+" Current draft verified"
 	%Publish.disabled=not session.validate().is_empty()
+	%Export.disabled = not FileAccess.file_exists(session.store.published_directory.path_join(data.id + ".json"))
 	%Publish.tooltip_text="Complete a player test and validate this draft to publish." if %Publish.disabled else "Publish this verified puzzle"
 
 func show_chapter(chapter: Dictionary) -> void:
@@ -169,7 +185,7 @@ func show_chapter(chapter: Dictionary) -> void:
 	%ChapterRequirements.text = ", ".join(chapter.get("prerequisites", []))
 
 func select_chapter(id: String) -> void:
-	if refreshing: return
+	if refreshing or not session.official_authoring: return
 	var available = session.store.list_puzzles()
 	available.append_array(session.store.list_puzzles(true))
 	for chapter in session.store.list_chapters(available):
@@ -181,11 +197,11 @@ func select_chapter(id: String) -> void:
 	update_chapter()
 
 func update_chapter() -> void:
-	if refreshing: return
+	if refreshing or not session.official_authoring: return
 	var requirements: Array[String] = []
 	for id in %ChapterRequirements.text.split(",", false):
 		if not id.strip_edges().is_empty(): requirements.append(id.strip_edges())
-	session.puzzle.chapter = {"id": %ChapterId.text.strip_edges(), "name": %ChapterName.text.strip_edges(), "order": int(%ChapterOrder.value), "optional": %ChapterOptional.button_pressed, "introduction": %ChapterIntroduction.button_pressed, "prerequisites": requirements}
+	session.puzzle.campaign.chapter = {"id": %ChapterId.text.strip_edges(), "name": %ChapterName.text.strip_edges(), "order": int(%ChapterOrder.value), "optional": %ChapterOptional.button_pressed, "introduction": %ChapterIntroduction.button_pressed, "prerequisites": requirements}
 	metadata_changed()
 
 func refresh_inventory() -> void:

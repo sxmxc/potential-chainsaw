@@ -29,6 +29,7 @@ var successful_fingerprint: String = ""
 var testing_fingerprint: String = ""
 var opening_fingerprint: String = ""
 var opening_revision: int = 1
+var official_authoring: bool = false
 var environment_node: Node3D
 
 func configure(construction_world: WorldManager, piece_catalog: PieceCatalog) -> void:
@@ -60,13 +61,19 @@ func _entered() -> void:
 	context_changed.emit()
 	changed.emit()
 
-func editor(data: Dictionary = {}) -> void:
+func editor(data: Dictionary = {}, official: bool = false) -> void:
 	_clear_runtime()
 	context = Context.AUTHORING
 	authored = {}
 	testing_fingerprint = ""
 	world.build.authoring = true
+	official_authoring = official and store.can_add_to_campaign()
 	puzzle = store.create() if data.is_empty() else data.duplicate(true)
+	if official_authoring and puzzle.get("campaign", {}).has("legacy_chapter"):
+		puzzle.campaign.chapter = puzzle.campaign.legacy_chapter.duplicate(true)
+		puzzle.campaign.erase("legacy_chapter")
+	if official_authoring and not puzzle.has("campaign"):
+		puzzle.campaign = {"chapter": store.first_chapter(false), "order": 1, "prerequisites": []}
 	opening_fingerprint = store.fingerprint(puzzle)
 	opening_revision = int(puzzle.get("revision", 1))
 	world.build.rules = null
@@ -158,27 +165,14 @@ func metadata_changed() -> void:
 	changed.emit()
 
 func reload_environment() -> bool:
-	var inspected := {"solids": [], "errors": []}
-	var frozen := str(puzzle.get("environment_snapshot", "")) if context == Context.PUZZLE_PLAY else ""
-	if not frozen.is_empty():
-		var scene := ResourceLoader.load(frozen, "PackedScene") as PackedScene
-		if not scene:
-			message_requested.emit("Published environment is missing")
-			return false
-		environment_node = scene.instantiate()
-		PuzzleEnvironment._collect(environment_node, Transform3D.IDENTITY, inspected)
-	else:
-		var fixed_data := puzzle.duplicate(true)
-		if is_authoring:
-			fixed_data.environment_instances = []
-			fixed_data.erase("environment")
-			fixed_data.erase("environment_placement")
-		inspected = PuzzleEnvironment.inspect_definition(fixed_data)
-		if not inspected.errors.is_empty():
-			message_requested.emit("\n".join(inspected.errors))
-			return false
-		if not str(fixed_data.get("environment", "")).is_empty() or not fixed_data.get("environment_instances", []).is_empty():
-			environment_node = PuzzleEnvironment.instantiate_definition(fixed_data)
+	var fixed_data := puzzle.duplicate(true)
+	if is_authoring: fixed_data.environment_instances = []
+	var inspected := PuzzleEnvironment.inspect_definition(fixed_data)
+	if not inspected.errors.is_empty():
+		message_requested.emit("\n".join(inspected.errors))
+		return false
+	if not fixed_data.get("environment_instances", []).is_empty():
+		environment_node = PuzzleEnvironment.instantiate_definition(fixed_data)
 	world.build.snap.environment_solids = inspected.solids
 	if environment_node: world.add_child(environment_node)
 	return true
@@ -194,7 +188,7 @@ func test_player() -> bool:
 
 func return_editor() -> void:
 	if not is_testing: return
-	editor(authored)
+	editor(authored, official_authoring)
 
 func restore_reference() -> bool:
 	if not is_testing or puzzle.get("solution", []).is_empty(): return false
@@ -237,8 +231,12 @@ func publish() -> bool:
 	if not is_authoring: return false
 	var errors := validate()
 	if not errors.is_empty(): message_requested.emit("\n".join(errors)); return false
-	if not store.publish(capture()): message_requested.emit(store.last_error); return false
-	world.build.show_status("Published · available in Campaign")
+	var saved := store.add_to_campaign(capture()) if official_authoring else store.publish(capture())
+	if not saved: message_requested.emit(store.last_error); return false
+	puzzle.status = "published"
+	opening_fingerprint = store.fingerprint(puzzle)
+	opening_revision = int(puzzle.get("revision", 1))
+	world.build.show_status("Added to Campaign" if official_authoring else "Published locally")
 	return true
 
 func validate(require_solution: bool = true) -> Array[String]:

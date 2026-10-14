@@ -30,7 +30,7 @@ func _ready() -> void:
 	%PuzzleBrowser.modal_opened.connect(open_modal)
 	%PuzzleBrowser.closed.connect(modal_closed)
 	%PuzzleCompletion.configure(workspace.session)
-	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open())
+	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open(false, not workspace.session.store.is_official(workspace.session.puzzle)))
 	show_main_menu()
 	load_settings()
 
@@ -68,7 +68,8 @@ func handle_action(action: String) -> void:
 		return
 	match action:
 		"campaign": guard(func(): %PuzzleBrowser.open_campaign())
-		"puzzle_editor": guard(workspace.session.editor)
+		"puzzle_editor": guard(func(): workspace.session.editor())
+		"community": guard(func(): %PuzzleBrowser.open(false, true))
 		"sandbox":
 			if not workspace.session.is_sandbox: guard(workspace.session.sandbox)
 			else: workspace.activate()
@@ -90,12 +91,12 @@ func handle_action(action: String) -> void:
 			open_modal()
 			menu_dialog.configure_context(workspace.session)
 			menu_dialog.popup_centered()
-		"levels": %PuzzleBrowser.open()
+		"levels": %PuzzleBrowser.open(false, not workspace.session.store.is_official(workspace.session.puzzle))
 		"open_puzzle":
 			if not workspace.session.is_authoring: return
 			guard(func(): workspace.authoring.hide(); %PuzzleBrowser.open(true))
 		"settings":
-			for dialog in [%PuzzleBrowser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog,workspace.scenery_dialog]:
+			for dialog in [%PuzzleBrowser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog]:
 				if dialog and dialog.visible and dialog.exclusive: return
 			open_modal()
 			settings_dialog.popup_centered()
@@ -176,7 +177,7 @@ func _notification(what: int) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_P and not ConstructionInput.typing(get_viewport()):
-		guard(workspace.session.editor)
+		if workspace.session.store.can_add_to_campaign(): guard(func(): workspace.session.editor({}, true))
 		get_viewport().set_input_as_handled()
 		return
 

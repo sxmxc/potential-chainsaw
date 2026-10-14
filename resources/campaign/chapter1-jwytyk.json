@@ -1,0 +1,738 @@
+{
+	"awards": {},
+	"bounds": [
+		-7.0,
+		-7.5,
+		10.5,
+		9.0,
+		0.0,
+		12.0
+	],
+	"camera": {
+		"distance": 9.73039019397535,
+		"focus": [
+			5.0,
+			0.750003814697266,
+			1.5
+		],
+		"pitch": 0.746,
+		"yaw": 0.597999999999998
+	},
+	"description": "Deliver a marble to each collector.",
+	"difficulty": "Workshop",
+	"environment_instances": [
+		{
+			"asset": "factory-box-long",
+			"position": [
+				4.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2265699697-274"
+		},
+		{
+			"asset": "factory-box-long",
+			"position": [
+				-2.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2271447368-276"
+		},
+		{
+			"asset": "factory-box-large",
+			"position": [
+				2.0,
+				0.0,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "piece-2284549679-277"
+		},
+		{
+			"asset": "factory-box-large",
+			"position": [
+				-2.0,
+				0.0,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "piece-2297549902-278"
+		},
+		{
+			"asset": "factory-screen-panel-small",
+			"position": [
+				3.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 2,
+			"uid": "piece-2316938366-279"
+		},
+		{
+			"asset": "factory-box-small",
+			"position": [
+				-1.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2363714051-280"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				1.5,
+				0.0,
+				-3.0
+			],
+			"rotation": 0,
+			"uid": "piece-2388230824-281"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				2.0,
+				0.0,
+				-3.0
+			],
+			"rotation": 0,
+			"uid": "piece-2389184589-282"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				2.5,
+				0.0,
+				-3.0
+			],
+			"rotation": 0,
+			"uid": "piece-2390456509-283"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				1.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2399053179-284"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				2.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2399626575-285"
+		},
+		{
+			"asset": "factory-cone",
+			"position": [
+				2.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-2400384893-286"
+		},
+		{
+			"asset": "factory-structure-doorway-wide",
+			"position": [
+				-3.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-2434003091-287"
+		},
+		{
+			"asset": "factory-structure-doorway-wide",
+			"position": [
+				6.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 1,
+			"uid": "piece-2447597192-288"
+		},
+		{
+			"asset": "factory-catwalk-stairs",
+			"position": [
+				5.0,
+				0.0,
+				3.5
+			],
+			"rotation": 1,
+			"uid": "piece-2513357611-289"
+		},
+		{
+			"asset": "factory-catwalk-stairs",
+			"position": [
+				0.0,
+				0.0,
+				6.5
+			],
+			"rotation": 1,
+			"uid": "piece-2523107702-290"
+		},
+		{
+			"asset": "factory-structure-tall",
+			"position": [
+				2.0,
+				0.0,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "piece-2593866448-291"
+		},
+		{
+			"asset": "factory-structure-tall",
+			"position": [
+				2.0,
+				0.0,
+				0.5
+			],
+			"rotation": 0,
+			"uid": "piece-2603340192-293"
+		},
+		{
+			"asset": "factory-structure-tall",
+			"position": [
+				2.0,
+				0.0,
+				-4.0
+			],
+			"rotation": 0,
+			"uid": "piece-2606075015-294"
+		},
+		{
+			"asset": "factory-pipe-large-long",
+			"position": [
+				2.0,
+				2.0,
+				5.0
+			],
+			"rotation": 1,
+			"uid": "piece-2632433050-295"
+		},
+		{
+			"asset": "factory-pipe-large-long",
+			"position": [
+				2.0,
+				2.0,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "piece-2634036287-296"
+		},
+		{
+			"asset": "factory-pipe-large-long",
+			"position": [
+				2.0,
+				2.0,
+				1.0
+			],
+			"rotation": 1,
+			"uid": "piece-2636317208-297"
+		},
+		{
+			"asset": "factory-pipe-large-long",
+			"position": [
+				2.0,
+				2.0,
+				-1.0
+			],
+			"rotation": 1,
+			"uid": "piece-2642036511-298"
+		},
+		{
+			"asset": "factory-pipe-large-long",
+			"position": [
+				2.0,
+				2.0,
+				-3.0
+			],
+			"rotation": 1,
+			"uid": "piece-2643620908-299"
+		},
+		{
+			"asset": "factory-pipe-large-junction",
+			"position": [
+				2.0,
+				2.0,
+				7.02782011032104
+			],
+			"rotation": 1,
+			"uid": "piece-2685838501-300"
+		},
+		{
+			"asset": "factory-pipe-large-junction",
+			"position": [
+				2.0,
+				2.0,
+				-5.0
+			],
+			"rotation": 1,
+			"uid": "piece-2707518977-301"
+		}
+	],
+	"hints": [],
+	"id": "chapter1-jwytyk",
+	"inventory": {
+		"gate": 1.0,
+		"ramp-long-c": 2.0,
+		"sensor": 1.0,
+		"slant-long-a": 2.0,
+		"split-double": 1.0,
+		"split-large-left": 1.0,
+		"straight": 6.0
+	},
+	"name": "Just when you think you know",
+	"objectives": [
+		{
+			"count": 1.0,
+			"source": "",
+			"target": "piece-232503876-1",
+			"time_limit": 0.0,
+			"type": "deliver"
+		},
+		{
+			"count": 1.0,
+			"source": "",
+			"target": "piece-1238720521-114",
+			"time_limit": 0.0,
+			"type": "deliver"
+		}
+	],
+	"permissions": {
+		"piece-349399900-6": {
+			"configure": false,
+			"duplicate": false,
+			"move": false,
+			"remove": false,
+			"rotate": false
+		},
+		"piece-422494521-10": {
+			"configure": false,
+			"duplicate": false,
+			"move": false,
+			"remove": false,
+			"rotate": false
+		}
+	},
+	"pieces": [
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				-3.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-232503876-1"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				-2.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 1,
+			"uid": "piece-245302261-2"
+		},
+		{
+			"config": {
+				"external": true
+			},
+			"piece": "launcher",
+			"position": [
+				3.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 3,
+			"uid": "piece-334283490-5"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "open",
+						"event": "entered",
+						"target": "piece-245302261-2"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				5.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 3,
+			"uid": "piece-349399900-6"
+		},
+		{
+			"config": {
+				"release_speed": 1.3
+			},
+			"piece": "sandbox-start",
+			"position": [
+				6.0,
+				1.0,
+				2.0
+			],
+			"rotation": 1,
+			"uid": "piece-420486481-9"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "switch_direction",
+						"event": "released",
+						"target": "piece-386004664-12"
+					}
+				],
+				"release_speed": 1.3,
+				"start_delay": 0.0
+			},
+			"piece": "sandbox-start",
+			"position": [
+				-0.0000224113464355469,
+				0.999992370605469,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "piece-422494521-10"
+		},
+		{
+			"config": {
+				"left": false
+			},
+			"piece": "diverter",
+			"position": [
+				0.0,
+				0.0,
+				-1.5
+			],
+			"rotation": 2,
+			"uid": "piece-386004664-12"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				4.99997711181641,
+				1.0,
+				1.99997687339783
+			],
+			"rotation": 3,
+			"uid": "piece-1128574227-87"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				6.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 1,
+			"uid": "piece-1238720521-114"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-single",
+			"position": [
+				0.0,
+				0.0,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "piece-2205354141-272"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-single",
+			"position": [
+				6.0,
+				0.0,
+				2.0
+			],
+			"rotation": 1,
+			"uid": "piece-2212999934-273"
+		}
+	],
+	"required_assets": [
+		"diverter",
+		"environment:factory-box-large",
+		"environment:factory-box-long",
+		"environment:factory-box-small",
+		"environment:factory-catwalk-stairs",
+		"environment:factory-cone",
+		"environment:factory-pipe-large-junction",
+		"environment:factory-pipe-large-long",
+		"environment:factory-screen-panel-small",
+		"environment:factory-structure-doorway-wide",
+		"environment:factory-structure-tall",
+		"gate",
+		"launcher",
+		"ramp-long-c",
+		"sandbox-finish",
+		"sandbox-start",
+		"sensor",
+		"slant-long-a",
+		"split-double",
+		"split-large-left",
+		"straight",
+		"support-single"
+	],
+	"restricted_zones": [],
+	"revision": 1.0,
+	"solution": [
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				-3.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-232503876-1"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				-2.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 1,
+			"uid": "piece-245302261-2"
+		},
+		{
+			"config": {
+				"external": true
+			},
+			"piece": "launcher",
+			"position": [
+				3.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 3,
+			"uid": "piece-334283490-5"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "open",
+						"event": "entered",
+						"target": "piece-245302261-2"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				5.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 3,
+			"uid": "piece-349399900-6"
+		},
+		{
+			"config": {
+				"release_speed": 1.3
+			},
+			"piece": "sandbox-start",
+			"position": [
+				6.0,
+				1.0,
+				2.0
+			],
+			"rotation": 1,
+			"uid": "piece-420486481-9"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "switch_direction",
+						"event": "released",
+						"target": "piece-386004664-12"
+					}
+				],
+				"release_speed": 1.3,
+				"start_delay": 0.0
+			},
+			"piece": "sandbox-start",
+			"position": [
+				-0.0000224113464355469,
+				0.999992370605469,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "piece-422494521-10"
+		},
+		{
+			"config": {
+				"left": false
+			},
+			"piece": "diverter",
+			"position": [
+				0.0,
+				0.0,
+				-1.5
+			],
+			"rotation": 2,
+			"uid": "piece-386004664-12"
+		},
+		{
+			"config": {},
+			"piece": "gate",
+			"position": [
+				4.99997711181641,
+				1.0,
+				1.99997687339783
+			],
+			"rotation": 3,
+			"uid": "piece-1128574227-87"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				6.0,
+				0.0,
+				-1.99999260902405
+			],
+			"rotation": 1,
+			"uid": "piece-1238720521-114"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-single",
+			"position": [
+				0.0,
+				0.0,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "piece-2205354141-272"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-single",
+			"position": [
+				6.0,
+				0.0,
+				2.0
+			],
+			"rotation": 1,
+			"uid": "piece-2212999934-273"
+		},
+		{
+			"config": {},
+			"piece": "split-large-left",
+			"position": [
+				0.999977111816406,
+				0.0,
+				1.0
+			],
+			"rotation": 3,
+			"uid": "piece-340037013-112"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-c",
+			"position": [
+				3.49997711181641,
+				0.00000762939453125,
+				1.99997687339783
+			],
+			"rotation": 1,
+			"uid": "piece-344144432-113"
+		},
+		{
+			"config": {},
+			"piece": "ramp-long-c",
+			"position": [
+				-0.0000224113464355469,
+				0.0,
+				3.5
+			],
+			"rotation": 0,
+			"uid": "piece-345680656-114"
+		},
+		{
+			"config": {
+				"detect_exit": true,
+				"links": [
+					{
+						"action": "toggle",
+						"event": "entered",
+						"target": "piece-1128574227-87"
+					},
+					{
+						"action": "switch_direction",
+						"event": "entered",
+						"target": "piece-386004664-12"
+					},
+					{
+						"action": "activate",
+						"event": "entered",
+						"target": "piece-334283490-5"
+					},
+					{
+						"action": "fire",
+						"event": "exited",
+						"target": "piece-334283490-5"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				2.0,
+				0.0,
+				-1.99999248981476
+			],
+			"rotation": 3,
+			"uid": "piece-353981825-115"
+		}
+	],
+	"status": "published",
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "a3b110131b7cb0eb0367e9f60974a5a97c5b64bfa2365a1adce4765bfed1cfe9",
+		"physics_success": true,
+		"seconds": 10.5916666666667,
+		"tested_at": "2026-10-14T07:12:22"
+	},
+	"version": 2
+}

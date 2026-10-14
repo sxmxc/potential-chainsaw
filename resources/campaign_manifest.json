@@ -1,0 +1,121 @@
+{
+	"puzzles": [
+		{
+			"chapter": "introduction",
+			"id": "campaign-01",
+			"order": 1.0,
+			"path": "res://resources/campaign/01-first-connection.json",
+			"prerequisites": []
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-02",
+			"order": 2.0,
+			"path": "res://resources/campaign/02-around-the-bend.json",
+			"prerequisites": [
+				"campaign-01"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-03",
+			"order": 3.0,
+			"path": "res://resources/campaign/03-one-level-down.json",
+			"prerequisites": [
+				"campaign-02"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-04",
+			"order": 4.0,
+			"path": "res://resources/campaign/04-a-little-push.json",
+			"prerequisites": [
+				"campaign-03"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-05",
+			"order": 5.0,
+			"path": "res://resources/campaign/05-spinning-trouble.json",
+			"prerequisites": [
+				"campaign-04"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-06",
+			"order": 6.0,
+			"path": "res://resources/campaign/06-the-long-way-up.json",
+			"prerequisites": [
+				"campaign-05"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-07",
+			"order": 7.0,
+			"path": "res://resources/campaign/07-stop-and-go.json",
+			"prerequisites": [
+				"campaign-06"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-08",
+			"order": 8.0,
+			"path": "res://resources/campaign/08-the-fork.json",
+			"prerequisites": [
+				"campaign-07"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-09",
+			"order": 9.0,
+			"path": "res://resources/campaign/09-remote-control.json",
+			"prerequisites": [
+				"campaign-08"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-10",
+			"order": 10.0,
+			"path": "res://resources/campaign/10-the-machine.json",
+			"prerequisites": [
+				"campaign-09"
+			]
+		},
+		{
+			"chapter": "chapter-1",
+			"id": "chapter1-loading-loft",
+			"order": 2.0,
+			"path": "res://resources/campaign/chapter1-loading-loft.json",
+			"prerequisites": []
+		},
+		{
+			"chapter": "chapter-1",
+			"id": "chapter1-service-block",
+			"order": 1.0,
+			"path": "res://resources/campaign/chapter1-service-block.json",
+			"prerequisites": []
+		},
+		{
+			"chapter": "chapter-1",
+			"id": "chapter1-shared-clearance",
+			"order": 3.0,
+			"path": "res://resources/campaign/chapter1-shared-clearance.json",
+			"prerequisites": []
+		},
+		{
+			"chapter": "chapter-1",
+			"id": "chapter1-jwytyk",
+			"order": 4,
+			"path": "res://resources/campaign/chapter1-jwytyk.json",
+			"prerequisites": ["chapter1-shared-clearance", "chapter1-loading-loft", "chapter1-service-block", "campaign-10", "campaign-09", "campaign-08", "campaign-07", "campaign-06", "campaign-05", "campaign-04", "campaign-03", "campaign-02", "campaign-01"]
+		}
+	],
+	"version": 1.0
+}

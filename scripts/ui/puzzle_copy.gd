@@ -4,6 +4,7 @@ extends RefCounted
 static var introduction_text: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://resources/introduction_copy.json"))
 
 static func introduction(data: Dictionary) -> Dictionary:
+	if data.get("_source", "") != "campaign": return {}
 	# Revisions authored by the user keep their own writing.
 	if int(data.get("revision", 1)) != 1 or data.get("status","draft") != "published": return {}
 	return introduction_text.get(data.get("id", ""), {})

@@ -3,6 +3,57 @@ extends "res://tests/support/scene_test.gd"
 func settle() -> void:
 	for i in 4: await get_tree().process_frame
 
+func test_campaign_browser_fits_and_buttons_keep_their_geometry() -> void:
+	var game: Node = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await settle()
+	var browser: Window = game.get_node("%PuzzleBrowser")
+	game.workspace.session.store.campaign.clear()
+	for resolution in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080)]:
+		game.qa_resolution(resolution.x, resolution.y)
+		browser.open_campaign()
+		await settle()
+		var viewport_rect := Rect2(Vector2.ZERO, Vector2(resolution))
+		assert_true(viewport_rect.encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "First open is fully on screen at %s: position %s, size %s" % [resolution, browser.position, browser.size])
+		assert_true(Rect2(Vector2.ZERO, Vector2(browser.size)).encloses(browser.get_node("%Back").get_global_rect()), "First-open footer fits")
+		for chapter_index in browser.chapters.size():
+			browser.show_chapter(chapter_index)
+			await settle()
+			assert_true(viewport_rect.encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "Chapter switching keeps dialog on screen")
+		game.qa_resolution(1280, 720)
+		await settle()
+		assert_true(Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "Resizing an open dialog keeps it on screen")
+		game.qa_resolution(resolution.x, resolution.y)
+		await settle()
+		for index in browser.chapters.size():
+			if browser.chapters[index].id == "chapter-1": browser.show_chapter(index)
+		await settle()
+		assert_eq(browser.levels.size(), 4, "All Chapter 1 puzzles appear")
+		assert_eq(browser.levels[3].id, "chapter1-jwytyk", "Renamed puzzle remains level 4")
+		assert_true(browser.get_node("%StartChoice").visible, "First-time campaign choice is included in layout")
+		assert_true(browser.size.x <= resolution.x and browser.size.y <= resolution.y, "Dialog fits viewport")
+		var dialog_rect := Rect2(Vector2.ZERO, Vector2(browser.size))
+		for name in ["Back", "Open", "PlayIntroduction", "SkipIntroduction", "Levels"]:
+			var control: Control = browser.get_node("%" + name)
+			assert_true(dialog_rect.encloses(control.get_global_rect()), name + " fits inside dialog")
+		var button: Button = browser.get_node("%Open")
+		var original_rect := button.get_global_rect()
+		var motion := InputEventMouseMotion.new()
+		motion.position = Vector2(browser.position) + original_rect.get_center()
+		Input.parse_input_event(motion)
+		await settle()
+		assert_true(button.is_hovered(), "Actual pointer input hovers Play")
+		assert_eq(button.get_global_rect(), original_rect, "Hover preserves button geometry")
+		for state in ["normal", "hover", "pressed", "disabled"]:
+			var style := button.get_theme_stylebox(state)
+			var text_width := button.get_theme_font("font").get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, button.get_theme_font_size("font_size")).x
+			assert_true(button.size.x - style.get_minimum_size().x >= text_width, state + " leaves room for full button text")
+		if DisplayServer.get_name() != "headless" and resolution == Vector2i(1920, 1080):
+			await RenderingServer.frame_post_draw
+			get_viewport().get_texture().get_image().save_png("res://.godot/campaign-menu-%dx%d.png" % [resolution.x, resolution.y])
+		browser.close()
+		await settle()
+
 func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	var game: Node = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
@@ -61,6 +112,7 @@ func test_workspace_runs_without_application_navigation() -> void:
 	workspace.hud.get_node("%FileToolbar").get_node("%Author").pressed.emit()
 	assert_true(workspace.authoring.visible, "The workspace owns its saved authoring drawer")
 	var baseline := session.capture()
+	assert_eq(session.validate(false), [], "The loaded campaign baseline can enter a player test")
 	workspace.hud.get_node("%FileToolbar").get_node("%Test").pressed.emit()
 	assert_true(session.is_testing and workspace.world.build.rules != null)
 	assert_false(workspace.authoring.visible)
@@ -77,6 +129,8 @@ func test_campaign_ui_scene_lifecycle() -> void:
 	var puzzle_bar: PanelContainer = toolbar.get_node("%PuzzleBar")
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var completion: Window = game.get_node("%PuzzleCompletion")
+	assert_eq(hud.get_node("%AuthoringSlot").get_child_count(), 1, "The HUD contains exactly one authoring panel")
+	assert_eq(authoring.owner, hud, "The HUD scene owns its authoring panel")
 	assert_false(authoring.visible, "Saved authoring drawer starts closed")
 	assert_false(puzzle_bar.visible, "Saved test actions start hidden")
 	assert_false(browser.visible, "Saved campaign browser starts closed")
@@ -111,7 +165,7 @@ func test_draft_player_hud_fits_small_windows() -> void:
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var puzzle_bar: PanelContainer = game.get_node("Workspace/Interface/HUD").get_node("%FileToolbar").get_node("%PuzzleBar")
 	var session: ConstructionSession = game.workspace.session
-	var drafts: Array = session.store.list_puzzles(true).filter(func(data): return str(data.id).begins_with("chapter1-"))
+	var drafts: Array = session.store.list_puzzles().filter(func(data): return str(data.id).begins_with("campaign-")).slice(0, 3)
 	assert_eq(drafts.size(), 3)
 	for dimensions in [Vector2i(1024, 720), Vector2i(1280, 720)]:
 		game.qa_resolution(dimensions.x, dimensions.y)
@@ -212,7 +266,7 @@ func test_ui_workflows() -> void:
 	var authoring: PanelContainer = game.get_node("Workspace/Interface/HUD/Margin/Layout/Body/AuthoringSlot/PuzzleAuthoring")
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var session: ConstructionSession=game.workspace.session
-	var levels=session.store.list_puzzles()
+	var levels=session.store.list_puzzles().filter(func(data): return data.id.begins_with("campaign-"))
 	session.store.progress.clear()
 	game.handle_action("sandbox")
 	await settle()

@@ -131,6 +131,15 @@ theme_type_variation = &"MenuNavigation"
 text = "Example tracks"
 alignment = 0
 
+[node name="Community" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(236, 44)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"MenuNavigation"
+text = "Community puzzles"
+alignment = 0
+
 [node name="PuzzleEditor" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1770515664]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(236, 44)

@@ -1,19 +1,20 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaah"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/floor-quarter.glb" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/floor-quarter.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_7pq30"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://dgqrkjvn5ysr7" path="res://assets/models/environment/kenney_building/GLB format/floor-quarter.glb" id="Model"]
+[ext_resource type="Texture2D" uid="uid://bp60uxwq4p410" path="res://assets/models/environment/kenney_building/Previews/floor-quarter.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
 id = &"environment:building-floor-quarter"
 display_name = "Quarter floor"
-category = "Platforms & stairs"
+category = "Architecture"
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 placement_offset = Vector3(0, 0, 0.5)
 bounds = AABB(-0.5, 0, -0.5, 1, 0.1, 1)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-0.5, 0, -0.5, 1, 0.1, 1)])

@@ -1,21 +1,20 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaa8"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/screen-panel-small.glb" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/screen-panel-small.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_7scdv"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://dt20sk8qn64ym" path="res://assets/models/environment/kenney_factory/GLB format/screen-panel-small.glb" id="Model"]
+[ext_resource type="Texture2D" uid="uid://b3mndeimq2sjd" path="res://assets/models/environment/kenney_factory/Previews/screen-panel-small.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
 id = &"environment:factory-screen-panel-small"
 display_name = "Control display"
-category = "Industrial props"
+category = "Props"
+description = "Decorative display; marbles pass through it."
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-placement_offset = Vector3(0, 0, 0)
 bounds = AABB(-0.3, 0, -0.32861, 0.6, 0.99131, 0.65722)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
-collision_solids = Array[AABB]([])
 collision_enabled = false
-description = "Decorative display; marbles pass through it."
