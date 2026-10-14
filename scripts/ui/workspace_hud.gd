@@ -89,7 +89,7 @@ func refresh_guidance() -> void:
 	var id: String = session.puzzle.id
 	if session.store.completed(id) or guidance_done.has(id): return
 	var copy: Dictionary=Copy.introduction(session.puzzle)
-	if copy.is_empty() and not session.store.chapter_for(session.puzzle).get("introduction",false): return
+	if copy.is_empty() and not session.puzzle.campaign.chapter.get("introduction",false): return
 	if build.dirty:
 		guidance_done[id]=true
 		return

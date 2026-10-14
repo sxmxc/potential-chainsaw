@@ -35,11 +35,11 @@ func test_retired_scene_fields_are_rejected_for_every_source() -> void:
 		for source in ["draft", "local", "campaign", "community"]:
 			assert_true(store.load_puzzle(path, source).is_empty())
 			assert_true(store.last_error.contains("no longer supported"))
-	assert_true(store.list_puzzles(true).is_empty(), "Draft discovery reads only the isolated user library")
+	assert_true(store.list_drafts().is_empty(), "Draft discovery reads only the isolated user library")
 
 func test_published_scenery_solutions_use_catalog_physics(index = use_parameters([0, 1, 2, 3])) -> void:
 	var session: ConstructionSession = game.workspace.session
-	var levels := session.store.list_puzzles()
+	var levels := session.store.load_campaign().levels
 	var matching: Array[Dictionary] = levels.filter(func(item): return item.id == PUBLISHED_IDS[index])
 	assert_eq(matching.size(), 1, "The published puzzle resolves through its manifest registration")
 	if matching.is_empty(): return

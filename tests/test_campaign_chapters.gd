@@ -1,10 +1,5 @@
 extends "res://tests/support/scene_test.gd"
 
-class FixtureStore extends PuzzleStore:
-	var fixture_levels: Array[Dictionary] = []
-	func list_puzzles(drafts: bool = false) -> Array[Dictionary]:
-		return super.list_puzzles(drafts) if fixture_levels.is_empty() or drafts else fixture_levels
-
 func test_campaign_chapters() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
@@ -15,15 +10,16 @@ func test_campaign_chapters() -> void:
 	var store: PuzzleStore = game.workspace.session.store
 	store.progress = {}
 	store.campaign = {}
-	var levels = store.list_puzzles()
+	var definition := store.load_campaign()
+	var levels := definition.levels
 	assert_true(levels.size() == 14, "All preserved published levels")
 	for data in levels.filter(func(item): return item.id.begins_with("campaign-")):
-		assert_true(store.chapter_for(data).id == "introduction", "Stable introduction membership: " + data.id)
-		assert_true(store.unlocked(data, levels), "Introduction independently playable: " + data.id)
+		assert_true(definition.chapter_for(data).id == "introduction", "Stable introduction membership: " + data.id)
+		assert_true(definition.unlocked(data, store.progress), "Introduction independently playable: " + data.id)
 		assert_true(data.validation.fingerprint == store.fingerprint(data), "Known-good fingerprint retained: " + data.id)
-	var chapters = store.list_chapters(levels)
+	var chapters = definition.chapters
 	assert_true(chapters.size() == 2 and chapters[0].optional and not chapters[1].optional, "Optional Introduction and separate Chapter 1")
-	assert_true(store.chapter_unlocked(chapters[1]), "Chapter 1 available without Introduction")
+	assert_true(definition.chapter_unlocked(chapters[1], store.progress), "Chapter 1 available without Introduction")
 	browser.open_campaign()
 	assert_true(browser.get_node("%StartChoice").visible, "Fresh campaign offers introduction choice")
 	browser.get_node("%SkipIntroduction").pressed.emit()
@@ -36,7 +32,7 @@ func test_campaign_chapters() -> void:
 	assert_true(target.id == "campaign-01", "Play Introduction starts at Level 1")
 	game.workspace.session.player(target)
 	var reopened = PuzzleStore.new(game.workspace.catalog)
-	assert_true(reopened.resume_level().id == target.id, "Current campaign resumes after reload")
+	assert_true(reopened.load_campaign().resume_level(reopened.campaign, reopened.progress).id == target.id, "Current campaign resumes after reload")
 	browser.open()
 	browser.show_chapter(0)
 	assert_true(browser.get_node("%Levels").item_count == 10, "Level Select shows all ten introduction puzzles")
@@ -46,37 +42,38 @@ func test_campaign_chapters() -> void:
 	for item in [main1, main2, future]: item._source = "campaign"
 	var mixed: Array = levels.filter(func(item): return item.id.begins_with("campaign-"))
 	mixed.append_array([main1, main2, future])
-	assert_true(store.unlocked(main1, mixed), "Legacy tutorial prerequisite never gates main entry")
-	assert_true(not store.unlocked(main2, mixed), "Main levels retain their own sequence")
-	assert_true(store.list_chapters(mixed).size() == 3, "Future chapter discovered from puzzle metadata")
-	assert_true(not store.unlocked(future, mixed), "Future chapter requirements enforced")
+	var mixed_definition := CampaignDefinition.new(store.base_chapters(), mixed)
+	assert_true(mixed_definition.unlocked(main1, store.progress), "Legacy tutorial prerequisite never gates main entry")
+	assert_true(not mixed_definition.unlocked(main2, store.progress), "Main levels retain their own sequence")
+	assert_true(mixed_definition.chapters.size() == 3, "Future chapter discovered from puzzle metadata")
+	assert_true(not mixed_definition.unlocked(future, store.progress), "Future chapter requirements enforced")
 	store.progress[main1.id] = {"completed": true}
-	assert_true(store.unlocked(main2, mixed), "Main completion unlocks next main puzzle")
+	assert_true(mixed_definition.unlocked(main2, store.progress), "Main completion unlocks next main puzzle")
 	store.progress[main2.id] = {"completed": true}
-	assert_true(store.unlocked(future, mixed), "Future chapter unlocks on main completion")
-	var fixture_store = FixtureStore.new(game.workspace.catalog)
-	fixture_store.fixture_levels.assign(mixed)
-	fixture_store.progress.clear()
-	assert_true(fixture_store.start_campaign(false).id == main1.id, "Skip starts at separate main Level 1 when authored")
-	assert_true(fixture_store.progress.is_empty(), "Starting main campaign never completes introduction")
-	fixture_store.complete(levels.filter(func(item): return item.id == "campaign-10")[0], 12, 6)
-	assert_true(fixture_store.resume_level().id == main1.id, "Final introduction puzzle joins the same main Level 1")
-	fixture_store.complete(main1, 12, 6)
-	assert_true(fixture_store.resume_level().id == main2.id, "Main campaign resumes at next main puzzle")
-	fixture_store.complete(main2, 12, 6)
-	assert_true(fixture_store.resume_level().id == future.id, "Main chapter completion advances into data-defined future chapter")
-	fixture_store.complete(future, 12, 6)
-	assert_true(fixture_store.resume_level().is_empty(), "Finished campaign returns to selection rather than replaying last puzzle")
+	assert_true(mixed_definition.unlocked(future, store.progress), "Future chapter unlocks on main completion")
+	var records: Dictionary = {}
+	var route := {"current_chapter": "chapter-1", "current_level": ""}
+	assert_eq(mixed_definition.resume_level(route, records).id, main1.id, "Main route starts independently of Introduction")
+	var final_intro: Dictionary = levels.filter(func(item): return item.id == "campaign-10")[0]
+	records[final_intro.id] = {"completed": true}
+	assert_eq(mixed_definition.next_step(final_intro, records).level.id, main1.id, "Final Introduction puzzle joins main Level 1")
+	records[main1.id] = {"completed": true}
+	assert_eq(mixed_definition.next_step(main1, records).level.id, main2.id, "Main completion advances within the chapter")
+	records[main2.id] = {"completed": true}
+	assert_eq(mixed_definition.next_step(main2, records).level.id, future.id, "Main completion advances into the future chapter")
+	records[future.id] = {"completed": true}
+	assert_true(mixed_definition.next_step(future, records).level.is_empty(), "Finished campaign has no next puzzle")
+	assert_eq(route, {"current_chapter": "chapter-1", "current_level": ""}, "Navigation queries leave route state untouched")
 	store.progress.clear()
 	for data in levels.filter(func(item): return item.id.begins_with("campaign-")): store.complete(data, 12, 6)
 	assert_true(store.campaign.current_chapter == "chapter-1", "Completing Introduction enters Chapter 1")
-	assert_true(store.chapter_progress("introduction", levels).completed == 10 and store.chapter_progress("chapter-1", levels).completed == 0, "Tutorial and main progress counted separately")
+	assert_true(definition.chapter_progress("introduction", store.progress).completed == 10 and definition.chapter_progress("chapter-1", store.progress).completed == 0, "Tutorial and main progress counted separately")
 	var legacy = {"campaign-01": {"completed": true, "revision": 1, "best_time": 3.5, "fewest_pieces": 4, "awards": ["time"], "custom_record": "preserve"}}
 	store.write(store.progress_path, legacy)
 	DirAccess.remove_absolute(store.campaign_state_path)
 	reopened = PuzzleStore.new(game.workspace.catalog)
 	assert_true(JSON.stringify(reopened.progress) == JSON.stringify(JSON.parse_string(JSON.stringify(legacy))), "Legacy save migration preserves every record field")
-	assert_true(reopened.campaign.started and reopened.resume_level().id == "campaign-02", "Legacy partial campaign resumes without new-player choice")
+	assert_true(reopened.campaign.started and reopened.load_campaign().resume_level(reopened.campaign, reopened.progress).id == "campaign-02", "Legacy partial campaign resumes without new-player choice")
 	reopened.complete(levels.filter(func(item): return item.id == "campaign-01")[0], 5, 7)
 	assert_true(reopened.progress["campaign-01"].best_time == 3.5 and reopened.progress["campaign-01"].custom_record == "preserve" and "time" in reopened.progress["campaign-01"].awards, "Recompletion preserves best results, awards, and extra fields")
 	var authored = store.create()

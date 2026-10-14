@@ -40,7 +40,7 @@ func test_community_author_publish_share_import_and_play() -> void:
 	assert_false(session.official_authoring)
 	game.workspace.authoring.hide()
 	assert_true(session.publish())
-	assert_false(session.store.list_puzzles().any(func(item): return item.id == data.id))
+	assert_false(session.store.load_campaign().levels.any(func(item): return item.id == data.id))
 	var portable := test_directory.path_join("shared.json")
 	game.workspace.authoring.get_node("%ExportDialog").file_selected.emit(portable)
 	var shared: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(portable))
@@ -92,7 +92,7 @@ func test_community_author_publish_share_import_and_play() -> void:
 
 func test_campaign_promotion_preserves_unlocks_and_rejects_stale_revisions() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
-	var data :Dictionary= store.list_puzzles().filter(func(item): return item.id == "campaign-01")[0]
+	var data :Dictionary= store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
 	store.campaign_directory = test_directory.path_join("project/campaign")
 	store.manifest_path = test_directory.path_join("project/manifest.json")
 	store.chapters_path = test_directory.path_join("project/chapters.json")
@@ -100,23 +100,23 @@ func test_campaign_promotion_preserves_unlocks_and_rejects_stale_revisions() -> 
 	assert_true(store.write(store.chapters_path, {"version": 1, "chapters": []}))
 	data.campaign = {"chapter": {"id": "new-chapter", "name": "Machines", "order": 2, "prerequisites": ["required-level"]}, "order": 1, "prerequisites": ["required-level"]}
 	assert_true(store.add_to_campaign(data))
-	var levels := store.list_puzzles()
+	var levels := store.load_campaign().levels
 	assert_eq(levels.size(), 1)
-	assert_false(store.unlocked(levels[0], levels))
+	assert_false(store.load_campaign().unlocked(levels[0], store.progress))
 	assert_eq(levels[0].campaign.prerequisites, ["required-level"])
 	store.progress["required-level"] = {"completed": true}
-	assert_true(store.unlocked(levels[0], levels))
+	assert_true(store.load_campaign().unlocked(levels[0], store.progress))
 	assert_true(store.add_to_campaign(data), "Identical promotion is idempotent")
-	assert_eq(store.list_puzzles().size(), 1)
+	assert_eq(store.load_campaign().levels.size(), 1)
 	var original := FileAccess.get_file_as_bytes(store.campaign_directory.path_join(data.id + ".json"))
 	data.name = "Conflicting revision"
 	assert_false(store.add_to_campaign(data))
 	assert_eq(FileAccess.get_file_as_bytes(store.campaign_directory.path_join(data.id + ".json")), original)
-	assert_eq(store.list_puzzles().size(), 1)
+	assert_eq(store.load_campaign().levels.size(), 1)
 
 func test_unsafe_and_malformed_imports_are_rejected_before_resource_loading() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
-	var safe := store.playable_content(store.list_puzzles().filter(func(item): return item.id == "campaign-01")[0])
+	var safe := store.playable_content(store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0])
 	var path := test_directory.path_join("unsafe.json")
 	var variants: Array[Dictionary] = []
 	var scene := safe.duplicate(true)
@@ -151,21 +151,21 @@ func test_unsafe_and_malformed_imports_are_rejected_before_resource_loading() ->
 
 func test_registration_owns_metadata_and_local_files_cannot_override_campaign() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
-	var official :Dictionary= store.list_puzzles().filter(func(item): return item.id == "campaign-01")[0]
+	var official :Dictionary= store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
 	assert_true(store.is_official(official))
 	assert_false(official.has("prerequisites"))
 	assert_false(official.has("chapter"))
-	assert_eq(store.chapter_for(official).id, "introduction")
+	assert_eq(store.load_campaign().chapter_for(official).id, "introduction")
 	var forged := store.playable_content(official)
 	forged.name = "Community copy"
 	forged._source = "campaign"
 	assert_true(store.write(store.published_directory.path_join(official.id + ".json"), forged))
-	assert_eq(store.list_puzzles().filter(func(item): return item.id == "campaign-01")[0].name, official.name)
+	assert_eq(store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0].name, official.name)
 	assert_false(store.is_official(store.list_community()[0]))
 
 func test_record_validation_preserves_drafts_and_checks_distributed_solutions() -> void:
 	var store := PuzzleStore.new(PieceCatalog.new())
-	var data: Dictionary = store.list_puzzles().filter(func(item): return item.id == "campaign-01")[0]
+	var data: Dictionary = store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
 	var original := data.duplicate(true)
 	assert_true(store.validate(data, true).is_empty(), "The saved reference obeys the puzzle rules")
 	assert_false(DirAccess.dir_exists_absolute(SavePaths.resolve("user://tracks")), "Puzzle validation does not initialize personal-track storage")

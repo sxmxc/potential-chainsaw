@@ -98,7 +98,7 @@ func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	assert_true(session.serializer.list_tracks().is_empty(), "Confirmed deletion removes the saved track")
 	assert_true(browser.rows.is_empty(), "The browser refreshes after deletion")
 	assert_eq(build.snapshot(), saved_pieces, "Deleting the file preserves the open construction")
-	assert_true(session.store.list_puzzles(true).any(func(data): return data.id == puzzle.id), "Track deletion leaves puzzle drafts untouched")
+	assert_true(session.store.list_drafts().any(func(data): return data.id == puzzle.id), "Track deletion leaves puzzle drafts untouched")
 	browser.close()
 
 func test_workspace_runs_without_application_navigation() -> void:
@@ -108,7 +108,7 @@ func test_workspace_runs_without_application_navigation() -> void:
 	assert_true(session.is_sandbox and workspace.world.build.enabled)
 	assert_true(session.save_track("Standalone workspace"))
 	assert_false(session.track_id.is_empty())
-	session.editor(session.store.list_puzzles()[0])
+	session.editor(session.store.load_campaign().levels[0])
 	workspace.hud.get_node("%FileToolbar").get_node("%Author").pressed.emit()
 	assert_true(workspace.authoring.visible, "The workspace owns its saved authoring drawer")
 	var baseline := session.capture()
@@ -145,7 +145,7 @@ func test_campaign_ui_scene_lifecycle() -> void:
 	assert_false(game.workspace.world.build.enabled, "Campaign browser blocks editing")
 	browser.close()
 	assert_true(game.workspace.world.build.enabled, "Closing browser restores editing")
-	session.editor(session.store.list_puzzles()[0])
+	session.editor(session.store.load_campaign().levels[0])
 	toolbar.get_node("%Author").pressed.emit()
 	assert_true(authoring.visible, "Toolbar opens the saved authoring drawer")
 	assert_true(session.test_player())
@@ -165,7 +165,7 @@ func test_draft_player_hud_fits_small_windows() -> void:
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var puzzle_bar: PanelContainer = game.get_node("Workspace/Interface/HUD").get_node("%FileToolbar").get_node("%PuzzleBar")
 	var session: ConstructionSession = game.workspace.session
-	var drafts: Array = session.store.list_puzzles().filter(func(data): return str(data.id).begins_with("campaign-")).slice(0, 3)
+	var drafts: Array = session.store.load_campaign().levels.filter(func(data): return str(data.id).begins_with("campaign-")).slice(0, 3)
 	assert_eq(drafts.size(), 3)
 	for dimensions in [Vector2i(1024, 720), Vector2i(1280, 720)]:
 		game.qa_resolution(dimensions.x, dimensions.y)
@@ -266,7 +266,7 @@ func test_ui_workflows() -> void:
 	var authoring: PanelContainer = game.get_node("Workspace/Interface/HUD/Margin/Layout/Body/AuthoringSlot/PuzzleAuthoring")
 	var browser: Window = game.get_node("%PuzzleBrowser")
 	var session: ConstructionSession=game.workspace.session
-	var levels=session.store.list_puzzles().filter(func(data): return data.id.begins_with("campaign-"))
+	var levels=session.store.load_campaign().levels.filter(func(data): return data.id.begins_with("campaign-"))
 	session.store.progress.clear()
 	game.handle_action("sandbox")
 	await settle()

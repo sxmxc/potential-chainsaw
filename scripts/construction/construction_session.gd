@@ -73,7 +73,7 @@ func editor(data: Dictionary = {}, official: bool = false) -> void:
 		puzzle.campaign.chapter = puzzle.campaign.legacy_chapter.duplicate(true)
 		puzzle.campaign.erase("legacy_chapter")
 	if official_authoring and not puzzle.has("campaign"):
-		puzzle.campaign = {"chapter": store.first_chapter(false), "order": 1, "prerequisites": []}
+		puzzle.campaign = {"chapter": CampaignDefinition.new(store.base_chapters(), []).first_chapter(false), "order": 1, "prerequisites": []}
 	opening_fingerprint = store.fingerprint(puzzle)
 	opening_revision = int(puzzle.get("revision", 1))
 	world.build.rules = null

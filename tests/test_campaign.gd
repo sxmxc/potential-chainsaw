@@ -10,7 +10,7 @@ func before_each() -> void:
 	await get_tree().process_frame
 
 func level(index: int) -> Dictionary:
-	return game.workspace.session.store.list_puzzles().filter(func(data): return data.id == "campaign-%02d" % (index + 1))[0]
+	return game.workspace.session.store.load_campaign().levels.filter(func(data): return data.id == "campaign-%02d" % (index + 1))[0]
 
 func run_physics(data: Dictionary) -> void:
 	assert_true(game.workspace.world.simulation.start(), data.name + ": simulation starts")

@@ -32,13 +32,13 @@ func _init(definitions: PieceCatalog) -> void:
 	elif not progress.is_empty():
 		# Legacy progress remains in place, including IDs, records, and awards.
 		campaign = {"version": 1, "started": true, "introduction_skipped": false}
-		var levels = list_puzzles()
-		for data in levels:
-			if not completed(data.id) and unlocked(data, levels):
+		var definition := load_campaign()
+		for data in definition.levels:
+			if not completed(data.id) and definition.unlocked(data, progress):
 				campaign.current_level = data.id
-				campaign.current_chapter = chapter_for(data).id
+				campaign.current_chapter = definition.chapter_for(data).id
 				break
-		if not campaign.has("current_chapter"): campaign.current_chapter = first_chapter(false).get("id", "")
+		if not campaign.has("current_chapter"): campaign.current_chapter = definition.first_chapter(false).get("id", "")
 
 func create() -> Dictionary:
 	return {"version": 2, "environment_instances": [], "id": "puzzle-" + Crypto.new().generate_random_bytes(8).hex_encode(), "revision": 1, "name": "New puzzle", "description": "Deliver the marble to the collector.", "creator": "", "difficulty": "Workshop", "pieces": [], "permissions": {}, "inventory": {}, "bounds": [-12, -12, 12, 12, 0, 12], "restricted_zones": [], "objectives": [], "hints": [], "camera": {}, "awards": {}, "solution": [], "validation": {}, "status": "draft"}
@@ -226,7 +226,7 @@ func load_puzzle(path: String, source: String) -> Dictionary:
 	var previous_fingerprint := fingerprint(data)
 	var registration: Dictionary = data.get("campaign", {}).duplicate(true)
 	if source != "community" and (data.has("chapter") or data.has("order") or data.has("prerequisites")):
-		registration = {"chapter": chapter_for(data), "order": data.get("order", 1), "prerequisites": data.get("campaign", {}).get("prerequisites", data.get("prerequisites", []))}
+		registration = {"chapter": CampaignDefinition.new(base_chapters(), []).chapter_for(data), "order": data.get("order", 1), "prerequisites": data.get("campaign", {}).get("prerequisites", data.get("prerequisites", []))}
 	for key in ["chapter", "order", "prerequisites", "campaign"]: data.erase(key)
 	if data.get("validation", {}).get("fingerprint", "") == previous_fingerprint:
 		data.validation.fingerprint = fingerprint(data)
@@ -321,34 +321,28 @@ func campaign_manifest() -> Dictionary:
 	var data = JSON.parse_string(FileAccess.get_file_as_string(manifest_path)) if FileAccess.file_exists(manifest_path) else null
 	return data if data is Dictionary else {"version": 1, "puzzles": []}
 
-func list_puzzles(drafts: bool = false) -> Array[Dictionary]:
+func list_drafts() -> Array[Dictionary]:
 	var by_id: Dictionary = {}
-	if drafts:
-		for filename in DirAccess.get_files_at(drafts_directory):
-			if not filename.ends_with(".json"): continue
-			var data := load_puzzle(drafts_directory.path_join(filename), "draft")
-			if not data.is_empty(): by_id[data.id] = data
-	else:
-		for entry in campaign_manifest().get("puzzles", []):
-			var data := load_puzzle(entry.path, "campaign")
-			if data.is_empty() or data.get("status") != "published" or data.id != entry.id: continue
-			var chapter: Dictionary = {}
-			for candidate in base_chapters():
-				if candidate.id == entry.chapter: chapter = candidate
-			if chapter.is_empty(): continue
-			data.campaign = {"chapter": chapter, "order": entry.order, "prerequisites": entry.get("prerequisites", [])}
-			if entry.has("legacy_chapter"): data.campaign.legacy_chapter = entry.legacy_chapter.duplicate(true)
-			by_id[data.id] = data
-	var result: Array[Dictionary] = []
-	for data in by_id.values(): result.append(data)
-	result.sort_custom(func(a, b):
-		var ca = chapter_for(a)
-		var cb = chapter_for(b)
-		if int(ca.get("order", 1)) != int(cb.get("order", 1)): return int(ca.get("order", 1)) < int(cb.get("order", 1))
-		if ca.id != cb.id: return str(ca.id) < str(cb.id)
-		if level_order(a) != level_order(b): return level_order(a) < level_order(b)
-		return str(a.id) < str(b.id))
-	return result
+	for filename in DirAccess.get_files_at(drafts_directory):
+		if not filename.ends_with(".json"): continue
+		var data := load_puzzle(drafts_directory.path_join(filename), "draft")
+		if not data.is_empty(): by_id[data.id] = data
+	return CampaignDefinition.new(base_chapters(), by_id.values()).levels
+
+func load_campaign() -> CampaignDefinition:
+	var chapters := base_chapters()
+	var by_id: Dictionary = {}
+	for entry in campaign_manifest().get("puzzles", []):
+		var data := load_puzzle(entry.path, "campaign")
+		if data.is_empty() or data.get("status") != "published" or data.id != entry.id: continue
+		var chapter: Dictionary = {}
+		for candidate in chapters:
+			if candidate.id == entry.chapter: chapter = candidate
+		if chapter.is_empty(): continue
+		data.campaign = {"chapter": chapter, "order": entry.order, "prerequisites": entry.get("prerequisites", [])}
+		if entry.has("legacy_chapter"): data.campaign.legacy_chapter = entry.legacy_chapter.duplicate(true)
+		by_id[data.id] = data
+	return CampaignDefinition.new(chapters, by_id.values())
 
 func list_community() -> Array[Dictionary]:
 	var by_id: Dictionary = {}
@@ -361,9 +355,6 @@ func list_community() -> Array[Dictionary]:
 	for data in by_id.values(): result.append(data)
 	result.sort_custom(func(a, b): return str(a.name).naturalnocasecmp_to(str(b.name)) < 0)
 	return result
-
-func level_order(data: Dictionary) -> int:
-	return int(data.get("campaign", {}).get("order", data.get("order", 1)))
 
 func is_official(data: Dictionary) -> bool:
 	return data.get("_source", "") == "campaign"
@@ -407,22 +398,6 @@ func required_assets(data: Dictionary) -> Array[String]:
 	ids.sort()
 	return ids
 
-func unlocked(data: Dictionary, levels: Array) -> bool:
-	if completed(data.id): return true
-	var chapter = chapter_for(data)
-	# Introduction puzzles can always be revisited independently.
-	if chapter.get("introduction", false): return true
-	if not chapter_unlocked(chapter): return false
-	for id in data.get("campaign", {}).get("prerequisites", data.get("prerequisites", [])):
-		if not requirement_completed(id): return false
-	if not data.get("campaign", {}).get("prerequisites", data.get("prerequisites", [])).is_empty(): return true
-	var previous: Dictionary = {}
-	for level in levels:
-		if chapter_for(level).id != chapter.id: continue
-		if level.id == data.id: return previous.is_empty() or completed(previous.id)
-		previous = level
-	return false
-
 func completed(id: String) -> bool:
 	return progress.get(id, {}).get("completed", false)
 
@@ -434,61 +409,11 @@ func base_chapters() -> Array[Dictionary]:
 	result.sort_custom(func(a, b): return int(a.get("order", 1)) < int(b.get("order", 1)))
 	return result
 
-func chapter_for(data: Dictionary) -> Dictionary:
-	var metadata: Dictionary = data.get("campaign", {}).get("chapter", data.get("chapter", {}))
-	for chapter in base_chapters():
-		if metadata.get("id", "") == chapter.id or (metadata.is_empty() and data.get("id", "") in chapter.get("levels", [])):
-			var result = chapter.duplicate(true)
-			result.merge(metadata, true)
-			return result
-	if not metadata.is_empty(): return metadata
-	return first_chapter(false)
-
-func first_chapter(intro: bool) -> Dictionary:
-	for chapter in base_chapters():
-		if bool(chapter.get("introduction", false)) == intro: return chapter.duplicate(true)
-	return {}
-
-func list_chapters(levels: Array) -> Array[Dictionary]:
-	var by_id: Dictionary = {}
-	for chapter in base_chapters(): by_id[chapter.id] = chapter
-	for data in levels:
-		var chapter = chapter_for(data)
-		by_id[chapter.id] = chapter
-	var result: Array[Dictionary] = []
-	for chapter in by_id.values(): result.append(chapter)
-	result.sort_custom(func(a, b):
-		if int(a.get("order", 1)) != int(b.get("order", 1)): return int(a.get("order", 1)) < int(b.get("order", 1))
-		return str(a.id) < str(b.id))
-	return result
-
-func requirement_completed(id: String) -> bool:
-	# Optional introduction never gates the main campaign, even in legacy prerequisites.
-	for chapter in list_chapters(list_puzzles()):
-		if chapter.get("introduction", false) and id in chapter.get("levels", []): return true
-	for level in list_puzzles():
-		if level.id == id and chapter_for(level).get("introduction", false): return true
-	return completed(id)
-
-func chapter_unlocked(chapter: Dictionary) -> bool:
-	if chapter.get("introduction", false): return true
-	for id in chapter.get("prerequisites", []):
-		if not requirement_completed(id): return false
-	return true
-
-func chapter_progress(id: String, levels: Array) -> Dictionary:
-	var total = 0
-	var done = 0
-	for data in levels:
-		if chapter_for(data).id != id: continue
-		total += 1
-		if completed(data.id): done += 1
-	return {"completed": done, "total": total}
-
 func start_campaign(play_introduction: bool) -> Dictionary:
-	var chapter = first_chapter(play_introduction)
+	var definition := load_campaign()
+	var chapter := definition.first_chapter(play_introduction)
 	campaign = {"version": 1, "started": true, "introduction_skipped": not play_introduction, "current_chapter": chapter.get("id", ""), "current_level": ""}
-	var target = resume_level()
+	var target := definition.resume_level(campaign, progress)
 	if not target.is_empty(): campaign.current_level = target.id
 	write(campaign_state_path, campaign)
 	return target
@@ -497,41 +422,11 @@ func remember_level(data: Dictionary) -> void:
 	if not is_official(data): return
 	if not campaign.get("started", false):
 		campaign = {"version": 1, "started": true, "introduction_skipped": false}
-	var chapter = chapter_for(data)
+	var chapter: Dictionary = data.campaign.chapter
 	campaign.current_level = data.id
 	campaign.current_chapter = chapter.id
 	campaign["introduction_level" if chapter.get("introduction", false) else "main_level"] = data.id
 	write(campaign_state_path, campaign)
-
-func resume_level() -> Dictionary:
-	var levels = list_puzzles()
-	for data in levels:
-		if data.id == campaign.get("current_level", "") and unlocked(data, levels): return data
-	for data in levels:
-		if chapter_for(data).id == campaign.get("current_chapter", "") and unlocked(data, levels) and not completed(data.id): return data
-	return {}
-
-func next_level(data: Dictionary) -> Dictionary:
-	if not is_official(data): return {}
-	var levels = list_puzzles()
-	var chapter = chapter_for(data)
-	var after = false
-	for level in levels:
-		if chapter_for(level).id != chapter.id: continue
-		if after: return level if unlocked(level, levels) else {}
-		if level.id == data.id: after = true
-	# Optional chapters join the main route; main chapters advance by chapter order.
-	for candidate in list_chapters(levels):
-		if candidate.get("optional", false): continue
-		if not chapter.get("optional", false) and int(candidate.get("order", 1)) <= int(chapter.get("order", 1)): continue
-		if not chapter_unlocked(candidate): continue
-		for level in levels:
-			if chapter_for(level).id == candidate.id and unlocked(level, levels) and not completed(level.id): return level
-		if chapter_progress(candidate.id, levels).total == 0:
-			campaign.current_chapter = candidate.id
-			campaign.current_level = ""
-			return {}
-	return {}
 
 func complete(data: Dictionary, seconds: float, count: int) -> void:
 	var records := progress if is_official(data) else community_progress
@@ -545,10 +440,7 @@ func complete(data: Dictionary, seconds: float, count: int) -> void:
 	records[data.id].awards = awards
 	write(progress_path if is_official(data) else community_progress_path, records)
 	if not is_official(data): return
-	var next = next_level(data)
-	if not next.is_empty():
-		campaign.current_level = next.id
-		campaign.current_chapter = chapter_for(next).id
-	else:
-		campaign.current_level = ""
+	var step := load_campaign().next_step(data, progress)
+	campaign.current_level = step.level.get("id", "")
+	campaign.current_chapter = step.chapter.get("id", campaign.get("current_chapter", ""))
 	write(campaign_state_path, campaign)

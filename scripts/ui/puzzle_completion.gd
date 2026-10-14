@@ -15,7 +15,7 @@ func configure(value: ConstructionSession) -> void:
 	%LevelSelection.pressed.connect(func(): hide(); levels_requested.emit())
 	%Next.pressed.connect(func():
 		hide()
-		var next = session.store.next_level(session.puzzle)
+		var next = session.store.load_campaign().next_step(session.puzzle, session.store.progress).level
 		if not next.is_empty(): session.player(next); return
 		levels_requested.emit())
 	session.world.simulation.state_changed.connect(result)

@@ -17,7 +17,7 @@ func configure(puzzle_session: ConstructionSession) -> void:
 		if refreshing or not session.store.can_add_to_campaign(): return
 		session.official_authoring = index == 1
 		if session.official_authoring and not session.puzzle.has("campaign"):
-			session.puzzle.campaign = {"chapter": session.store.first_chapter(false), "order": 1, "prerequisites": []}
+			session.puzzle.campaign = {"chapter": CampaignDefinition.new(session.store.base_chapters(), []).first_chapter(false), "order": 1, "prerequisites": []}
 		session.metadata_changed()
 		open())
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
@@ -128,8 +128,8 @@ func open() -> void:
 	%Publish.text = "Add to Campaign" if session.official_authoring else "Publish locally"
 	%Export.visible = not session.official_authoring
 	%Creator.text = data.get("creator", "")
-	show_chapter(session.store.chapter_for(data))
-	%Order.value = session.store.level_order(data)
+	show_chapter(CampaignDefinition.new(session.store.base_chapters(), []).chapter_for(data))
+	%Order.value = CampaignDefinition.level_order(data)
 	for index in %Difficulty.item_count:
 		if %Difficulty.get_item_text(index) == data.get("difficulty", "Introduction"): %Difficulty.select(index)
 	%TimeLimit.value = data.get("time_limit", 90)
@@ -143,8 +143,8 @@ func open() -> void:
 	refresh_objectives()
 	refresh_zones()
 	%Prerequisites.clear()
-	var available = session.store.list_puzzles()
-	available.append_array(session.store.list_puzzles(true))
+	var available = session.store.load_campaign().levels
+	available.append_array(session.store.list_drafts())
 	var seen: Dictionary = {}
 	for level in available:
 		if level.id == data.id or seen.has(level.id): continue
@@ -186,9 +186,9 @@ func show_chapter(chapter: Dictionary) -> void:
 
 func select_chapter(id: String) -> void:
 	if refreshing or not session.official_authoring: return
-	var available = session.store.list_puzzles()
-	available.append_array(session.store.list_puzzles(true))
-	for chapter in session.store.list_chapters(available):
+	var available = session.store.load_campaign().levels
+	available.append_array(session.store.list_drafts())
+	for chapter in CampaignDefinition.new(session.store.base_chapters(), available).chapters:
 		if chapter.id == id.strip_edges():
 			refreshing = true
 			show_chapter(chapter)
