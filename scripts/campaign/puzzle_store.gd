@@ -51,7 +51,7 @@ func fingerprint(data: Dictionary) -> String:
 	# Canonicalize the numeric types and precision produced by JSON persistence.
 	return JSON.stringify(JSON.parse_string(JSON.stringify(content)), "", true, true).sha256_text()
 
-func validate(data: Dictionary) -> Array[String]:
+func validate(data: Dictionary, check_solution: bool = false) -> Array[String]:
 	var errors := shape_errors(data)
 	if not errors.is_empty(): return errors
 	for id in data.get("inventory", {}).keys() + data.get("configuration_limits", {}).keys():
@@ -61,6 +61,7 @@ func validate(data: Dictionary) -> Array[String]:
 		if not PieceCatalog.REGISTRY.has_string_id(StringName(item.piece)): errors.append("Unknown catalog piece: " + item.piece)
 		else:
 			var definition := catalog.get_piece(item.piece)
+			if definition.authoring_only: errors.append("Scenery must use environment placements: " + item.piece)
 			for setting in definition.settings:
 				if not item.get("config", {}).has(setting.key): continue
 				var value = item.config[setting.key]
@@ -70,12 +71,8 @@ func validate(data: Dictionary) -> Array[String]:
 	if not errors.is_empty(): return errors
 	var environment = PuzzleEnvironment.inspect_definition(data)
 	for error in environment.errors: errors.append(str(error))
-	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))): errors.append("Invalid puzzle ID")
+	if not SavePaths.valid_id(data.id): errors.append("Invalid puzzle ID")
 	if str(data.get("name", "")).strip_edges().is_empty(): errors.append("A puzzle needs a name")
-	var track = TrackSerializer.new(catalog)
-	var construction = track.decode(JSON.stringify({"version": 1, "name": str(data.get("name", "")), "pieces": data.get("pieces", [])}))
-	if construction.is_empty() or not track.warnings.is_empty(): errors.append("Starting construction is invalid: " + track.last_error + " ".join(track.warnings))
-	if not data.get("inventory", {}) is Dictionary or not data.get("permissions", {}) is Dictionary: errors.append("Invalid rule data"); return errors
 	var by_id: Dictionary = {}
 	var starts = 0
 	for piece in data.get("pieces", []):
@@ -108,6 +105,11 @@ func validate(data: Dictionary) -> Array[String]:
 	for source in data.get("pieces", []):
 		for link in source.get("config", {}).get("links", []):
 			if not by_id.has(link.get("target", "")): errors.append("Mechanism link target is missing")
+	# Draft edits may invalidate the preserved solution; only distribution checks
+	# require that solution to obey the current player rules.
+	if check_solution and errors.is_empty() and not data.get("solution", []).is_empty():
+		var problem := PuzzleRules.new(data, catalog, environment.solids).validate(data.solution)
+		if not problem.is_empty(): errors.append(problem)
 	return errors
 
 # Check JSON types before any engine/resource operation. Unknown fields cannot
@@ -135,6 +137,7 @@ func shape_errors(data: Dictionary) -> Array[String]:
 				errors.append("Invalid construction record")
 				continue
 			var config: Dictionary = item.get("config", {})
+			if config.has("release_speed") and not number(config.release_speed): errors.append("Invalid release speed")
 			if float(item.rotation) != int(item.rotation) or int(item.rotation) not in [0, 1, 2, 3]: errors.append("Invalid piece rotation")
 			for value in config.values():
 				if not (value is String or value is bool or number(value) or value is Array): errors.append("Invalid mechanism configuration")
@@ -185,17 +188,6 @@ func valid_limits(value: Variant) -> bool:
 		if not numeric_array(limits, 2) or limits[0] > limits[1]: return false
 	return true
 
-func solution_errors(data: Dictionary) -> Array[String]:
-	var errors: Array[String] = []
-	if data.get("solution", []).is_empty(): return errors
-	var track := TrackSerializer.new(catalog)
-	if track.decode(JSON.stringify({"version": 1, "name": data.name, "pieces": data.solution})).is_empty() or not track.warnings.is_empty():
-		errors.append("Invalid solution construction")
-	else:
-		var problem := PuzzleRules.new(data, catalog).validate(data.solution)
-		if not problem.is_empty(): errors.append(problem)
-	return errors
-
 func write(path: String, data: Dictionary) -> bool:
 	var file = FileAccess.open(path + ".tmp", FileAccess.WRITE)
 	if not file: last_error = "Could not write " + path; return false
@@ -206,7 +198,7 @@ func write(path: String, data: Dictionary) -> bool:
 	return true
 
 func save_draft(data: Dictionary) -> bool:
-	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))): return false
+	if not SavePaths.valid_id(str(data.get("id", ""))): return false
 	var draft := data.duplicate(true)
 	draft.erase("_source")
 	return write(drafts_directory + "/" + data.id + ".json", draft)
@@ -226,8 +218,7 @@ func load_puzzle(path: String, source: String) -> Dictionary:
 	if not shape.is_empty(): last_error = "\n".join(shape); return {}
 	data.erase("_source")
 	if source == "community":
-		var errors := validate(data)
-		errors.append_array(solution_errors(data))
+		var errors := validate(data, true)
 		if not errors.is_empty():
 			last_error = "\n".join(errors)
 			return {}
@@ -244,9 +235,8 @@ func load_puzzle(path: String, source: String) -> Dictionary:
 	return data
 
 func publication_errors(data: Dictionary) -> Array[String]:
-	var errors := validate(data)
+	var errors := validate(data, true)
 	if not errors.is_empty(): return errors
-	errors.append_array(solution_errors(data))
 	if data.get("solution", []).is_empty() or data.get("validation", {}).get("fingerprint", "") != fingerprint(data) or not data.get("validation", {}).get("physics_success", false):
 		errors.append("Test this revision successfully as a player and preserve the solution first")
 	return errors
@@ -273,8 +263,7 @@ func add_to_campaign(data: Dictionary) -> bool:
 	var errors := publication_errors(data)
 	var registration: Dictionary = data.get("campaign", {})
 	var chapter: Dictionary = registration.get("chapter", {})
-	var track := TrackSerializer.new(catalog)
-	if not track.valid_id(str(chapter.get("id", ""))) or str(chapter.get("name", "")).strip_edges().is_empty(): errors.append("Choose a campaign chapter")
+	if not SavePaths.valid_id(str(chapter.get("id", ""))) or str(chapter.get("name", "")).strip_edges().is_empty(): errors.append("Choose a campaign chapter")
 	if int(registration.get("order", 0)) < 1: errors.append("Level order must be positive")
 	if not registration.get("prerequisites", []) is Array or not chapter.get("prerequisites", []) is Array: errors.append("Unlock requirements must be lists")
 	if chapter.get("introduction", false) and not chapter.get("optional", false): errors.append("Introduction must be optional")
@@ -381,7 +370,7 @@ func is_official(data: Dictionary) -> bool:
 
 func export_puzzle(data: Dictionary, path: String) -> bool:
 	var published_path := published_directory.path_join(str(data.get("id", "")) + ".json")
-	if not TrackSerializer.new(catalog).valid_id(str(data.get("id", ""))) or not FileAccess.file_exists(published_path): last_error = "Publish locally before exporting"; return false
+	if not SavePaths.valid_id(str(data.get("id", ""))) or not FileAccess.file_exists(published_path): last_error = "Publish locally before exporting"; return false
 	var published := load_puzzle(published_path, "community")
 	if published.is_empty(): return false
 	return write(path, playable_content(published))

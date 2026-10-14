@@ -14,7 +14,7 @@ func _init(piece_catalog: PieceCatalog) -> void:
 func save_track(name: String, pieces: Array, existing_id: String = "") -> String:
 	last_error = ""
 	if name.strip_edges().is_empty(): last_error="Please give your track a name"; return ""
-	var id = existing_id if valid_id(existing_id) else "%d-%s" % [Time.get_unix_time_from_system(),Crypto.new().generate_random_bytes(6).hex_encode()]
+	var id = existing_id if SavePaths.valid_id(existing_id) else "%d-%s" % [Time.get_unix_time_from_system(),Crypto.new().generate_random_bytes(6).hex_encode()]
 	var data = {"version":FORMAT_VERSION,"id":id,"name":name.strip_edges().left(80),"modified":Time.get_datetime_string_from_system(true),"pieces":pieces}
 	var path = save_directory+"/"+id+".json"
 	var temp = path+".tmp"
@@ -28,7 +28,7 @@ func save_track(name: String, pieces: Array, existing_id: String = "") -> String
 	return id
 
 func load_track(id: String) -> Dictionary:
-	if not valid_id(id): last_error="Invalid track identifier"; return {}
+	if not SavePaths.valid_id(id): last_error="Invalid track identifier"; return {}
 	return decode(FileAccess.get_file_as_string(save_directory+"/"+id+".json"))
 
 func decode(text: String) -> Dictionary:
@@ -78,11 +78,5 @@ func list_tracks() -> Array[Dictionary]:
 	return result
 
 func delete_track(id: String) -> Error:
-	if not valid_id(id): return ERR_INVALID_PARAMETER
+	if not SavePaths.valid_id(id): return ERR_INVALID_PARAMETER
 	return DirAccess.remove_absolute(save_directory+"/"+id+".json")
-
-func valid_id(id: String) -> bool:
-	if id.is_empty() or id.length()>100: return false
-	for c in id:
-		if not c in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_": return false
-	return true

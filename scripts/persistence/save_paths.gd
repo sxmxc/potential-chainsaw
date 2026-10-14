@@ -1,6 +1,12 @@
 class_name SavePaths
 extends RefCounted
 
+static func valid_id(id: String) -> bool:
+	if id.is_empty() or id.length() > 100: return false
+	for character in id:
+		if character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_": return false
+	return true
+
 # Tests redirect only application saves, never Godot's caches or APPDATA.
 static func resolve(path: String) -> String:
 	var test_directory = OS.get_environment("MARBLE_ENGINEER_TEST_DATA")
