@@ -34,6 +34,8 @@ Piece definitions are managed through YARD's Registry tab and `resources/registr
 | Frame selection / construction | F / Home |
 | Grid / magnetic snapping | G / C |
 
+Sandbox testing requires a marble release; finish catchers are optional. Runs have no time limit, so loops can keep running. A catcher still ends the run when a marble reaches it.
+
 Choose a piece once and click repeatedly to build. Point near a visible exposed connector: attachment determines position, quarter-turn orientation and elevation automatically. Away from connectors, placement uses the active grid plane and manual rotation. Click a selected track's small `+` connector indicator to open a compatible-piece inventory.
 
 Dragging moves a whole selection on a stable horizontal plane, preserving height differences. Connector snapping can change the group's elevation. The first selected piece is the rotation anchor. A preview is valid only when the complete group fits; cancellation leaves originals untouched. Each confirmed group edit creates one history entry. Restoring history retains selected piece identities when they still exist.

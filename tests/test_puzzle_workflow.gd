@@ -15,6 +15,46 @@ func place(build: BuildManager, id: String, at: Vector3) -> void:
 	build.commit()
 	build.cancel()
 
+func test_sandbox_runs_without_a_finish_or_puzzle_timeout() -> void:
+	game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.workspace.session.sandbox()
+	var build: BuildManager = game.workspace.world.build
+	var simulation: SimulationManager = game.workspace.world.simulation
+	assert_false(simulation.start(), "Sandbox still requires a marble release")
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release")
+	var layout := build.snapshot()
+	assert_true(game.workspace.session.start_simulation(), "A release without a finish can start a Sandbox run")
+	assert_eq(simulation.marbles.size(), 1, "The release spawns a real physics marble")
+	# Cross the former timeout without waiting 90 seconds in the test.
+	simulation.elapsed = 90.0
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_gt(simulation.elapsed, 90.0)
+	assert_eq(simulation.state, SimulationManager.State.RUNNING)
+	simulation.toggle_pause()
+	assert_eq(simulation.state, SimulationManager.State.PAUSED)
+	simulation.toggle_pause()
+	assert_eq(simulation.state, SimulationManager.State.RUNNING)
+	simulation.reset()
+	assert_eq(simulation.state, SimulationManager.State.BUILD)
+	assert_true(simulation.marbles.is_empty() and build.enabled)
+	assert_eq(build.snapshot(), layout, "Reset preserves a finish-free construction")
+	var puzzle: Dictionary = game.workspace.session.store.create()
+	puzzle.pieces = layout
+	puzzle.objectives = [{"type": "deliver", "target": "finish", "count": 1}]
+	game.workspace.session.player(puzzle)
+	assert_false(simulation.start(), "A puzzle with delivery objectives still requires a collector")
+	assert_eq(simulation.state, SimulationManager.State.BUILD)
+	puzzle.objectives = []
+	puzzle.time_limit = 1.0
+	game.workspace.session.player(puzzle)
+	assert_true(simulation.start())
+	simulation.elapsed = 1.0
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_eq(simulation.state, SimulationManager.State.FAILED, "Puzzle time limits still apply")
+
 func test_boundary_authoring_and_mode_lifecycle() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)

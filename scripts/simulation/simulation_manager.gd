@@ -32,7 +32,7 @@ func start() -> bool:
 	if starts.is_empty() or (puzzle.is_empty() and starts.size()!=1):
 		state_changed.emit(State.BUILD,"Add one marble release to test the track.")
 		return false
-	if finishes.is_empty() and (puzzle.is_empty() or puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver")):
+	if finishes.is_empty() and puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver"):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
 		return false
 	var link_errors := validate_links()
@@ -149,7 +149,7 @@ func _physics_process(delta: float) -> void:
 	if not puzzle.is_empty() and objectives.satisfied(elapsed):
 		_end(State.SUCCESS, "Puzzle complete")
 		arrived.emit()
-	elif elapsed > float(puzzle.get("time_limit", 90)):
+	elif not puzzle.is_empty() and elapsed > float(puzzle.get("time_limit", 90)):
 		_end(State.FAILED, "Time ran out · return to building or roll again")
 
 func _on_finish(body: Node3D, collector: String) -> void:

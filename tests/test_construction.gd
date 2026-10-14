@@ -208,7 +208,7 @@ func test_construction() -> void:
 		assert_true(build.snapshot()==original,id+" reset preserves original construction")
 		assert_true(game.workspace.world.simulation.marble==null and build.enabled,"Reset returns build mode and removes marble")
 	game.workspace.session.sandbox()
-	assert_true(not game.qa_test(),"Missing release/finish fails without leaving build mode")
+	assert_true(not game.qa_test(),"Missing release fails without leaving build mode")
 
 func check_connected_chain(pieces: Array[BuildingPiece], title: String) -> void:
 	for i in range(0,pieces.size()-1):
