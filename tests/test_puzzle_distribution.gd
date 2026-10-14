@@ -168,20 +168,27 @@ func test_record_validation_preserves_drafts_and_checks_distributed_solutions() 
 	var store := PuzzleStore.new(PieceCatalog.new())
 	var data: Dictionary = store.load_campaign().levels.filter(func(item): return item.id == "campaign-01")[0]
 	var original := data.duplicate(true)
-	assert_true(store.validate(data, true).is_empty(), "The saved reference obeys the puzzle rules")
+	assert_true(PuzzleRules.definition_errors(data, store.catalog, true).is_empty(), "The saved reference obeys the puzzle rules")
 	assert_false(DirAccess.dir_exists_absolute(SavePaths.resolve("user://tracks")), "Puzzle validation does not initialize personal-track storage")
 	assert_eq(data, original, "Validation must not normalize or rewrite authored records")
 	data.solution[0].position[0] += 10
-	assert_true(store.validate(data).is_empty(), "An obsolete reference does not prevent editing and retesting a draft")
+	assert_true(PuzzleRules.definition_errors(data, store.catalog).is_empty(), "An obsolete reference does not prevent editing and retesting a draft")
 	assert_false(store.publication_errors(data).is_empty(), "Distribution rejects a reference that moves a fixed piece")
 	assert_eq(data.solution[0].position[0], original.solution[0].position[0] + 10)
 	for records in ["pieces", "solution"]:
 		var invalid := original.duplicate(true)
 		invalid[records][0].piece = "environment:column"
-		assert_false(store.validate(invalid).is_empty(), "Scenery cannot enter track records: " + records)
+		assert_false(PuzzleRules.definition_errors(invalid, store.catalog).is_empty(), "Scenery cannot enter track records: " + records)
 		invalid = original.duplicate(true)
 		invalid[records][0].position[0] = 1001
-		assert_false(store.validate(invalid).is_empty(), "Coordinate limits apply to both layouts: " + records)
+		assert_false(PuzzleRules.definition_errors(invalid, store.catalog).is_empty(), "Coordinate limits apply to both layouts: " + records)
 		invalid = original.duplicate(true)
 		invalid[records][0].config.release_speed = "invalid"
-		assert_false(store.validate(invalid).is_empty(), "Release speed must remain numeric: " + records)
+		assert_false(PuzzleRules.definition_errors(invalid, store.catalog).is_empty(), "Release speed must remain numeric: " + records)
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	var session: ConstructionSession = game.workspace.session
+	session.editor(data)
+	assert_true(session.validate(false).is_empty(), "The editor can retest a draft with an obsolete reference")
+	assert_eq(session.validate(), store.publication_errors(session.capture()), "Editor validation uses the publisher's solution and proof gate")

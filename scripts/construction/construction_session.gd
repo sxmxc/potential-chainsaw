@@ -243,11 +243,8 @@ func publish() -> bool:
 
 func validate(require_solution: bool = true) -> Array[String]:
 	var data := capture()
-	var errors := store.validate(data)
+	var errors := store.publication_errors(data) if require_solution else PuzzleRules.definition_errors(data, catalog)
 	errors.append_array(world.build.validate_wiring())
-	var proof: Dictionary = data.get("validation", {})
-	if require_solution and (data.get("solution", []).is_empty() or not proof.get("physics_success", false) or proof.get("fingerprint", "") != store.fingerprint(data)):
-		errors.append("This revision needs a successful Test as Player solution")
 	return errors
 
 func set_permissions(values: Dictionary) -> void:

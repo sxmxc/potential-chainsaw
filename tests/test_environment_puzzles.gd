@@ -123,7 +123,7 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	assert_true(fixed_bodies.all(func(body): return body.collision_layer == 1 and body.collision_mask == 2))
 	var invalid_inventory := saved.duplicate(true)
 	invalid_inventory.inventory["environment:partition"] = 1
-	assert_true(session.store.validate(invalid_inventory).has("Invalid inventory: environment:partition"), "Registry scenery cannot enter player stock")
+	assert_true(PuzzleRules.definition_errors(invalid_inventory, session.catalog).has("Invalid inventory: environment:partition"), "Registry scenery cannot enter player stock")
 	session.return_editor()
 	build.select(build.pieces.back())
 	build.delete_selected()
