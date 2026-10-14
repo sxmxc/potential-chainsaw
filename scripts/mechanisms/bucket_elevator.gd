@@ -3,14 +3,13 @@ extends PieceBehavior
 
 const BucketScene = preload("res://scenes/mechanisms/elevator_bucket.tscn")
 const FrameScene = preload("res://scenes/mechanisms/elevator_frame_section.tscn")
-const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
 const TURN_RADIUS = 0.75
 const BUCKET_SPACING = 1.4
 var lift_height: float = ElevatorDefinition.DEFAULT_HEIGHT
 var travel_speed: float = ElevatorDefinition.DEFAULT_SPEED
 var phase: float = 0.0
 var buckets: Array[Node3D] = []
-var waiting: Array[RigidBody3D] = []
+var waiting: Array[Marble] = []
 var loaded_count: int = 0
 var unloaded_count: int = 0
 
@@ -87,14 +86,14 @@ func _physics_process(delta: float) -> void:
 		var bucket = buckets[index]
 		var pose_data = sample(phase + index * loop_length() / buckets.size())
 		if bucket.occupied() and pose_data.ascending and pose_data.point.y >= lift_height + 0.8:
-			var released: RigidBody3D = bucket.transport.marble
+			var released: RigidBody3D = bucket.marble
 			# Give the tipped marble momentum onto the outlet even at slow belt speeds.
 			bucket.unload(global_basis * Vector3(0, 0, -clampf(travel_speed + 0.6, 1.4, 2.6)))
 			unloaded_count += 1
 			emit_output("unloaded", released)
 		elif not bucket.occupied() and pose_data.point.y < 0.22 and pose_data.point.z < 0.48:
 			for body in waiting.duplicate():
-				if not is_instance_valid(body) or Capture.is_carried(body): waiting.erase(body); continue
+				if not is_instance_valid(body) or body.carried: waiting.erase(body); continue
 				var local_point = to_local(body.global_position)
 				if absf(local_point.x) > 0.25 or local_point.y > 0.72 or local_point.z < -0.35: continue
 				if bucket.capture(body):
@@ -104,7 +103,7 @@ func _physics_process(delta: float) -> void:
 					break
 
 func _queue_marble(body: Node3D) -> void:
-	if body is RigidBody3D and body.collision_layer & 2 and not body in waiting and not Capture.is_carried(body): waiting.append(body)
+	if body is Marble and body.collision_layer & 2 and not body in waiting and not body.carried: waiting.append(body)
 
 func _remove_waiting(body: Node3D) -> void:
 	waiting.erase(body)

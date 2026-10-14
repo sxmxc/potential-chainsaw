@@ -1,6 +1,5 @@
 extends "res://tests/support/scene_test.gd"
 
-const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
 var game: Node
 
 func test_bucket_elevator() -> void:
@@ -107,7 +106,7 @@ func exercise_route(lift_height: float, conveyor_speed: float, quarter: int) -> 
 				discharge.checked = true
 				var forward_speed: float = sim.marble.linear_velocity.dot(rotation_basis * Vector3.FORWARD)
 				assert_true(forward_speed > discharge.speed * 0.85, "Landing on the outlet retains forward momentum")
-		if Capture.is_carried(sim.marble):
+		if sim.marble.carried:
 			saw_capture=true
 			biggest_step=maxf(biggest_step,sim.marble.position.distance_to(previous_position))
 			max_rise=maxf(max_rise,sim.marble.position.y)
@@ -127,17 +126,17 @@ func exercise_route(lift_height: float, conveyor_speed: float, quarter: int) -> 
 	assert_true(biggest_step<0.08,"Capture/ascent has no frame teleport")
 	assert_true(component.loaded_count==1 and component.unloaded_count==1,"One bucket carries and releases each marble once")
 	assert_true(sim.state==SimulationManager.State.SUCCESS,"Released marble physically rolls into the connected finish")
-	assert_true(not sim.marble.freeze and sim.marble.collision_layer==2 and sim.marble.collision_mask==1 and not Capture.is_carried(sim.marble),"Discharge restores ordinary rigid-body collision and physics")
+	assert_true(not sim.marble.freeze and sim.marble.collision_layer==2 and sim.marble.collision_mask==1 and not sim.marble.carried,"Discharge restores ordinary rigid-body collision and physics")
 	sim.reset()
 	assert_true(component.phase==0 and not component.active and component.waiting.is_empty(),"Reset restores stationary arrangement and clears waiting state")
 	assert_true(sim.start(),"Repeated run starts without stale occupancy")
 	for frame in 500:
 		await get_tree().physics_frame
-		if Capture.is_carried(sim.marble): break
+		if sim.marble.carried: break
 	var captured=sim.marble
-	assert_true(Capture.is_carried(captured),"Repeated run can capture again")
+	assert_true(captured.carried,"Repeated run can capture again")
 	component.reset()
-	assert_true(not captured.freeze and captured.collision_layer==2 and captured.collision_mask==1 and not Capture.is_carried(captured),"Reset while occupied restores marble properties before disposal")
+	assert_true(not captured.freeze and captured.collision_layer==2 and captured.collision_mask==1 and not captured.carried,"Reset while occupied restores marble properties before disposal")
 	sim.reset()
 
 func exercise_multiple() -> void:
@@ -148,7 +147,7 @@ func exercise_multiple() -> void:
 	var component=lift.behaviors[0]
 	build.spawn(game.workspace.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,4,-2)))
 	build.spawn(game.workspace.catalog.get_piece("sandbox-finish"),Transform3D(Basis(Vector3.UP,PI),Vector3(0,4,-3)))
-	var marbles: Array[RigidBody3D]=[]
+	var marbles: Array[Marble]=[]
 	var delivered: Array[int]=[]
 	var claimed: Array[int]=[]
 	component.output_raised.connect(func(event, body):
@@ -157,7 +156,7 @@ func exercise_multiple() -> void:
 	component.active=true
 	for frame in 2200:
 		if frame in [0,60,120]:
-			var body=load("res://scenes/marble.tscn").instantiate() as RigidBody3D
+			var body=load("res://scenes/marble.tscn").instantiate() as Marble
 			game.workspace.world.add_child(body)
 			body.position=Vector3(0,0.46,-1.25)
 			body.linear_velocity=Vector3(0,0,1.2)
@@ -169,9 +168,39 @@ func exercise_multiple() -> void:
 	for id in claimed: unique[id]=true
 	assert_true(unique.size()==3 and claimed.size()==3 and delivered.size()==3,"Bucket ownership prevents duplicate capture and double occupancy")
 	for body in marbles:
-		assert_true(not body.freeze and body.collision_layer==2 and body.collision_mask==1 and not Capture.is_carried(body),"Every discharged marble regains ordinary physics")
+		assert_true(not body.freeze and body.collision_layer==2 and body.collision_mask==1 and not body.carried,"Every discharged marble regains ordinary physics")
 	var phase=component.phase
 	for frame in 120: await get_tree().physics_frame
 	assert_true(component.phase!=phase and component.active,"Empty conveyor continues circulating for subsequent arrivals")
 	component.reset()
 	for body in marbles: body.queue_free()
+
+func test_capture_is_exclusive_and_restores_incoming_physics() -> void:
+	var body: Marble = load("res://scenes/marble.tscn").instantiate()
+	add_child_autofree(body)
+	var first = load("res://scenes/mechanisms/elevator_bucket.tscn").instantiate()
+	var second = load("res://scenes/mechanisms/elevator_bucket.tscn").instantiate()
+	add_child_autofree(first)
+	add_child_autofree(second)
+	body.freeze = true
+	body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	body.collision_layer = 6
+	body.collision_mask = 5
+	body.linear_velocity = Vector3(1, 2, 3)
+	body.angular_velocity = Vector3(3, 2, 1)
+	body.sleeping = true
+	assert_true(first.capture(body))
+	assert_false(second.capture(body), "A carried marble cannot enter another bucket")
+	assert_false(second.occupied())
+	assert_true(body.freeze and body.collision_layer == 0 and body.collision_mask == 0)
+	first.reset()
+	assert_false(body.carried)
+	assert_false(first.occupied())
+	assert_true(body.freeze and body.freeze_mode == RigidBody3D.FREEZE_MODE_KINEMATIC)
+	assert_eq(body.collision_layer, 6)
+	assert_eq(body.collision_mask, 5)
+	assert_eq(body.linear_velocity, Vector3(1, 2, 3))
+	assert_eq(body.angular_velocity, Vector3(3, 2, 1))
+	assert_true(body.sleeping)
+	assert_true(second.capture(body), "Reset makes the marble available for capture again")
+	second.reset()

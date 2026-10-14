@@ -1,7 +1,7 @@
 class_name MarbleRelease
 extends PieceBehavior
 
-signal marble_spawned(body: RigidBody3D, ordinal: int)
+signal marble_spawned(body: Marble, ordinal: int)
 
 @export var spawn_position: Vector3 = Vector3(0, 0.48, 0)
 @export var spawn_direction: Vector3 = Vector3.FORWARD
@@ -42,7 +42,7 @@ func _release_due() -> void:
 	for release in pending_releases.duplicate():
 		if elapsed < release.time: continue
 		pending_releases.erase(release)
-		var body: RigidBody3D = preload("res://scenes/marble.tscn").instantiate()
+		var body: Marble = preload("res://scenes/marble.tscn").instantiate()
 		add_child(body)
 		body.global_position = global_transform * spawn_position
 		body.reset_physics_interpolation()

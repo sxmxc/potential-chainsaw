@@ -1,8 +1,6 @@
 class_name SimulationManager
 extends Node3D
 
-const Capture = preload("res://scripts/mechanisms/marble_capture.gd")
-
 enum State { BUILD, RUNNING, PAUSED, SUCCESS, FAILED }
 signal state_changed(state: State, message: String)
 signal arrived
@@ -13,8 +11,8 @@ var signal_queue: Array[Dictionary] = []
 var draining_signals: bool = false
 var state: State = State.BUILD
 var build: BuildManager
-var marble: RigidBody3D
-var marbles: Array[RigidBody3D] = []
+var marble: Marble
+var marbles: Array[Marble] = []
 var paused_velocities: Dictionary = {}
 var objectives = PuzzleObjectives.new()
 var puzzle: Dictionary = {}
@@ -73,7 +71,7 @@ func start() -> bool:
 	state_changed.emit(state,"Testing")
 	return true
 
-func _track_marble(body: RigidBody3D, ordinal: int, piece: BuildingPiece) -> void:
+func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:
 	body.reparent(self)
 	body.reset_physics_interpolation()
 	body.set_meta("source", piece.instance_id)
@@ -147,11 +145,11 @@ func toggle_pause() -> void:
 		paused_velocities.clear()
 		for body in marbles:
 			paused_velocities[body.get_instance_id()] = [body.linear_velocity, body.angular_velocity]
-			if not Capture.is_carried(body): body.freeze = true
+			if not body.carried: body.freeze = true
 		state = State.PAUSED
 	elif state == State.PAUSED:
 		for body in marbles:
-			if not Capture.is_carried(body) and not body.get_meta("delivered", false):
+			if not body.carried and not body.get_meta("delivered", false):
 				body.freeze = false
 				var velocities: Array = paused_velocities.get(body.get_instance_id(), [Vector3.ZERO, Vector3.ZERO])
 				body.linear_velocity = velocities[0]
