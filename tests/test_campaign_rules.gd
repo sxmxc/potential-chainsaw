@@ -86,7 +86,7 @@ func test_campaign_rules() -> void:
 	var payload = {"version": 1, "name": "Link round trip", "pieces": build.snapshot()}
 	assert_true(serializer.decode(JSON.stringify(payload)).pieces == payload.pieces, "Mechanism links survive existing track serializer")
 	build.pieces[0].configuration.links[0].action = "unsupported"
-	assert_true(not game.workspace.world.simulation.validate_links().is_empty(), "Unsupported actions are rejected by link validator")
+	assert_true(not game.workspace.world.build.validate_wiring().is_empty(), "Unsupported actions are rejected by link validator")
 	data = session.store.create()
 	data.pieces = [record("sandbox-start", "release", Vector3(0, 0, 2), {"quantity": 2, "interval": 0.8}), record("straight", "a", Vector3(0, 0, 1)), record("straight", "b", Vector3.ZERO), record("straight", "c", Vector3(0, 0, -1)), record("sandbox-finish", "goal", Vector3(0, 0, -2))]
 	data.pieces[-1].rotation = 2

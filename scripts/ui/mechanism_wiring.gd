@@ -90,14 +90,6 @@ func port_position(piece: BuildingPiece, output: bool) -> Vector2:
 	var center := build.camera.unproject_position(anchor(piece))
 	return center + Vector2(30 if output else -30, -18)
 
-func compatible_actions(source: BuildingPiece, target: BuildingPiece, event: String) -> Array:
-	if not source.output_ports.has(event): return []
-	var state_port: bool = source.output_ports[event].state_outputs.has(event)
-	return target.input_ports.keys().filter(func(action): return target.input_ports[action].state_inputs.has(action) == state_port)
-
-func compatible_events(source: BuildingPiece, target: BuildingPiece) -> Array:
-	return source.output_ports.keys().filter(func(event): return not compatible_actions(source, target, event).is_empty())
-
 func receiver_at(point: Vector2) -> Dictionary:
 	if dragging.is_empty() or covered(point): return {}
 	var picked := build.pick_piece(point)
@@ -135,7 +127,7 @@ func refresh_projection() -> void:
 	var source := build.find_piece(dragging.get("source", ""))
 	for piece in build.pieces:
 		if build.camera.is_position_behind(anchor(piece)): continue
-		if source and not compatible_events(source, piece).is_empty(): receivers.append(piece)
+		if source and not source.compatible_events(piece).is_empty(): receivers.append(piece)
 		if build.connect_mode:
 			if not piece.output_ports.is_empty():
 				handles.append({"source": piece.instance_id, "output": true, "point": port_position(piece, true), "allowed": permitted(piece)})
@@ -230,7 +222,7 @@ func open_context(source_id: String, target_id: String, event: String, index: in
 	%Remove.visible = index >= 0
 	%Remove.disabled = not permitted(source)
 	%Dismiss.text = "Close" if index >= 0 else "Cancel"
-	choices(%Events, compatible_events(source, target), context_event)
+	choices(%Events, source.compatible_events(target), context_event)
 	if %Events.item_count > 0: context_event = %Events.get_item_metadata(%Events.selected)
 	refresh_actions()
 	%Context.show()
@@ -251,7 +243,7 @@ func refresh_actions() -> void:
 	var source := build.find_piece(context_source)
 	var target := build.find_piece(context_target)
 	if not source or not target: return
-	choices(%Actions, compatible_actions(source, target, context_event), context_action)
+	choices(%Actions, source.compatible_actions(target, context_event), context_action)
 	context_action = %Actions.get_item_metadata(%Actions.selected) if %Actions.item_count > 0 else ""
 	%Apply.disabled = not permitted(source) or context_action.is_empty()
 
@@ -261,9 +253,9 @@ func finish_drag(at: Vector2, over_ui: bool = false) -> void:
 		var source_id: String = dragging.source
 		var source := build.find_piece(source_id)
 		var target := build.find_piece(receiver.source)
-		var events := compatible_events(source, target)
+		var events := source.compatible_events(target)
 		var event: String = events[0]
-		var actions := compatible_actions(source, target, event)
+		var actions := source.compatible_actions(target, event)
 		if events.size() == 1 and actions.size() == 1:
 			var link := {"event": event, "target": receiver.source, "action": actions[0]}
 			if build.edit_link(source_id, -1, link): flash(source_id, link)

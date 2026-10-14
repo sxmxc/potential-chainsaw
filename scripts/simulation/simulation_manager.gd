@@ -35,7 +35,7 @@ func start() -> bool:
 	if finishes.is_empty() and puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver"):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
 		return false
-	var link_errors := validate_links()
+	var link_errors := build.validate_wiring()
 	if not link_errors.is_empty():
 		state_changed.emit(State.BUILD, "\n".join(link_errors))
 		return false
@@ -108,35 +108,6 @@ func _flush_signals() -> void:
 				break
 			target.input_ports[link.action].receive(link.action, emission.value)
 	draining_signals = false
-
-func validate_links() -> Array[String]:
-	var errors: Array[String] = []
-	for source in build.pieces:
-		var inputs_seen: Dictionary = {}
-		var outputs_seen: Dictionary = {}
-		var fields_seen: Dictionary = {}
-		for behavior_node in source.behaviors:
-			for port in behavior_node.inputs:
-				if inputs_seen.has(port): errors.append("Duplicate input on " + source.instance_id + ": " + port)
-				inputs_seen[port] = true
-			for field in behavior_node.configuration_fields:
-				if field.key.is_empty(): errors.append("Unnamed configuration field on " + source.instance_id)
-				if fields_seen.has(field.key): errors.append("Duplicate configuration field on " + source.instance_id + ": " + String(field.key))
-				fields_seen[field.key] = true
-				if field.kind == PieceSetting.Kind.NUMBER and (field.minimum > field.maximum or field.step <= 0 or not is_finite(field.default_number) or field.default_number < field.minimum or field.default_number > field.maximum):
-					errors.append("Invalid configuration range on " + source.instance_id + ": " + String(field.key))
-			for port in behavior_node.output_ports():
-				if outputs_seen.has(port): errors.append("Duplicate output on " + source.instance_id + ": " + port)
-				outputs_seen[port] = true
-			for port in behavior_node.state_inputs:
-				if not behavior_node.inputs.has(port): errors.append("State input has no receiver on " + source.instance_id + ": " + port)
-		for link in source.configuration.get("links", []):
-			var target := build.find_piece(link.get("target", ""))
-			if not target or not source.output_ports.has(link.get("event", "")) or not target.input_ports.has(link.get("action", "")):
-				errors.append("Invalid mechanism link on " + source.instance_id)
-			elif source.output_ports[link.event].state_outputs.has(link.event) != target.input_ports[link.action].state_inputs.has(link.action):
-				errors.append("Pulse and state ports cannot be connected on " + source.instance_id)
-	return errors
 
 func _physics_process(delta: float) -> void:
 	if state != State.RUNNING: return

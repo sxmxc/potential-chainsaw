@@ -112,7 +112,7 @@ func test_functional_mechanisms() -> void:
 	body = ball(Vector3(0, 0.46, 0.4), Vector3(0, 0, -0.6))
 	await ticks(80)
 	assert_true(events.count("entered") == 1 and gate.behaviors[0].open, "Sensor crossing dispatches one persistent Open link")
-	assert_true(sim.validate_links().is_empty(), "Link validation")
+	assert_true(build.validate_wiring().is_empty(), "Link validation")
 	sim.reset()
 	body.queue_free()
 	build.restore([])
@@ -161,7 +161,7 @@ func test_link_dispatch_preserves_downstream_signal_chains() -> void:
 	var gate = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "downstream", "action": "open"}]})
 	var downstream = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(6, 0, 0)), "downstream")
 	sim.puzzle = {"objectives": [{"type": "activate", "target": "gate", "event": "opened"}]}
-	assert_true(sim.validate_links().is_empty())
+	assert_true(build.validate_wiring().is_empty())
 	assert_true(sim.start())
 	sensor.behaviors[0].output_raised.emit("entered", null)
 	assert_true(gate.behaviors[0].open and downstream.behaviors[0].open, "Linked action outputs reach downstream receivers")
@@ -186,7 +186,10 @@ func test_link_dispatch_preserves_downstream_signal_chains() -> void:
 		{"event": "entered", "target": "gate", "action": "unknown"}
 	]:
 		sensor.configuration.links = [invalid_link]
-		assert_false(sim.validate_links().is_empty(), "Reject invalid target, event or action")
+		assert_false(build.validate_wiring().is_empty(), "Reject invalid target, event or action")
+		assert_false(sim.start(), "Invalid authored wiring cannot enter the run lifecycle")
+		assert_eq(sim.state, SimulationManager.State.BUILD)
+		assert_true(build.enabled)
 
 func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 	game = load("res://scenes/main.tscn").instantiate()

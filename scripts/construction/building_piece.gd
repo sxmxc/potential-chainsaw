@@ -28,6 +28,17 @@ var output_ports: Dictionary:
 			for port in behavior_node.output_ports(): ports[port] = behavior_node
 		return ports
 
+# Wiring choices and committed links use the same component port contract.
+func compatible_actions(target: BuildingPiece, event: String) -> Array:
+	var sending := output_ports
+	if not sending.has(event): return []
+	var receiving := target.input_ports
+	var state_port: bool = sending[event].state_outputs.has(event)
+	return receiving.keys().filter(func(action): return receiving[action].state_inputs.has(action) == state_port)
+
+func compatible_events(target: BuildingPiece) -> Array:
+	return output_ports.keys().filter(func(event): return not compatible_actions(target, event).is_empty())
+
 func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) -> void:
 	base_definition = data
 	definition = data

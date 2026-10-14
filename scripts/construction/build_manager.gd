@@ -460,6 +460,35 @@ func configure_piece(piece: BuildingPiece, config: Dictionary, label: String) ->
 	selection_changed.emit(selected)
 	return true
 
+func validate_wiring() -> Array[String]:
+	var errors: Array[String] = []
+	for source in pieces:
+		var inputs_seen: Dictionary = {}
+		var outputs_seen: Dictionary = {}
+		var fields_seen: Dictionary = {}
+		for behavior_node in source.behaviors:
+			for port in behavior_node.inputs:
+				if inputs_seen.has(port): errors.append("Duplicate input on " + source.instance_id + ": " + port)
+				inputs_seen[port] = true
+			for field in behavior_node.configuration_fields:
+				if field.key.is_empty(): errors.append("Unnamed configuration field on " + source.instance_id)
+				if fields_seen.has(field.key): errors.append("Duplicate configuration field on " + source.instance_id + ": " + String(field.key))
+				fields_seen[field.key] = true
+				if field.kind == PieceSetting.Kind.NUMBER and (field.minimum > field.maximum or field.step <= 0 or not is_finite(field.default_number) or field.default_number < field.minimum or field.default_number > field.maximum):
+					errors.append("Invalid configuration range on " + source.instance_id + ": " + String(field.key))
+			for port in behavior_node.output_ports():
+				if outputs_seen.has(port): errors.append("Duplicate output on " + source.instance_id + ": " + port)
+				outputs_seen[port] = true
+			for port in behavior_node.state_inputs:
+				if not behavior_node.inputs.has(port): errors.append("State input has no receiver on " + source.instance_id + ": " + port)
+		for link in source.configuration.get("links", []):
+			var target := find_piece(link.get("target", ""))
+			if not target or not source.output_ports.has(link.get("event", "")) or not target.input_ports.has(link.get("action", "")):
+				errors.append("Invalid mechanism link on " + source.instance_id)
+			elif link.action not in source.compatible_actions(target, link.event):
+				errors.append("Pulse and state ports cannot be connected on " + source.instance_id)
+	return errors
+
 func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
 	var source := find_piece(source_id)
 	if not source or source.output_ports.is_empty(): return false
@@ -468,9 +497,7 @@ func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
 	if index < -1 or index >= links.size(): return false
 	if not link.is_empty():
 		var target := find_piece(link.get("target", ""))
-		if not target or target.input_ports.is_empty(): return false
-		if not source.output_ports.has(link.get("event", "")) or not target.input_ports.has(link.get("action", "")): return false
-		if source.output_ports[link.event].state_outputs.has(link.event) != target.input_ports[link.action].state_inputs.has(link.action): return false
+		if not target or link.get("action", "") not in source.compatible_actions(target, link.get("event", "")): return false
 		for other in links.size():
 			if other != index and links[other] == link: return false
 		if index == -1: links.append(link.duplicate(true))

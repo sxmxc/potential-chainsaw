@@ -244,7 +244,7 @@ func publish() -> bool:
 func validate(require_solution: bool = true) -> Array[String]:
 	var data := capture()
 	var errors := store.validate(data)
-	errors.append_array(world.simulation.validate_links())
+	errors.append_array(world.build.validate_wiring())
 	var proof: Dictionary = data.get("validation", {})
 	if require_solution and (data.get("solution", []).is_empty() or not proof.get("physics_success", false) or proof.get("fingerprint", "") != store.fingerprint(data)):
 		errors.append("This revision needs a successful Test as Player solution")
