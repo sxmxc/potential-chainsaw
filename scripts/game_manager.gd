@@ -34,6 +34,7 @@ func _ready() -> void:
 	sandbox.build.changed.connect(update_name)
 	create_dialogs()
 	puzzle_session.configure(self)
+	sandbox.boundary.configure(puzzle_session)
 	%PuzzleBrowser.configure(puzzle_session)
 	%PuzzleCompletion.configure(puzzle_session)
 	%HUD.configure_session(puzzle_session)

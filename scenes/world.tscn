@@ -12,6 +12,12 @@
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
 
+[ext_resource type="Script" path="res://scripts/campaign/puzzle_boundary.gd" id="Boundary"]
+
+[sub_resource type="StandardMaterial3D" id="BoundaryMaterial"]
+shading_mode = 0
+albedo_color = Color(0.34901962, 0.8980392, 0.69411767, 1)
+
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_m1kxf"]
 stream_count = 1
 stream_0 = ExtResource("2_71j4m")
@@ -101,6 +107,13 @@ script = ExtResource("3")
 
 [node name="SimulationManager" type="Node3D" parent="." unique_id=366871744]
 script = ExtResource("4")
+
+[node name="PuzzleBoundary" type="MeshInstance3D" parent="." node_paths=PackedStringArray("build")]
+visible = false
+cast_shadow = 0
+material_override = SubResource("BoundaryMaterial")
+script = ExtResource("Boundary")
+build = NodePath("../BuildManager")
 
 [node name="FreeView" type="Node3D" parent="." unique_id=1419629802]
 physics_interpolation_mode = 2

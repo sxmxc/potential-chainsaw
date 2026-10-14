@@ -15,6 +15,68 @@ func place(build: BuildManager, id: String, at: Vector3) -> void:
 	build.commit()
 	build.cancel()
 
+func test_boundary_authoring_and_mode_lifecycle() -> void:
+	game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.qa_resolution(1280, 720)
+	await get_tree().process_frame
+	var session: PuzzleSession = game.puzzle_session
+	var build: BuildManager = game.sandbox.build
+	var boundary: PuzzleBoundary = game.sandbox.boundary
+	var input := GutInputSender.new(boundary)
+	var authoring: PanelContainer = game.get_node("%HUD").get_node("%PuzzleAuthoring")
+	var data := session.store.create()
+	data.pieces = [item("sandbox-start", "start", 2), item("sandbox-finish", "finish", -2, 2)]
+	data.objectives = [{"type": "deliver", "target": "finish", "count": 1}]
+	session.editor(data)
+	assert_true(await wait_until(func(): return game.sandbox.camera.global_position.y > 2 and not game.sandbox.camera.is_position_behind(Vector3(2, 0, 2)), 2.0), "The world camera reaches the construction before projecting clicks")
+	assert_true(boundary.visible)
+	authoring.get_node("%DrawBuild").pressed.emit()
+	assert_false(build.enabled, "Drawing suspends construction")
+	for point in [Vector3(-2, 0, -2), Vector3(2, 0, 2)]:
+		var screen: Vector2 = game.sandbox.camera.unproject_position(point)
+		input.mouse_left_button_down(screen)
+		input.mouse_left_button_up(screen)
+	assert_eq(session.puzzle.bounds.slice(0, 4), [-2.0, -2.0, 2.0, 2.0])
+	assert_true(build.enabled and build.dirty, "Completing a boundary resumes construction and marks the draft changed")
+	assert_eq(boundary.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size(), 24, "The build box has twelve visible edges")
+	authoring.get_node("%DrawZone").pressed.emit()
+	for point in [Vector3(-1, 0, -1), Vector3(1, 0, 1)]:
+		var screen: Vector2 = game.sandbox.camera.unproject_position(point)
+		input.mouse_left_button_down(screen)
+		input.mouse_left_button_up(screen)
+	assert_eq(session.puzzle.restricted_zones.size(), 1)
+	assert_eq(boundary.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size(), 48, "Restricted regions share the boundary display")
+	authoring.get_node("%RestrictedList").select(0)
+	authoring.get_node("%ModifyZone").pressed.emit()
+	for point in [Vector3(-2, 0, -1), Vector3(1, 0, 2)]:
+		var screen: Vector2 = game.sandbox.camera.unproject_position(point)
+		input.mouse_left_button_down(screen)
+		input.mouse_left_button_up(screen)
+	assert_eq(session.puzzle.restricted_zones.size(), 1, "Modifying a region replaces it")
+	assert_eq(session.puzzle.restricted_zones[0], [-2.0, data.bounds[4], -1.0, 3.0, data.bounds[5] - data.bounds[4], 3.0])
+	var before := session.capture()
+	build.dirty = false
+	authoring.get_node("%DrawBuild").pressed.emit()
+	input.key_down(KEY_ESCAPE)
+	input.key_up(KEY_ESCAPE)
+	assert_true(build.enabled)
+	assert_false(build.dirty, "Cancelling does not change the draft")
+	assert_eq(session.capture(), before)
+	# A mode transition must discard a partially drawn region.
+	authoring.get_node("%DrawZone").pressed.emit()
+	assert_true(session.test_player())
+	assert_true(boundary.visible and build.enabled)
+	session.return_editor()
+	assert_true(boundary.visible and build.enabled)
+	session.player(data)
+	assert_true(boundary.visible)
+	boundary.begin()
+	assert_true(build.enabled, "Campaign cannot start an authoring gesture")
+	game.new_track()
+	assert_false(boundary.visible)
+	assert_eq(build.pieces.size(), 0)
+
 func test_puzzle_workflow() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)

@@ -5,6 +5,7 @@ class_name WorldManager
 
 @onready var build: BuildManager = $BuildManager
 @onready var simulation: SimulationManager = $SimulationManager
+@onready var boundary: PuzzleBoundary = $PuzzleBoundary
 @onready var camera: ConstructionCamera = $Camera
 @onready var simulation_camera: SimulationCamera = $SimulationCamera
 

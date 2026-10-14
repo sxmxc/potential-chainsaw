@@ -1,10 +1,13 @@
 extends PanelContainer
 
 var session: PuzzleSession
+var boundary: PuzzleBoundary
 var refreshing: bool = false
 
 func configure(puzzle_session: PuzzleSession) -> void:
 	session = puzzle_session
+	boundary = session.game.sandbox.boundary
+	boundary.edited.connect(func(): refresh_zones(); refresh_publish())
 	%Close.pressed.connect(func(): hide(); session.game.get_node("%HUD").refresh())
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
@@ -44,22 +47,22 @@ func configure(puzzle_session: PuzzleSession) -> void:
 		if %Quantity.value <= 0: session.puzzle.inventory.erase(id)
 		else: session.puzzle.inventory[id] = int(%Quantity.value)
 		refresh_inventory())
-	%DrawBuild.pressed.connect(func(): hide(); session.begin_boundary())
-	%DrawZone.pressed.connect(func(): hide(); session.begin_boundary(true))
-	%ClearZones.pressed.connect(func(): session.puzzle.restricted_zones = []; session.refresh_boundary())
+	%DrawBuild.pressed.connect(func(): hide(); boundary.begin())
+	%DrawZone.pressed.connect(func(): hide(); boundary.begin(true))
+	%ClearZones.pressed.connect(func(): session.puzzle.restricted_zones = []; boundary.refresh())
 	%RemoveZone.pressed.connect(func():
 		var selected = %RestrictedList.get_selected_items()
-		if not selected.is_empty(): session.puzzle.restricted_zones.remove_at(selected[0]); session.refresh_boundary(); refresh_zones())
+		if not selected.is_empty(): session.puzzle.restricted_zones.remove_at(selected[0]); boundary.refresh(); refresh_zones())
 	%ModifyZone.pressed.connect(func():
 		var selected = %RestrictedList.get_selected_items()
-		if not selected.is_empty(): hide(); session.begin_boundary(true, selected[0]))
+		if not selected.is_empty(): hide(); boundary.begin(true, selected[0]))
 	%Prerequisites.multi_selected.connect(func(index, selected):
 		if refreshing: return
 		var id = %Prerequisites.get_item_metadata(index)
 		if selected and id not in session.puzzle.prerequisites: session.puzzle.prerequisites.append(id)
 		elif not selected: session.puzzle.prerequisites.erase(id))
-	%MinHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[4] = value; session.refresh_boundary())
-	%MaxHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[5] = value; session.refresh_boundary())
+	%MinHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[4] = value; boundary.refresh())
+	%MaxHeight.value_changed.connect(func(value): if not refreshing: session.puzzle.bounds[5] = value; boundary.refresh())
 	%AddObjective.pressed.connect(add_objective)
 	%ObjectiveType.item_selected.connect(func(_index): refresh_objects())
 	%ObjectiveTarget.item_selected.connect(func(_index): refresh_objective_events())
@@ -200,7 +203,7 @@ func refresh_inventory_settings() -> void:
 
 func refresh_zones() -> void:
 	%RestrictedList.clear()
-	for zone in session.puzzle.restricted_zones: %RestrictedList.add_item("Region (%g, %g) · %g × %g m" % [zone[0], zone[2], zone[3], zone[5]])
+	for zone in session.puzzle.restricted_zones: %RestrictedList.add_item("Region (%s, %s) · %s × %s m" % [zone[0], zone[2], zone[3], zone[5]])
 
 func refresh_objects() -> void:
 	%ObjectiveTarget.clear()

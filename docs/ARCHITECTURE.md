@@ -20,7 +20,7 @@
 
 ## Puzzle rules and persistence
 
-- PuzzleSession changes modes on the shared World. Sandbox is unrestricted; campaign and Test as Player use the same PuzzleRules.
+- PuzzleSession changes modes on the shared World. Sandbox is unrestricted; campaign and Test as Player use the same PuzzleRules. The World's saved `PuzzleBoundary` mesh node owns boundary display and the editor's two-corner drawing gesture; authoring controls call it directly. It observes session mode changes and leaves puzzle persistence and transitions to PuzzleSession.
 - Inventory is derived from the current layout. Duplication consumes stock; deletion and undo restore it. Permissions and boundaries apply to complete edits, including configured dimensions and mechanism links.
 - Keep authored starting layouts separate from player constructions and reference solutions. Returning from Test as Player restores the authored baseline.
 - PuzzleStore owns versioned JSON, progress and validation fingerprints. Drafts, published puzzles and campaign progress use separate user paths. Bundled levels live in `resources/campaign/`.

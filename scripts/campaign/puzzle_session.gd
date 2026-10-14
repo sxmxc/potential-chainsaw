@@ -12,10 +12,6 @@ var successful_solution: Array = []
 var successful_time: float = 0
 var successful_fingerprint: String = ""
 var testing_fingerprint: String = ""
-var boundary_visual: MeshInstance3D
-var boundary_tool: String = ""
-var first_corner: Variant = null
-var boundary_zone_index: int = -1
 var opening_fingerprint: String = ""
 var opening_revision: int = 1
 var environment_node: Node3D
@@ -24,9 +20,6 @@ func configure(owner_game: Node) -> void:
 	game = owner_game
 	store = PuzzleStore.new(game.catalog)
 	game.sandbox.simulation.state_changed.connect(_result)
-	boundary_visual = MeshInstance3D.new()
-	boundary_visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	game.sandbox.add_child(boundary_visual)
 
 func editor(data: Dictionary = {}) -> void:
 	mode = "editor"
@@ -43,7 +36,6 @@ func editor(data: Dictionary = {}) -> void:
 	game.track_id = ""
 	game.enter_sandbox()
 	apply_camera()
-	refresh_boundary()
 	mode_changed.emit()
 
 func capture() -> Dictionary:
@@ -74,7 +66,6 @@ func player(data: Dictionary, testing: bool = false) -> void:
 	toolbox.get_node("%Category").select(0)
 	toolbox.get_node("%Search").clear()
 	apply_camera()
-	refresh_boundary()
 	test_success = false
 	mode_changed.emit()
 
@@ -85,7 +76,6 @@ func sandbox() -> void:
 	reload_environment()
 	game.sandbox.build.rules = null
 	game.sandbox.simulation.puzzle = {}
-	boundary_visual.hide()
 	mode_changed.emit()
 
 func reload_environment() -> bool:
@@ -204,64 +194,3 @@ func apply_camera() -> void:
 	camera.target_yaw = saved.yaw
 	camera.target_pitch = saved.pitch
 	camera.target_distance = saved.distance
-
-func refresh_boundary() -> void:
-	boundary_visual.visible = mode != "sandbox"
-	if mode == "sandbox": return
-	var b: Array = puzzle.bounds
-	var mesh = ImmediateMesh.new()
-	var material = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = Color("59e5b1")
-	mesh.surface_begin(Mesh.PRIMITIVE_LINES, material)
-	draw_box(mesh, AABB(Vector3(b[0], b[4] + 0.02, b[1]), Vector3(b[2] - b[0], b[5] - b[4], b[3] - b[1])))
-	for zone in puzzle.get("restricted_zones", []): draw_box(mesh, AABB(Vector3(zone[0], zone[1], zone[2]), Vector3(zone[3], zone[4], zone[5])))
-	mesh.surface_end()
-	boundary_visual.mesh = mesh
-
-func draw_box(mesh: ImmediateMesh, box: AABB) -> void:
-	var corners: Array[Vector3] = []
-	for x in [box.position.x, box.end.x]:
-		for y in [box.position.y, box.end.y]:
-			for z in [box.position.z, box.end.z]: corners.append(Vector3(x, y, z))
-	for i in 8:
-		for bit in [1, 2, 4]:
-			var j = i ^ bit
-			if i < j: mesh.surface_add_vertex(corners[i]); mesh.surface_add_vertex(corners[j])
-
-func begin_boundary(zone: bool = false, zone_index: int = -1) -> void:
-	boundary_tool = "zone" if zone else "build"
-	boundary_zone_index = zone_index
-	first_corner = null
-	game.sandbox.build.cancel()
-	game.sandbox.build.enabled = false
-	game.sandbox.build.show_status("Build region · click two opposite corners in the world · Esc cancels")
-
-func _input(event: InputEvent) -> void:
-	if boundary_tool.is_empty(): return
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		boundary_tool = ""
-		game.sandbox.build.enabled = true
-		get_viewport().set_input_as_handled()
-	if not event is InputEventMouseButton or not event.pressed or event.button_index != MOUSE_BUTTON_LEFT or get_viewport().gui_get_hovered_control() != null: return
-	var point = game.sandbox.build.plane_point(event.position, 0)
-	if point == null: return
-	point = game.sandbox.build.snap.grid_position(point)
-	if first_corner == null:
-		first_corner = point
-		game.sandbox.build.show_status("Now click the opposite corner")
-	else:
-		var low: Vector3 = first_corner.min(point)
-		var high: Vector3 = first_corner.max(point)
-		if high.x - low.x < 1 or high.z - low.z < 1: return
-		if boundary_tool == "build": puzzle.bounds = [low.x, low.z, high.x, high.z, puzzle.bounds[4], puzzle.bounds[5]]
-		else:
-			var zone = [low.x, puzzle.bounds[4], low.z, high.x - low.x, puzzle.bounds[5] - puzzle.bounds[4], high.z - low.z]
-			if boundary_zone_index >= 0 and boundary_zone_index < puzzle.restricted_zones.size(): puzzle.restricted_zones[boundary_zone_index] = zone
-			else: puzzle.restricted_zones.append(zone)
-		boundary_tool = ""
-		game.sandbox.build.enabled = true
-		game.sandbox.build.dirty = true
-		refresh_boundary()
-		mode_changed.emit()
-	get_viewport().set_input_as_handled()
