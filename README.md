@@ -4,6 +4,8 @@ A Godot 4.7 marble construction sandbox using the Kenney Marble Kit, measured co
 
 The interface retains the dark teal/mint direction. Its visual definitions live in `resources/sandbox_theme.tres` and saved scenes under `scenes/ui/`. Your current fonts are Theme resources. The scene hierarchies can be inspected and edited without running reconstruction scripts.
 
+Sandbox, Puzzle Authoring, Puzzle Play and Test as Player operate through `scenes/construction_workspace.tscn`. The workspace binds the shared World and HUD; ConstructionSession owns context transitions and their distinct persistence. GameManager hosts navigation and application dialogs.
+
 ## Building
 
 Piece definitions are managed through YARD's Registry tab and `resources/registries/piece_registry.tres`. Tracks, mechanisms, supports and authoring scenery share this registry. Entry IDs match the persistent IDs in each `PieceDefinition`; keep them stable when editing content. Category and behavior queries use its property index, rebuilt automatically on editor Play and export. See [Architecture](docs/ARCHITECTURE.md#resource-registries) for runtime integration and headless testing.

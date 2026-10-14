@@ -104,3 +104,9 @@ func clear_choice() -> void:
 func set_choice(id: StringName) -> void:
 	selected_id=id
 	for key in buttons: buttons[key].button_pressed=key==id
+
+func reset_filter() -> void:
+	%Category.select(0)
+	%Search.set_text("")
+	clear_choice()
+	refresh()

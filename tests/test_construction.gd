@@ -118,13 +118,13 @@ func test_construction() -> void:
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
-	var build: BuildManager=game.sandbox.build
+	var build: BuildManager=game.workspace.world.build
 	assert_true(ProjectSettings.get_setting("gui/theme/custom")=="res://resources/sandbox_theme.tres","Project-wide native Theme configured")
 	var theme=load("res://resources/sandbox_theme.tres") as Theme
 	for type in ["PrimaryButton","SecondaryButton","DangerButton","ToolboxButton","ToolbarButton","PanelTitle"]:
 		assert_true(not theme.get_type_variation_base(type).is_empty(),"Reusable Theme variation "+type)
 	assert_true(not build.enabled,"Main menu locks world editing")
-	game.new_track()
+	game.workspace.session.sandbox()
 	assert_true(build.enabled and build.pieces.is_empty(),"New sandbox ready for construction")
 	var before=build.snapshot()
 	var placed=build.spawn(straight,Transform3D.IDENTITY)
@@ -165,18 +165,18 @@ func test_construction() -> void:
 	var loaded=serializer.load_track(saved)
 	assert_true(loaded.pieces==data,"Save/load round trip preserves transforms, IDs and configuration")
 	serializer.delete_track(saved)
-	game.track_name="Workflow save"
-	game.track_id="qa-workflow"
-	assert_true(game.save_current(),"HUD save action writes current construction")
-	game.new_track()
-	game.load_track("qa-workflow",false)
+	game.workspace.session.track_name="Workflow save"
+	game.workspace.session.track_id="qa-workflow"
+	assert_true(game.workspace.session.save_track(game.workspace.session.track_name, game.workspace.session.track_id),"Session saves the current Sandbox construction")
+	game.workspace.session.sandbox()
+	game.workspace.session.load_track("qa-workflow",false)
 	assert_true(build.snapshot()==data and not build.dirty,"Saved track reopens for editing")
 	serializer.delete_track("qa-workflow")
 	game.handle_action("settings")
 	assert_true(not build.enabled and game.settings_dialog.visible,"Saved settings scene opens as a modal")
 	game.settings_dialog.close()
 	assert_true(build.enabled,"Closing settings restores construction input")
-	game.new_track()
+	game.workspace.session.sandbox()
 	var rotor=build.spawn(catalog.get_piece("fan-simple-two"),Transform3D(Basis.IDENTITY,Vector3(10,0,0)))
 	await get_tree().process_frame
 	assert_true(rotor.behaviors[0] is RotorComponent,"Imported fan attaches real rotating collision component")
@@ -194,20 +194,20 @@ func test_construction() -> void:
 			assert_true(snap.validate(piece.definition,piece.transform,build.pieces,piece).is_empty(),id+" placement validity "+piece.definition.display_name)
 		check_connected_chain(build.pieces,id)
 		assert_true(game.qa_test(),id+" starts a real physics simulation")
-		assert_true(game.sandbox.simulation.marble is RigidBody3D,id+" uses rigid body marble")
+		assert_true(game.workspace.world.simulation.marble is RigidBody3D,id+" uses rigid body marble")
 		assert_true(not build.enabled,id+" locks construction during simulation")
-		game.sandbox.simulation.toggle_pause()
-		assert_true(game.sandbox.simulation.state==SimulationManager.State.PAUSED and game.sandbox.simulation.marble.freeze,"Pause freezes physics")
-		game.sandbox.simulation.toggle_pause()
+		game.workspace.world.simulation.toggle_pause()
+		assert_true(game.workspace.world.simulation.state==SimulationManager.State.PAUSED and game.workspace.world.simulation.marble.freeze,"Pause freezes physics")
+		game.workspace.world.simulation.toggle_pause()
 		for frame in range(7200):
 			await get_tree().physics_frame
-			if game.sandbox.simulation.state in [SimulationManager.State.SUCCESS,SimulationManager.State.FAILED]: break
-		print("Physics example ",id," state ",game.sandbox.simulation.state," time ",game.sandbox.simulation.elapsed," marble ",game.sandbox.simulation.marble.position)
-		assert_true(game.sandbox.simulation.state==SimulationManager.State.SUCCESS,id+" marble physically reaches finish")
-		game.sandbox.simulation.reset()
+			if game.workspace.world.simulation.state in [SimulationManager.State.SUCCESS,SimulationManager.State.FAILED]: break
+		print("Physics example ",id," state ",game.workspace.world.simulation.state," time ",game.workspace.world.simulation.elapsed," marble ",game.workspace.world.simulation.marble.position)
+		assert_true(game.workspace.world.simulation.state==SimulationManager.State.SUCCESS,id+" marble physically reaches finish")
+		game.workspace.world.simulation.reset()
 		assert_true(build.snapshot()==original,id+" reset preserves original construction")
-		assert_true(game.sandbox.simulation.marble==null and build.enabled,"Reset returns build mode and removes marble")
-	game.new_track()
+		assert_true(game.workspace.world.simulation.marble==null and build.enabled,"Reset returns build mode and removes marble")
+	game.workspace.session.sandbox()
 	assert_true(not game.qa_test(),"Missing release/finish fails without leaving build mode")
 
 func check_connected_chain(pieces: Array[BuildingPiece], title: String) -> void:

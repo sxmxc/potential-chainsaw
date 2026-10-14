@@ -29,6 +29,8 @@ Open a published puzzle to revise it. Its stable ID remains; publication increme
 
 Construction and mechanism edits support undo/redo. Authoring metadata uses explicit draft saves and has no separate undo history. The permission form currently supports one restricted configuration key per starting piece; inventory limits can cover several keys. Tune difficulty and optional awards through playtesting after the physical checks pass.
 
+The editor, player test, campaign and Sandbox use the same `construction_workspace.tscn`. ConstructionSession owns their context and save semantics; changing context resets runtime restrictions and tools. Returning from a player test restores a separate authored baseline. Personal tracks, drafts and campaign progress keep their existing formats and storage paths.
+
 ## Saves and shipping content
 
 Chapter 1 prototype drafts are bundled under `resources/puzzle_drafts/` and appear only in the editor library. See [the blind playtest guide](CHAPTER1_PLAYTEST.md). Local drafts with the same ID override bundled copies.

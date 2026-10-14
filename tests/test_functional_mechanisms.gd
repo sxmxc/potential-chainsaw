@@ -18,10 +18,10 @@ func test_functional_mechanisms() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
-	game.new_track()
-	build = game.sandbox.build
+	game.workspace.session.sandbox()
+	build = game.workspace.world.build
 	for id in ["fan-two", "fan-four", "fan-standing-two", "fan-standing-four"]:
-		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY, "", {"power": 0.2, "range": 2})
+		var piece = build.spawn(game.workspace.catalog.get_piece(id), Transform3D.IDENTITY, "", {"power": 0.2, "range": 2})
 		var airflow = piece.behaviors[0]
 		assert_true(airflow != null and not airflow is RotorComponent, id + " uses airflow without moving blade collision")
 		body = ball(Vector3(0, 0.7, -0.8) if id.contains("standing") else Vector3(0, 0.8, 0))
@@ -45,7 +45,7 @@ func test_functional_mechanisms() -> void:
 		build.restore([])
 		await get_tree().process_frame
 	for id in ["fan-simple-two", "fan-simple-four"]:
-		var piece = build.spawn(game.catalog.get_piece(id), Transform3D.IDENTITY)
+		var piece = build.spawn(game.workspace.catalog.get_piece(id), Transform3D.IDENTITY)
 		var paddle = piece.behaviors[0]
 		assert_true(paddle is RotorComponent, id + " is exclusively physical")
 		body = ball(Vector3(0.38, 0.4, 0.0))
@@ -61,8 +61,8 @@ func test_functional_mechanisms() -> void:
 		body.queue_free()
 		build.restore([])
 		await get_tree().process_frame
-	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D.IDENTITY)
-	build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)))
+	var gate = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D.IDENTITY)
+	build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)))
 	body = ball(Vector3(0, 0.46, 0.8), Vector3(0, 0, -1))
 	gate.behaviors[0].active = true
 	await ticks(120)
@@ -80,7 +80,7 @@ func test_functional_mechanisms() -> void:
 	assert_true(not gate.behaviors[0].open and gate.behaviors[0].barrier.position.y < 0.7, "Gate automatically closes physically after delay")
 	build.restore([])
 	await get_tree().process_frame
-	var launcher = build.spawn(game.catalog.get_piece("launcher"), Transform3D.IDENTITY)
+	var launcher = build.spawn(game.workspace.catalog.get_piece("launcher"), Transform3D.IDENTITY)
 	body = ball(Vector3(0, 0.46, 0.1), Vector3(0, 0, -0.8))
 	launcher.behaviors[0].active = true
 	await ticks(140)
@@ -88,7 +88,7 @@ func test_functional_mechanisms() -> void:
 	body.queue_free()
 	build.restore([])
 	await get_tree().process_frame
-	launcher = build.spawn(game.catalog.get_piece("launcher"), Transform3D.IDENTITY, "", {"external": true})
+	launcher = build.spawn(game.workspace.catalog.get_piece("launcher"), Transform3D.IDENTITY, "", {"external": true})
 	body = ball(Vector3(0, 0.46, 0.1), Vector3(0, 0, -0.8))
 	launcher.behaviors[0].active = true
 	await ticks(240)
@@ -101,13 +101,13 @@ func test_functional_mechanisms() -> void:
 	body.queue_free()
 	build.restore([])
 	await get_tree().process_frame
-	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": [{"event": "entered", "target": "gate", "action": "open"}]})
-	gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "gate")
+	var sensor = build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": [{"event": "entered", "target": "gate", "action": "open"}]})
+	gate = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "gate")
 	var events: Array = []
 	sensor.behaviors[0].output_raised.connect(func(event, _body): events.append(event))
-	var sim: SimulationManager = game.sandbox.simulation
+	var sim: SimulationManager = game.workspace.world.simulation
 	sim.puzzle = {"objectives": []}
-	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "release", {"start_delay": 60})
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "release", {"start_delay": 60})
 	assert_true(sim.start())
 	body = ball(Vector3(0, 0.46, 0.4), Vector3(0, 0, -0.6))
 	await ticks(80)
@@ -119,10 +119,10 @@ func test_functional_mechanisms() -> void:
 	await get_tree().process_frame
 	# Verify both exits follow physical guide geometry, including an undesired collector.
 	for route_left in [false, true]:
-		var diverter = build.spawn(game.catalog.get_piece("diverter"), Transform3D.IDENTITY, "fork", {"left": route_left})
-		build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, -1.5)))
-		build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(-2, 0, 0.5)))
-		build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(2, 0, 0.5)))
+		var diverter = build.spawn(game.workspace.catalog.get_piece("diverter"), Transform3D.IDENTITY, "fork", {"left": route_left})
+		build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, -1.5)))
+		build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(-2, 0, 0.5)))
+		build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(2, 0, 0.5)))
 		await ticks(4)
 		body = ball(Vector3(0, 0.46, -1.7), Vector3(0, 0, 1.4))
 		body.angular_velocity = Vector3(7, 0, 0)
@@ -135,10 +135,10 @@ func test_functional_mechanisms() -> void:
 		build.restore([])
 		await get_tree().process_frame
 	# Alternation switches only after the previous marble has physically cleared the fork.
-	var alternating = build.spawn(game.catalog.get_piece("diverter"), Transform3D.IDENTITY, "", {"alternating": true})
-	build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, -1.5)))
+	var alternating = build.spawn(game.workspace.catalog.get_piece("diverter"), Transform3D.IDENTITY, "", {"alternating": true})
+	build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 0, -1.5)))
 	for x in [-2, 2]:
-		build.spawn(game.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(x, 0, 0.5)))
+		build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(x, 0, 0.5)))
 	alternating.behaviors[0].active = true
 	for expected_left in [false, true]:
 		body = ball(Vector3(0, 0.46, -1.7), Vector3(0, 0, 1.4))
@@ -153,13 +153,13 @@ func test_link_dispatch_preserves_downstream_signal_chains() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
-	game.new_track()
-	build = game.sandbox.build
-	var sim: SimulationManager = game.sandbox.simulation
-	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
-	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "sensor", {"links": [{"event": "entered", "target": "gate", "action": "toggle"}]})
-	var gate = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "downstream", "action": "open"}]})
-	var downstream = build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(6, 0, 0)), "downstream")
+	game.workspace.session.sandbox()
+	build = game.workspace.world.build
+	var sim: SimulationManager = game.workspace.world.simulation
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
+	var sensor = build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "sensor", {"links": [{"event": "entered", "target": "gate", "action": "toggle"}]})
+	var gate = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(4, 0, 0)), "gate", {"links": [{"event": "opened", "target": "downstream", "action": "open"}]})
+	var downstream = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(6, 0, 0)), "downstream")
 	sim.puzzle = {"objectives": [{"type": "activate", "target": "gate", "event": "opened"}]}
 	assert_true(sim.validate_links().is_empty())
 	assert_true(sim.start())
@@ -192,18 +192,18 @@ func test_linked_motion_survives_pause_and_resets_to_configuration() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
-	game.new_track()
-	build = game.sandbox.build
-	var sim: SimulationManager = game.sandbox.simulation
+	game.workspace.session.sandbox()
+	build = game.workspace.world.build
+	var sim: SimulationManager = game.workspace.world.simulation
 	sim.puzzle = {"objectives": []}
-	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"), Transform3D.IDENTITY, "release", {"start_delay": 60})
 	var moving: Array[BuildingPiece] = []
 	var links: Array = []
 	for id in ["fan-simple-two", "bucket-elevator", "fan-two"]:
-		var piece = build.spawn(game.catalog.get_piece(id), Transform3D(Basis.IDENTITY, Vector3(moving.size() * 5 + 5, 0, 0)), id, {"enabled": false})
+		var piece = build.spawn(game.workspace.catalog.get_piece(id), Transform3D(Basis.IDENTITY, Vector3(moving.size() * 5 + 5, 0, 0)), id, {"enabled": false})
 		moving.append(piece)
 		links.append({"event": "entered", "target": id, "action": "activate"})
-	var sensor = build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": links})
+	var sensor = build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "sensor", {"links": links})
 	var baseline = build.snapshot()
 	assert_true(sim.start())
 	await ticks(12)

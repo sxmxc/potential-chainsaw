@@ -4,22 +4,22 @@ extends MeshInstance3D
 signal edited
 
 @export var build: BuildManager
-var session: PuzzleSession
+var session: ConstructionSession
 var tool: String = ""
 var first_corner: Variant = null
 var zone_index: int = -1
 
-func configure(puzzle_session: PuzzleSession) -> void:
+func configure(puzzle_session: ConstructionSession) -> void:
 	session = puzzle_session
-	session.mode_changed.connect(refresh)
+	session.context_changed.connect(func(): cancel(); refresh())
 	refresh()
 
 func refresh() -> void:
-	if session.mode != "editor":
+	if not session.is_authoring:
 		tool = ""
 		first_corner = null
 		zone_index = -1
-	visible = session.mode != "sandbox"
+	visible = not session.is_sandbox
 	if not visible: return
 	var bounds: Array = session.puzzle.bounds
 	var lines := ImmediateMesh.new()
@@ -39,7 +39,7 @@ func _draw_box(lines: ImmediateMesh, box: AABB) -> void:
 				lines.surface_add_vertex(box.get_endpoint(other))
 
 func begin(zone: bool = false, index: int = -1) -> void:
-	if session.mode != "editor" or not build.enabled: return
+	if not session.is_authoring or not build.enabled: return
 	tool = "zone" if zone else "build"
 	zone_index = index
 	first_corner = null
@@ -47,7 +47,7 @@ func begin(zone: bool = false, index: int = -1) -> void:
 	build.enabled = false
 	build.show_status("Build region · click two opposite corners in the world · Esc cancels")
 
-func _finish() -> void:
+func cancel() -> void:
 	tool = ""
 	first_corner = null
 	zone_index = -1
@@ -56,7 +56,7 @@ func _finish() -> void:
 func _input(event: InputEvent) -> void:
 	if tool.is_empty(): return
 	if event.is_action_pressed("build_cancel"):
-		_finish()
+		cancel()
 		get_viewport().set_input_as_handled()
 		return
 	if not event is InputEventMouseButton or not event.pressed or event.button_index != MOUSE_BUTTON_LEFT or get_viewport().gui_get_hovered_control() != null: return
@@ -79,7 +79,7 @@ func _input(event: InputEvent) -> void:
 				session.puzzle.restricted_zones[zone_index] = zone
 			else:
 				session.puzzle.restricted_zones.append(zone)
-		_finish()
+		cancel()
 		build.dirty = true
 		refresh()
 		edited.emit()

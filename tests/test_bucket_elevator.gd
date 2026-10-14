@@ -8,9 +8,9 @@ func test_bucket_elevator() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
-	game.enter_sandbox()
-	var build: BuildManager = game.sandbox.build
-	var definition = game.catalog.get_piece("bucket-elevator")
+	game.workspace.activate()
+	var build: BuildManager = game.workspace.world.build
+	var definition = game.workspace.catalog.get_piece("bucket-elevator")
 	assert_true(definition != null and definition.category=="Mechanisms", "Elevator is registered in the existing catalog")
 	var lift = build.spawn(definition, Transform3D.IDENTITY)
 	assert_true(lift.behaviors[0].buckets.size()>=6, "One placed assembly has multiple reusable buckets")
@@ -28,17 +28,17 @@ func test_bucket_elevator() -> void:
 	lift=build.pieces[0]
 	assert_true(lift.configuration.elevator_height==6.0, "Redo restores the elevator setting atomically")
 	build.select(lift)
-	var obstruction=build.spawn(game.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,9,0.75)))
+	var obstruction=build.spawn(game.workspace.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,9,0.75)))
 	assert_true(not build.configure_selected({"elevator_height":10.0},"Elevator rise") and lift.configuration.elevator_height==6.0, "An obstructed height change rolls back configuration and geometry")
 	build.pieces.erase(obstruction); obstruction.queue_free()
-	assert_true(not build.snap.validate(game.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,3,0.75)),build.pieces).is_empty(), "Tracks cannot be placed inside the full swept assembly volume")
+	assert_true(not build.snap.validate(game.workspace.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,3,0.75)),build.pieces).is_empty(), "Tracks cannot be placed inside the full swept assembly volume")
 	var snapshot=build.snapshot()
-	var saved=game.serializer.save_track("Elevator QA",snapshot)
-	var decoded=game.serializer.load_track(saved)
+	var saved=game.workspace.session.serializer.save_track("Elevator QA",snapshot)
+	var decoded=game.workspace.session.serializer.load_track(saved)
 	build.restore(decoded.pieces)
 	lift=build.pieces[0]
 	assert_true(lift.configuration.elevator_height==6.0 and lift.configuration.elevator_speed==1.2 and lift.definition.connectors[1].position.y==6.25, "Existing save/load recreates settings and effective connector geometry")
-	game.serializer.delete_track(saved)
+	game.workspace.session.serializer.delete_track(saved)
 	build.select(lift); build.move_selected(true)
 	assert_true(build.ghost.configuration.elevator_height==6.0 and build.ghost.definition.connectors[1].position.y==6.25, "Duplicate preview preserves configured height")
 	assert_true(build.ghost.behaviors[0].preview_only and not build.ghost.behaviors[0].active, "Ghost is stationary and cannot capture or collide")
@@ -62,7 +62,7 @@ func test_bucket_elevator() -> void:
 	var upper_target: Dictionary={}
 	for target in build.snap.exposed(build.pieces):
 		if (target.point as Vector3).distance_to(upper_point)<0.001: upper_target=target
-	var incoming: Array[Dictionary]=[{"definition":game.catalog.get_piece("straight"),"local":Transform3D.IDENTITY}]
+	var incoming: Array[Dictionary]=[{"definition":game.workspace.catalog.get_piece("straight"),"local":Transform3D.IDENTITY}]
 	var candidates=build.snap.screen_candidates(incoming,build.snap.boundary_sources(incoming),[upper_target],build.camera,build.camera.unproject_position(upper_point),build.pieces,[])
 	assert_true(not candidates.is_empty() and candidates[0].error.is_empty() and is_equal_approx(candidates[0].transform.origin.y,6.0),"Screen targeting attaches an exit track to the configured upper elevation automatically")
 	build.camera.set_process(true)
@@ -77,15 +77,15 @@ func test_bucket_elevator() -> void:
 	await get_tree().process_frame
 
 func exercise_route(lift_height: float, conveyor_speed: float, quarter: int) -> void:
-	game.new_track()
-	game.enter_sandbox()
-	var build: BuildManager=game.sandbox.build
+	game.workspace.session.sandbox()
+	game.workspace.activate()
+	var build: BuildManager=game.workspace.world.build
 	var rotation_basis=Basis(Vector3.UP,quarter*PI/2)
-	var lift=build.spawn(game.catalog.get_piece("bucket-elevator"),Transform3D(rotation_basis,Vector3.ZERO),"",{"elevator_height":lift_height,"elevator_speed":conveyor_speed})
-	build.spawn(game.catalog.get_piece("sandbox-start"),Transform3D(rotation_basis*Basis(Vector3.UP,PI),rotation_basis*Vector3(0,0,-2)))
-	build.spawn(game.catalog.get_piece("straight"),Transform3D(rotation_basis,rotation_basis*Vector3(0,lift_height,-2)))
-	build.spawn(game.catalog.get_piece("sandbox-finish"),Transform3D(rotation_basis*Basis(Vector3.UP,PI),rotation_basis*Vector3(0,lift_height,-3)))
-	var sim: SimulationManager=game.sandbox.simulation
+	var lift=build.spawn(game.workspace.catalog.get_piece("bucket-elevator"),Transform3D(rotation_basis,Vector3.ZERO),"",{"elevator_height":lift_height,"elevator_speed":conveyor_speed})
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"),Transform3D(rotation_basis*Basis(Vector3.UP,PI),rotation_basis*Vector3(0,0,-2)))
+	build.spawn(game.workspace.catalog.get_piece("straight"),Transform3D(rotation_basis,rotation_basis*Vector3(0,lift_height,-2)))
+	build.spawn(game.workspace.catalog.get_piece("sandbox-finish"),Transform3D(rotation_basis*Basis(Vector3.UP,PI),rotation_basis*Vector3(0,lift_height,-3)))
+	var sim: SimulationManager=game.workspace.world.simulation
 	assert_true(sim.start(), "Connected elevator route starts at height %.1f, rotation %d" % [lift_height,quarter])
 	var component=lift.behaviors[0]
 	var discharge: Dictionary = {"age": -1.0, "speed": 0.0, "checked": false}
@@ -141,13 +141,13 @@ func exercise_route(lift_height: float, conveyor_speed: float, quarter: int) -> 
 	sim.reset()
 
 func exercise_multiple() -> void:
-	game.new_track()
-	game.enter_sandbox()
-	var build: BuildManager=game.sandbox.build
-	var lift=build.spawn(game.catalog.get_piece("bucket-elevator"),Transform3D.IDENTITY)
+	game.workspace.session.sandbox()
+	game.workspace.activate()
+	var build: BuildManager=game.workspace.world.build
+	var lift=build.spawn(game.workspace.catalog.get_piece("bucket-elevator"),Transform3D.IDENTITY)
 	var component=lift.behaviors[0]
-	build.spawn(game.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,4,-2)))
-	build.spawn(game.catalog.get_piece("sandbox-finish"),Transform3D(Basis(Vector3.UP,PI),Vector3(0,4,-3)))
+	build.spawn(game.workspace.catalog.get_piece("straight"),Transform3D(Basis.IDENTITY,Vector3(0,4,-2)))
+	build.spawn(game.workspace.catalog.get_piece("sandbox-finish"),Transform3D(Basis(Vector3.UP,PI),Vector3(0,4,-3)))
 	var marbles: Array[RigidBody3D]=[]
 	var delivered: Array[int]=[]
 	var claimed: Array[int]=[]
@@ -158,7 +158,7 @@ func exercise_multiple() -> void:
 	for frame in 2200:
 		if frame in [0,60,120]:
 			var body=load("res://scenes/marble.tscn").instantiate() as RigidBody3D
-			game.sandbox.add_child(body)
+			game.workspace.world.add_child(body)
 			body.position=Vector3(0,0.46,-1.25)
 			body.linear_velocity=Vector3(0,0,1.2)
 			marbles.append(body)

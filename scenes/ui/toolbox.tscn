@@ -71,9 +71,3 @@ visible = false
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Add scenery from file…"
-
-[node name="SceneDialog" type="FileDialog" parent="."]
-unique_name_in_owner = true
-file_mode = 0
-root_subfolder = "res://scenes/environments"
-filters = PackedStringArray("*.tscn ; Scenery scene")

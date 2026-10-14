@@ -1,22 +1,22 @@
 extends PanelContainer
 
-var session: PuzzleSession
+var session: ConstructionSession
 
-func configure(value: PuzzleSession) -> void:
+signal action_requested(action: String)
+
+func configure(value: ConstructionSession) -> void:
 	session = value
-	%ReturnEditor.pressed.connect(session.return_editor)
+	%ReturnEditor.pressed.connect(func(): action_requested.emit("return_editor"))
 	var popup: PopupMenu = %SolutionActions.get_popup()
 	popup.add_item("Save validated solution", 0)
 	popup.add_item("Load reference solution", 1)
-	popup.id_pressed.connect(func(id):
-		if id == 0 and session.preserve_solution(): session.game.get_node("%HUD").show_status("Solution saved")
-		elif id == 1: session.restore_reference())
-	session.mode_changed.connect(refresh)
-	session.game.sandbox.simulation.state_changed.connect(func(_state, _message): refresh())
+	popup.id_pressed.connect(func(id): action_requested.emit("preserve_solution" if id == 0 else "reference"))
+	session.changed.connect(refresh)
+	session.world.simulation.state_changed.connect(func(_state, _message): refresh())
 	refresh()
 
 func refresh() -> void:
-	visible = session.mode == "test"
+	visible = session.is_testing
 	var popup: PopupMenu = %SolutionActions.get_popup()
 	popup.set_item_disabled(0, not session.test_success)
 	popup.set_item_disabled(1, session.puzzle.get("solution", []).is_empty())

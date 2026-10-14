@@ -8,20 +8,23 @@ func _ready() -> void:
 		item[0].pressed.connect(func():hide(); action_requested.emit(item[1]))
 	%Resume.pressed.connect(close)
 
-func configure_mode(session: PuzzleSession) -> void:
-	var session_mode = session.mode
-	title = {"sandbox":"Sandbox menu", "campaign":"Level options", "editor":"Puzzle Editor", "test":"Player test"}.get(session_mode, "Menu")
+func configure_context(session: ConstructionSession) -> void:
+	match session.context:
+		ConstructionSession.Context.SANDBOX: title = "Sandbox menu"
+		ConstructionSession.Context.AUTHORING: title = "Puzzle Editor"
+		ConstructionSession.Context.PUZZLE_PLAY: title = "Level options"
+		ConstructionSession.Context.PLAYER_TEST: title = "Player test"
 	%Heading.text=title
 	%Resume.text="Resume"
-	for control in [%New,%Rename,%Load,%Examples]: control.visible=session_mode=="sandbox"
-	%Restart.visible=session_mode in ["campaign","test"]
-	%Levels.visible=session_mode=="campaign"
-	%Author.visible=session_mode=="editor"
-	%SaveDraft.visible=session_mode=="editor"
-	%TestPlayer.visible=session_mode=="editor"
-	%ReturnEditor.visible=session_mode=="test"
-	%Preserve.visible=session_mode=="test"
+	for control in [%New,%Rename,%Load,%Examples]: control.visible=session.is_sandbox
+	%Restart.visible=session.is_playing
+	%Levels.visible=session.context == ConstructionSession.Context.PUZZLE_PLAY
+	%Author.visible=session.is_authoring
+	%SaveDraft.visible=session.is_authoring
+	%TestPlayer.visible=session.is_authoring
+	%ReturnEditor.visible=session.is_testing
+	%Preserve.visible=session.is_testing
 	%Preserve.disabled=not session.test_success
-	%Reference.visible=session_mode=="test" and not session.puzzle.get("solution",[]).is_empty()
+	%Reference.visible=session.is_testing and not session.puzzle.get("solution",[]).is_empty()
 	# Windows do not shrink themselves when actions disappear.
 	size=Vector2i(350,int(get_node("Surface").get_combined_minimum_size().y))

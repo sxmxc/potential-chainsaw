@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://c1vx4521f13vd"]
 
-[ext_resource type="Script" uid="uid://culcg8op1eyuj" path="res://scripts/ui/sandbox_menu.gd" id="Script"]
+[ext_resource type="Script" uid="uid://culcg8op1eyuj" path="res://scripts/ui/workspace_menu.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="SandboxMenu" type="Window" unique_id=761489703]
+[node name="WorkspaceMenu" type="Window" unique_id=761489703]
 transparent_bg = true
 title = "Sandbox menu"
 size = Vector2i(350, 465)

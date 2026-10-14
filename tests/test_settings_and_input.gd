@@ -9,7 +9,7 @@ func before_each() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
-	game.enter_sandbox()
+	game.workspace.activate()
 	sender = GutInputSender.new(Input)
 	autofree(sender)
 	await settle()
@@ -44,9 +44,9 @@ func test_audio_graphics_and_camera_settings_apply() -> void:
 	dialog.get_node("%RenderScale").value = 0.75
 	assert_almost_eq(AudioServer.get_bus_volume_linear(AudioServer.get_bus_index("Music")), 0.4, 0.001)
 	assert_true(AudioServer.is_bus_mute(AudioServer.get_bus_index("SFX")))
-	assert_eq(game.sandbox.camera.sensitivity, 1.8)
-	assert_almost_eq(game.sandbox.camera.zoom_sensitivity, 1.4, 0.0001)
-	assert_true(game.sandbox.camera.invert_y)
+	assert_eq(game.workspace.world.camera.sensitivity, 1.8)
+	assert_almost_eq(game.workspace.world.camera.zoom_sensitivity, 1.4, 0.0001)
+	assert_true(game.workspace.world.camera.invert_y)
 	assert_eq(game.get_viewport().msaa_3d, Viewport.MSAA_4X)
 	assert_eq(game.get_viewport().scaling_3d_scale, 0.75)
 	assert_eq(Engine.max_fps, 120)
@@ -81,7 +81,7 @@ func test_restore_defaults_restores_bindings_and_audio() -> void:
 	assert_eq(InputMap.action_get_events("build_rotate")[0].keycode, KEY_R)
 	assert_eq(game.settings.values, Settings.DEFAULTS)
 	assert_false(AudioServer.is_bus_mute(AudioServer.get_bus_index("Music")))
-	assert_eq(game.sandbox.camera.sensitivity, 1.0)
+	assert_eq(game.workspace.world.camera.sensitivity, 1.0)
 	var restored = Settings.new()
 	restored.load_saved()
 	assert_eq(restored.values, Settings.DEFAULTS)
@@ -109,10 +109,10 @@ func test_key_rebinding_conflicts_and_escape() -> void:
 	var restored = Settings.new()
 	restored.load_saved()
 	assert_eq(InputMap.action_get_events("build_rotate")[0].keycode, KEY_J, "Saved binding replaces the default on reload")
-	var piece = game.sandbox.build.spawn(game.catalog.get_piece("straight"), Transform3D.IDENTITY)
+	var piece = game.workspace.world.build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY)
 	dialog.close()
-	game.sandbox.build.select(piece)
-	game.sandbox.build._unhandled_input(event)
+	game.workspace.world.build.select(piece)
+	game.workspace.world.build._unhandled_input(event)
 	assert_almost_eq(piece.rotation.y, PI / 2, 0.001, "Rebound shortcut rotates the selected track")
 	game.handle_action("settings")
 	dialog.binding_buttons["build_rotate"].pressed.emit()
@@ -148,21 +148,21 @@ func test_binding_persistence_uses_live_input_map() -> void:
 	assert_eq(ConstructionInput.binding_conflict("build_rotate", conflict), "puzzle_editor")
 
 func test_right_drag_keeps_selection_and_placement() -> void:
-	var build: BuildManager = game.sandbox.build
-	var piece = build.spawn(game.catalog.get_piece("straight"), Transform3D.IDENTITY)
+	var build: BuildManager = game.workspace.world.build
+	var piece = build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY)
 	build.select(piece)
 	var point = Vector2(650, 350)
 	await mouse_button(point, MOUSE_BUTTON_RIGHT, true)
-	var yaw: float = game.sandbox.camera.target_yaw
+	var yaw: float = game.workspace.world.camera.target_yaw
 	var motion = InputEventMouseMotion.new()
 	motion.position = point + Vector2(30, 0)
 	motion.relative = Vector2(30, 0)
 	game.get_viewport().push_input(motion, true)
 	await settle()
 	assert_eq(build.selected, piece)
-	assert_ne(game.sandbox.camera.target_yaw, yaw)
+	assert_ne(game.workspace.world.camera.target_yaw, yaw)
 	await mouse_button(point, MOUSE_BUTTON_RIGHT, false)
-	build.choose(game.catalog.get_piece("straight"))
+	build.choose(game.workspace.catalog.get_piece("straight"))
 	await mouse_button(point, MOUSE_BUTTON_RIGHT, true)
 	assert_not_null(build.chosen, "Right-click preserves the placement preview")
 	await mouse_button(point, MOUSE_BUTTON_RIGHT, false)
@@ -174,15 +174,15 @@ func test_right_drag_keeps_selection_and_placement() -> void:
 	assert_null(build.chosen, "Escape cancels placement")
 
 func test_real_slider_clicks_keep_inspector_open() -> void:
-	var build: BuildManager = game.sandbox.build
-	var piece = build.spawn(game.catalog.get_piece("fan-standing-two"), Transform3D.IDENTITY)
+	var build: BuildManager = game.workspace.world.build
+	var piece = build.spawn(game.workspace.catalog.get_piece("fan-standing-two"), Transform3D.IDENTITY)
 	if not piece:
 		fail_test("Fan fixture must exist")
 		return
 	build.select(piece)
 	await settle()
 	get_window().grab_focus()
-	var inspector = game.get_node("%HUD").get_node("%Inspector")
+	var inspector = game.get_node("Workspace/Interface/HUD").get_node("%Inspector")
 	var field: SettingSlider = inspector.get_node("%MechanismSettings").fields["power"]
 	var initial = field.value
 	for click in 3:
@@ -229,4 +229,4 @@ func test_settings_tabs_fit_supported_resolutions() -> void:
 			assert_lt(game.settings_dialog.size.y, resolution.y, "Settings fit the viewport")
 			assert_lt(game.settings_dialog.size.x, resolution.x, "Settings fit horizontally")
 		game.settings_dialog.close()
-		assert_true(game.sandbox.build.enabled)
+		assert_true(game.workspace.world.build.enabled)

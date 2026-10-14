@@ -1,6 +1,8 @@
 extends "res://scripts/ui/modal_window.gd"
 
-var session: PuzzleSession
+signal modal_opened
+
+var session: ConstructionSession
 var editing: bool = false
 var levels: Array[Dictionary] = []
 var all_levels: Array[Dictionary] = []
@@ -8,9 +10,8 @@ var chapters: Array[Dictionary] = []
 const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 const CHAPTER_BUTTON = preload("res://scenes/ui/widgets/chapter_button.tscn")
 
-func configure(value: PuzzleSession) -> void:
+func configure(value: ConstructionSession) -> void:
 	session = value
-	closed.connect(session.game.modal_closed)
 	%Back.pressed.connect(close)
 	%Open.pressed.connect(open_selected)
 	%Levels.item_activated.connect(func(_index): open_selected())
@@ -40,7 +41,7 @@ func resume_campaign() -> void:
 
 func open(editor_mode: bool = false) -> void:
 	editing = editor_mode
-	session.game.open_modal()
+	modal_opened.emit()
 	title = "Puzzle library" if editing else "Campaign"
 	%Heading.text = title
 	%StartChoice.hide()

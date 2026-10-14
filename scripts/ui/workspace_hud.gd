@@ -1,16 +1,18 @@
+class_name WorkspaceHUD
 extends Control
 signal action_requested(action: String)
 var build: BuildManager
 var simulation: SimulationManager
 var library_open: bool = true
-var session: PuzzleSession
+var session: ConstructionSession
 var guidance_done: Dictionary = {}
 var notification_until: int = 0
 const Copy = preload("res://scripts/ui/puzzle_copy.gd")
-func configure(manager: BuildManager, simulator: SimulationManager) -> void:
+func configure(manager: BuildManager, simulator: SimulationManager, value: ConstructionSession) -> void:
+	session = value
 	build=manager
 	simulation=simulator
-	%FileToolbar.configure(build,simulation)
+	%FileToolbar.configure(build,simulation,session)
 	%FileToolbar.action_requested.connect(func(action):action_requested.emit(action))
 	%MechanismWiring.configure(build,simulation)
 	%BuildToolbar.wiring = %MechanismWiring
@@ -24,6 +26,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%DismissGuidance.pressed.connect(func():
 		if session: guidance_done[session.puzzle.get("id","")]=true
 		refresh())
+	%Inspector.session = session
 	%Inspector.configure(build)
 	%Inspector.connections_requested.connect(func(): %MechanismWiring.set_tool(true))
 	%SelectionOverlay.set_marquee(Rect2(),false)
@@ -41,18 +44,15 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build.history.version_changed.connect(refresh)
 	build.selection_changed.connect(func(_piece):refresh())
 	simulation.state_changed.connect(_state_changed)
+	session.changed.connect(refresh)
+	simulation.objective_progress.connect(func(): %FileToolbar.refresh())
 	refresh()
-func configure_session(value: PuzzleSession) -> void:
-	session=value
-	%FileToolbar.configure_session(value)
-	%Inspector.session=value
-	%PuzzleAuthoring.configure(value)
-	session.mode_changed.connect(func():
-		if session.mode != "editor": %PuzzleAuthoring.hide()
-		%Toolbox.refresh()
-		refresh())
-	session.mode_changed.connect(func(): %Inspector.refresh(build.selected))
-	simulation.objective_progress.connect(func():%FileToolbar.refresh())
+func refresh_context() -> void:
+	%Toolbox.reset_filter()
+	%MechanismWiring.clear_interaction()
+	%MechanismWiring.overlay_enabled = false
+	notification_until = 0
+	%Inspector.refresh(build.selected)
 	refresh()
 
 func _process(_delta: float) -> void:
@@ -76,7 +76,7 @@ func refresh() -> void:
 	%Bottom.visible=not %Status.text.is_empty()
 	if build.chosen: %Bottom.hide()
 	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
-	if %PuzzleAuthoring.visible or build.connect_mode: %Inspector.hide()
+	if %AuthoringSlot.visible or build.connect_mode: %Inspector.hide()
 	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()
 	else: %Toolbox.set_choice(build.chosen.id)
@@ -84,7 +84,7 @@ func refresh() -> void:
 
 func refresh_guidance() -> void:
 	%Guidance.hide()
-	if not session or session.mode != "campaign" or session.puzzle.is_empty(): return
+	if not session or session.context != ConstructionSession.Context.PUZZLE_PLAY or session.puzzle.is_empty(): return
 	if simulation.state != SimulationManager.State.BUILD: return
 	var id: String = session.puzzle.id
 	if session.store.completed(id) or guidance_done.has(id): return
@@ -119,7 +119,3 @@ func _state_changed(state: SimulationManager.State, message: String) -> void:
 	%Status.text=message
 	%Bottom.visible=not %Status.text.is_empty()
 	%Status.theme_type_variation=&"SuccessLabel" if state==SimulationManager.State.SUCCESS else (&"ErrorLabel" if state==SimulationManager.State.FAILED else &"AccentLabel")
-func set_track_name(value: String, saved: bool = false) -> void:
-	%FileToolbar.has_saved_track=saved
-	%FileToolbar.set_track_name(value)
-	%FileToolbar.refresh()

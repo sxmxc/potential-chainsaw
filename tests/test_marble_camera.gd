@@ -8,7 +8,7 @@ func test_marble_camera() -> void:
 	var director = showcase.director
 	var menu_world = showcase.world_manager
 	var menu_host = menu_world.camera.get_node("PhantomCameraHost")
-	var player_host = game.sandbox.camera.get_node("PhantomCameraHost")
+	var player_host = game.workspace.world.camera.get_node("PhantomCameraHost")
 	assert_true(menu_host.host_layers == 2 and player_host.host_layers == 1, "Menu and player hosts are isolated")
 	var shots: Dictionary = {}
 	var targets: Dictionary = {}
@@ -36,13 +36,13 @@ func test_marble_camera() -> void:
 	assert_true(chase_shots >= 2, "Longer chase shots still cycle through different marbles")
 	assert_true(bounded_horizon, "Settled menu chase horizon stays level")
 	print("CAMERA maximum bank during addon shot transitions: %.3f" % transition_bank)
-	assert_true(player_host.get_active_pcam() == game.sandbox.camera.free_view, "Menu priorities cannot switch player camera")
+	assert_true(player_host.get_active_pcam() == game.workspace.world.camera.free_view, "Menu priorities cannot switch player camera")
 	showcase.set_active(false)
 	assert_true(menu_world.simulation_camera.chase.marble == null, "Showcase reset clears chase target")
 
 	game.qa_example("bucket-elevator-demo")
 	await wait_seconds(2.0)
-	var world = game.sandbox
+	var world = game.workspace.world
 	var control = world.simulation_camera
 	var camera = world.camera
 	var original = camera.free_view.global_transform

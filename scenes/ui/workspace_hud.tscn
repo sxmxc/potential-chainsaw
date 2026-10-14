@@ -6,14 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://cmd14munkq5gg" path="res://scenes/ui/toolbars/file_toolbar.tscn" id="Files"]
 [ext_resource type="PackedScene" uid="uid://khlp72i5rsq2" path="res://scenes/ui/inspector.tscn" id="Inspector"]
 [ext_resource type="PackedScene" uid="uid://cnkottri2d7gv" path="res://scenes/ui/widgets/selection_overlay.tscn" id="Overlay"]
-[ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/sandbox_hud.gd" id="Script"]
+[ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/workspace_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
-[ext_resource type="PackedScene" uid="uid://816wp88y5yxp" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
 
-[node name="SandboxHUD" type="Control" unique_id=1255080825]
+[node name="WorkspaceHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -132,7 +131,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="PuzzleAuthoring" parent="Margin/Layout/Body" instance=ExtResource("Authoring")]
+[node name="AuthoringSlot" type="HBoxContainer" parent="Margin/Layout/Body"]
+visible = false
+mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 

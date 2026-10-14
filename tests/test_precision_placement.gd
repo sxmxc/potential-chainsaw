@@ -10,9 +10,9 @@ func before_each() -> void:
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
-	game.puzzle_session.editor()
-	build = game.sandbox.build
-	game.get_node("%HUD").hide()
+	game.workspace.session.editor()
+	build = game.workspace.world.build
+	game.get_node("Workspace/Interface/HUD").hide()
 	sender = autofree(GutInputSender.new(Input))
 	sender.set_auto_flush_input(true)
 
@@ -39,8 +39,8 @@ func attach(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
 	return placed
 
 func test_representative_editor_construction_workflow() -> void:
-	var wall := game.catalog.get_piece("environment:partition") as PieceDefinition
-	var floor_piece := game.catalog.get_piece("environment:deck") as PieceDefinition
+	var wall := game.workspace.catalog.get_piece("environment:partition") as PieceDefinition
+	var floor_piece := game.workspace.catalog.get_piece("environment:deck") as PieceDefinition
 	build.spawn(wall, Transform3D.IDENTITY)
 	build.camera.frame_point(Vector3(0,1.2,1), 6)
 	await wait_seconds(0.8)
@@ -90,7 +90,7 @@ func test_representative_editor_construction_workflow() -> void:
 	build.undo()
 	build.camera.frame_point(Vector3(-6,1,0), 6)
 	await wait_seconds(0.8)
-	var straight := game.catalog.get_piece("straight") as PieceDefinition
+	var straight := game.workspace.catalog.get_piece("straight") as PieceDefinition
 	var track := build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(-6,1,0)))
 	await get_tree().physics_frame
 	var port: Dictionary = build.snap.exposed([track])[0]
@@ -99,13 +99,13 @@ func test_representative_editor_construction_workflow() -> void:
 	assert_eq(build.snap.exposed([track,connected]).size(), 2, "Track attachment consumes matching connectors")
 	assert_true(build.pieces.all(func(piece: BuildingPiece): return piece.visible))
 	sender.release_all()
-	game.get_node("%HUD").show()
+	game.get_node("Workspace/Interface/HUD").show()
 	build.frame_all()
 	await wait_seconds(3.0)
 
 func test_precision_faces_and_elevated_surfaces() -> void:
-	var wall := game.catalog.get_piece("environment:partition") as PieceDefinition
-	var floor_piece := game.catalog.get_piece("environment:deck") as PieceDefinition
+	var wall := game.workspace.catalog.get_piece("environment:partition") as PieceDefinition
+	var floor_piece := game.workspace.catalog.get_piece("environment:deck") as PieceDefinition
 	var target := build.spawn(wall, Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)))
 	var platform := build.spawn(floor_piece, Transform3D(Basis.IDENTITY, Vector3(6, 3, 0)))
 	var cases: Array[Dictionary] = [
@@ -135,17 +135,17 @@ func test_precision_faces_and_elevated_surfaces() -> void:
 	assert_ne(build.snap.validate(floor_piece, penetrating, build.pieces), "", "Contact tolerance does not permit penetration")
 
 func test_curated_geometry_and_decorative_selection() -> void:
-	var doorway := game.catalog.get_piece("environment:building-wall-doorway-square") as PieceDefinition
+	var doorway := game.workspace.catalog.get_piece("environment:building-wall-doorway-square") as PieceDefinition
 	var probe := PieceDefinition.new()
 	probe.bounds = AABB(Vector3(-0.2, 0, -0.2), Vector3(0.4, 1, 0.4))
 	probe.collision_solids = [probe.bounds]
 	assert_false(build.snap.solid_overlap(probe, Transform3D.IDENTITY, doorway, Transform3D.IDENTITY), "Doorway opening remains usable")
 	assert_true(build.snap.solid_overlap(probe, Transform3D(Basis.IDENTITY, Vector3(0,0,0.8)), doorway, Transform3D.IDENTITY), "Doorway jamb remains solid")
-	var display := build.spawn(game.catalog.get_piece("environment:factory-screen-panel-small"), Transform3D.IDENTITY)
+	var display := build.spawn(game.workspace.catalog.get_piece("environment:factory-screen-panel-small"), Transform3D.IDENTITY)
 	assert_eq(display.bodies[0].collision_layer, 4, "Decorative display is pickable")
 	assert_eq(display.bodies[0].collision_mask, 0, "Decorative display does not interact with marbles")
 	assert_false(build.snap.solid_overlap(display.definition, display.transform, doorway, Transform3D.IDENTITY))
-	for definition in game.catalog.query():
+	for definition in game.workspace.catalog.query():
 		if not String(definition.id).begins_with("environment:building-") and not String(definition.id).begins_with("environment:factory-"): continue
 		var piece := autofree(BuildManager.PIECE_SCENE.instantiate()) as BuildingPiece
 		piece.setup(definition, true)

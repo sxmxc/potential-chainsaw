@@ -10,11 +10,11 @@ func before_each() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	game.qa_resolution(1280, 720)
-	game.new_track()
-	build = game.sandbox.build
-	wiring = game.get_node("%HUD").get_node("%MechanismWiring")
-	game.get_node("%HUD").library_open = false
-	game.get_node("%HUD").refresh()
+	game.workspace.session.sandbox()
+	build = game.workspace.world.build
+	wiring = game.get_node("Workspace/Interface/HUD").get_node("%MechanismWiring")
+	game.get_node("Workspace/Interface/HUD").library_open = false
+	game.get_node("Workspace/Interface/HUD").refresh()
 	sender = autofree(GutInputSender.new(Input))
 	await settle()
 
@@ -51,13 +51,13 @@ func choose_action(label: String) -> void:
 	fail_test("Missing supported action: " + label)
 
 func test_visual_wiring_construction_and_physics() -> void:
-	var sensor := build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "trigger")
-	var gate := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(3, 0, 0)), "gate")
-	var second := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(-3, 1.5, 0)), "second")
+	var sensor := build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "trigger")
+	var gate := build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(3, 0, 0)), "gate")
+	var second := build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(-3, 1.5, 0)), "second")
 	build.frame_all()
 	await wait_seconds(0.6)
 	await settle()
-	game.get_node("%HUD").get_node("%BuildToolbar").get_node("%Connect").pressed.emit()
+	game.get_node("Workspace/Interface/HUD").get_node("%BuildToolbar").get_node("%Connect").pressed.emit()
 	await drag(sensor, gate)
 	assert_true(sensor.configuration.get("links", []).is_empty(), "A gesture and chooser do not write persistent state")
 	choose_action("Open")
@@ -70,7 +70,7 @@ func test_visual_wiring_construction_and_physics() -> void:
 	wiring.set_tool(false)
 	build.select(gate)
 	await settle()
-	var inspector = game.get_node("%HUD").get_node("%Inspector")
+	var inspector = game.get_node("Workspace/Interface/HUD").get_node("%Inspector")
 	assert_true(inspector.get_node("%ConfigurationHeading").visible and inspector.get_node("%ConnectionsHeading").visible, "Settings and wiring have separate sections")
 	var close_delay: SettingSlider = inspector.get_node("%MechanismSettings").fields["auto_close"]
 	close_delay.grab_focus()
@@ -78,7 +78,7 @@ func test_visual_wiring_construction_and_physics() -> void:
 	sender.key_up(KEY_END)
 	await settle()
 	assert_eq(gate.configuration.get("auto_close"), 60.0, "The real property control edits the mechanism independently of wiring")
-	game.get_node("%HUD").get_node("%BuildToolbar").get_node("%Connections").pressed.emit()
+	game.get_node("Workspace/Interface/HUD").get_node("%BuildToolbar").get_node("%Connections").pressed.emit()
 	await settle()
 	assert_true(wiring.overlay_enabled and not build.connect_mode, "Overlay visibility is independent of editing")
 	assert_true(wiring.handles.is_empty(), "Inspection overlay hides authoring handles")
@@ -112,9 +112,9 @@ func test_visual_wiring_construction_and_physics() -> void:
 	for link: Dictionary in duplicate_source.configuration.links:
 		assert_true(build.find_piece(link.target) in build.selection, "Duplicated assembly links stay inside the duplicate")
 		assert_false(link.target in ["gate", "second"])
-	var save_id: String = game.serializer.save_track("Wiring fixture", build.snapshot())
+	var save_id: String = game.workspace.session.serializer.save_track("Wiring fixture", build.snapshot())
 	assert_false(save_id.is_empty())
-	build.restore(game.serializer.load_track(save_id).pieces)
+	build.restore(game.workspace.session.serializer.load_track(save_id).pieces)
 	assert_eq(build.find_piece("trigger").configuration.links.size(), 2, "Existing save format round-trips wiring")
 	wiring.set_tool(true)
 	await settle()
@@ -151,8 +151,8 @@ func test_visual_wiring_construction_and_physics() -> void:
 		await settle()
 		await RenderingServer.frame_post_draw
 		assert_eq(get_viewport().get_texture().get_image().save_png(OS.get_environment("MARBLE_ENGINEER_WIRING_CAPTURE")), OK)
-	var simulation: SimulationManager = game.sandbox.simulation
-	build.spawn(game.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(9, 0, 0)), "release", {"start_delay": 60})
+	var simulation: SimulationManager = game.workspace.world.simulation
+	build.spawn(game.workspace.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(9, 0, 0)), "release", {"start_delay": 60})
 	simulation.puzzle = {"objectives": []}
 	assert_true(simulation.start())
 	await settle()
@@ -172,8 +172,8 @@ func test_visual_wiring_construction_and_physics() -> void:
 	assert_eq(build.find_piece("trigger").configuration.links.size(), 1, "Deleting a receiver cleans only dangling links")
 
 func test_cancellation_and_locked_configuration() -> void:
-	var sensor := build.spawn(game.catalog.get_piece("sensor"), Transform3D.IDENTITY, "trigger")
-	var gate := build.spawn(game.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(3, 0, 0)), "gate")
+	var sensor := build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "trigger")
+	var gate := build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(3, 0, 0)), "gate")
 	build.frame_all()
 	await wait_seconds(0.6)
 	await settle()
@@ -192,7 +192,7 @@ func test_cancellation_and_locked_configuration() -> void:
 	assert_true(sensor.configuration.get("links", []).is_empty(), "Cancelled drag never commits")
 	wiring.escape()
 	assert_false(build.connect_mode, "Escape from idle returns to normal construction")
-	build.rules = PuzzleRules.new({"pieces": build.snapshot(), "permissions": {}, "inventory": {}}, game.catalog, [])
+	build.rules = PuzzleRules.new({"pieces": build.snapshot(), "permissions": {}, "inventory": {}}, game.workspace.catalog, [])
 	assert_false(build.edit_link("trigger", -1, {"event": "entered", "target": "gate", "action": "open"}), "Actual operation respects configuration permission")
 	assert_true(sensor.configuration.get("links", []).is_empty())
 	build.rules = null

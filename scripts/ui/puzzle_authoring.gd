@@ -1,20 +1,24 @@
 extends PanelContainer
 
-var session: PuzzleSession
+signal action_requested(action: String)
+signal modal_opened
+signal modal_closed
+
+var session: ConstructionSession
 var boundary: PuzzleBoundary
 var refreshing: bool = false
 
-func configure(puzzle_session: PuzzleSession) -> void:
+func configure(puzzle_session: ConstructionSession) -> void:
 	session = puzzle_session
-	boundary = session.game.sandbox.boundary
+	boundary = session.world.boundary
 	boundary.edited.connect(func(): refresh_zones(); refresh_publish())
-	%Close.pressed.connect(func(): hide(); session.game.get_node("%HUD").refresh())
+	%Close.pressed.connect(hide)
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
 		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
 		if %Tabs.get_tab_control(index).name == "Publish": refresh_publish())
 	for button in %Navigation.get_children(): button.pressed.connect(func(): %Tabs.current_tab=int(button.get_meta("page")))
-	session.mode_changed.connect(func(): if visible: refresh_publish())
+	session.changed.connect(func(): if visible: refresh_publish())
 	%ChapterId.text_changed.connect(select_chapter)
 	%ChapterName.text_changed.connect(func(_text): update_chapter())
 	%ChapterOrder.value_changed.connect(func(_value): update_chapter())
@@ -69,26 +73,26 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%AllMarbles.pressed.connect(func():
 		var count = 0
 		var source = %MarbleSource.get_item_metadata(%MarbleSource.selected)
-		for piece in session.game.sandbox.build.pieces:
+		for piece in session.world.build.pieces:
 			if piece.behaviors.any(func(behavior_node): return behavior_node is MarbleRelease) and (source.is_empty() or source == piece.instance_id): count += int(piece.definition.resolved_configuration(piece.configuration).get("quantity", 1))
 		%RequiredCount.value = maxi(1, count))
 	%RemoveObjective.pressed.connect(func():
 		var selected = %ObjectiveList.get_selected_items()
 		if not selected.is_empty(): session.puzzle.objectives.remove_at(selected[0]); refresh_objectives())
 	%CaptureCamera.pressed.connect(func(): session.capture_camera(); %CameraStatus.text = "Current camera saved")
-	%SaveDraft.pressed.connect(func(): %Validation.text = "Draft saved" if session.save() else "Could not save the draft")
+	%SaveDraft.pressed.connect(func(): %Validation.text = "Draft saved" if session.save_draft() else "Could not save the draft")
 	%TestPlayer.pressed.connect(func(): hide(); session.test_player())
 	%Validate.pressed.connect(validate_puzzle)
 	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Published to Campaign")
-	%Export.pressed.connect(func(): session.game.open_modal(); %ExportDialog.popup_centered(Vector2i(700, 500)))
-	%ExportDialog.canceled.connect(session.game.modal_closed)
+	%Export.pressed.connect(func(): modal_opened.emit(); %ExportDialog.popup_centered(Vector2i(700, 500)))
+	%ExportDialog.canceled.connect(modal_closed.emit)
 	%ExportDialog.file_selected.connect(func(path: String):
-		session.game.modal_closed()
+		modal_closed.emit()
 		var count := session.store.export_campaign(path)
 		%Validation.text = session.store.last_error if count < 0 else "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % count)
 	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
-	%OpenPuzzle.pressed.connect(func(): session.game.handle_action("open_puzzle"))
-	session.game.sandbox.build.changed.connect(func(): if visible: refresh_objects(); refresh_objectives(); refresh_publish())
+	%OpenPuzzle.pressed.connect(func(): action_requested.emit("open_puzzle"))
+	session.world.build.changed.connect(func(): if visible: refresh_objects(); refresh_objectives(); refresh_publish())
 	for field in [%PuzzleName, %Order, %TimeLimit, %AwardTime, %AwardPieces, %MinHeight, %MaxHeight]:
 		if field is LineEdit: field.text_changed.connect(func(_text): metadata_changed())
 		else: field.value_changed.connect(func(_value): metadata_changed())
@@ -98,7 +102,7 @@ func configure(puzzle_session: PuzzleSession) -> void:
 	%Prerequisites.multi_selected.connect(func(_index, _selected): metadata_changed())
 	for button in [%SetQuantity, %SetInventoryLimit, %ClearInventoryLimits, %ClearZones, %RemoveZone, %RemoveObjective, %CaptureCamera]:
 		button.pressed.connect(metadata_changed)
-	for definition in session.game.catalog.query():
+	for definition in session.catalog.query():
 		if not definition.library_visible or definition.authoring_only: continue
 		%InventoryPiece.add_icon_item(definition.thumbnail, definition.display_name)
 		%InventoryPiece.set_item_metadata(%InventoryPiece.item_count - 1, String(definition.id))
@@ -137,16 +141,14 @@ func open() -> void:
 	refreshing = false
 	show()
 	refresh_publish()
-	session.game.get_node("%HUD").refresh()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if visible and event.is_action_pressed("ui_cancel"):
 		hide()
-		session.game.get_node("%HUD").refresh()
 		get_viewport().set_input_as_handled()
 
 func refresh_publish() -> void:
-	if not session or session.mode!="editor": return
+	if not session or not session.is_authoring: return
 	var data: Dictionary=session.capture()
 	var validation: Dictionary=data.get("validation",{})
 	var tested: bool=validation.get("physics_success",false)
@@ -189,13 +191,13 @@ func update_chapter() -> void:
 func refresh_inventory() -> void:
 	%InventoryList.clear()
 	for id in session.puzzle.inventory:
-		var definition = session.game.catalog.get_piece(id)
+		var definition = session.catalog.get_piece(id)
 		if definition: %InventoryList.add_item("%s × %d" % [definition.display_name, session.puzzle.inventory[id]], definition.thumbnail)
 
 func refresh_inventory_settings() -> void:
 	%InventorySetting.clear()
 	if %InventoryPiece.item_count == 0: return
-	var definition = session.game.catalog.get_piece(%InventoryPiece.get_item_metadata(%InventoryPiece.selected))
+	var definition = session.catalog.get_piece(%InventoryPiece.get_item_metadata(%InventoryPiece.selected))
 	for setting in definition.settings:
 		if setting.kind != PieceSetting.Kind.NUMBER: continue
 		%InventorySetting.add_item(setting.label)
@@ -210,7 +212,7 @@ func refresh_objects() -> void:
 	%MarbleSource.clear()
 	%MarbleSource.add_item("Any marble release")
 	%MarbleSource.set_item_metadata(0, "")
-	for piece in session.game.sandbox.build.pieces:
+	for piece in session.world.build.pieces:
 		var object_label = piece.definition.display_name + " · " + piece.instance_id.right(6)
 		if (piece.behaviors.any(func(behavior_node): return behavior_node is MarbleCollector) and %ObjectiveType.selected == 0) or (not piece.output_ports.is_empty() and %ObjectiveType.selected == 1):
 			%ObjectiveTarget.add_item(object_label)
@@ -226,12 +228,12 @@ func refresh_objective_events() -> void:
 	for control in [%MarbleSource, %MarbleSourceLabel, %RequiredCount, %RequiredCountLabel, %AllMarbles]: control.visible = delivery
 	%ObjectiveEvent.clear()
 	if delivery or %ObjectiveTarget.item_count == 0: return
-	var target: BuildingPiece = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
+	var target: BuildingPiece = session.world.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
 	for event in target.output_ports.keys(): %ObjectiveEvent.add_item(event.capitalize())
 
 func add_objective() -> void:
 	if %ObjectiveTarget.item_count == 0: return
-	var target = session.game.sandbox.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
+	var target = session.world.build.find_piece(%ObjectiveTarget.get_item_metadata(%ObjectiveTarget.selected))
 	var type = "deliver" if %ObjectiveType.selected == 0 else "activate"
 	if type == "deliver" and not target.behaviors.any(func(behavior_node): return behavior_node is MarbleCollector): %Validation.text = "Choose a collector for delivery"; return
 	var data = {"type": type, "target": target.instance_id, "count": int(%RequiredCount.value), "source": %MarbleSource.get_item_metadata(%MarbleSource.selected), "time_limit": %ObjectiveTime.value}
@@ -247,7 +249,7 @@ func add_objective() -> void:
 func refresh_objectives() -> void:
 	%ObjectiveList.clear()
 	for objective in session.puzzle.objectives:
-		var target = session.game.sandbox.build.find_piece(objective.target)
+		var target = session.world.build.find_piece(objective.target)
 		%ObjectiveList.add_item(("Deliver %d to " % objective.get("count", 1) if objective.type == "deliver" else "Activate ") + (target.definition.display_name if target else "Missing target"))
 
 func validate_puzzle() -> void:
@@ -256,8 +258,6 @@ func validate_puzzle() -> void:
 	refresh_publish()
 
 func metadata_changed() -> void:
-	if refreshing or session.mode != "editor": return
-	session.game.sandbox.build.dirty = true
-	session.game.track_name = session.puzzle.name
-	session.game.update_name()
+	if refreshing or not session.is_authoring: return
+	session.metadata_changed()
 	refresh_publish()

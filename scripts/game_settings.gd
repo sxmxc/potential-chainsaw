@@ -41,7 +41,7 @@ func reset_defaults() -> void:
 	ConstructionInput.install(true)
 
 func apply(game: Node, apply_window: bool = true) -> void:
-	var camera: ConstructionCamera = game.sandbox.camera
+	var camera: ConstructionCamera = game.workspace.world.camera
 	camera.sensitivity = values.camera.sensitivity
 	camera.zoom_sensitivity = values.camera.zoom_sensitivity
 	camera.invert_x = values.camera.invert_x

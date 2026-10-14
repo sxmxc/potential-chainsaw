@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/construction/construction_workspace.gd" id="Workspace"]
+[ext_resource type="PackedScene" path="res://scenes/world.tscn" id="World"]
+[ext_resource type="Script" path="res://scripts/construction/construction_session.gd" id="Session"]
+[ext_resource type="PackedScene" path="res://scenes/ui/workspace_hud.tscn" id="HUD"]
+[ext_resource type="PackedScene" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
+
+[node name="ConstructionWorkspace" type="Node3D"]
+script = ExtResource("Workspace")
+
+[node name="World" parent="." instance=ExtResource("World")]
+
+[node name="Session" type="Node" parent="."]
+script = ExtResource("Session")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="Interface" instance=ExtResource("HUD")]
+
+[node name="PuzzleAuthoring" parent="Interface/HUD/Margin/Layout/Body/AuthoringSlot" instance=ExtResource("Authoring")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SceneDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+file_mode = 0
+root_subfolder = "res://scenes/environments"
+filters = PackedStringArray("*.tscn ; Scenery scene")

@@ -1,14 +1,14 @@
 extends PanelContainer
 signal connections_requested
 var build: BuildManager
-var session: PuzzleSession
+var session: ConstructionSession
 const PERMISSIONS: Array[String] = ["move", "rotate", "configure", "remove", "duplicate"]
 var refreshing: bool = false
 var displayed_piece: BuildingPiece
 func has_properties() -> bool:
 	if not build.selected: return false
 	var piece: BuildingPiece=build.selected
-	if session and session.mode == "editor" and build.selection.any(func(object): return not object.definition.authoring_only): return true
+	if session and session.is_authoring and build.selection.any(func(object): return not object.definition.authoring_only): return true
 	if build.selection.size() != 1: return false
 	return (not piece.output_ports.is_empty() or not piece.input_ports.is_empty()) or not piece.definition.settings.is_empty()
 func configure(manager: BuildManager) -> void:
@@ -57,7 +57,7 @@ func fit_content() -> void:
 
 func refresh_permissions(selection_changed: bool) -> void:
 	var tracks := build.selection.filter(func(object): return not object.definition.authoring_only)
-	%PermissionsToggle.visible = session != null and session.mode == "editor" and not tracks.is_empty()
+	%PermissionsToggle.visible = session != null and session.is_authoring and not tracks.is_empty()
 	if not %PermissionsToggle.visible or selection_changed: %Permissions.hide()
 	if not %PermissionsToggle.visible: return
 	%SelectionSummary.text = "Player permissions · %d track %s" % [tracks.size(), "piece" if tracks.size() == 1 else "pieces"]
@@ -90,7 +90,7 @@ func set_permission_preset(index: int) -> void:
 		get_node("%Permit" + action.capitalize()).button_pressed = index == 4 or (index == 1 and action == "move") or (index == 2 and action == "rotate") or (index == 3 and action == "configure")
 
 func apply_permissions() -> void:
-	if not session or session.mode != "editor" or not build.enabled or build.chosen: return
+	if not session or not session.is_authoring or not build.enabled or build.chosen: return
 	var tracks := build.selection.filter(func(object): return not object.definition.authoring_only)
 	if tracks.is_empty(): return
 	var permission: Dictionary = session.puzzle.permissions.get(tracks[0].instance_id, {}).duplicate(true)

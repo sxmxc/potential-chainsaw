@@ -6,9 +6,9 @@ var build: BuildManager
 func test_history_branching_permissions_and_world_reset() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
-	game.enter_sandbox()
-	game.new_track()
-	build = game.sandbox.build
+	game.workspace.activate()
+	game.workspace.session.sandbox()
+	build = game.workspace.world.build
 	var piece := build.spawn(build.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 1, 0)))
 	var uid := piece.instance_id
 	build.select(piece)
@@ -17,7 +17,7 @@ func test_history_branching_permissions_and_world_reset() -> void:
 	var rotated := build.snapshot()
 	build.elevate_selected(0.5)
 	var raised := build.snapshot()
-	var toolbar := game.get_node("%HUD").get_node("%FileToolbar")
+	var toolbar := game.get_node("Workspace/Interface/HUD").get_node("%FileToolbar")
 	assert_false(toolbar.get_node("%Undo").disabled)
 	assert_true(toolbar.get_node("%Redo").disabled)
 	build.enabled = false
@@ -48,7 +48,7 @@ func test_history_branching_permissions_and_world_reset() -> void:
 	assert_eq(build.snapshot(), baseline, "Earlier snapshots remain intact across a new branch")
 	build.undo()
 	assert_eq(build.snapshot(), baseline, "Undo at the beginning leaves the construction intact")
-	game.new_track()
+	game.workspace.session.sandbox()
 	assert_false(build.history.has_undo())
 	assert_false(build.history.has_redo())
 	assert_true(toolbar.get_node("%Undo").disabled)
@@ -60,10 +60,10 @@ func test_group_editing_and_input() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	game.qa_resolution(1280,720)
-	game.enter_sandbox()
+	game.workspace.activate()
 	for frame in 8: await get_tree().process_frame
-	build=game.sandbox.build
-	game.new_track()
+	build=game.workspace.world.build
+	game.workspace.session.sandbox()
 	var straight=build.catalog.get_piece("straight")
 	var a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,0)))
 	var b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,2,2)))
@@ -111,7 +111,7 @@ func test_group_editing_and_input() -> void:
 	build.apply_preview()
 	build.cancel()
 	assert_true(build.snapshot()==before_cancel and build.pieces.all(func(p):return p.visible),"Cancel restores original transforms and visibility")
-	game.new_track()
+	game.workspace.session.sandbox()
 	a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,3,0)))
 	b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,3,1)))
 	var support=build.spawn(build.catalog.get_piece("support-single-middle"),Transform3D(Basis.IDENTITY,Vector3(2,0,0)))
@@ -156,7 +156,7 @@ func test_group_editing_and_input() -> void:
 			assert_true(build.candidate_key!=first,"Tab cycles alternative attachment orientations")
 		build.cancel()
 	# Real viewport input, with ray picking and the actual HUD present.
-	game.new_track()
+	game.workspace.session.sandbox()
 	a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,0)))
 	build.camera.target_focus=Vector3(0,1,0)
 	build.camera.target_distance=8
@@ -186,7 +186,7 @@ func test_group_editing_and_input() -> void:
 	assert_true(a.transform==moved and a.visible and not build.chosen,"Escape cancels a direct drag without changing the original")
 	await mouse(screen+Vector2(40,0),false)
 	# Shift gestures, marquee, connected selection and UI ownership use viewport dispatch.
-	game.new_track()
+	game.workspace.session.sandbox()
 	a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(-1,1,0)))
 	b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(1,2,0)))
 	build.camera.target_focus=Vector3(0,1.5,0)
@@ -222,7 +222,7 @@ func test_group_editing_and_input() -> void:
 	await mouse(ui_point,true)
 	await mouse(ui_point,false)
 	assert_true(build.pieces.size()==count and not build.pointer_down and not build.box_active,"UI clicks do not begin world gestures")
-	game.new_track()
+	game.workspace.session.sandbox()
 	a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,0)))
 	b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,1)))
 	build.camera.target_focus=Vector3(0,1,0)
@@ -273,7 +273,7 @@ func test_group_editing_and_input() -> void:
 	game.get_viewport().push_input(right,true)
 	# Every camera distance/angle uses the same elevated-port solver.
 	for elevation in [0.0,4.0]:
-		game.new_track()
+		game.workspace.session.sandbox()
 		a=build.spawn(straight,Transform3D(Basis(Vector3.UP,PI/2),Vector3(0,elevation,0)))
 		await game.get_tree().physics_frame
 		for angle in [0.3,0.9,1.4]:
@@ -319,7 +319,7 @@ func test_group_editing_and_input() -> void:
 	build.camera.rotate_y(PI)
 	assert_true(build.snap.screen_candidates(sources,ports,available,build.camera,Vector2.ZERO,build.pieces,[]).is_empty(),"Connectors behind the camera are rejected")
 	# Group snapping keeps both the original layout and its internal port graph.
-	game.new_track()
+	game.workspace.session.sandbox()
 	a=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,0)))
 	b=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(0,1,1)))
 	var external=build.spawn(straight,Transform3D(Basis.IDENTITY,Vector3(3,5,0)))

@@ -11,8 +11,8 @@ func test_campaign_chapters() -> void:
 	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	var browser: Window = game.get_node("%PuzzleBrowser")
-	var authoring: PanelContainer = game.get_node("%HUD").get_node("%PuzzleAuthoring")
-	var store: PuzzleStore = game.puzzle_session.store
+	var authoring: PanelContainer = game.get_node("Workspace/Interface/HUD/Margin/Layout/Body/AuthoringSlot/PuzzleAuthoring")
+	var store: PuzzleStore = game.workspace.session.store
 	store.progress = {}
 	store.campaign = {}
 	var levels = store.list_puzzles()
@@ -33,8 +33,8 @@ func test_campaign_chapters() -> void:
 	assert_true(browser.get_node("%Levels").item_count == 0, "Main chapter does not reuse tutorial puzzles")
 	var target = store.start_campaign(true)
 	assert_true(target.id == "campaign-01", "Play Introduction starts at Level 1")
-	game.puzzle_session.player(target)
-	var reopened = PuzzleStore.new(game.catalog)
+	game.workspace.session.player(target)
+	var reopened = PuzzleStore.new(game.workspace.catalog)
 	assert_true(reopened.resume_level().id == target.id, "Current campaign resumes after reload")
 	browser.open()
 	browser.show_chapter(0)
@@ -52,7 +52,7 @@ func test_campaign_chapters() -> void:
 	assert_true(store.unlocked(main2, mixed), "Main completion unlocks next main puzzle")
 	store.progress[main2.id] = {"completed": true}
 	assert_true(store.unlocked(future, mixed), "Future chapter unlocks on main completion")
-	var fixture_store = FixtureStore.new(game.catalog)
+	var fixture_store = FixtureStore.new(game.workspace.catalog)
 	fixture_store.fixture_levels.assign(mixed)
 	fixture_store.progress.clear()
 	assert_true(fixture_store.start_campaign(false).id == main1.id, "Skip starts at separate main Level 1 when authored")
@@ -72,29 +72,29 @@ func test_campaign_chapters() -> void:
 	var legacy = {"campaign-01": {"completed": true, "revision": 1, "best_time": 3.5, "fewest_pieces": 4, "awards": ["time"], "custom_record": "preserve"}}
 	store.write(store.progress_path, legacy)
 	DirAccess.remove_absolute(store.campaign_state_path)
-	reopened = PuzzleStore.new(game.catalog)
+	reopened = PuzzleStore.new(game.workspace.catalog)
 	assert_true(JSON.stringify(reopened.progress) == JSON.stringify(JSON.parse_string(JSON.stringify(legacy))), "Legacy save migration preserves every record field")
 	assert_true(reopened.campaign.started and reopened.resume_level().id == "campaign-02", "Legacy partial campaign resumes without new-player choice")
 	reopened.complete(levels[0], 5, 7)
 	assert_true(reopened.progress["campaign-01"].best_time == 3.5 and reopened.progress["campaign-01"].custom_record == "preserve" and "time" in reopened.progress["campaign-01"].awards, "Recompletion preserves best results, awards, and extra fields")
 	var authored = store.create()
-	game.puzzle_session.editor(authored)
+	game.workspace.session.editor(authored)
 	authoring.open()
 	authoring.get_node("%ChapterId").text = "chapter-3"
 	authoring.get_node("%ChapterName").text = "Machines"
 	authoring.get_node("%ChapterOrder").value = 3
 	authoring.get_node("%ChapterRequirements").text = "qa-main-2"
 	authoring.update_chapter()
-	assert_true(game.puzzle_session.puzzle.chapter.id == "chapter-3" and game.puzzle_session.puzzle.chapter.prerequisites == ["qa-main-2"], "Editor configures new chapter and unlock requirements")
+	assert_true(game.workspace.session.puzzle.chapter.id == "chapter-3" and game.workspace.session.puzzle.chapter.prerequisites == ["qa-main-2"], "Editor configures new chapter and unlock requirements")
 
 func test_campaign_export_from_authoring_dialog() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)
 	await get_tree().process_frame
-	var store: PuzzleStore = game.puzzle_session.store
+	var store: PuzzleStore = game.workspace.session.store
 	var levels := store.list_puzzles()
-	game.puzzle_session.editor(store.create())
-	var authoring: PanelContainer = game.get_node("%HUD").get_node("%PuzzleAuthoring")
+	game.workspace.session.editor(store.create())
+	var authoring: PanelContainer = game.get_node("Workspace/Interface/HUD/Margin/Layout/Body/AuthoringSlot/PuzzleAuthoring")
 	var bundle_path = SavePaths.resolve("user://chapter-export.zip")
 	authoring.get_node("%ExportDialog").file_selected.emit(bundle_path)
 	assert_eq(authoring.get_node("%Validation").text, "Exported %d puzzles. Import the bundle into resources/campaign before building the game." % levels.size())

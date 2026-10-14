@@ -17,26 +17,26 @@ func test_bundled_validation_matches_current_definitions() -> void:
 	for index in 3:
 		var data := draft(index)
 		assert_true(data.validation.get("physics_success", false))
-		assert_eq(data.validation.get("fingerprint", ""), game.puzzle_session.store.fingerprint(data), data.name + ": proof matches bundled content")
-		game.puzzle_session.editor(data)
-		assert_eq(game.puzzle_session.store.fingerprint(game.puzzle_session.capture()), data.validation.fingerprint, "Editor load does not stale proof")
+		assert_eq(data.validation.get("fingerprint", ""), game.workspace.session.store.fingerprint(data), data.name + ": proof matches bundled content")
+		game.workspace.session.editor(data)
+		assert_eq(game.workspace.session.store.fingerprint(game.workspace.session.capture()), data.validation.fingerprint, "Editor load does not stale proof")
 
 func run_physics(data: Dictionary) -> void:
-	assert_true(game.sandbox.simulation.start())
+	assert_true(game.workspace.world.simulation.start())
 	for frame in int(float(data.time_limit) * 120 + 5):
 		await get_tree().physics_frame
-		if game.sandbox.simulation.state in [SimulationManager.State.SUCCESS, SimulationManager.State.FAILED]: break
+		if game.workspace.world.simulation.state in [SimulationManager.State.SUCCESS, SimulationManager.State.FAILED]: break
 
 func test_solutions_use_player_placement_and_physics(index = use_parameters([0, 1, 2])) -> void:
 	var data := draft(index)
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	assert_eq(session.store.validate(data), [], data.name + ": valid definition")
 	session.editor(data)
 	assert_true(session.test_player())
 	for record in data.solution:
 		if data.pieces.any(func(piece): return piece.uid == record.uid): continue
-		build.choose(game.catalog.get_piece(record.piece))
+		build.choose(game.workspace.catalog.get_piece(record.piece))
 		assert_not_null(build.ghost, "Inventory permits " + record.piece)
 		if not build.ghost: return
 		build.ghost.apply_configuration(record.config)
@@ -53,12 +53,12 @@ func test_solutions_use_player_placement_and_physics(index = use_parameters([0, 
 	var solution := build.snapshot()
 	await run_physics(data)
 	var positions: Array = []
-	for marble in game.sandbox.simulation.marbles: positions.append(marble.position)
-	assert_eq(game.sandbox.simulation.state, SimulationManager.State.SUCCESS, data.name + ": completion; marble positions " + str(positions))
+	for marble in game.workspace.world.simulation.marbles: positions.append(marble.position)
+	assert_eq(game.workspace.world.simulation.state, SimulationManager.State.SUCCESS, data.name + ": completion; marble positions " + str(positions))
 	assert_true(session.test_success)
 	if session.test_success:
 		print("PROTOTYPE_EVIDENCE " + JSON.stringify({"id": data.id, "validation": {"physics_success": true, "fingerprint": session.successful_fingerprint, "seconds": session.successful_time, "engine": Engine.get_version_info().string, "tested_at": Time.get_datetime_string_from_system(true)}}))
-	game.sandbox.simulation.reset()
+	game.workspace.world.simulation.reset()
 	assert_eq(build.snapshot(), solution, "Reset keeps construction")
 	session.return_editor()
 	assert_eq(build.snapshot().size(), data.pieces.size(), "Return restores incomplete baseline")
@@ -69,21 +69,21 @@ func test_solutions_use_player_placement_and_physics(index = use_parameters([0, 
 
 func test_starting_layouts_do_not_complete(index = use_parameters([0, 1, 2])) -> void:
 	var data := draft(index)
-	game.puzzle_session.player(data, true)
+	game.workspace.session.player(data, true)
 	await run_physics(data)
-	assert_ne(game.sandbox.simulation.state, SimulationManager.State.SUCCESS)
+	assert_ne(game.workspace.world.simulation.state, SimulationManager.State.SUCCESS)
 
 func test_solids_passages_history_and_save_load() -> void:
 	var data := draft(0)
 	data.id = "gut-environment-draft"
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor(data)
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory + "/" + data.id + ".json"))
 	assert_eq(saved.environment, data.environment)
 	assert_true(session.test_player())
-	var straight := game.catalog.get_piece("straight") as PieceDefinition
+	var straight := game.workspace.catalog.get_piece("straight") as PieceDefinition
 	var inside := Transform3D(Basis.IDENTITY, Vector3(0, 1, -1.5))
 	assert_eq(build.snap.validate(straight, inside, []), "Blocked by the environment")
 	var allowed := Transform3D(Basis.IDENTITY, Vector3(3, 1, -0.5))
@@ -110,22 +110,22 @@ func test_solids_passages_history_and_save_load() -> void:
 	assert_not_null(session.environment_node)
 
 func test_environment_physically_blocks_marble_and_keeps_open_space() -> void:
-	game.puzzle_session.player(draft(0), true)
+	game.workspace.session.player(draft(0), true)
 	var body: RigidBody3D = autoqfree(load("res://scenes/marble.tscn").instantiate())
-	game.sandbox.add_child(body)
+	game.workspace.world.add_child(body)
 	body.position = Vector3(0, 1, -0.5)
 	body.linear_velocity = Vector3(0, 0, -2)
 	for frame in 80: await get_tree().physics_frame
 	assert_gt(body.position.z, -1.5, "Physical marble cannot pass through partition")
-	game.puzzle_session.player(draft(1), true)
-	var straight := game.catalog.get_piece("straight") as PieceDefinition
-	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)), []), "", "Space below canopy is usable")
-	assert_eq(game.sandbox.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 2, 1)), []), "Blocked by the environment")
-	var lift = game.catalog.get_piece("bucket-elevator").configured({"elevator_height": 4, "elevator_speed": 0.8})
-	assert_eq(game.sandbox.build.snap.validate(lift, Transform3D.IDENTITY, []), "Blocked by the environment", "A lift cannot grow through canopy")
+	game.workspace.session.player(draft(1), true)
+	var straight := game.workspace.catalog.get_piece("straight") as PieceDefinition
+	assert_eq(game.workspace.world.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 0, 1)), []), "", "Space below canopy is usable")
+	assert_eq(game.workspace.world.build.snap.validate(straight, Transform3D(Basis.IDENTITY, Vector3(0, 2, 1)), []), "Blocked by the environment")
+	var lift = game.workspace.catalog.get_piece("bucket-elevator").configured({"elevator_height": 4, "elevator_speed": 0.8})
+	assert_eq(game.workspace.world.build.snap.validate(lift, Transform3D.IDENTITY, []), "Blocked by the environment", "A lift cannot grow through canopy")
 
 func place_object(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
-	var build: BuildManager = game.sandbox.build
+	var build: BuildManager = game.workspace.world.build
 	build.choose(definition)
 	if not build.ghost: return null
 	build.proposed = Transform3D(Basis.IDENTITY, point)
@@ -137,11 +137,11 @@ func place_object(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
 	return build.pieces.back() if build.pieces.size() > count else null
 
 func test_editable_environment_roundtrip_and_player_isolation() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor(draft(0))
 	assert_true(build.enabled)
-	var wall := place_object(game.catalog.get_piece("environment:partition"), Vector3(6, 0, 0))
+	var wall := place_object(game.workspace.catalog.get_piece("environment:partition"), Vector3(6, 0, 0))
 	assert_not_null(wall)
 	if not wall: return
 	var uid := wall.instance_id
@@ -152,7 +152,7 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	build.apply_preview()
 	build.commit()
 	build.rotate_piece()
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory + "/" + session.puzzle.id + ".json"))
 	assert_eq(saved.environment_instances[0].position, [7.0, 0.5, 1.0])
 	assert_eq(saved.environment_instances[0].rotation, 1.0)
@@ -162,12 +162,12 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	assert_almost_eq(restored.position, Vector3(7, 0.5, 1), Vector3.ONE * 0.001)
 	assert_eq(restored.bodies[0].collision_layer, 1)
 	assert_false(restored.definition.connectors.size() > 0)
-	assert_ne(build.snap.validate(game.catalog.get_piece("straight"), restored.transform, build.pieces), "")
+	assert_ne(build.snap.validate(game.workspace.catalog.get_piece("straight"), restored.transform, build.pieces), "")
 	assert_true(session.test_player())
 	assert_false(build.authoring)
-	build.choose(game.catalog.get_piece("environment:partition"))
+	build.choose(game.workspace.catalog.get_piece("environment:partition"))
 	assert_null(build.ghost)
-	assert_null(build.spawn(game.catalog.get_piece("environment:partition"), Transform3D.IDENTITY))
+	assert_null(build.spawn(game.workspace.catalog.get_piece("environment:partition"), Transform3D.IDENTITY))
 	assert_eq(build.pieces.size(), saved.pieces.size(), "Player construction excludes environment inventory")
 	var fixed_bodies := session.environment_node.get_node(NodePath(uid)).find_children("*", "StaticBody3D", true, false)
 	assert_false(fixed_bodies.is_empty(), "Player scenery retains generated collision")
@@ -185,12 +185,12 @@ func test_editable_environment_roundtrip_and_player_isolation() -> void:
 	assert_eq(session.capture().environment_instances.size(), 0)
 
 func test_environment_edits_stale_proof_and_reject_track_intersection() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor(draft(0))
 	session.puzzle.version = 2
 	var proof := session.store.fingerprint(session.capture())
-	var column := place_object(game.catalog.get_piece("environment:column"), Vector3(6, 0, 0))
+	var column := place_object(game.workspace.catalog.get_piece("environment:column"), Vector3(6, 0, 0))
 	assert_not_null(column)
 	if not column: return
 	var changed := session.store.fingerprint(session.capture())
@@ -210,11 +210,11 @@ func test_environment_edits_stale_proof_and_reject_track_intersection() -> void:
 	assert_eq(session.store.fingerprint(session.capture()), proof)
 
 func test_mixed_groups_share_atomic_history_and_keep_elevations() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor()
-	var track := place_object(game.catalog.get_piece("straight"), Vector3(4, 1, 0))
-	var wall := place_object(game.catalog.get_piece("environment:partition"), Vector3(7, 0, 0))
+	var track := place_object(game.workspace.catalog.get_piece("straight"), Vector3(4, 1, 0))
+	var wall := place_object(game.workspace.catalog.get_piece("environment:partition"), Vector3(7, 0, 0))
 	assert_not_null(track)
 	assert_not_null(wall)
 	if not track or not wall: return
@@ -257,23 +257,23 @@ func test_mixed_groups_share_atomic_history_and_keep_elevations() -> void:
 func test_native_environment_snapshot_is_self_contained() -> void:
 	var data := draft(0)
 	data.environment_instances = [{"uid": "env-test", "asset": "deck", "position": [6, 1, 0], "rotation": 1}]
-	var path: String = game.puzzle_session.store.drafts_directory + "/environment.tscn"
+	var path: String = game.workspace.session.store.drafts_directory + "/environment.tscn"
 	assert_eq(PuzzleEnvironment.freeze(data, path), OK)
 	assert_eq(ResourceLoader.get_dependencies(path).size(), 0, "Published snapshot embeds mesh, texture and collision resources")
 	data.environment_snapshot = path
-	game.puzzle_session.player(data)
-	var solids: Array[Node] = game.puzzle_session.environment_node.get_node("env-test").find_children("*", "CollisionShape3D", true, false)
+	game.workspace.session.player(data)
+	var solids: Array[Node] = game.workspace.session.environment_node.get_node("env-test").find_children("*", "CollisionShape3D", true, false)
 	assert_false(solids.is_empty(), "Published scenery preserves native collision")
 	assert_true(solids.all(func(solid): return solid.shape is ConcavePolygonShape3D), "Published collision comes from the same mesh pipeline as other pieces")
-	assert_eq(game.sandbox.build.snap.environment_solids.size(), PuzzleEnvironment.inspect_definition(data).solids.size())
+	assert_eq(game.workspace.world.build.snap.environment_solids.size(), PuzzleEnvironment.inspect_definition(data).solids.size())
 
 func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor(draft(0))
-	var toolbox = game.get_node("%HUD").get_node("%Toolbox")
-	assert_not_null(place_object(game.catalog.get_piece("straight"), Vector3(6, 0, 5)))
-	toolbox.get_node("%Category").select(game.catalog.categories().find("Scenery"))
+	var toolbox = game.get_node("Workspace/Interface/HUD").get_node("%Toolbox")
+	assert_not_null(place_object(game.workspace.catalog.get_piece("straight"), Vector3(6, 0, 5)))
+	toolbox.get_node("%Category").select(game.workspace.catalog.categories().find("Scenery"))
 	toolbox.refresh()
 	assert_true(toolbox.buttons.has(&"environment:partition"))
 	assert_true(toolbox.buttons.has(&"banner"), "Kit scenery and native solids share a category")
@@ -282,7 +282,7 @@ func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
 	autofree(sender)
 	build.camera.frame_point(Vector3(6, 1, 0), 5)
 	for frame in 40: await get_tree().physics_frame
-	toolbox.buttons[&"environment:partition"].chosen.emit(game.catalog.get_piece("environment:partition"))
+	toolbox.buttons[&"environment:partition"].chosen.emit(game.workspace.catalog.get_piece("environment:partition"))
 	toolbox.get_node("%Search").grab_focus()
 	var screen := build.camera.unproject_position(Vector3(6, 0, 0))
 	sender.mouse_motion(screen)
@@ -329,7 +329,7 @@ func test_environment_shortcuts_after_leaving_catalog_focus() -> void:
 	assert_eq(session.capture().environment_instances.size(), 1)
 	build.redo()
 	assert_eq(build.snapshot(true), duplicate)
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory + "/" + session.puzzle.id + ".json"))
 	session.editor(saved)
 	assert_eq(session.capture().environment_instances.size(), saved.environment_instances.size())
@@ -371,10 +371,10 @@ func test_scenery_surface_placement_through_world_input(example = use_parameters
 	{"target":"partition", "source":"column", "turn":0, "point":Vector3(6, 0, 1)},
 	{"target":"column", "source":"column", "turn":0, "point":Vector3(6, 2.4, 0)}
 ])) -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor()
-	var target := place_object(game.catalog.get_piece("environment:" + example.target), Vector3(6, 0, 0))
+	var target := place_object(game.workspace.catalog.get_piece("environment:" + example.target), Vector3(6, 0, 0))
 	assert_not_null(target)
 	if not target: return
 	build.camera.frame_point(Vector3(6, 1.2, 0), 6)
@@ -382,8 +382,8 @@ func test_scenery_surface_placement_through_world_input(example = use_parameters
 	var sender := GutInputSender.new(Input)
 	autofree(sender)
 	sender.set_auto_flush_input(true)
-	var toolbox = game.get_node("%HUD").get_node("%Toolbox")
-	toolbox.buttons[StringName("environment:" + example.source)].chosen.emit(game.catalog.get_piece("environment:" + example.source))
+	var toolbox = game.get_node("Workspace/Interface/HUD").get_node("%Toolbox")
+	toolbox.buttons[StringName("environment:" + example.source)].chosen.emit(game.workspace.catalog.get_piece("environment:" + example.source))
 	if example.turn == 1:
 		sender.key_down(KEY_R)
 		await get_tree().process_frame
@@ -420,18 +420,18 @@ func test_scenery_surface_placement_through_world_input(example = use_parameters
 	assert_eq(build.pieces.size(), 1)
 	build.redo()
 	assert_eq(build.snapshot(true), arrangement)
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory.path_join(session.puzzle.id + ".json")))
 	session.editor(saved)
 	assert_eq(build.snapshot(true), arrangement, "Off-grid contact positions survive save and reopen")
 	sender.release_all()
 
 func test_column_overlaps_wall_corner_through_normal_placement() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	session.editor()
-	var wall: PieceDefinition = game.catalog.get_piece("environment:partition")
-	var column: PieceDefinition = game.catalog.get_piece("environment:column")
+	var wall: PieceDefinition = game.workspace.catalog.get_piece("environment:partition")
+	var column: PieceDefinition = game.workspace.catalog.get_piece("environment:column")
 	var first := place_object(wall, Vector3(6, 0, 0))
 	assert_not_null(first)
 	build.choose(wall)
@@ -479,27 +479,27 @@ func test_column_overlaps_wall_corner_through_normal_placement() -> void:
 
 func test_column_wall_overlap_permission_does_not_allow_other_overlaps() -> void:
 	var snap := SnapManager.new()
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
-	var column: PieceDefinition = game.catalog.get_piece("environment:column")
-	var wall: PieceDefinition = game.catalog.get_piece("environment:partition")
-	var machine: PieceDefinition = game.catalog.get_piece("environment:machine")
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
+	var column: PieceDefinition = game.workspace.catalog.get_piece("environment:column")
+	var wall: PieceDefinition = game.workspace.catalog.get_piece("environment:partition")
+	var machine: PieceDefinition = game.workspace.catalog.get_piece("environment:machine")
 	assert_true(snap.permits_overlap(column, wall))
 	assert_true(snap.permits_overlap(wall, column))
 	assert_true(snap.solid_overlap(column, Transform3D.IDENTITY, wall, Transform3D.IDENTITY), "Permitted joints still have real overlapping geometry")
 	assert_true(snap.solid_overlap(column, Transform3D.IDENTITY, column, Transform3D.IDENTITY))
 	assert_true(snap.solid_overlap(wall, Transform3D.IDENTITY, wall, Transform3D.IDENTITY))
 	assert_true(snap.solid_overlap(column, Transform3D.IDENTITY, machine, Transform3D.IDENTITY))
-	assert_true(snap.solid_overlap(column, Transform3D.IDENTITY, game.catalog.get_piece("straight"), Transform3D.IDENTITY), "Track cannot pass through the column")
-	for definition in [column, machine, game.catalog.get_piece("straight")]:
+	assert_true(snap.solid_overlap(column, Transform3D.IDENTITY, game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY), "Track cannot pass through the column")
+	for definition in [column, machine, game.workspace.catalog.get_piece("straight")]:
 		session.editor()
 		assert_not_null(place_object(definition, Vector3(6, 0, 0)))
 		assert_null(place_object(column, Vector3(6, 0, 0)), "Actual placement rejects overlap with " + definition.display_name)
 		assert_eq(build.pieces.size(), 1, "Rejected placement preserves the existing object")
 
 func test_legacy_scene_is_selected_dragged_and_persisted_by_shared_construction() -> void:
-	var session: PuzzleSession = game.puzzle_session
-	var build: BuildManager = game.sandbox.build
+	var session: ConstructionSession = game.workspace.session
+	var build: BuildManager = game.workspace.world.build
 	var data := draft(0)
 	session.editor(data)
 	assert_null(session.environment_node, "The authored scene is inside shared construction")
@@ -536,7 +536,7 @@ func test_legacy_scene_is_selected_dragged_and_persisted_by_shared_construction(
 	var edited := session.capture()
 	assert_true(edited.has("environment_placement"))
 	assert_eq(edited.environment, data.environment, "The source scene reference is preserved")
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory + "/" + data.id + ".json"))
 	session.editor(saved)
 	composite = build.pieces.filter(func(piece): return piece.instance_id == PuzzleEnvironment.LEGACY_UID)[0]
@@ -550,7 +550,7 @@ func test_legacy_scene_is_selected_dragged_and_persisted_by_shared_construction(
 	build.apply_preview()
 	build.commit()
 	assert_eq(session.capture().environment_instances.size(), 1, "Composite duplication uses ordinary placed scene data")
-	assert_true(session.save())
+	assert_true(session.save_draft())
 	saved = JSON.parse_string(FileAccess.get_file_as_string(session.store.drafts_directory + "/" + data.id + ".json"))
 	session.editor(saved)
 	assert_eq(session.capture().environment_instances[0].scene, data.environment)

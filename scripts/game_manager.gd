@@ -1,18 +1,12 @@
 extends Node
 
-@onready var sandbox = $World
-@onready var puzzle_session: PuzzleSession = $PuzzleSession
-var catalog: PieceCatalog
-var serializer: TrackSerializer
-var track_name: String = "Untitled track"
-var track_id: String = ""
+@onready var workspace: ConstructionWorkspace = $Workspace
 var name_dialog
 var name_field: LineEdit
 var unsaved_dialog
 var menu_dialog
 var settings_dialog
 var message_dialog
-var scenery_dialog: FileDialog
 var save_as: bool = false
 var pending_action: Callable
 var after_save: Callable
@@ -20,30 +14,22 @@ var music_context: String = ""
 var settings = preload("res://scripts/game_settings.gd").new()
 
 func _ready() -> void:
-	ConstructionInput.install()
 	get_tree().auto_accept_quit=false
-	catalog=PieceCatalog.new()
-	serializer=TrackSerializer.new(catalog)
-	sandbox.configure(catalog)
-	%HUD.configure(sandbox.build,sandbox.simulation)
+	workspace.action_requested.connect(handle_action)
+	workspace.activated.connect(show_workspace)
+	workspace.message_requested.connect(show_message)
+	workspace.modal_opened.connect(open_modal)
+	workspace.modal_closed.connect(modal_closed)
 	%MainMenu.action_requested.connect(handle_action)
-	%HUD.action_requested.connect(handle_action)
-	%TrackBrowser.serializer=serializer
-	%TrackBrowser.track_requested.connect(func(id,example):guard(func():load_track(id,example)))
+	%TrackBrowser.serializer = workspace.session.serializer
+	%TrackBrowser.track_requested.connect(func(id, example): guard(func(): workspace.session.load_track(id, example)))
 	%TrackBrowser.closed.connect(modal_closed)
-	sandbox.build.changed.connect(update_name)
 	create_dialogs()
-	puzzle_session.configure(self)
-	sandbox.boundary.configure(puzzle_session)
-	%PuzzleBrowser.configure(puzzle_session)
-	%PuzzleCompletion.configure(puzzle_session)
-	%HUD.configure_session(puzzle_session)
-	scenery_dialog = %HUD.get_node("%Toolbox").get_node("%SceneDialog")
-	scenery_dialog.canceled.connect(modal_closed)
-	scenery_dialog.file_selected.connect(func(path):
-		modal_closed()
-		%HUD.get_node("%Toolbox").place_scene(path))
-	new_track(false)
+	%PuzzleBrowser.configure(workspace.session)
+	%PuzzleBrowser.modal_opened.connect(open_modal)
+	%PuzzleBrowser.closed.connect(modal_closed)
+	%PuzzleCompletion.configure(workspace.session)
+	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open())
 	show_main_menu()
 	load_settings()
 
@@ -51,16 +37,16 @@ func create_dialogs() -> void:
 	name_dialog=%NameDialog
 	name_field=name_dialog.get_node("Surface/Contents/Name")
 	unsaved_dialog=%UnsavedDialog
-	menu_dialog=%SandboxMenu
+	menu_dialog=%WorkspaceMenu
 	settings_dialog=%SettingsDialog
 	message_dialog=%MessageDialog
 	name_dialog.confirmed.connect(finish_save)
 	name_dialog.closed.connect(func():after_save=Callable(); modal_closed())
 	unsaved_dialog.confirmed.connect(func():
 		after_save=pending_action
-		if track_id.is_empty(): prompt_save(false)
+		if workspace.session.track_id.is_empty(): prompt_save(false)
 		else:
-			if save_current(): run_after_save(); modal_closed())
+			if workspace.session.save_track(workspace.session.track_name, workspace.session.track_id): run_after_save(); modal_closed())
 	unsaved_dialog.custom_action.connect(func(action):
 		if action==&"discard":
 			var next=pending_action
@@ -71,122 +57,78 @@ func create_dialogs() -> void:
 	menu_dialog.action_requested.connect(handle_action)
 	menu_dialog.closed.connect(modal_closed)
 	settings_dialog.closed.connect(modal_closed)
-	settings_dialog.reset_camera.connect(sandbox.camera.reset_view)
+	settings_dialog.reset_camera.connect(workspace.world.camera.reset_view)
 	settings_dialog.configure(settings)
 	settings_dialog.settings_changed.connect(func(window_changed): settings.apply(self, window_changed); save_settings())
 	message_dialog.closed.connect(modal_closed)
 func handle_action(action: String) -> void:
+	if workspace.handle_action(action):
+		modal_closed()
+		return
 	match action:
-		"campaign": %PuzzleBrowser.open_campaign()
-		"puzzle_editor": puzzle_session.editor()
+		"campaign": guard(func(): %PuzzleBrowser.open_campaign())
+		"puzzle_editor": guard(workspace.session.editor)
 		"sandbox":
-			if puzzle_session.mode != "sandbox": new_track()
-			elif not %HUD.visible: enter_sandbox()
+			if not workspace.session.is_sandbox: guard(workspace.session.sandbox)
+			else: workspace.activate()
 		"save":
-			if puzzle_session.mode == "editor": puzzle_session.save(); return
-			if puzzle_session.mode in ["campaign", "test"]: return
-			if track_id.is_empty(): prompt_save(false)
-			else: save_current(); modal_closed()
+			if not workspace.session.is_sandbox: return
+			if workspace.session.track_id.is_empty(): prompt_save(false)
+			else:
+				workspace.session.save_track(workspace.session.track_name, workspace.session.track_id)
+				modal_closed()
 		"save_as":
-			if puzzle_session.mode == "editor": puzzle_session.save()
-			elif puzzle_session.mode == "sandbox": prompt_save(true)
-		"rename": prompt_save(false)
-		"load", "examples": open_modal(); %TrackBrowser.open(action=="examples")
-		"menu": open_modal(); menu_dialog.configure_mode(puzzle_session); menu_dialog.popup_centered()
-		"restart_puzzle": puzzle_session.player(puzzle_session.puzzle, puzzle_session.mode == "test"); modal_closed()
-		"levels": %PuzzleBrowser.open()
-		"author": %HUD.get_node("%PuzzleAuthoring").open()
-		"place_scenery":
-			if puzzle_session.mode != "editor": return
-			%HUD.get_node("%PuzzleAuthoring").hide()
-			%HUD.refresh()
+			if workspace.session.is_sandbox: prompt_save(true)
+		"rename":
+			if workspace.session.is_sandbox: prompt_save(false)
+		"load", "examples":
+			if not workspace.session.is_sandbox: return
 			open_modal()
-			scenery_dialog.popup_centered(Vector2i(700, 500))
+			%TrackBrowser.open(action == "examples")
+		"menu":
+			open_modal()
+			menu_dialog.configure_context(workspace.session)
+			menu_dialog.popup_centered()
+		"levels": %PuzzleBrowser.open()
 		"open_puzzle":
-			if puzzle_session.mode != "editor": return
-			if sandbox.build.dirty and not puzzle_session.save():
-				show_message("Could not save the puzzle draft")
-				return
-			%HUD.get_node("%PuzzleAuthoring").hide()
-			%PuzzleBrowser.open(true)
-		"test_player": puzzle_session.test_player(); modal_closed()
-		"return_editor": puzzle_session.return_editor(); modal_closed()
-		"preserve_solution":
-			if puzzle_session.preserve_solution(): %HUD.show_status("Solution saved")
-			modal_closed()
-		"reference": puzzle_session.restore_reference(); modal_closed()
+			if not workspace.session.is_authoring: return
+			guard(func(): workspace.authoring.hide(); %PuzzleBrowser.open(true))
 		"settings":
-			# Preserve an active modal rather than opening a second exclusive Window.
-			for dialog in [%PuzzleBrowser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog,scenery_dialog]:
+			for dialog in [%PuzzleBrowser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog,workspace.scenery_dialog]:
 				if dialog and dialog.visible and dialog.exclusive: return
 			open_modal()
 			settings_dialog.popup_centered()
-		"new": guard(new_track)
+		"new": guard(workspace.session.sandbox)
 		"main": guard(show_main_menu)
-		"quit": guard(func():get_tree().quit())
+		"quit": guard(func(): get_tree().quit())
 
-func enter_sandbox() -> void:
+func show_workspace() -> void:
 	if music_context != "world":
-		sandbox.play_music()
+		workspace.world.play_music()
 		music_context = "world"
 	%MainMenu.showcase.set_active(false)
-	sandbox.show()
 	%MainMenu.hide()
-	%HUD.show()
-	sandbox.build.enabled=sandbox.simulation.state==SimulationManager.State.BUILD
-	sandbox.camera.enabled=true
-	sandbox.build.refresh_grid()
-	%HUD.refresh()
-	update_name()
 
 func show_main_menu() -> void:
 	if music_context != "menu":
 		%MainMenu.play_music()
 		music_context = "menu"
-	sandbox.simulation.reset()
-	sandbox.build.cancel()
-	sandbox.build.enabled=false
-	sandbox.camera.enabled=false
-	sandbox.build.refresh_grid()
-	%HUD.hide()
+	workspace.deactivate()
 	%MainMenu.show()
-	%MainMenu.get_node("%Sandbox").text="Continue building" if not sandbox.build.pieces.is_empty() else "Sandbox"
-	sandbox.hide()
+	%MainMenu.get_node("%Sandbox").text = "Continue building" if workspace.session.is_sandbox and not workspace.world.build.pieces.is_empty() else "Sandbox"
 	%MainMenu.showcase.set_active(true)
 
-func new_track(enter_world: bool = true) -> void:
-	if puzzle_session: puzzle_session.sandbox()
-	sandbox.load_construction([])
-	track_name="Untitled track"
-	track_id=""
-	if enter_world:
-		enter_sandbox()
-
-func load_track(id: String, example: bool) -> void:
-	if puzzle_session: puzzle_session.sandbox()
-	var example_path = "res://resources/menu_machine.json" if id == "menu-machine" else "res://resources/examples/"+id+".json"
-	var data=serializer.decode(FileAccess.get_file_as_string(example_path)) if example else serializer.load_track(id)
-	if data.is_empty(): show_message(serializer.last_error); return
-	sandbox.load_construction(data.pieces)
-	if example and id == "menu-machine":
-		# Use the same open-ended physical circulation as the menu showcase.
-		sandbox.simulation.puzzle = {"objectives": [], "time_limit": 3600}
-	track_name=data.name
-	track_id="" if example else id
-	enter_sandbox()
-	if not serializer.warnings.is_empty(): show_message("\n".join(serializer.warnings))
-
 func guard(action: Callable) -> void:
-	if puzzle_session and puzzle_session.mode in ["campaign", "test"]:
+	if workspace.session.is_playing:
 		action.call()
 		modal_closed()
 		return
-	if puzzle_session and puzzle_session.mode == "editor" and sandbox.build.dirty:
-		if not puzzle_session.save(): show_message("Could not save the puzzle draft"); return
+	if workspace.session.is_authoring and workspace.world.build.dirty:
+		if not workspace.session.save_draft(): show_message("Could not save the puzzle draft"); return
 		action.call()
 		modal_closed()
 		return
-	if sandbox.build.dirty:
+	if workspace.world.build.dirty:
 		pending_action=action
 		open_modal()
 		unsaved_dialog.popup_centered()
@@ -194,7 +136,7 @@ func guard(action: Callable) -> void:
 
 func prompt_save(as_copy: bool) -> void:
 	save_as=as_copy
-	name_field.text=track_name+" copy" if as_copy else track_name
+	name_field.text=workspace.session.track_name+" copy" if as_copy else workspace.session.track_name
 	open_modal()
 	name_dialog.popup_centered()
 	name_field.grab_focus()
@@ -202,45 +144,26 @@ func prompt_save(as_copy: bool) -> void:
 
 func finish_save() -> void:
 	if name_field.text.strip_edges().is_empty(): show_message("Please enter a track name"); after_save=Callable(); return
-	var old_name=track_name
-	var old_id=track_id
-	track_name=name_field.text.strip_edges()
-	if save_as: track_id=""
-	if not save_current(): track_name=old_name; track_id=old_id; after_save=Callable(); return
+	var id := "" if save_as else workspace.session.track_id
+	if not workspace.session.save_track(name_field.text, id): after_save=Callable(); return
 	run_after_save()
 	modal_closed()
 
-func save_current() -> bool:
-	var id=serializer.save_track(track_name,sandbox.build.snapshot(),track_id)
-	if id.is_empty(): show_message(serializer.last_error); return false
-	track_id=id
-	sandbox.build.dirty=false
-	update_name()
-	%HUD.show_status("Track saved")
-	return true
-
 func run_after_save() -> void:
-	if after_save.is_valid() and not sandbox.build.dirty:
+	if after_save.is_valid() and not workspace.world.build.dirty:
 		var action=after_save
 		after_save=Callable()
 		pending_action=Callable()
 		action.call()
 
-func update_name() -> void:
-	%HUD.set_track_name(track_name,not track_id.is_empty())
-
 func open_modal() -> void:
-	sandbox.build.enabled=false
-	sandbox.camera.enabled=false
-	if sandbox.build.ghost: sandbox.build.ghost.visible=false
+	workspace.suspend_input()
 
 func modal_closed() -> void:
-	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,%PuzzleBrowser,scenery_dialog]:
+	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,%PuzzleBrowser]:
 		if dialog and dialog.visible: return
-	sandbox.build.enabled=%HUD.visible and sandbox.simulation.state==SimulationManager.State.BUILD
-	sandbox.camera.enabled=%HUD.visible
-	sandbox.build.refresh_grid()
-	%HUD.refresh()
+	if workspace.has_modal(): return
+	workspace.resume_input()
 
 func show_message(text: String) -> void:
 	open_modal()
@@ -252,16 +175,9 @@ func _notification(what: int) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_P and not ConstructionInput.typing(get_viewport()):
-		guard(func(): puzzle_session.editor())
+		guard(workspace.session.editor)
 		get_viewport().set_input_as_handled()
 		return
-	if ConstructionInput.typing(get_viewport()) or not %HUD.visible: return
-	if event.is_action_pressed("build_save_track",false,true): handle_action("save")
-	elif event.is_action_pressed("build_test_track",false,true):
-		if sandbox.simulation.state in [SimulationManager.State.RUNNING,SimulationManager.State.PAUSED]: sandbox.simulation.toggle_pause()
-		elif sandbox.camera.enabled:
-			if puzzle_session.mode=="editor": puzzle_session.test_player()
-			else: sandbox.simulation.start()
 
 func save_settings() -> void:
 	if settings.save() != OK: show_message("Couldn't save settings.")
@@ -273,13 +189,13 @@ func load_settings() -> void:
 
 func qa_summary() -> Dictionary:
 	var hovered=get_viewport().gui_get_hovered_control()
-	return {"pieces":sandbox.build.pieces.size(),"selected":sandbox.build.selection.size(),"operation":sandbox.build.operation,"candidates":sandbox.build.candidates.size(),"state":sandbox.simulation.state,"dirty":sandbox.build.dirty,"track":track_name,"catalog":catalog.REGISTRY.size(),"height":sandbox.build.height,"main_menu":%MainMenu.visible,"ghost":sandbox.build.ghost!=null and sandbox.build.ghost.visible,"valid":sandbox.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
+	return {"pieces":workspace.world.build.pieces.size(),"selected":workspace.world.build.selection.size(),"operation":workspace.world.build.operation,"candidates":workspace.world.build.candidates.size(),"state":workspace.world.simulation.state,"dirty":workspace.world.build.dirty,"track":workspace.session.track_name,"catalog":workspace.catalog.REGISTRY.size(),"height":workspace.world.build.height,"main_menu":%MainMenu.visible,"ghost":workspace.world.build.ghost!=null and workspace.world.build.ghost.visible,"valid":workspace.world.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
 
 func qa_example(id: String) -> void:
-	load_track(id,true)
+	workspace.session.load_track(id,true)
 
 func qa_test() -> bool:
-	return sandbox.simulation.start()
+	return workspace.world.simulation.start()
 
 func qa_resolution(width: int, height: int) -> Dictionary:
 	get_window().size=Vector2i(width,height)
@@ -291,16 +207,16 @@ func qa_resolution(width: int, height: int) -> Dictionary:
 	return {"window":str(get_window().size),"viewport":str(get_viewport().get_visible_rect().size)}
 
 func qa_choose(id: String) -> void:
-	sandbox.build.choose(catalog.get_piece(id))
+	workspace.world.build.choose(workspace.catalog.get_piece(id))
 
 func qa_select(index: int) -> void:
-	if index>=0 and index<sandbox.build.pieces.size(): sandbox.build.select(sandbox.build.pieces[index])
+	if index>=0 and index<workspace.world.build.pieces.size(): workspace.world.build.select(workspace.world.build.pieces[index])
 
 func qa_showcase() -> Dictionary:
 	var showcase=%MainMenu.showcase
-	return {"active":showcase.active,"loops":showcase.loops,"state":showcase.world_manager.simulation.state,"elapsed":showcase.world_manager.simulation.elapsed,"camera_time":showcase.animation.current_animation_position,"separate_world":showcase.world_manager.get_world_3d()!=sandbox.get_world_3d(),"position":str(showcase.world_manager.simulation.marble.position) if showcase.world_manager.simulation.marble else "none"}
+	return {"active":showcase.active,"loops":showcase.loops,"state":showcase.world_manager.simulation.state,"elapsed":showcase.world_manager.simulation.elapsed,"camera_time":showcase.animation.current_animation_position,"separate_world":showcase.world_manager.get_world_3d()!=workspace.world.get_world_3d(),"position":str(showcase.world_manager.simulation.marble.position) if showcase.world_manager.simulation.marble else "none"}
 
 func qa_screen(index: int) -> Dictionary:
-	var piece=sandbox.build.pieces[index]
-	var screen=sandbox.camera.unproject_position(piece.position+Vector3(0,0.25,0))
+	var piece=workspace.world.build.pieces[index]
+	var screen=workspace.world.camera.unproject_position(piece.position+Vector3(0,0.25,0))
 	return {"screen":[screen.x,screen.y],"position":str(piece.position),"piece":String(piece.definition.id)}
