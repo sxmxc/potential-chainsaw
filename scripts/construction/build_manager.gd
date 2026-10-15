@@ -42,8 +42,6 @@ var valid: bool = false
 var is_snapped: bool = false
 var validation_message: String = ""
 var grid_mesh: MeshInstance3D
-var contact_marker: MeshInstance3D
-var connector_markers: Node3D
 var targets: Array[Dictionary] = []
 var candidates: Array[Dictionary] = []
 var candidate_key: String = ""
@@ -70,20 +68,6 @@ func _ready() -> void:
 	cursor_position=get_viewport().get_mouse_position()
 	grid_mesh=MeshInstance3D.new()
 	add_child(grid_mesh)
-	connector_markers=Node3D.new()
-	add_child(connector_markers)
-	contact_marker=MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius=0.055
-	sphere.height=0.11
-	contact_marker.mesh=sphere
-	var material := StandardMaterial3D.new()
-	material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.no_depth_test=true
-	material.albedo_color=Color("55e4ba")
-	contact_marker.material_override=material
-	contact_marker.hide()
-	add_child(contact_marker)
 	refresh_grid()
 
 func snapshot(include_environment: bool = false) -> Array:
@@ -109,7 +93,7 @@ func restore(data: Array) -> void:
 		var definition=catalog.get_piece(item.piece)
 		if not definition or (definition.authoring_only and not authoring): continue
 		spawn(definition,Transform3D(Basis(Vector3.UP,int(item.rotation)*PI/2),Vector3(item.position[0],item.position[1],item.position[2])),item.uid,item.get("config",{}))
-	refresh_connectors()
+	refresh_targets()
 	changed.emit()
 
 func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = "", config: Dictionary = {}) -> BuildingPiece:
@@ -154,7 +138,7 @@ func make_ghost() -> void:
 		preview.visible=false
 		ghosts.append(preview)
 	ghost=ghosts[0]
-	refresh_connectors()
+	refresh_targets()
 
 func select(piece: BuildingPiece) -> void:
 	var values: Array[BuildingPiece] = []
@@ -170,7 +154,7 @@ func set_selection(values: Array[BuildingPiece]) -> void:
 	selected=selection[0] if not selection.is_empty() else null
 	for piece in selection: piece.tint(Color(1,0.78,0.25,0.4))
 	selection_changed.emit(selected)
-	refresh_connectors()
+	refresh_targets()
 
 func select_connected(piece: BuildingPiece) -> void:
 	set_selection(snap.connected_section(piece, pieces.filter(ConstructionSelection.editable)))
@@ -183,12 +167,11 @@ func set_connect_mode(active: bool) -> void:
 	if active and not enabled: return
 	cancel()
 	connect_mode = active
-	refresh_connectors()
+	refresh_targets()
 	options_changed.emit()
 
 func cancel() -> void:
 	connect_mode = false
-	if contact_marker: contact_marker.hide()
 	for preview in ghosts:
 		if is_instance_valid(preview): preview.queue_free()
 	ghosts.clear()
@@ -211,7 +194,7 @@ func cancel() -> void:
 	direct_drag=false
 	box_active=false
 	marquee_changed.emit(Rect2(),false)
-	refresh_connectors()
+	refresh_targets()
 	options_changed.emit()
 
 func height_step(fine: bool = false) -> float:
@@ -254,34 +237,11 @@ func refresh_grid() -> void:
 	grid_mesh.position.y=height+0.006
 	grid_mesh.visible=grid_visible and enabled
 
-func refresh_connectors() -> void:
-	if not connector_markers: return
-	for child in connector_markers.get_children():
-		connector_markers.remove_child(child)
-		child.queue_free()
-	targets=snap.exposed(pieces,moving_group)
-	if not snapping or not enabled or connect_mode: return
-	for target in targets:
-		if not chosen and target.piece not in selection: continue
-		var marker=MeshInstance3D.new()
-		var sphere=SphereMesh.new()
-		sphere.radius=0.065
-		sphere.height=0.13
-		marker.mesh=sphere
-		marker.position=target.point
-		var material=StandardMaterial3D.new()
-		material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
-		material.albedo_color=Color("80b9af")
-		marker.material_override=material
-		marker.set_meta("target_key",target.key)
-		connector_markers.add_child(marker)
+func refresh_targets() -> void:
+	targets = snap.exposed(pieces, moving_group)
 
 func _process(_delta: float) -> void:
-	if not enabled:
-		contact_marker.hide()
-		return
-	if is_instance_valid(ghost): update_preview()
-	update_marker_feedback()
+	if enabled and is_instance_valid(ghost): update_preview()
 
 func plane_point(screen: Vector2, elevation: float) -> Variant:
 	var origin=camera.project_ray_origin(screen)
@@ -294,7 +254,6 @@ func update_preview() -> void:
 	if not chosen or ghosts.is_empty(): return
 	if get_viewport().gui_get_hovered_control()!=null or camera.drag_button!=0:
 		for preview in ghosts: preview.hide()
-		contact_marker.hide()
 		return
 	var preview_height=movement_height
 	var height_placement=operation=="place" and chosen.ground_placement and not chosen.height_setting.is_empty()
@@ -341,10 +300,6 @@ func update_preview() -> void:
 	show_status(message)
 
 func apply_preview() -> void:
-	contact_marker.visible=is_snapped and not candidates.is_empty()
-	if contact_marker.visible:
-		contact_marker.position=candidates[candidate_index()].point
-		contact_marker.material_override.albedo_color=Color("55e4ba") if valid else Color("ff5660")
 	for index in ghosts.size():
 		ghosts[index].transform=proposed*preview_items[index].local
 		ghosts[index].visible=true
@@ -360,15 +315,6 @@ func cycle_candidate() -> void:
 	candidate_key=candidates[(candidate_index()+1)%candidates.size()].key
 	candidate_cycled=true
 	update_preview()
-
-func update_marker_feedback() -> void:
-	for marker in connector_markers.get_children():
-		var key: String=marker.get_meta("target_key")
-		var active: bool=key==sticky_target
-		var hovered: bool=false
-		if not camera.is_position_behind(marker.position): hovered=camera.unproject_position(marker.position).distance_to(cursor_position)<snap.target_radius
-		marker.scale=Vector3.ONE*(1.6 if active else (1.3 if hovered else 1.0))
-		marker.material_override.albedo_color=Color("55e4ba") if active else (Color("ffd17a") if hovered else Color("80b9af"))
 
 func commit() -> void:
 	if not enabled or not is_instance_valid(ghost) or not ghost.visible or not valid: return
@@ -401,7 +347,7 @@ func commit() -> void:
 		candidate_key=""
 		candidate_cycled=false
 		sticky_target=""
-		refresh_connectors()
+		refresh_targets()
 	_record_edit(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
 
 func _record_edit(before: Array, label: String) -> void:
@@ -413,7 +359,7 @@ func _record_edit(before: Array, label: String) -> void:
 	# The validated edit is already applied; only redo should restore its snapshot.
 	history.commit_action(false)
 	dirty=true
-	refresh_connectors()
+	refresh_targets()
 	changed.emit()
 
 func configure_selected(config: Dictionary, label: String) -> bool:
@@ -592,7 +538,7 @@ func restore_history(data: Array) -> void:
 		if piece.instance_id in ids: restored.append(piece)
 	set_selection(restored)
 	connect_mode = was_connecting
-	refresh_connectors()
+	refresh_targets()
 	options_changed.emit()
 
 func frame_all() -> void:
@@ -719,7 +665,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("build_redo",false,true): redo()
 		elif event.is_action_pressed("build_select_tool",false,true): cancel()
 		elif event.is_action_pressed("build_grid",false,true): grid_visible=not grid_visible; refresh_grid(); options_changed.emit()
-		elif event.is_action_pressed("build_snap",false,true): snapping=not snapping; refresh_connectors(); options_changed.emit()
+		elif event.is_action_pressed("build_snap",false,true): snapping=not snapping; options_changed.emit()
 		elif event.is_action_pressed("build_height_up_fine",false,true): set_height(height+height_step(true))
 		elif event.is_action_pressed("build_height_down_fine",false,true): set_height(height-height_step(true))
 		elif event.is_action_pressed("build_height_up",false,true): set_height(height+height_step())

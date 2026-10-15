@@ -6,7 +6,7 @@ var build: BuildManager
 var exclusions: Array[Control] = []
 
 func _process(_delta: float) -> void:
-	if build and build.enabled: queue_redraw()
+	if build: queue_redraw()
 
 func set_marquee(value: Rect2, shown: bool) -> void:
 	rectangle=value
@@ -39,3 +39,13 @@ func _draw() -> void:
 		draw_arc(screen,radius,0,TAU,32,color,1.5,true)
 		draw_line(screen-Vector2(3,0),screen+Vector2(3,0),color,1.5,true)
 		draw_line(screen-Vector2(0,3),screen+Vector2(0,3),color,1.5,true)
+	# Surface snaps have no connector handle. Show the chosen contact for both
+	# surfaces and connectors through this same presentation owner.
+	if not is_instance_valid(build.ghost) or not build.ghost.visible or not build.is_snapped or build.candidates.is_empty(): return
+	var point: Vector3 = build.candidates[build.candidate_index()].point
+	if build.camera.is_position_behind(point): return
+	var screen := build.camera.unproject_position(point)
+	for control in exclusions:
+		if control.is_visible_in_tree() and control.get_global_rect().has_point(screen): return
+	var color := get_theme_color("connector_active" if build.valid else "connector_invalid", "ConstructionOverlay")
+	draw_circle(screen, get_theme_constant("contact_radius", "ConstructionOverlay"), color, true, -1, true)

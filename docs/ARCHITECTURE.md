@@ -51,6 +51,8 @@ Autoloads are `SoundManager`, `PhantomCameraManager`, `SupabaseClient`, and `Ste
 
 Saved UI scenes under `scenes/ui/` and `resources/sandbox_theme.tres` own layout/styling. WorkspaceHUD binds shared controls; the selection inspector owns piece settings and permissions; the Connect tool owns mechanism relationships; the authoring drawer owns definition-wide data. Toolbars emit actions. See [UI design](UI_DESIGN.md).
 
+`SelectionOverlay` owns connector handles and the active snap contact, projected from BuildManager's targets and placement candidates. BuildManager refreshes exposed targets after construction/group changes; it creates no connector presentation nodes. Handle and contact colors/sizes come from the shared theme, and the overlay clears them when construction input or snapping is disabled.
+
 `SimulationCamera` coordinates marble selection and `scenes/camera/marble_chase.tscn`. Phantom Camera owns the rendered transform; the construction camera retains the free-view pose. Chase targets follow motion rather than marble rotation. Stopping, reset, completion, or target loss restores the free view. Spring-arm clearance can still leave a close view obstructed inside enclosed mechanisms.
 
 The menu showcase has a separate SubViewport/World3D and loads `resources/menu_machine.json` through the same construction/simulation systems. AnimationPlayer provides its wide motion; `MenuCameraDirector` schedules detail/chase shots on separate host layers. GameManager switches music at menu/workspace transitions because both worlds stay loaded. Showcase simulation must not write player constructions or progression.

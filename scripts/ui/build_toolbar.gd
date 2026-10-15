@@ -19,7 +19,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	%PlacementRotate.pressed.connect(build.rotate_piece)
 	%Library.pressed.connect(func():library_toggled.emit())
 	%Grid.pressed.connect(func():build.grid_visible=not build.grid_visible; build.refresh_grid(); build.options_changed.emit())
-	%Snap.pressed.connect(func():build.snapping=not build.snapping; build.refresh_connectors(); build.options_changed.emit())
+	%Snap.pressed.connect(func():build.snapping=not build.snapping; build.options_changed.emit())
 	%Lower.pressed.connect(func():build.set_height(build.height-build.height_step(Input.is_key_pressed(KEY_SHIFT))))
 	%Raise.pressed.connect(func():build.set_height(build.height+build.height_step(Input.is_key_pressed(KEY_SHIFT))))
 	%Ground.pressed.connect(func():build.set_height(0.0))

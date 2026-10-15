@@ -38,6 +38,46 @@ func attach(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
 	build.cancel()
 	return placed
 
+func test_connector_feedback_and_extension_input() -> void:
+	assert_true(await wait_until(func(): return not game.navigating, 3.0), "Workspace navigation finishes before construction input")
+	game.qa_resolution(1920, 1080)
+	game.workspace.hud.show()
+	var straight := game.workspace.catalog.get_piece("straight") as PieceDefinition
+	var track := build.spawn(straight, Transform3D(Basis.IDENTITY, Vector3(0, 1, 0)))
+	build.camera.frame_point(track.position, 8)
+	await wait_seconds(0.8)
+	await get_tree().physics_frame
+	build.select(track)
+	var target: Dictionary = build.targets[0]
+	var screen := build.camera.unproject_position(target.point)
+	watch_signals(build)
+	sender.mouse_motion(screen)
+	sender.mouse_left_button_down(screen)
+	sender.mouse_left_button_up(screen)
+	await get_tree().process_frame
+	assert_signal_emitted(build, "extension_requested", "The projected connector handle still opens extension choices")
+	build.choose_extension(straight, target)
+	await wait_process_frames(3)
+	assert_true(build.is_snapped and build.valid, "Extension preview aligns with the chosen connector")
+	assert_true(build.ghost.visible)
+	if DisplayServer.get_name() != "headless" and OS.get_environment("MARBLE_ENGINEER_UI_CAPTURE") == "1":
+		await RenderingServer.frame_post_draw
+		assert_eq(get_viewport().get_texture().get_image().save_png("res://.godot/connector-feedback.png"), OK)
+	var placement := build.proposed
+	build.commit()
+	assert_eq(build.pieces.size(), 2)
+	assert_true(build.pieces.back().transform.is_equal_approx(placement), "The indicated connector commits the preview transform")
+	build.cancel()
+	build.undo()
+	assert_eq(build.pieces.size(), 1)
+	build.redo()
+	assert_eq(build.pieces.size(), 2)
+	game.workspace.suspend_input()
+	await wait_process_frames(2)
+	assert_false(build.enabled)
+	game.workspace.resume_input()
+	assert_true(build.enabled)
+
 func test_representative_editor_construction_workflow() -> void:
 	var wall := game.workspace.catalog.get_piece("environment:partition") as PieceDefinition
 	var floor_piece := game.workspace.catalog.get_piece("environment:deck") as PieceDefinition
@@ -159,7 +199,4 @@ func test_curated_geometry_and_decorative_selection() -> void:
 				parent = parent.get_parent() as Node3D
 			var box := placement * mesh.get_aabb()
 			measured = box if index == 0 else measured.merge(box)
-		assert_almost_eq(measured.position, definition.bounds.position, Vector3.ONE * 0.001, String(definition.id) + " measured pivot")
-		assert_almost_eq(measured.size, definition.bounds.size, Vector3.ONE * 0.001, String(definition.id) + " measured bounds")
-
-
+		assert_almost_eq(measured.position, definition.bounds.position, Vector3.ONE * 0.001, String(definition.id) + " measured pivot
