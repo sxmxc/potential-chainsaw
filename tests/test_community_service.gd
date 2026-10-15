@@ -4,14 +4,18 @@ const Client = preload("res://addons/supabase_client/supabase_client.gd")
 
 class NoSteam extends Node:
 	signal connection_changed(connected: bool)
-	var initialized: bool = false
+	var initialized: bool = false:
+		set(value):
+			if initialized == value: return
+			initialized = value
+			connection_changed.emit(value)
 
-class TicketSteam extends Node:
-	signal connection_changed(connected: bool)
-	var initialized: bool = true
+class TicketSteam extends NoSteam:
 	var online: bool = true
 	var released: Array[int] = []
 	var identity: String = ""
+	func _init() -> void:
+		initialized = true
 	func request_web_ticket(value: String) -> Dictionary:
 		identity = value
 		return {"ok": true, "handle": 42, "ticket": "aabb"}
@@ -22,6 +26,9 @@ class FunctionClient extends Node:
 	var headers: Dictionary = {}
 	var used_supabase_auth: bool = false
 	var result: Dictionary = {"ok":true,"status":200,"data":{"api_version":1,"ok":true,"data":{"puzzles":[]}},"error":{}}
+	func sign_out() -> Dictionary:
+		authentication_changed.emit()
+		return CommunityService.success()
 	func invoke_function(_function: String, _body: Variant, _method: int, authenticated: bool, _path: String, extra: Dictionary = {}) -> Dictionary:
 		headers = extra
 		used_supabase_auth = authenticated
@@ -44,6 +51,12 @@ func test_steam_protected_operations_use_tickets_without_supabase_sessions() -> 
 	assert_eq(transport.headers, {"x-steam-ticket":"aabb"})
 	assert_false(transport.used_supabase_auth)
 	assert_eq(ticket_source.released, [42])
+	ticket_source.initialized = false
+	assert_false(adapter.steam_verified, "Connection changes invalidate the verified Steam identity")
+	ticket_source.initialized = true
+	watch_signals(adapter)
+	assert_true((await adapter.sign_out()).ok)
+	assert_signal_emitted(adapter, "authentication_changed", "Client authentication changes reach the adapter")
 	transport.result = {"ok":false,"status":0,"data":{},"error":{"code":"network","message":"Offline"}}
 	assert_false((await adapter.unpublish_puzzle("some-id")).ok)
 	assert_eq(ticket_source.released, [42, 42], "Failures release the ticket too")

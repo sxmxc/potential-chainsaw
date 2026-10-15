@@ -44,8 +44,8 @@ func _draw() -> void:
 	if not is_instance_valid(build.ghost) or not build.ghost.visible or not build.is_snapped or build.candidates.is_empty(): return
 	var point: Vector3 = build.candidates[build.candidate_index()].point
 	if build.camera.is_position_behind(point): return
-	var screen := build.camera.unproject_position(point)
+	var contact_screen := build.camera.unproject_position(point)
 	for control in exclusions:
-		if control.is_visible_in_tree() and control.get_global_rect().has_point(screen): return
-	var color := get_theme_color("connector_active" if build.valid else "connector_invalid", "ConstructionOverlay")
-	draw_circle(screen, get_theme_constant("contact_radius", "ConstructionOverlay"), color, true, -1, true)
+		if control.is_visible_in_tree() and control.get_global_rect().has_point(contact_screen): return
+	var contact_color := get_theme_color("connector_active" if build.valid else "connector_invalid", "ConstructionOverlay")
+	draw_circle(contact_screen, get_theme_constant("contact_radius", "ConstructionOverlay"), contact_color, true, -1, true)
