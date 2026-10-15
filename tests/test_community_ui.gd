@@ -5,6 +5,10 @@ class OfflineBackend extends Node:
 	var wait_for_response: bool = false
 	var authenticated: bool = false
 	var credentials: Array[String] = []
+	var automatic_auth: bool = false
+	func uses_automatic_auth() -> bool: return automatic_auth
+	func get_my_puzzles(_filters: Dictionary) -> Dictionary:
+		return CommunityService.failure("sign_in_required", "Steam authentication is unavailable.")
 	func is_signed_in() -> bool: return authenticated
 	func sign_in(email: String, password: String) -> Dictionary:
 		credentials = [email, password]
@@ -79,6 +83,27 @@ func test_password_form_signs_in_and_clears_credentials() -> void:
 	online.get_node("%Password").text = "unsent-password"
 	browser.close()
 	assert_eq(online.get_node("%Password").text, "")
+
+func test_automatic_auth_hides_email_form_even_when_verification_fails() -> void:
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	var service: CommunityService = game.community_service
+	service.backend.queue_free()
+	var adapter := OfflineBackend.new()
+	adapter.automatic_auth = true
+	service.add_child(adapter)
+	service.backend = adapter
+	var browser: Window = game.get_node("%PuzzleBrowser")
+	var online: VBoxContainer = browser.get_node("%Network")
+	browser.open(false, true)
+	browser.get_node("%OnlineBrowse").pressed.emit()
+	assert_false(online.get_node("%Account").visible)
+	assert_false(online.get_node("%SignIn").visible)
+	online.get_node("%Mine").button_pressed = true
+	assert_false(online.get_node("%SignIn").visible)
+	assert_eq(online.get_node("%Feedback").text, "Steam authentication is unavailable.")
+	browser.close()
 
 func test_online_publication_uses_existing_local_revision_lifecycle() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()

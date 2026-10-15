@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { compatibility, MAX_BYTES, validatePuzzle } from "./validation.ts";
+import { SteamAuthError, verifySteamTicket } from "./steam_auth.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, apikey, content-type, x-steam-ticket",
   "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
 };
 function response(status: number, data: unknown = {}, code = "", message = "") {
@@ -64,6 +66,15 @@ export async function handleRequest(req: Request): Promise<Response> {
     const path = route.slice(3),
       id = path.startsWith("puzzles/") ? path.slice(8) : "";
     const publicRead = req.method === "GET" && (path === "puzzles" || uuid(id));
+    const protectedRoute = (req.method === "GET" && path === "mine") ||
+      (req.method === "POST" && path === "puzzles") ||
+      (req.method === "DELETE" && uuid(id));
+    if (!publicRead && !protectedRoute) {
+      return response(404, {}, "not_found", "This API route does not exist.");
+    }
+    if (Number(req.headers.get("content-length") ?? 0) > MAX_BYTES) {
+      return response(413, {}, "too_large", "Request is too large.");
+    }
     const authHeader = req.headers.get("authorization") ?? "";
     const keys = JSON.parse(Deno.env.get("SUPABASE_PUBLISHABLE_KEYS") ?? "{}");
     const secrets = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") ?? "{}");
@@ -73,27 +84,40 @@ export async function handleRequest(req: Request): Promise<Response> {
       auth: { persistSession: false, autoRefreshToken: false },
       global: { headers: authHeader ? { Authorization: authHeader } : {} },
     });
-    let owner = "";
+    let owner = "", steamOwner = "";
     if (!publicRead) {
-      if (!authHeader.startsWith("Bearer ")) {
-        return response(
-          401,
-          {},
-          "sign_in_required",
-          "Sign in to publish or manage puzzles.",
-        );
+      const ticket = req.headers.get("x-steam-ticket");
+      if (ticket !== null) {
+        steamOwner = await verifySteamTicket(ticket);
+      } else {
+        if (!authHeader.startsWith("Bearer ")) {
+          return response(
+            401,
+            {},
+            "sign_in_required",
+            "Sign in to publish or manage puzzles.",
+          );
+        }
+        const { data, error } = await client.auth.getUser(authHeader.slice(7));
+        if (error || !data.user || data.user.is_anonymous) {
+          return response(
+            401,
+            {},
+            "sign_in_required",
+            "Sign in again to continue.",
+          );
+        }
+        owner = data.user.id;
       }
-      const { data, error } = await client.auth.getUser(authHeader.slice(7));
-      if (error || !data.user || data.user.is_anonymous) {
-        return response(
-          401,
-          {},
-          "sign_in_required",
-          "Sign in again to continue.",
-        );
-      }
-      owner = data.user.id;
     }
+    const admin = () =>
+      createClient(
+        base,
+        secrets.default ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        {
+          auth: { persistSession: false, autoRefreshToken: false },
+        },
+      );
     if (req.method === "GET" && (path === "puzzles" || path === "mine")) {
       const offset = Number(url.searchParams.get("offset") ?? 0),
         search = url.searchParams.get("search") ?? "";
@@ -101,13 +125,19 @@ export async function handleRequest(req: Request): Promise<Response> {
         !Number.isInteger(offset) || offset < 0 || offset > 10000 ||
         search.length > 100
       ) return response(400, {}, "invalid_request", "Invalid browse filters.");
-      let query = client.from("community_puzzles").select(metadataColumns)
+      let query = (path === "mine" && steamOwner ? admin() : client).from(
+        "community_puzzles",
+      ).select(metadataColumns)
         .order("published_at", { ascending: false }).order("id").range(
           offset,
           offset + 20,
         );
-      if (path === "mine") query = query.eq("owner_id", owner);
-      else {query = query.eq("published", true).eq(
+      if (path === "mine") {
+        query = query.eq(
+          steamOwner ? "steam_owner_id" : "owner_id",
+          steamOwner || owner,
+        );
+      } else {query = query.eq("published", true).eq(
           "compatibility",
           url.searchParams.get("compatibility") ?? compatibility,
         );}
@@ -189,14 +219,10 @@ export async function handleRequest(req: Request): Promise<Response> {
             : (error as Error).message,
         );
       }
-      // Privileged client is server-only. Identity comes exclusively from Auth.
-      const admin = createClient(
-        base,
-        secrets.default ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-        { auth: { persistSession: false, autoRefreshToken: false } },
-      );
-      const { data, error } = await admin.rpc("community_publish", {
-        p_owner: owner,
+      // Only server-verified Steam/Auth identities can reach privileged writes.
+      const { data, error } = await admin().rpc("community_publish", {
+        p_owner: owner || null,
+        p_steam_owner: steamOwner || null,
         p_definition: puzzle,
         p_compatibility: compatibility,
       });
@@ -231,14 +257,12 @@ export async function handleRequest(req: Request): Promise<Response> {
       });
     }
     if (req.method === "DELETE" && uuid(id)) {
-      const admin = createClient(
-        base,
-        secrets.default ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-        { auth: { persistSession: false, autoRefreshToken: false } },
-      );
-      const { data, error } = await admin.from("community_puzzles").update({
+      const { data, error } = await admin().from("community_puzzles").update({
         published: false,
-      }).eq("id", id).eq("owner_id", owner).select("id");
+      }).eq("id", id).eq(
+        steamOwner ? "steam_owner_id" : "owner_id",
+        steamOwner || owner,
+      ).select("id");
       if (error) {
         return response(
           503,
@@ -258,7 +282,10 @@ export async function handleRequest(req: Request): Promise<Response> {
       return response(200, { id });
     }
     return response(404, {}, "not_found", "This API route does not exist.");
-  } catch {
+  } catch (error) {
+    if (error instanceof SteamAuthError) {
+      return response(error.status, {}, error.code, error.message);
+    }
     return response(
       503,
       {},

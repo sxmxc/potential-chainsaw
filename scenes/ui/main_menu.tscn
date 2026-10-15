@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bj4isw11fl00d"]
 
 [ext_resource type="AudioStream" uid="uid://dy2f265g2gfsg" path="res://assets/audio/songs/menu_song_loop.mp3" id="3_m1kxf"]
+[ext_resource type="Texture2D" uid="uid://bh4b2614yv1c6" path="res://assets/ui/icons/steam.svg" id="5_btxxm"]
+[ext_resource type="Script" uid="uid://boqxowpngew76" path="res://scripts/steam_identity_panel.gd" id="5_wb0q5"]
 [ext_resource type="Script" uid="uid://bjoaq7nk1qf67" path="res://scripts/ui/version_label.gd" id="5_x2yvf"]
 [ext_resource type="Script" uid="uid://ottibv50h24e" path="res://scripts/ui/main_menu.gd" id="Script"]
 [ext_resource type="PackedScene" uid="uid://cs82gsc8c1xb6" path="res://scenes/showcase.tscn" id="Showcase"]
@@ -10,6 +12,10 @@
 shuffle = true
 stream_count = 1
 stream_0 = ExtResource("3_m1kxf")
+
+[sub_resource type="LabelSettings" id="LabelSettings_btxxm"]
+font_size = 12
+font_color = Color(0.76171875, 0.76171875, 0.76171875, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_ar1b5"]
 font_names = PackedStringArray("Cascadia Code PL")
@@ -33,17 +39,18 @@ main_menu_playlist = SubResource("AudioStreamPlaylist_1g8jr")
 layout_mode = 1
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=317578351]
-layout_mode = 0
-anchor_left = 0.08
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 76.0
-offset_right = -24.0
-offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_type_variation = &"MenuCompositionMargin"
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
 
 [node name="Composition" type="HBoxContainer" parent="Margin" unique_id=113436970]
 layout_mode = 2
@@ -51,11 +58,6 @@ mouse_filter = 2
 
 [node name="Left" type="VBoxContainer" parent="Margin/Composition" unique_id=1094415198]
 custom_minimum_size = Vector2(330, 0)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="TopSpace" type="Control" parent="Margin/Composition/Left" unique_id=1892516678]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -131,7 +133,7 @@ theme_type_variation = &"MenuNavigation"
 text = "Example tracks"
 alignment = 0
 
-[node name="Community" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions"]
+[node name="Community" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=1963135793]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
@@ -179,17 +181,62 @@ alignment = 0
 visible = false
 layout_mode = 2
 
-[node name="BottomSpace" type="Control" parent="Margin/Composition/Left" unique_id=184645858]
-visible = false
-layout_mode = 2
-mouse_filter = 2
-
-[node name="Stage" type="Control" parent="Margin/Composition" unique_id=5242842]
+[node name="Right" type="VBoxContainer" parent="Margin/Composition" unique_id=1175463043]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="SteamIdentityPanel" type="PanelContainer" parent="Margin/Composition/Right" unique_id=2013064733]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+offset_transform_position = Vector2(67.125, 0)
+theme_type_variation = &"IdentityPanel"
+script = ExtResource("5_wb0q5")
+
+[node name="MarginContainer" type="MarginContainer" parent="Margin/Composition/Right/SteamIdentityPanel" unique_id=1392606498]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 8
+
+[node name="SteamIdentityHBox" type="HBoxContainer" parent="Margin/Composition/Right/SteamIdentityPanel/MarginContainer" unique_id=1009023616]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SteamAvatar" type="TextureRect" parent="Margin/Composition/Right/SteamIdentityPanel/MarginContainer/SteamIdentityHBox" unique_id=2073951810]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+texture = ExtResource("5_btxxm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SteamUser" type="VBoxContainer" parent="Margin/Composition/Right/SteamIdentityPanel/MarginContainer/SteamIdentityHBox" unique_id=6356827]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="SteamUserLabel" type="Label" parent="Margin/Composition/Right/SteamIdentityPanel/MarginContainer/SteamIdentityHBox/SteamUser" unique_id=1863249085]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SteamUser"
+
+[node name="StatusLabel" type="Label" parent="Margin/Composition/Right/SteamIdentityPanel/MarginContainer/SteamIdentityHBox/SteamUser" unique_id=132704973]
+unique_name_in_owner = true
+layout_mode = 2
+text = "🔴Disconnected"
+label_settings = SubResource("LabelSettings_btxxm")
+
+[node name="Stage" type="Control" parent="Margin/Composition/Right" unique_id=5242842]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="VersionLabel" type="Label" parent="Margin/Composition/Stage" unique_id=2093786749]
+[node name="VersionLabel" type="Label" parent="Margin/Composition/Right/Stage" unique_id=2093786749]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1

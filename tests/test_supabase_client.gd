@@ -17,6 +17,8 @@ func test_standalone_client_needs_only_explicit_configuration() -> void:
 	assert_false(client.is_signed_in())
 	assert_eq((await client.request("https://another-project.test/")).error.code, "invalid_request")
 	assert_eq((await client.request("//another-project.test/")).error.code, "invalid_request")
+	assert_eq((await client.invoke_function("any-function", null, HTTPClient.METHOD_GET, false, "", {"x-custom":"value\r\nInjected: true"})).error.code, "invalid_request")
+	assert_eq((await client.request("/rest/v1/anything", HTTPClient.METHOD_GET, null, false, {"Authorization":"Bearer not-allowed"})).error.code, "invalid_request")
 	client.max_body_bytes = 8
 	assert_eq((await client.request("/functions/v1/anything", HTTPClient.METHOD_POST, {"too_big":true})).error.code, "too_large")
 	client.publishable_key = "sb_secret_never_allowed"

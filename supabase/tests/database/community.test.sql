@@ -1,7 +1,7 @@
 -- Run only against the isolated local stack: supabase test db.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(10);
+select plan(16);
 insert into auth.users(id) values
   ('00000000-0000-0000-0000-000000000001'),
   ('00000000-0000-0000-0000-000000000002');
@@ -28,6 +28,24 @@ set local role authenticated;
 select is((select count(*)::integer from public.community_puzzles),1,'Other user cannot see unpublished puzzles');
 select is((select count(*)::integer from public.community_revisions),1,'Other user cannot see unpublished revisions');
 select throws_ok($$select public.community_publish('00000000-0000-0000-0000-000000000001','{}',repeat('a',64))$$,'42501',null,'Authenticated user cannot impersonate a creator');
+reset role;
+-- Steam rows need no Auth account; UUID-owned rows keep their existing owner.
+select is((select owner_id::text from public.community_puzzles where source_id='published'),
+  '00000000-0000-0000-0000-000000000001','Legacy email ownership is preserved');
+select throws_ok($$insert into public.community_puzzles(owner_id,steam_owner_id,source_id,title,description,difficulty,revision,schema_version,compatibility)
+  values('00000000-0000-0000-0000-000000000001','76561198000000001','ambiguous','Bad','','Workshop',1,2,repeat('a',64))$$,
+  '23514',null,'A puzzle cannot have two ownership identities');
+set local role service_role;
+select lives_ok($$select public.community_publish(null,'{"id":"steam-one","revision":1,"version":2,"name":"Steam test"}',repeat('a',64),'76561198000000001')$$,
+  'Server can publish for a verified SteamID without creating an account');
+select lives_ok($$select public.community_publish(null,'{"id":"steam-one","revision":1,"version":2,"name":"Other Steam test"}',repeat('a',64),'76561198000000002')$$,
+  'Distinct Steam owners can use the same local puzzle ID');
+reset role;
+select is((select count(*)::integer from public.community_puzzles where steam_owner_id is not null and owner_id is null),2,
+  'Steam ownership is separate from legacy UUID ownership');
+set local role authenticated;
+select throws_ok($$select public.community_publish(null,'{}',repeat('a',64),'76561198000000001')$$,
+  '42501',null,'Clients cannot impersonate Steam owners through the RPC');
 reset role;
 select * from finish();
 rollback;

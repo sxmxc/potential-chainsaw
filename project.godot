@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 SoundManager="*uid://b72a2q1fxu5yg"
 PhantomCameraManager="*uid://duq6jhf6unyis"
 SupabaseClient="*uid://brm8nq84bkt8q"
+SteamClient="*uid://cd15icesf0a6f"
 
 [display]
 
@@ -173,6 +174,11 @@ common/physics_interpolation=true
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[steam]
+
+initialization/app_data/app_id=480
+settings/enable_debug=true
 
 [yard]
 

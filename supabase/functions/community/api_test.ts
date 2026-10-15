@@ -1,10 +1,20 @@
 import { handleRequest } from "./index.ts";
+import { compatibility } from "./validation.ts";
 
 async function withConfiguration(run: () => Promise<void>) {
-  const names = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEYS"];
+  const names = [
+    "SUPABASE_URL",
+    "SUPABASE_PUBLISHABLE_KEYS",
+    "SUPABASE_SECRET_KEYS",
+    "STEAM_APP_ID",
+    "STEAM_WEB_API_KEY",
+  ];
   const previous = names.map((name) => Deno.env.get(name));
   Deno.env.set(names[0], "https://example.supabase.co");
   Deno.env.set(names[1], '{"default":"sb_publishable_test"}');
+  Deno.env.set(names[2], '{"default":"sb_secret_test"}');
+  Deno.env.set(names[3], "123456");
+  Deno.env.set(names[4], "test-server-key");
   try {
     await run();
   } finally {
@@ -78,6 +88,108 @@ Deno.test("a publishable key cannot impersonate a user's bearer token", async ()
         401,
         "sign_in_required",
       );
+    } finally {
+      globalThis.fetch = previous;
+    }
+  });
+});
+
+Deno.test("Steam publication and management use only the Valve-verified owner", async () => {
+  await withConfiguration(async () => {
+    const previous = globalThis.fetch;
+    const owner = "76561198000000001";
+    let verification = 0, writes = 0, reads = 0;
+    const id = "10000000-0000-0000-0000-000000000001";
+    globalThis.fetch = async (input, init) => {
+      const url = new URL(String(input));
+      if (url.hostname === "api.steampowered.com") {
+        verification++;
+        return Response.json({
+          response: { params: { result: "OK", steamid: owner } },
+        });
+      }
+      if (url.pathname.endsWith("/rpc/community_publish")) {
+        const body = JSON.parse(String(init?.body));
+        if (body.p_owner !== null || body.p_steam_owner !== owner) {
+          throw new Error("Unverified owner used");
+        }
+        writes++;
+        return Response.json(id);
+      }
+      if (url.pathname.endsWith("/community_puzzles")) {
+        if (
+          url.searchParams.get("steam_owner_id") !== `eq.${owner}` ||
+          url.searchParams.has("owner_id")
+        ) {
+          throw new Error("Missing verified ownership filter");
+        }
+        reads++;
+        // No matching owner: DELETE must fail, not report successful unpublication.
+        return Response.json([]);
+      }
+      throw new Error("Unexpected network request");
+    };
+    try {
+      const fixture = JSON.parse(
+        await Deno.readTextFile(
+          "../../../resources/campaign/01-first-connection.json",
+        ),
+      );
+      for (const key of ["chapter", "order", "prerequisites", "campaign"]) {
+        delete fixture[key];
+      }
+      const result = await handleRequest(
+        new Request("https://example.test/community/v1/puzzles", {
+          method: "POST",
+          headers: {
+            "x-steam-ticket": "bb11",
+            "content-type": "application/json",
+            "x-steam-id": "76561198000000002",
+          },
+          body: JSON.stringify({ puzzle: fixture, compatibility }),
+        }),
+      );
+      if (result.status !== 200 || writes !== 1) {
+        throw new Error("Verified publish failed");
+      }
+      await result.json();
+      const mine = await handleRequest(
+        new Request("https://example.test/community/v1/mine", {
+          headers: { "x-steam-ticket": "bb12" },
+        }),
+      );
+      if (mine.status !== 200) throw new Error("Owned listing failed");
+      await mine.json();
+      await expect(
+        new Request(`https://example.test/community/v1/puzzles/${id}`, {
+          method: "DELETE",
+          headers: { "x-steam-ticket": "bb13" },
+        }),
+        404,
+        "not_found",
+      );
+      if (reads !== 2 || verification !== 3) {
+        throw new Error("Every protected operation needs fresh verification");
+      }
+      await expect(
+        new Request("https://example.test/community/v1/mine", {
+          headers: { "x-steam-ticket": "invalid" },
+        }),
+        401,
+        "authentication_failed",
+      );
+      if (verification !== 3) throw new Error("Malformed ticket reached Valve");
+      await expect(
+        new Request("https://example.test/community/v1/puzzles", {
+          method: "POST",
+          headers: { "x-steam-ticket": "bb14", "content-length": "5000001" },
+        }),
+        413,
+        "too_large",
+      );
+      if (verification !== 3) {
+        throw new Error("Oversized request reached Valve");
+      }
     } finally {
       globalThis.fetch = previous;
     }

@@ -99,14 +99,14 @@ func sign_out() -> Dictionary:
 	return success()
 
 ## JSON endpoints are project-relative; no game routes or envelopes are assumed.
-func invoke_function(function_name: String, body: Variant = null, method: int = HTTPClient.METHOD_POST, authenticated: bool = false, relative_path: String = "") -> Dictionary:
+func invoke_function(function_name: String, body: Variant = null, method: int = HTTPClient.METHOD_POST, authenticated: bool = false, relative_path: String = "", headers: Dictionary = {}) -> Dictionary:
 	if function_name.is_empty() or "/" in function_name or "?" in function_name or "#" in function_name:
 		return failure("invalid_request", "Provide an Edge Function name.")
 	var path := "/functions/v1/" + function_name.uri_encode()
 	if not relative_path.is_empty(): path += "/" + relative_path.trim_prefix("/")
-	return await request(path, method, body, authenticated)
+	return await request(path, method, body, authenticated, headers)
 
-func request(path: String, method: int = HTTPClient.METHOD_GET, body: Variant = null, authenticated: bool = false) -> Dictionary:
+func request(path: String, method: int = HTTPClient.METHOD_GET, body: Variant = null, authenticated: bool = false, headers: Dictionary = {}) -> Dictionary:
 	var generation := session_generation
 	if authenticated:
 		if not is_signed_in(): return failure("sign_in_required", "Sign in to continue.")
@@ -114,16 +114,16 @@ func request(path: String, method: int = HTTPClient.METHOD_GET, body: Variant = 
 			var refreshed := await refresh_session()
 			if not refreshed.ok: return refreshed
 		if generation != session_generation: return failure("cancelled", "The session changed during this request.")
-	var result := await request_http(path, method, body, access_token if authenticated else "")
+	var result := await request_http(path, method, body, access_token if authenticated else "", headers)
 	if generation != session_generation: return failure("cancelled", "The session changed during this request.")
 	if authenticated and result.status == 401:
 		var refreshed := await refresh_session()
 		if not refreshed.ok: return refreshed
-		result = await request_http(path, method, body, access_token)
+		result = await request_http(path, method, body, access_token, headers)
 		if generation != session_generation: return failure("cancelled", "The session changed during this request.")
 	return result
 
-func request_http(path: String, method: int, body: Variant = null, token: String = "") -> Dictionary:
+func request_http(path: String, method: int, body: Variant = null, token: String = "", extra_headers: Dictionary = {}) -> Dictionary:
 	var base := project_url.trim_suffix("/")
 	var local_url := OS.has_feature("editor") and (base.begins_with("http://127.0.0.1:") or base.begins_with("http://localhost:"))
 	if (not base.begins_with("https://") and not local_url) or not publishable_key.begins_with("sb_publishable_"):
@@ -131,6 +131,17 @@ func request_http(path: String, method: int, body: Variant = null, token: String
 	if not path.begins_with("/") or path.begins_with("//") or "\r" in path or "\n" in path:
 		return failure("invalid_request", "Use a project-relative request path.")
 	if requests.size() >= max_concurrent_requests: return failure("busy", "Too many requests. Try again shortly.")
+	var headers := PackedStringArray(["Content-Type: application/json", "apikey: " + publishable_key])
+	var header_bytes := 0
+	for name in extra_headers:
+		if not name is String or not extra_headers[name] is String:
+			return failure("invalid_request", "Headers must contain text names and values.")
+		var value: String = extra_headers[name]
+		if name.is_empty() or not name.replace("-", "").is_valid_ascii_identifier() or name.to_lower() in ["authorization", "apikey", "content-type", "content-length", "host", "connection", "transfer-encoding"] or "\r" in value or "\n" in value:
+			return failure("invalid_request", "Invalid or reserved request header.")
+		header_bytes += name.to_utf8_buffer().size() + value.to_utf8_buffer().size()
+		if header_bytes > 16384: return failure("too_large", "The request headers are too large.")
+		headers.append(name + ": " + value)
 	var payload := JSON.stringify(body) if body != null else ""
 	if payload.to_utf8_buffer().size() > max_body_bytes: return failure("too_large", "The request body is too large.")
 	var request_node := HTTPRequest.new()
@@ -139,7 +150,6 @@ func request_http(path: String, method: int, body: Variant = null, token: String
 	request_node.body_size_limit = max_body_bytes
 	add_child(request_node)
 	requests.append(request_node)
-	var headers := PackedStringArray(["Content-Type: application/json", "apikey: " + publishable_key])
 	if not token.is_empty(): headers.append("Authorization: Bearer " + token)
 	var error := request_node.request(base + path, headers, method, payload)
 	if error != OK:

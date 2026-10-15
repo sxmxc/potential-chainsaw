@@ -2,11 +2,61 @@ extends "res://tests/support/game_test.gd"
 
 const Client = preload("res://addons/supabase_client/supabase_client.gd")
 
+class NoSteam extends Node:
+	signal connection_changed(connected: bool)
+	var initialized: bool = false
+
+class TicketSteam extends Node:
+	signal connection_changed(connected: bool)
+	var initialized: bool = true
+	var online: bool = true
+	var released: Array[int] = []
+	var identity: String = ""
+	func request_web_ticket(value: String) -> Dictionary:
+		identity = value
+		return {"ok": true, "handle": 42, "ticket": "aabb"}
+	func release_web_ticket(handle: int) -> void: released.append(handle)
+
+class FunctionClient extends Node:
+	signal authentication_changed
+	var headers: Dictionary = {}
+	var used_supabase_auth: bool = false
+	var result: Dictionary = {"ok":true,"status":200,"data":{"api_version":1,"ok":true,"data":{"puzzles":[]}},"error":{}}
+	func invoke_function(_function: String, _body: Variant, _method: int, authenticated: bool, _path: String, extra: Dictionary = {}) -> Dictionary:
+		headers = extra
+		used_supabase_auth = authenticated
+		return result
+
+func test_steam_protected_operations_use_tickets_without_supabase_sessions() -> void:
+	var adapter := SupabaseCommunityBackend.new()
+	var ticket_source := TicketSteam.new()
+	var transport := FunctionClient.new()
+	add_child_autoqfree(ticket_source)
+	add_child_autoqfree(transport)
+	adapter.steam = ticket_source
+	adapter.client = transport
+	add_child_autoqfree(adapter)
+	assert_false(adapter.is_signed_in(), "Steam initialization is not backend authentication")
+	assert_true(adapter.uses_automatic_auth())
+	assert_true((await adapter.get_my_puzzles({})).ok)
+	assert_true(adapter.is_signed_in())
+	assert_eq(ticket_source.identity, "marble-engineer-community")
+	assert_eq(transport.headers, {"x-steam-ticket":"aabb"})
+	assert_false(transport.used_supabase_auth)
+	assert_eq(ticket_source.released, [42])
+	transport.result = {"ok":false,"status":0,"data":{},"error":{"code":"network","message":"Offline"}}
+	assert_false((await adapter.unpublish_puzzle("some-id")).ok)
+	assert_eq(ticket_source.released, [42, 42], "Failures release the ticket too")
+	assert_false(adapter.is_signed_in())
+	await adapter.browse_puzzles({}, "")
+	assert_true(transport.headers.is_empty(), "Public browsing never obtains a Steam ticket")
+	assert_eq(ticket_source.released.size(), 2)
+
 func test_hosted_public_browse_when_requested() -> void:
 	if OS.get_environment("MARBLE_ENGINEER_LIVE_COMMUNITY_TEST") != "1":
 		pending("Set MARBLE_ENGINEER_LIVE_COMMUNITY_TEST=1 to check the deployed service")
 		return
-	var service := service_with(SupabaseCommunityBackend.new())
+	var service := service_with(standalone_backend())
 	var result := await service.browse_puzzles()
 	assert_true(result.ok, str(result.error))
 	if not result.ok: return
@@ -41,6 +91,7 @@ class LocalHttpServer extends Node:
 	var buffers: Dictionary = {}
 	var paths: Array[String] = []
 	var bodies: Array[Dictionary] = []
+	var headers: Array[String] = []
 	var invalid_refresh: bool = false
 	var invalid_password: bool = false
 
@@ -60,6 +111,7 @@ class LocalHttpServer extends Node:
 				if header.to_lower().begins_with("content-length:"): content_length = int(header.get_slice(":", 1))
 			var payload: String = buffers[peer].substr(header_end + 4)
 			if payload.to_utf8_buffer().size() < content_length: continue
+			headers.append(buffers[peer].left(header_end))
 			var parsed: Variant = JSON.parse_string(payload) if not payload.is_empty() else {}
 			bodies.append(parsed if parsed is Dictionary else {})
 			var path: String = buffers[peer].get_slice(" ", 1)
@@ -154,7 +206,7 @@ func test_response_errors_do_not_expose_auth_payloads() -> void:
 	assert_true(SupabaseCommunityBackend.decode_envelope(valid).ok)
 
 func test_session_response_validation_and_local_sign_out() -> void:
-	var adapter := SupabaseCommunityBackend.new()
+	var adapter := standalone_backend()
 	adapter.client = Client.new()
 	add_child_autoqfree(adapter.client)
 	add_child_autofree(adapter)
@@ -196,7 +248,7 @@ func test_real_http_concurrency_and_malformed_responses() -> void:
 	var server := LocalHttpServer.new()
 	add_child_autoqfree(server)
 	assert_eq(server.server.listen(0, "127.0.0.1"), OK)
-	var adapter := SupabaseCommunityBackend.new()
+	var adapter := standalone_backend()
 	adapter.client = Client.new()
 	add_child_autoqfree(adapter.client)
 	add_child_autoqfree(adapter)
@@ -211,6 +263,10 @@ func test_real_http_concurrency_and_malformed_responses() -> void:
 	assert_true(responses.any(func(result): return result.data.get("path") == "/first"))
 	assert_true(responses.any(func(result): return result.data.get("path") == "/second"))
 	assert_eq(adapter.client.requests.size(), 0)
+	var custom: Dictionary = await adapter.client.invoke_function("any-function", {"value":1}, HTTPClient.METHOD_POST, false, "", {"x-custom":"portable-header"})
+	assert_true(custom.ok)
+	assert_true("x-custom: portable-header" in server.headers[-1])
+	assert_eq(server.bodies[-1], {"value":1.0})
 	var invalid: Dictionary = await adapter.client.request("/malformed")
 	assert_eq(invalid.error.code, "invalid_response")
 
@@ -218,7 +274,7 @@ func test_expired_session_refresh_is_shared_and_rejection_clears_credentials() -
 	var server := LocalHttpServer.new()
 	add_child_autoqfree(server)
 	assert_eq(server.server.listen(0, "127.0.0.1"), OK)
-	var adapter := SupabaseCommunityBackend.new()
+	var adapter := standalone_backend()
 	adapter.client = Client.new()
 	add_child_autoqfree(adapter.client)
 	add_child_autoqfree(adapter)
@@ -239,3 +295,9 @@ func test_expired_session_refresh_is_shared_and_rejection_clears_credentials() -
 	assert_eq(rejected.error.code, "sign_in_required")
 	assert_false(adapter.is_signed_in())
 	assert_eq(adapter.client.access_token, "")
+
+func standalone_backend() -> SupabaseCommunityBackend:
+	var adapter := SupabaseCommunityBackend.new()
+	adapter.steam = NoSteam.new()
+	add_child_autoqfree(adapter.steam)
+	return adapter

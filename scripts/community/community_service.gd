@@ -25,6 +25,9 @@ func configure(puzzle_store: PuzzleStore, adapter: Node) -> void:
 func is_signed_in() -> bool:
 	return backend != null and backend.is_signed_in()
 
+func uses_automatic_auth() -> bool:
+	return backend != null and backend.has_method("uses_automatic_auth") and backend.uses_automatic_auth()
+
 func browse_puzzles(filters: Dictionary = {}) -> Dictionary:
 	return await backend.browse_puzzles(filters, compatibility)
 

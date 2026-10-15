@@ -3,6 +3,6 @@
   "compilerOptions": { "strict": true },
   "tasks": {
     "check": "deno check index.ts",
-    "test": "deno test --allow-read --allow-env validation_test.ts api_test.ts"
+    "test": "deno test --allow-read --allow-env validation_test.ts api_test.ts steam_auth_test.ts"
   }
 }

@@ -191,6 +191,12 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ojx4"]
+bg_color = Color(0.07058824, 0.14901961, 0.18039216, 1)
+shadow_color = Color(0, 0, 0, 0.18)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3p7le"]
 content_margin_left = 12.0
 content_margin_top = 12.0
@@ -679,6 +685,8 @@ HUDVBox/constants/separation = 16
 IconButton/base_type = &"QuietButton"
 IconButton/constants/h_separation = 0
 IconButton/constants/icon_max_width = 24
+IdentityPanel/base_type = &"PanelContainer"
+IdentityPanel/styles/panel = SubResource("StyleBoxFlat_3ojx4")
 InspectorTitle/base_type = &"Label"
 InspectorTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 InspectorTitle/font_sizes/font_size = 20

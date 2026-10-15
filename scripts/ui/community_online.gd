@@ -51,6 +51,11 @@ func open(puzzle: Dictionary = {}) -> void:
 	refresh()
 
 func refresh_account() -> void:
+	%Account.visible = not service.uses_automatic_auth()
+	if service.uses_automatic_auth():
+		%SignIn.hide()
+		%Password.clear()
+		return
 	%Account.text = "Account" if service.is_signed_in() else "Sign in"
 	%SignOut.visible = service.is_signed_in()
 	%SignInButton.visible = not service.is_signed_in()
@@ -73,7 +78,7 @@ func finish(ticket: int, result: Dictionary, message: String = "") -> bool:
 	%NextPage.disabled = next_offset < 0
 	select_puzzle(-1)
 	%Feedback.text = message if result.ok else result.error.message
-	if not result.ok and result.error.code == "sign_in_required": %SignIn.show()
+	if not result.ok and result.error.code == "sign_in_required" and not service.uses_automatic_auth(): %SignIn.show()
 	return true
 
 func refresh() -> void:
