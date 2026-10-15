@@ -66,6 +66,17 @@ layout_mode = 2
 placeholder_text = "Find a puzzle or creator…"
 clear_button_enabled = true
 
+[node name="LibrarySource" type="OptionButton" parent="Surface/Contents/Browse"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Campaign puzzles"
+popup/item_0/id = 0
+popup/item_1/text = "Community puzzles"
+popup/item_1/id = 1
+
 [node name="ChapterScroll" type="ScrollContainer" parent="Surface/Contents/Browse" unique_id=982691246]
 custom_minimum_size = Vector2(0, 72)
 layout_mode = 2

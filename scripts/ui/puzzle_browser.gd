@@ -48,6 +48,7 @@ func configure(value: ConstructionSession) -> void:
 	%Levels.item_selected.connect(select_level)
 	%LibrarySearch.text_changed.connect(func(_text):
 		if campaign_definition: show_chapter(chapter_index))
+	%LibrarySource.item_selected.connect(func(index: int): open(true, index == 1))
 
 func open_campaign() -> void:
 	open()
@@ -72,7 +73,9 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	%Network.hide()
 	%Browse.show()
 	%OnlineBrowse.text = "Browse online"
-	community = community_mode or (editing and not session.official_authoring)
+	community = community_mode or (editing and not session.store.can_add_to_campaign())
+	%LibrarySource.visible = editing and session.store.can_add_to_campaign()
+	%LibrarySource.select(1 if community else 0)
 	%OnlineBrowse.visible = community and not editing
 	modal_opened.emit()
 	title = "Puzzle library" if editing else ("Community puzzles" if community else "Campaign")
@@ -88,6 +91,11 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	%NewPuzzle.visible = community and not editing
 	if editing:
 		var drafts = session.store.list_drafts()
+		var campaign_ids: Array = []
+		for data in campaign_definition.levels: campaign_ids.append(data.id)
+		drafts = drafts.filter(func(data):
+			var campaign_draft: bool = data.has("campaign") or data.id in campaign_ids
+			return campaign_draft != community)
 		var ids: Array = []
 		for data in drafts: ids.append(data.id)
 		for i in range(all_levels.size() - 1, -1, -1):
@@ -107,7 +115,8 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 		var counts = campaign_definition.chapter_progress(chapter.id, session.progress.records)
 		var status = "%d / %d complete" % [counts.completed,counts.total] if counts.total > 0 else "No levels yet"
 		if chapter.get("optional",false) and counts.total>0: status="%d / %d" % [counts.completed,counts.total]
-		if not campaign_definition.chapter_unlocked(chapter, session.progress.records): status = "Locked"
+		if editing: status = "%d puzzles" % counts.total
+		elif not campaign_definition.chapter_unlocked(chapter, session.progress.records): status = "Locked"
 		var button=CHAPTER_BUTTON.instantiate()
 		%Chapters.add_child(button)
 		button.get_node("%ChapterTitle").text=chapter.name
@@ -138,7 +147,7 @@ func show_chapter(index: int) -> void:
 		return str(a.id) < str(b.id))
 	%Levels.clear()
 	for data in levels:
-		var status = "Draft" if data.status != "published" else ("Complete" if is_completed(data) else ("Ready" if (community or campaign_definition.unlocked(data, session.progress.records)) else "Locked"))
+		var status = "Draft" if data.status != "published" else ("Published" if editing else ("Complete" if is_completed(data) else ("Ready" if (community or campaign_definition.unlocked(data, session.progress.records)) else "Locked")))
 		var records: Dictionary = session.progress.community_records if community else session.progress.records
 		var awards: Array = records.get(data.id, {}).get("awards", [])
 		if not awards.is_empty(): status += " · %d awards" % awards.size()
@@ -157,7 +166,7 @@ func show_chapter(index: int) -> void:
 	%Open.visible=%Levels.visible
 	%LevelName.get_parent().visible=%Levels.visible
 	%Empty.visible=levels.is_empty()
-	%Empty.text="No levels available yet." if campaign_definition.chapter_unlocked(chapter, session.progress.records) else "Complete the required levels to unlock this chapter."
+	%Empty.text="No levels available yet." if editing or campaign_definition.chapter_unlocked(chapter, session.progress.records) else "Complete the required levels to unlock this chapter."
 	if %LibrarySearch.visible and not %LibrarySearch.text.is_empty(): %Empty.text = "No matching puzzles. Try another name or creator."
 	%Details.text = "Select a level."
 	%Open.disabled = true
@@ -182,6 +191,7 @@ func select_level(index: int) -> void:
 	%LevelName.text = data.name
 	var available := community or campaign_definition.unlocked(data, session.progress.records)
 	%LevelState.text = ("Complete" if is_completed(data) else ("Ready to play" if available else "Locked")) + " · " + str(data.get("difficulty", "Workshop"))
+	if editing: %LevelState.text = ("Draft" if data.status != "published" else "Published") + " · " + str(data.get("difficulty", "Workshop"))
 	if community and not str(data.get("creator", "")).strip_edges().is_empty(): %LevelState.text += " · By " + str(data.creator).strip_edges()
 	%Preview.display(data, session.catalog)
 	%Details.text = Copy.objective(data)
@@ -197,7 +207,7 @@ func open_selected() -> void:
 	var data = levels[selected[0]]
 	if not editing and not community and not campaign_definition.unlocked(data, session.progress.records): return
 	dismiss(func():
-		if editing: session.editor(data, session.official_authoring)
+		if editing: session.editor(data, not community)
 		else: session.player(data))
 
 func is_completed(data: Dictionary) -> bool:
