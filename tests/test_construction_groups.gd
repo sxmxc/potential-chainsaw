@@ -3,6 +3,44 @@ extends "res://tests/support/scene_test.gd"
 var game: Node
 var build: BuildManager
 
+class TestConnectorConnectivity:
+	extends GutTest
+
+	func test_exposure_and_connected_selection_share_connection_rules() -> void:
+		var snap := SnapManager.new()
+		var definition := PieceCatalog.new().get_piece("straight")
+		var a := autofree(BuildingPiece.new()) as BuildingPiece
+		var b := autofree(BuildingPiece.new()) as BuildingPiece
+		a.definition = definition
+		b.definition = definition
+		a.instance_id = "a"
+		b.instance_id = "b"
+		var pieces: Array[BuildingPiece] = [a, b]
+		var frame := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(4, 5, 2))
+		a.transform = frame
+		for sample in [
+			{"offset": Vector3(0, 0, 1), "turn": 0.0, "connected": true},
+			{"offset": Vector3(0, 0.01, 1), "turn": 0.0, "connected": true},
+			{"offset": Vector3(0, 0.02, 1), "turn": 0.0, "connected": false},
+			{"offset": Vector3(0, 0, 1), "turn": PI / 2, "connected": false},
+		]:
+			b.transform = frame * Transform3D(Basis(Vector3.UP, sample.turn), sample.offset)
+			var expected_count := 2 if sample.connected else 4
+			assert_eq(snap.exposed(pieces).size(), expected_count, "World targets respect position and facing")
+			var items: Array[Dictionary] = [
+				{"definition": definition, "local": frame.affine_inverse() * a.transform},
+				{"definition": definition, "local": frame.affine_inverse() * b.transform},
+			]
+			assert_eq(snap.boundary_sources(items).size(), expected_count, "Group boundaries use the same connection rules")
+			assert_eq(snap.connected_section(a, pieces).size(), 2 if sample.connected else 1)
+		b.transform = frame * Transform3D(Basis.IDENTITY, Vector3(0, 0, 1))
+		assert_eq(snap.exposed(pieces, [b]).size(), 2, "Ignored moving pieces do not occupy targets")
+		assert_eq(snap.exposed(pieces)[0].key, "a:0", "Target keys retain authored connector indices")
+		assert_eq(snap.connected_section(a, [a]), [a], "Excluded pieces cannot bridge connected selection")
+		b.definition = PieceCatalog.new().get_piece("straight-wide")
+		assert_eq(snap.exposed(pieces).size(), 4, "Different profiles cannot occupy each other's connectors")
+		assert_eq(snap.connected_section(a, pieces), [a], "Different profiles cannot join a connected selection")
+
 func test_history_branching_permissions_and_world_reset() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)

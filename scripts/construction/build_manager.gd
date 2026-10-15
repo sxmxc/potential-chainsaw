@@ -173,7 +173,7 @@ func set_selection(values: Array[BuildingPiece]) -> void:
 	refresh_connectors()
 
 func select_connected(piece: BuildingPiece) -> void:
-	set_selection(ConstructionSelection.connected(piece,pieces,snap))
+	set_selection(snap.connected_section(piece, pieces.filter(ConstructionSelection.editable)))
 	show_status("%d connected pieces · drag to move the assembly" % selection.size())
 
 func select_all() -> void:

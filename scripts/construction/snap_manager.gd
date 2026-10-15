@@ -5,7 +5,6 @@ const POSITION_TOLERANCE = 0.015
 const ORIENTATION_TOLERANCE = 0.995
 var horizontal_step: float = 0.5
 var vertical_step: float = 0.125
-var snap_radius: float = 0.65
 var boundary: float = 48.0
 var target_radius: float = 32.0
 var candidate_budget: int = 12
@@ -15,38 +14,60 @@ var environment_solids: Array = []
 # Sources contain a definition and a transform relative to one group anchor.
 # All editing paths use the same rigid transform and boundary connectors.
 func exposed(pieces: Array, ignored: Array = []) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
+	var items: Array[Dictionary] = []
+	var included: Array[BuildingPiece] = []
 	for piece in pieces:
 		if piece in ignored: continue
-		for index in piece.definition.connectors.size():
-			var connector: TrackConnector = piece.definition.connectors[index]
-			var point: Vector3 = piece.transform*connector.position
-			var normal: Vector3 = piece.basis*connector.outward
-			var occupied := false
-			for other in pieces:
-				if other == piece or other in ignored: continue
-				for port in other.definition.connectors:
-					if connector.compatible(port) and (other.transform*port.position).distance_to(point)<POSITION_TOLERANCE and (other.basis*port.outward).dot(normal)<-ORIENTATION_TOLERANCE:
-						occupied = true
-			if not occupied:
-				result.append({"piece":piece,"connector":connector,"point":point,"normal":normal,"key":piece.instance_id+":"+str(index)})
+		included.append(piece)
+		items.append({"definition": piece.definition, "local": piece.transform})
+	var result: Array[Dictionary] = []
+	for port in boundary_sources(items):
+		var piece := included[port.index]
+		result.append({"piece": piece, "connector": port.connector, "point": port.point, "normal": port.normal, "key": piece.instance_id + ":" + str(port.port_index)})
 	return result
 
 func boundary_sources(items: Array) -> Array[Dictionary]:
+	return _connector_topology(items).filter(func(port: Dictionary): return port.connections.is_empty())
+
+# Both occupied ports and connected sections come from the same transformed
+# connector pairs. Item transforms may be world-space or relative to a group.
+func _connector_topology(items: Array) -> Array[Dictionary]:
 	var ports: Array[Dictionary] = []
 	for index in items.size():
 		var item: Dictionary = items[index]
-		for connector in item.definition.connectors:
-			var point: Vector3 = item.local*connector.position
-			var normal: Vector3 = item.local.basis*connector.outward
-			var internal := false
-			for other_index in items.size():
-				if index==other_index: continue
-				var other: Dictionary = items[other_index]
-				for port in other.definition.connectors:
-					if connector.compatible(port) and (other.local*port.position).distance_to(point)<POSITION_TOLERANCE and (other.local.basis*port.outward).dot(normal)<-ORIENTATION_TOLERANCE: internal=true
-			if not internal: ports.append({"connector":connector,"point":point,"normal":normal,"index":index})
+		for port_index in item.definition.connectors.size():
+			var connector: TrackConnector = item.definition.connectors[port_index]
+			ports.append({"connector": connector, "point": item.local * connector.position, "normal": item.local.basis * connector.outward, "index": index, "port_index": port_index, "connections": []})
+	for index in ports.size():
+		var source: Dictionary = ports[index]
+		for other_index in range(index + 1, ports.size()):
+			var target: Dictionary = ports[other_index]
+			if source.index == target.index: continue
+			if source.connector.compatible(target.connector) and source.point.distance_to(target.point) < POSITION_TOLERANCE and source.normal.dot(target.normal) < -ORIENTATION_TOLERANCE:
+				source.connections.append(target.index)
+				target.connections.append(source.index)
 	return ports
+
+func connected_section(starting_piece: BuildingPiece, pieces: Array) -> Array[BuildingPiece]:
+	var result: Array[BuildingPiece] = []
+	if starting_piece not in pieces: return result
+	var items: Array[Dictionary] = []
+	for piece in pieces: items.append({"definition": piece.definition, "local": piece.transform})
+	var neighbors: Dictionary = {}
+	for port in _connector_topology(items):
+		if not neighbors.has(port.index): neighbors[port.index] = []
+		for index in port.connections:
+			if index not in neighbors[port.index]: neighbors[port.index].append(index)
+	var pending: Array[int] = [pieces.find(starting_piece)]
+	var cursor := 0
+	while cursor < pending.size():
+		var index := pending[cursor]
+		cursor += 1
+		result.append(pieces[index])
+		# Preserve construction order for the selection's stable group anchor.
+		for other_index in pieces.size():
+			if other_index in neighbors.get(index, []) and other_index not in pending: pending.append(other_index)
+	return result
 
 func validate_group(items: Array, placement: Transform3D, pieces: Array, ignored: Array = []) -> String:
 	var external: Array = []
@@ -219,33 +240,6 @@ func grid_to_world(grid: Vector3i) -> Vector3:
 
 func grid_position(world: Vector3) -> Vector3:
 	return grid_to_world(world_to_grid(world))
-
-func aligned(definition: PieceDefinition, proposed: Transform3D, pieces: Array, ignore: Node = null) -> Dictionary:
-	var best = snap_radius
-	var result = {"transform": proposed, "snapped": false, "point": Vector3.ZERO}
-	for piece in pieces:
-		if piece == ignore: continue
-		for existing in piece.definition.connectors:
-			var point: Vector3 = piece.transform * existing.position
-			var normal: Vector3 = piece.basis * existing.outward
-			for incoming in definition.connectors:
-				if not incoming.compatible(existing): continue
-				# Rotation is deliberate: R cycles candidates; snapping never rotates unexpectedly.
-				if (proposed.basis * incoming.outward).dot(normal) > -ORIENTATION_TOLERANCE: continue
-				if connector_occupied(point, normal, existing, pieces, piece, ignore): continue
-				var distance: float = (proposed * incoming.position).distance_to(point)
-				if distance >= best: continue
-				best = distance
-				result = {"transform": Transform3D(proposed.basis, point - proposed.basis * incoming.position), "snapped": true, "point": point}
-	return result
-
-func connector_occupied(point: Vector3, normal: Vector3, connector: TrackConnector, pieces: Array, owner_piece: Node, ignore: Node = null) -> bool:
-	for piece in pieces:
-		if piece == owner_piece or piece == ignore: continue
-		for other in piece.definition.connectors:
-			if connector.compatible(other) and (piece.transform * other.position).distance_to(point) < POSITION_TOLERANCE and (piece.basis * other.outward).dot(normal) < -ORIENTATION_TOLERANCE:
-				return true
-	return false
 
 func validate(definition: PieceDefinition, placement: Transform3D, pieces: Array, ignore: Node = null) -> String:
 	var box = placement * definition.bounds

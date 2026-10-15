@@ -4,24 +4,6 @@ extends RefCounted
 static func editable(piece: BuildingPiece) -> bool:
 	return is_instance_valid(piece) and not bool(piece.configuration.get("locked", false))
 
-static func connected(starting_piece: BuildingPiece, pieces: Array, snap: SnapManager) -> Array[BuildingPiece]:
-	var result: Array[BuildingPiece] = []
-	if not editable(starting_piece): return result
-	result.append(starting_piece)
-	var index := 0
-	while index < result.size():
-		var source = result[index]
-		index += 1
-		for piece in pieces:
-			if piece in result or not editable(piece): continue
-			var attached := false
-			for a in source.definition.connectors:
-				for b in piece.definition.connectors:
-					if a.compatible(b) and (source.transform*a.position).distance_to(piece.transform*b.position) < snap.POSITION_TOLERANCE and (source.basis*a.outward).dot(piece.basis*b.outward) < -snap.ORIENTATION_TOLERANCE:
-						attached = true
-			if attached: result.append(piece)
-	return result
-
 static func projected_bounds(piece: BuildingPiece, camera: Camera3D) -> Rect2:
 	var points: Array[Vector2] = []
 	for i in 8:
