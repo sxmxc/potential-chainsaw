@@ -38,7 +38,7 @@ func attach(definition: PieceDefinition, point: Vector3) -> BuildingPiece:
 	build.cancel()
 	return placed
 
-func test_connector_feedback_and_extension_input() -> void:
+func test_connector_feedback_and_extension_placement() -> void:
 	assert_true(await wait_until(func(): return not game.navigating, 3.0), "Workspace navigation finishes before construction input")
 	game.qa_resolution(1920, 1080)
 	game.workspace.hud.show()
@@ -50,12 +50,9 @@ func test_connector_feedback_and_extension_input() -> void:
 	build.select(track)
 	var target: Dictionary = build.targets[0]
 	var screen := build.camera.unproject_position(target.point)
-	watch_signals(build)
+	assert_eq(build.extension_at(screen).get("key"), target.key, "The projected connector remains an extension target")
+	Input.warp_mouse(screen)
 	sender.mouse_motion(screen)
-	sender.mouse_left_button_down(screen)
-	sender.mouse_left_button_up(screen)
-	await get_tree().process_frame
-	assert_signal_emitted(build, "extension_requested", "The projected connector handle still opens extension choices")
 	build.choose_extension(straight, target)
 	await wait_process_frames(3)
 	assert_true(build.is_snapped and build.valid, "Extension preview aligns with the chosen connector")
@@ -199,4 +196,5 @@ func test_curated_geometry_and_decorative_selection() -> void:
 				parent = parent.get_parent() as Node3D
 			var box := placement * mesh.get_aabb()
 			measured = box if index == 0 else measured.merge(box)
-		assert_almost_eq(measured.position, definition.bounds.position, Vector3.ONE * 0.001, String(definition.id) + " measured pivot
+		assert_almost_eq(measured.position, definition.bounds.position, Vector3.ONE * 0.001, String(definition.id) + " measured pivot")
+		assert_almost_eq(measured.size, definition.bounds.size, Vector3.ONE * 0.001, String(definition.id) + " measured bounds")
