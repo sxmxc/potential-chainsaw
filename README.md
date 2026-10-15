@@ -1,4 +1,5 @@
-# Marble Engineer
+<!-- markdownlint-disable MD033 -->
+# <img src="./icon.svg" alt="Marble Engineer Icon" width="48" align="center"> Marble Engineer
 
 Marble Engineer is a 3D marble-track construction and physics puzzle game made with Godot and Kenney's Marble Kit. Build a machine, release its marbles, and watch where the design works—or where it needs another try. Tracks connect across elevations, and mechanisms can lift, launch, divert, or stop marbles.
 
