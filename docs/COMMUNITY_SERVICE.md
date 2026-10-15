@@ -52,25 +52,29 @@ The base path is `/functions/v1/community/v1`. Responses use `{api_version: 1, o
 
 | Route | Access and behavior |
 | --- | --- |
-| `GET /puzzles?search=&offset=0&compatibility=<digest>` | Public; up to 20 metadata rows and nullable `next_offset` |
-| `GET /puzzles/<uuid>?revision=1&compatibility=<digest>` | Public; one published compatible revision |
+| `GET /puzzles?search=&offset=0` | Public; up to 20 published metadata rows and nullable `next_offset` |
+| `GET /puzzles/<uuid>?revision=1` | Public; one published revision, validated by the game during installation |
 | `POST /puzzles` with `{puzzle, compatibility}` | Verified owner; returns UUID, revision, and `<uuid>@<revision>` share code |
 | `GET /mine?search=&offset=0` | Verified owner; includes unpublished entries |
 | `DELETE /puzzles/<uuid>` | Owner only; removes availability of all revisions |
 
-`index.ts` owns routing, ownership, and persistence. `validation.ts` checks allowed fields, types/ranges, catalog dependencies, configuration, ports/links, objectives, and compatibility. Publication is limited to 5 MB and requires a saved solution and successful-test record. Client-side proof and solution-rule checks remain necessary: server validation cannot reproduce the run.
+`index.ts` owns routing, ownership, and persistence. `validation.ts` checks allowed fields, supported puzzle formats, types/ranges, registered asset dependencies, configuration, ports/links, and objectives. Publication is limited to 5 MB and requires a saved solution and successful-test record. Client-side proof and solution-rule checks remain necessary: server validation cannot reproduce the run. API-v1 requests may still include the legacy `compatibility` digest in query parameters or the publication body; it does not gate access or validation.
 
 Downloads receive local IDs of `community-<server UUID>-r<revision>`. This gives each immutable online revision independent completion records. Unpublishing hides server availability rather than deleting installed copies.
 
 ### Keep the catalog contract in step
 
-The compatibility digest covers the release version and catalog metadata exported from the saved registry, scene settings, surface-mount capability, and actual port declarations. Mounted pieces use only registered construction UIDs and validated orthonormal orientation metadata; the server rejects missing targets, accessory cycles, and mount fields on ordinary pieces. It is not a hash of every physics or model dependency. After relevant release/catalog changes, first ensure YARD's saved index is current, then run:
+Puzzle format 3 adds bounded declarative world-guidance steps, validated in the game and `validation.ts`. Formats 1 and 2 remain accepted. Apply `20261015201217_world_guidance_format.sql` with the normal reviewed migration workflow before publishing format 3 to a server; it expands only the puzzle schema-version constraint. The matching catalog now also exports connector counts to validate guidance connector references. Deploy the server validator and regenerated catalog with the client release. This change does not deploy them automatically.
+
+The manifest digest identifies the release version and catalog metadata exported from the saved registry, scene settings, surface-mount capability, and actual port declarations. It is diagnostic metadata stored with publications, not a requirement that a whole client/server catalog match. Adding pieces must not hide or invalidate existing community publications. The server validates publication against the format, assets, settings, and ports the puzzle actually uses; the game validates downloaded content through `PuzzleStore.install_community()`. An older client can browse newer puzzles but rejects installation if it lacks their format or dependencies. Keep existing asset IDs, settings, and ports compatible; breaking changes need explicit versioning or migration.
+
+Mounted pieces use only registered construction UIDs and validated orthonormal orientation metadata; the server rejects missing targets, accessory cycles, and mount fields on ordinary pieces. The digest does not establish physics solvability. After relevant release/catalog changes, first ensure YARD's saved index is current, then run:
 
 ```powershell
 godot --headless --path . --script tools/export_community_catalog.gd
 ```
 
-Review and commit both outputs: `resources/community_catalog.json` for the game and `supabase/functions/community/catalog.json` for the server. Deploy the matching server manifest with the client release. The API serves one manifest; simultaneous compatibility with multiple catalogs is not implemented.
+Review and commit both outputs: `resources/community_catalog.json` for the game and `supabase/functions/community/catalog.json` for the server. Deploy the updated server manifest before accepting publications using new assets. Existing publications keep their IDs, revisions, definitions, and stored digests and need no republishing. To restore publications hidden by the former digest filter, redeploy the `community` function with this code; no database rewrite, migration, or game rebuild is needed for that correction.
 
 ## Database ownership and publication
 

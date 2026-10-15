@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/floor-corner-round.glb" id="Model"]
+[ext_resource type="Shape3D" path="res://scenes/environment/collision/building-floor-corner-round.tres" id="Shape"]
+
+[sub_resource type="PhysicsMaterial" id="Material"]
+friction = 0.18
+bounce = 0.02
+
+[node name="EnvironmentModel" type="Node3D"]
+
+[node name="Visual" parent="." instance=ExtResource("Model")]
+position = Vector3(0, 0, 0)
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 2
+physics_material_override = SubResource("Material")
+
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+shape = ExtResource("Shape")

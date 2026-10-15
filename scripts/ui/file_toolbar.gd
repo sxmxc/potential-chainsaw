@@ -8,6 +8,8 @@ const FOLLOW_ICON = preload("res://assets/ui/icons/follow.svg")
 const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 func configure(manager: BuildManager, simulator: SimulationManager, value: ConstructionSession) -> void:
 	session = value
+	%LocateGoal.pressed.connect(session.get_parent().guidance.locate_objectives)
+	%RequestGuidance.pressed.connect(session.get_parent().guidance.request)
 	build=manager
 	simulation=simulator
 	cameras=simulation.get_parent().simulation_camera
@@ -32,6 +34,8 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	%PuzzleBar.action_requested.connect(func(action): action_requested.emit(action))
 	refresh()
 func refresh() -> void:
+	%LocateGoal.visible = session.is_playing
+	%RequestGuidance.visible = session.is_playing and not session.puzzle.get("guidance", []).is_empty()
 	%TrackName.text = session.track_name
 	%Undo.disabled=not build.enabled or not build.history.has_undo()
 	%Redo.disabled=not build.enabled or not build.history.has_redo()

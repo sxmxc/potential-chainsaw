@@ -4,6 +4,18 @@ A new piece needs a definition and a model scene. The definition makes it a cata
 
 Every placed object is a `BuildingPiece`, whether it is a track, an adjustable support, a gate, or scenery. Static models need no behavior script. Functional models compose `PieceBehavior` nodes, and the common instance discovers them throughout the model hierarchy, including the root. The definition's `behavior` field is only a catalog tag.
 
+## Kenney environment pieces
+
+The expanded catalog adds 52 Building Kit models and 86 Factory Kit models through the existing YARD registry. Let Godot create resource UIDs. Reload the project after adding definitions so Godot imports the resources and YARD refreshes its saved index; Play and export also rebuild the index. Registry entry IDs must match `PieceDefinition.id`. There is no separate scenery catalog or runtime asset scan.
+
+The Building additions cover corner borders, partitions and plating, diagonal/round floors, flat roofs, closed/open stairs, columns, round doorways, windows, static doors, barricades, pipes, and gutters. The Factory additions cover catwalk junctions and stairs, modular conveyor structures, floors and caps, frames and walls, solid/glass pipes and fittings, hoppers, static cranes/scanners/machinery, robot arms, pistons, screens, gears, and warning props. Architecture and Props remain the browser categories. Existing definition and instance IDs are unchanged.
+
+Open wrappers under `scenes/environment/` to inspect imported models, origin adjustments, and authored collision. Of the 138 additions, 107 use saved mesh collision under `scenes/environment/collision/`, five planar factory floors/caps use a 10 cm slab, and 26 are selection-only decorations. Definitions hold measured occupied boxes for placement, preserving openings for doors, frames, catwalks, and pipe bores. Those boxes approximate geometry in 10 cm cells; physics uses the authored shapes. Flat faces use shared surface placement. These models have no fabricated track connectors.
+
+Robot arms, piston details, screens, gears, warning props, gutters, and small pipe details are selection-only: marbles pass through them. Static conveyors, cranes, scanners, and machines have no motor, transport, sensor, or signal behavior; their descriptions state this. All new definitions are ordinary construction pieces, so authors can grant inventory or keep starting instances fixed through existing permissions.
+
+The asset pass inspected all 79 Building and 143 Factory GLBs, including node hierarchies, transformed vertices, pivots, and triangle geometry. It retained existing uses, kept guidance icons outside construction, and omitted redundant conveyor paint variants, alternate door poses, duplicate barricades/gears, inert control lookalikes, and the unrelated mascot. Original imported assets are unchanged.
+
 ## Start from a working piece
 
 Open a suitable definition under `resources/pieces/` and follow its Model reference. Functional wrappers live under `scenes/mechanisms/`. The sensor is a small example: its scene combines track collision, a detection area, an animated indicator, and a behavior script. The gate and launcher demonstrate moving collision and exported node references; the elevator and supports demonstrate adjustable assemblies.

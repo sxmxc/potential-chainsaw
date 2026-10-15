@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://boc2a1hr82fkw"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-structure-window.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/structure-window.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-structure-window"
+display_name = "Structure window"
+category = "Architecture"
+usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.5, 0, -0.5, 1.0, 3.0, 2.0)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.5, 0, -0.5, 1.0, 0.1, 1.0), AABB(-0.5, 0.1, 0.4, 1.0, 0.5, 0.1), AABB(-0.5, 0.6, 0.5, 1.0, 0.6, 0.1), AABB(-0.5, 1.1, 0.6, 1.0, 0.4, 0.1), AABB(-0.5, 1.4, 0.5, 1.0, 0.5, 0.1), AABB(-0.5, 1.9, 0.5, 0.3, 0.9, 0.1), AABB(-0.5, 2.7, 0.4, 1.0, 0.3, 0.1), AABB(-0.5, 2.9, 0.5, 1.0, 0.1, 1.0), AABB(-0.3, 1.8, 0.6, 0.6, 0.7, 0.1), AABB(-0.2, 0.6, 0.4, 0.4, 0.2, 0.1), AABB(-0.2, 2.4, 0.5, 0.7, 0.4, 0.1), AABB(0.2, 1.9, 0.5, 0.3, 0.5, 0.1)])

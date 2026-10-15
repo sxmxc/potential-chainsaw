@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dv0nh7tqwv7rm"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/building-door-rotate-round-a.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/door-rotate-round-a.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"building-door-rotate-round-a"
+display_name = "Door rotate round a"
+category = "Architecture"
+usage_hint = "A physical building module. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.125, 0, -0.025, 0.25, 2.1, 0.925)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.125, 0, -0.025, 0.2, 1.8, 0.925), AABB(-0.125, 1.8, -0.025, 0.2, 0.1, 0.9), AABB(-0.125, 1.9, 0.075, 0.2, 0.1, 0.8), AABB(-0.125, 2.0, 0.175, 0.2, 0.1, 0.6), AABB(0.075, 0.8, 0.575, 0.05, 0.2, 0.2)])

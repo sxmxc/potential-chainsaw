@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://ccjjdgauomrq3"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/prop-window-machine.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/machine-window.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"prop-window-machine"
+display_name = "Windowed machine"
+category = "Props"
+usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors. Visual machinery only; no motor, transport, or signal behavior."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.6, 0, -0.75, 1.2, 1.289707, 1.5)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.6, 0, -0.75, 1.1, 1.2, 0.3), AABB(-0.6, 0, 0.45, 1.2, 1.1, 0.2), AABB(-0.6, 0, 0.65, 1.1, 0.5, 0.1), AABB(-0.6, 0.5, 0.65, 0.3, 0.7, 0.1), AABB(-0.6, 0.6, -0.45, 0.2, 0.5, 0.9), AABB(-0.6, 1.1, -0.45, 1.2, 0.1, 0.4), AABB(-0.6, 1.1, -0.05, 0.1, 0.1, 0.7), AABB(-0.6, 1.2, -0.55, 1.1, 0.089707, 1.1), AABB(-0.5, 1.1, 0.05, 1.1, 0.1, 0.5), AABB(-0.5, 1.1, 0.55, 1.0, 0.1, 0.1), AABB(-0.4, 0.8, -0.45, 0.9, 0.3, 0.9), AABB(-0.3, 0.8, 0.65, 0.8, 0.4, 0.1), AABB(0.2, 0.5, 0.65, 0.3, 0.3, 0.1), AABB(0.4, 0.6, -0.45, 0.2, 0.2, 0.9), AABB(0.4, 1.1, -0.05, 0.2, 0.1, 0.1), AABB(0.5, 0, -0.65, 0.1, 1.1, 0.2), AABB(0.5, 1.0, -0.45, 0.1, 0.1, 0.9), AABB(0.5, 1.1, -0.55, 0.1, 0.1, 0.1)])

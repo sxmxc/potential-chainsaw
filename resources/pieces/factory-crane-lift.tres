@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://blofm4m6waat6"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-crane-lift.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/crane-lift.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-crane-lift"
+display_name = "Static crane lift"
+category = "Props"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it. Visual machinery only; no motor, transport, or signal behavior."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.358333, 0, -0.358333, 0.716667, 2.5, 0.716667)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

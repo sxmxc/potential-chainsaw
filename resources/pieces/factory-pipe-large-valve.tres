@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://ke8t8f87d8hd"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-pipe-large-valve.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/pipe-large-valve.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-pipe-large-valve"
+display_name = "Pipe large valve"
+category = "Props"
+usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.5, 0, -0.515601, 1.0, 1.0, 1.015601)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.5, 0, -0.315601, 0.1, 0.2, 0.6), AABB(-0.5, 0.1, -0.415601, 0.1, 0.8, 0.1), AABB(-0.5, 0.1, 0.284399, 0.1, 0.8, 0.1), AABB(-0.5, 0.2, -0.315601, 1.0, 0.1, 0.3), AABB(-0.5, 0.2, 0.084399, 1.0, 0.1, 0.2), AABB(-0.5, 0.2, 0.384399, 0.1, 0.6, 0.1), AABB(-0.5, 0.3, -0.515601, 0.1, 0.4, 0.1), AABB(-0.5, 0.3, -0.315601, 1.0, 0.6, 0.1), AABB(-0.5, 0.3, 0.184399, 1.0, 0.1, 0.1), AABB(-0.5, 0.4, 0.484399, 0.1, 0.2, 0.015601), AABB(-0.5, 0.6, 0.184399, 1.0, 0.3, 0.1), AABB(-0.5, 0.7, -0.215601, 1.0, 0.2, 0.2), AABB(-0.5, 0.7, 0.084399, 1.0, 0.2, 0.1), AABB(-0.5, 0.8, -0.015601, 1.0, 0.1, 0.1), AABB(-0.5, 0.9, -0.315601, 0.1, 0.1, 0.6), AABB(-0.4, 0.1, -0.315601, 0.9, 0.1, 0.6), AABB(-0.4, 0.2, 0.284399, 0.9, 0.6, 0.1), AABB(-0.4, 0.3, -0.415601, 0.9, 0.4, 0.1), AABB(-0.4, 0.4, -0.515601, 0.9, 0.1, 0.1), AABB(-0.4, 0.4, 0.384399, 0.9, 0.3, 0.1), AABB(-0.3, 0.2, -0.515601, 0.6, 0.2, 0.1), AABB(-0.3, 0.5, -0.515601, 0.8, 0.2, 0.1), AABB(-0.3, 0.7, -0.515601, 0.6, 0.1, 0.2), AABB(-0.2, 0, -0.115601, 0.4, 0.1, 0.2), AABB(-0.2, 0, 0.084399, 0.3, 0.1, 0.1), AABB(-0.2, 0.1, -0.415601, 0.4, 0.2, 0.1), AABB(-0.2, 0.1, 0.284399, 0.4, 0.1, 0.1), AABB(-0.2, 0.3, 0.384399, 0.4, 0.1, 0.1), AABB(-0.2, 0.8, -0.415601, 0.4, 0.1, 0.1), AABB(-0.2, 0.8, 0.284399, 0.4, 0.1, 0.1), AABB(-0.2, 0.9, -0.115601, 0.4, 0.1, 0.2), AABB(-0.1, 0, -0.215601, 0.2, 0.1, 0.1), AABB(-0.1, 0.1, -0.515601, 0.1, 0.1, 0.1), AABB(-0.1, 0.9, -0.215601, 0.2, 0.1, 0.1), AABB(-0.1, 0.9, 0.084399, 0.3, 0.1, 0.1), AABB(0.3, 0, -0.315601, 0.2, 0.1, 0.6), AABB(0.3, 0.1, -0.415601, 0.2, 0.2, 0.1), AABB(0.3, 0.1, 0.284399, 0.2, 0.1, 0.1), AABB(0.3, 0.2, 0.384399, 0.2, 0.2, 0.1), AABB(0.3, 0.3, -0.515601, 0.2, 0.1, 0.1), AABB(0.3, 0.4, 0.484399, 0.2, 0.2, 0.015601), AABB(0.3, 0.7, -0.415601, 0.2, 0.2, 0.1), AABB(0.3, 0.7, 0.384399, 0.2, 0.1, 0.1), AABB(0.3, 0.8, 0.284399, 0.2, 0.1, 0.1), AABB(0.3, 0.9, -0.315601, 0.2, 0.1, 0.6)])

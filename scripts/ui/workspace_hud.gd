@@ -41,7 +41,9 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 		refresh())
 	%Toolbox.collapsed.connect(func():library_open=false; refresh())
 	%DismissGuidance.pressed.connect(func():
-		if session: guidance_done[session.puzzle.get("id","")]=true
+		if session and not session.puzzle.get("guidance", []).is_empty():
+			session.get_parent().guidance.dismiss()
+		elif session: guidance_done[session.puzzle.get("id","")]=true
 		refresh())
 	%Inspector.session = session
 	%Inspector.configure(build)
@@ -62,6 +64,7 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	build.selection_changed.connect(func(_piece):refresh())
 	simulation.state_changed.connect(_state_changed)
 	session.changed.connect(refresh)
+	session.get_parent().guidance.changed.connect(refresh_guidance)
 	simulation.objective_progress.connect(func(): %FileToolbar.refresh())
 	refresh()
 func refresh_context() -> void:
@@ -98,6 +101,10 @@ func refresh() -> void:
 
 func refresh_guidance() -> void:
 	%Guidance.hide()
+	if session and session.is_playing and not session.puzzle.get("guidance", []).is_empty():
+		%GuidanceText.text = session.get_parent().guidance.instruction
+		%Guidance.visible = not %GuidanceText.text.is_empty()
+		return
 	if not session or session.context != ConstructionSession.Context.PUZZLE_PLAY or session.puzzle.is_empty(): return
 	if simulation.state != SimulationManager.State.BUILD: return
 	if not PuzzleStore.is_official(session.puzzle): return

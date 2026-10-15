@@ -137,10 +137,11 @@ export async function handleRequest(req: Request): Promise<Response> {
           steamOwner ? "steam_owner_id" : "owner_id",
           steamOwner || owner,
         );
-      } else {query = query.eq("published", true).eq(
-          "compatibility",
-          url.searchParams.get("compatibility") ?? compatibility,
-        );}
+      } else {
+        // Catalog additions must not hide existing publications. Clients check
+        // the puzzle's schema and registered dependencies when installing it.
+        query = query.eq("published", true);
+      }
       if (search) {
         query = query.ilike(
           "title",
@@ -172,7 +173,7 @@ export async function handleRequest(req: Request): Promise<Response> {
         );
       }
       const { data, error } = await client.from("community_revisions").select(
-        "definition,compatibility",
+        "definition",
       ).eq("puzzle_id", id).eq("revision", revision).maybeSingle();
       if (error) {
         return response(
@@ -188,17 +189,6 @@ export async function handleRequest(req: Request): Promise<Response> {
           {},
           "not_found",
           "This puzzle is no longer available.",
-        );
-      }
-      if (
-        data.compatibility !==
-          (url.searchParams.get("compatibility") ?? compatibility)
-      ) {
-        return response(
-          409,
-          {},
-          "incompatible",
-          "This revision needs a different game catalog.",
         );
       }
       const puzzle = { ...data.definition, id: `community-${id}-r${revision}` };

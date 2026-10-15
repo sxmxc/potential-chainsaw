@@ -40,6 +40,8 @@ The main menu keeps equally styled navigation beside the cinematic showcase. Hov
 
 ## Motion must respect input and lifecycle
 
+World guidance shares one collision-free 3D marker scene and the existing guidance text strip. Gold means attention, mint target, blue direction, white interaction, and coral problem; captions identify the meaning without relying on color alone. Materials, icon transforms, and captions are editable in `scenes/guidance/marker.tscn`. The imported chevron's local -X tip is corrected to forward in its wrapper; semantic orientation then points it down or along the target direction. Markers do not bounce or glow, and disappear while placement overlays own the cursor target. Goal and Hint are contextual actions beside the puzzle name. Whole-puzzle guidance fields live on the existing Objectives page in a native Container layout.
+
 `UIMotion` supplies shared timings and animates opacity and native Control offset transforms without taking layout away from Containers. The Pieces browser and authoring drawer use short slides, dialog surfaces use restrained scale/fade, and tab content fades briefly. Selection, snapping, placement, and simulation state changes stay immediate.
 
 Main-menu buttons enter from the left with staggered elastic motion in scene order. Hidden actions and spacers do not consume delays. Choosing an action reverses the order for the exit before navigation proceeds. Reopening cancels pending dispatch; hiding settles unfinished motion. Each button becomes interactive after its own entrance completes, with its displayed transform and hit area aligned.

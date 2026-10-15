@@ -7,8 +7,12 @@ signal message_requested(text: String)
 signal modal_opened
 signal modal_closed
 
+## Optional scene-authored starting draft for development/sample workspaces.
+@export_file("*.json") var initial_puzzle: String = ""
+
 @onready var world: WorldManager = $World
 @onready var session: ConstructionSession = $Session
+@onready var guidance: WorldGuidance = $Guidance
 @onready var hud: WorkspaceHUD = $Interface/HUD
 @onready var authoring: PanelContainer = hud.get_node("%PuzzleAuthoring")
 var catalog: PieceCatalog
@@ -17,6 +21,7 @@ func _ready() -> void:
 	catalog = PieceCatalog.new()
 	world.configure(catalog)
 	session.configure(world, catalog)
+	guidance.configure(session)
 	world.boundary.configure(session)
 	hud.configure(world.build, world.simulation, session)
 	authoring.configure(session)
@@ -29,7 +34,15 @@ func _ready() -> void:
 	hud.action_requested.connect(_request_action)
 	session.context_changed.connect(_context_changed)
 	session.message_requested.connect(message_requested.emit)
-	session.sandbox()
+	if initial_puzzle.is_empty():
+		session.sandbox()
+	else:
+		var data := session.store.load_puzzle(initial_puzzle, "draft")
+		if data.is_empty():
+			push_error(session.store.last_error)
+			session.sandbox()
+		else:
+			session.editor(data)
 
 func _context_changed() -> void:
 	authoring.hide()

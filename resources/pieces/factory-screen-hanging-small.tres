@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://cn0ntmh22622n"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-screen-hanging-small.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/screen-hanging-small.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-screen-hanging-small"
+display_name = "Screen hanging small"
+category = "Props"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.3, 0, -0.36182, 0.6, 0.691309, 0.576553)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

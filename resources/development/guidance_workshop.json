@@ -1,0 +1,207 @@
+{
+  "awards": {},
+  "bounds": [
+    -8,
+    -8,
+    10,
+    10,
+    0,
+    12
+  ],
+  "camera": {
+    "focus": [
+      2,
+      0,
+      1
+    ],
+    "yaw": 0.65,
+    "pitch": 0.65,
+    "distance": 16
+  },
+  "description": "Bridge the gap and deliver a marble. Explore the fixed industrial layout and optional building parts.",
+  "difficulty": "Introduction",
+  "hints": [],
+  "id": "development-guidance-workshop",
+  "inventory": {
+    "straight": 1,
+    "structure-plating": 3,
+    "structure-stairs": 2,
+    "structure-factory-floor": 4,
+    "factory-pipe-large-bend": 2
+  },
+  "name": "Guidance workshop",
+  "objectives": [
+    {
+      "count": 1.0,
+      "target": "goal",
+      "type": "deliver"
+    }
+  ],
+  "permissions": {},
+  "pieces": [
+    {
+      "config": {
+        "release_speed": 1.4
+      },
+      "piece": "sandbox-start",
+      "position": [
+        0.0,
+        0.0,
+        2.0
+      ],
+      "rotation": 0.0,
+      "uid": "release"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "rotation": 0.0,
+      "uid": "approach"
+    },
+    {
+      "config": {},
+      "piece": "straight",
+      "position": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "rotation": 0.0,
+      "uid": "exit"
+    },
+    {
+      "config": {},
+      "piece": "sandbox-finish",
+      "position": [
+        0.0,
+        0.0,
+        -2.0
+      ],
+      "rotation": 2.0,
+      "uid": "goal"
+    },
+    {
+      "uid": "platform-a",
+      "piece": "structure-factory-floor",
+      "position": [
+        3,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "platform-b",
+      "piece": "structure-factory-floor",
+      "position": [
+        3,
+        0,
+        2
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "barrier",
+      "piece": "structure-plating",
+      "position": [
+        4,
+        0.1,
+        1
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "stairs",
+      "piece": "structure-stairs",
+      "position": [
+        3,
+        0.1,
+        5
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "machine",
+      "piece": "prop-window-machine",
+      "position": [
+        6,
+        0,
+        -1
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "robot",
+      "piece": "prop-robot-arm",
+      "position": [
+        6,
+        0,
+        2
+      ],
+      "rotation": 0,
+      "config": {}
+    },
+    {
+      "uid": "light",
+      "piece": "prop-traffic-light",
+      "position": [
+        1.5,
+        0,
+        2
+      ],
+      "rotation": 0,
+      "config": {}
+    }
+  ],
+  "restricted_zones": [],
+  "revision": 1,
+  "status": "draft",
+  "time_limit": 45.0,
+  "version": 3,
+  "validation": {},
+  "solution": [],
+  "guidance": [
+    {
+      "kind": "interaction",
+      "target": "approach",
+      "connector": -1,
+      "text": "Select the track beside the gap.",
+      "appear": "build",
+      "complete": "selected"
+    },
+    {
+      "kind": "attention",
+      "target": "approach",
+      "connector": 0,
+      "text": "Attach a straight track to this connector.",
+      "appear": "build",
+      "complete": "connected"
+    },
+    {
+      "kind": "direction",
+      "target": "release",
+      "connector": 0,
+      "text": "Run the machine.",
+      "appear": "build",
+      "complete": "run_started"
+    },
+    {
+      "kind": "target",
+      "target": "goal",
+      "connector": -1,
+      "text": "Watch the marble reach this collector.",
+      "appear": "run",
+      "complete": "objective"
+    }
+  ]
+}

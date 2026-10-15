@@ -94,6 +94,69 @@ Deno.test("a publishable key cannot impersonate a user's bearer token", async ()
   });
 });
 
+Deno.test("catalog additions preserve browsing and downloads of existing publications", async () => {
+  await withConfiguration(async () => {
+    const previous = globalThis.fetch;
+    const id = "10000000-0000-0000-0000-000000000001";
+    const oldCatalog = "a".repeat(64);
+    const fixture = JSON.parse(await Deno.readTextFile(
+      "../../../resources/campaign/01-first-connection.json",
+    ));
+    for (const key of ["chapter", "order", "prerequisites", "campaign"]) {
+      delete fixture[key];
+    }
+    let reads = 0;
+    globalThis.fetch = (input) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith("/community_puzzles")) {
+        if (url.searchParams.has("compatibility") ||
+          url.searchParams.get("published") !== "eq.true") {
+          throw new Error("Public browse must retain published visibility without catalog filtering");
+        }
+        reads++;
+        return Promise.resolve(Response.json([
+          { id, revision: 1, schema_version: 2, compatibility: oldCatalog },
+        ]));
+      }
+      if (url.pathname.endsWith("/community_revisions")) {
+        if (url.searchParams.get("puzzle_id") !== `eq.${id}` ||
+          url.searchParams.get("revision") !== "eq.1") {
+          throw new Error("Download must retain exact puzzle and revision selection");
+        }
+        reads++;
+        return Promise.resolve(Response.json({ definition: fixture }));
+      }
+      throw new Error("Unexpected network request");
+    };
+    try {
+      // Existing clients still send their old digest; newer clients may omit it.
+      for (const digest of [compatibility, oldCatalog, ""]) {
+        const suffix = digest ? `&compatibility=${digest}` : "";
+        const browse = await handleRequest(new Request(
+          `https://example.test/community/v1/puzzles?offset=0${suffix}`,
+        ));
+        const listed = await browse.json();
+        if (browse.status !== 200 ||
+          listed.data.puzzles[0].compatibility !== oldCatalog) {
+          throw new Error("An existing publication disappeared after a catalog update");
+        }
+        const download = await handleRequest(new Request(
+          `https://example.test/community/v1/puzzles/${id}?revision=1${suffix}`,
+        ));
+        const fetched = await download.json();
+        if (download.status !== 200 ||
+          fetched.data.puzzle.id !== `community-${id}-r1` ||
+          fetched.data.puzzle.pieces[0].piece !== fixture.pieces[0].piece) {
+          throw new Error("An existing revision could not be downloaded unchanged");
+        }
+      }
+      if (reads !== 6) throw new Error("Browse or download skipped the normal data path");
+    } finally {
+      globalThis.fetch = previous;
+    }
+  });
+});
+
 Deno.test("Steam publication and management use only the Valve-verified owner", async () => {
   await withConfiguration(async () => {
     const previous = globalThis.fetch;
@@ -110,7 +173,8 @@ Deno.test("Steam publication and management use only the Valve-verified owner", 
       }
       if (url.pathname.endsWith("/rpc/community_publish")) {
         const body = JSON.parse(String(init?.body));
-        if (body.p_owner !== null || body.p_steam_owner !== owner) {
+        if (body.p_owner !== null || body.p_steam_owner !== owner ||
+          body.p_compatibility !== compatibility) {
           throw new Error("Unverified owner used");
         }
         writes++;
@@ -146,7 +210,7 @@ Deno.test("Steam publication and management use only the Valve-verified owner", 
             "content-type": "application/json",
             "x-steam-id": "76561198000000002",
           },
-          body: JSON.stringify({ puzzle: fixture, compatibility }),
+          body: JSON.stringify({ puzzle: fixture, compatibility: "a".repeat(64) }),
         }),
       );
       if (result.status !== 200 || writes !== 1) {

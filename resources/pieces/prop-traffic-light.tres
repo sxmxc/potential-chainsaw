@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://ctus7gqldb1bk"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/prop-traffic-light.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/warning-traffic.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"prop-traffic-light"
+display_name = "Traffic light prop"
+category = "Props"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.2, 0, -0.2, 0.4, 1.551115, 0.4)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

@@ -137,6 +137,7 @@ static func definition_errors(data: Dictionary, definitions: PieceCatalog, check
 	if check_solution and errors.is_empty() and not data.get("solution", []).is_empty():
 		var problem := PuzzleRules.new(data, definitions, environment.solids).validate(data.solution)
 		if not problem.is_empty(): errors.append(problem)
+	errors.append_array(WorldGuidance.definition_errors(data, definitions))
 	return errors
 
 # Check JSON types before any engine/resource operation. Unknown fields cannot
@@ -157,7 +158,8 @@ static func shape_errors(data: Dictionary) -> Array[String]:
 		if not data.get(key, {}) is Dictionary: errors.append("Invalid object: " + key)
 	if not _numeric_array(data.get("bounds"), 6): errors.append("Invalid build bounds")
 	if not errors.is_empty(): return errors
-	if int(data.version) not in [1, 2] or float(data.version) != int(data.version): errors.append("Unsupported puzzle version")
+	if int(data.version) not in [1, 2, 3] or float(data.version) != int(data.version): errors.append("Unsupported puzzle version")
+	errors.append_array(WorldGuidance.shape_errors(data))
 	for key in ["pieces", "solution"]:
 		for item in data.get(key, []):
 			if not item is Dictionary or not item.get("uid") is String or not item.get("piece") is String or not _numeric_array(item.get("position"), 3) or not _is_number(item.get("rotation")) or not item.get("config", {}) is Dictionary:

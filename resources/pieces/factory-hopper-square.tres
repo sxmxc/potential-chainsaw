@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bgl82thxp3oin"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-hopper-square.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/hopper-square.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-hopper-square"
+display_name = "Hopper square"
+category = "Props"
+usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.5586, 0, -0.5586, 1.1172, 1.0, 1.1172)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.5586, 0.4, -0.5586, 1.1, 0.4, 0.3), AABB(-0.5586, 0.4, -0.2586, 0.3, 0.4, 0.8), AABB(-0.5586, 0.5, 0.5414, 1.1172, 0.3, 0.0172), AABB(-0.5586, 0.8, -0.5586, 1.1, 0.2, 0.2), AABB(-0.5586, 0.8, -0.3586, 0.2, 0.2, 0.9), AABB(-0.4586, 0.2, -0.4586, 0.9, 0.1, 0.3), AABB(-0.4586, 0.2, -0.1586, 0.3, 0.1, 0.6), AABB(-0.4586, 0.3, -0.4586, 1.0, 0.1, 0.2), AABB(-0.4586, 0.3, -0.2586, 0.2, 0.1, 0.8), AABB(-0.3586, 0, -0.3586, 0.7, 0.2, 0.2), AABB(-0.3586, 0, -0.1586, 0.2, 0.2, 0.5), AABB(-0.3586, 0.1, 0.3414, 0.8, 0.1, 0.1), AABB(-0.3586, 0.8, 0.3414, 0.9, 0.2, 0.2), AABB(-0.2586, 0.3, 0.2414, 0.8, 0.1, 0.1), AABB(-0.2586, 0.3, 0.3414, 0.7, 0.5, 0.1), AABB(-0.2586, 0.3, 0.4414, 0.6, 0.5, 0.1), AABB(-0.2586, 0.5, -0.2586, 0.8172, 0.3, 0.6), AABB(-0.1586, 0, 0.1414, 0.5, 0.2, 0.2), AABB(-0.1586, 0.2, 0.2414, 0.6, 0.1, 0.2), AABB(0.1414, 0, -0.1586, 0.2, 0.2, 0.3), AABB(0.2414, 0.2, -0.1586, 0.2, 0.2, 0.4), AABB(0.2414, 0.3, -0.2586, 0.3, 0.1, 0.1), AABB(0.3414, 0.1, -0.3586, 0.1, 0.1, 0.7), AABB(0.3414, 0.4, -0.2586, 0.2, 0.1, 0.6), AABB(0.3414, 0.4, 0.4414, 0.2, 0.4, 0.1), AABB(0.3414, 0.8, -0.3586, 0.2, 0.2, 0.7), AABB(0.4414, 0.3, -0.1586, 0.1, 0.1, 0.4), AABB(0.4414, 0.4, 0.3414, 0.1, 0.4, 0.1), AABB(0.5414, 0.5, -0.5586, 0.0172, 0.3, 0.3), AABB(0.5414, 0.5, 0.3414, 0.0172, 0.3, 0.2)])

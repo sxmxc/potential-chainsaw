@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dkqllyffegmjk"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-screen-panel-flat.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/screen-panel-flat.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-screen-panel-flat"
+display_name = "Screen panel flat"
+category = "Props"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.6, 0, -0.410285, 1.2, 0.74527, 0.799768)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

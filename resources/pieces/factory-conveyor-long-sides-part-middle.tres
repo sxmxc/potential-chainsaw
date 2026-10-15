@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://m3uq8ssx6q4g"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-conveyor-long-sides-part-middle.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/conveyor-long-sides-part-middle.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-conveyor-long-sides-part-middle"
+display_name = "Static conveyor long sides part middle"
+category = "Props"
+usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors. Visual machinery only; no motor, transport, or signal behavior."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.25, 0, -0.5, 0.5, 0.4, 1.0)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.25, 0, -0.5, 0.5, 0.2, 1.0), AABB(-0.25, 0.2, -0.5, 0.5, 0.2, 0.9)])

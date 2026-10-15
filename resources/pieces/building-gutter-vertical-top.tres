@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://b78n1geth1b51"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/building-gutter-vertical-top.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/gutter-vertical-top.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"building-gutter-vertical-top"
+display_name = "Gutter vertical top"
+category = "Architecture"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.1, 0, -0.1, 0.2, 0.3, 0.3)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

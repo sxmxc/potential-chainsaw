@@ -1,0 +1,159 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/guidance_editor.gd" id="Script"]
+
+[node name="GuidanceEditor" type="VBoxContainer"]
+layout_mode = 2
+script = ExtResource("Script")
+
+[node name="Heading" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "World guidance"
+theme_type_variation = &"DialogTitle"
+
+[node name="Help" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Steps run in order. Introduction shows them automatically; other puzzles offer optional guidance. Targets follow pieces. Preview lasts five seconds."
+autowrap_mode = 3
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="StepList" type="ItemList" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 90)
+
+[node name="NewStep" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+ New step"
+theme_type_variation = &"QuietButton"
+
+[node name="MarkerKindLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Indicator"
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="MarkerKind" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="StepTargetLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Target"
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="StepTarget" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="UseSelection" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use selected piece"
+theme_type_variation = &"QuietButton"
+
+[node name="StepConnectorLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Connector"
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="StepConnector" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="StepAppearLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Show"
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="StepAppear" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="StepCompleteLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Advance when"
+theme_type_variation = &"SmallMutedLabel"
+
+[node name="StepComplete" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="PointFields" type="HFlowContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="PointX" type="SpinBox" parent="PointFields"]
+unique_name_in_owner = true
+layout_mode = 2
+prefix = "X"
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+custom_minimum_size = Vector2(115, 0)
+
+[node name="PointY" type="SpinBox" parent="PointFields"]
+unique_name_in_owner = true
+layout_mode = 2
+prefix = "Y"
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+custom_minimum_size = Vector2(115, 0)
+
+[node name="PointZ" type="SpinBox" parent="PointFields"]
+unique_name_in_owner = true
+layout_mode = 2
+prefix = "Z"
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+custom_minimum_size = Vector2(115, 0)
+
+[node name="StepText" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Short instruction (optional)"
+max_length = 200
+
+[node name="SaveStep" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Save step"
+theme_type_variation = &"PrimaryButton"
+
+[node name="PreviewStep" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Preview marker"
+theme_type_variation = &"QuietButton"
+
+[node name="DeleteStep" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove selected step"
+theme_type_variation = &"QuietButton"
+
+[node name="StepStatus" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+theme_type_variation = &"SmallMutedLabel"

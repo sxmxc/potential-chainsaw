@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bhue3y8igcqoj"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/building-plating-detailed-wide.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/plating-detailed-wide.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"building-plating-detailed-wide"
+display_name = "Plating detailed wide"
+category = "Architecture"
+usage_hint = "A physical building module. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.075, 0, -1.0, 0.125, 1.0, 2.0)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-0.075, 0, -1.0, 0.125, 1.0, 2.0)])

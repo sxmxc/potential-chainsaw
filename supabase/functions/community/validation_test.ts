@@ -19,11 +19,17 @@ function rejected(puzzle: unknown, catalog: unknown = compatibility) {
 Deno.test("packaged JSON format is accepted without a parallel serializer", () => {
   validatePuzzle(fixture, compatibility);
 });
-Deno.test("catalog, versions, scene paths and impersonated registration are rejected", () => {
-  rejected(fixture, "unknown");
+Deno.test("catalog additions do not invalidate supported puzzles or bypass dependency validation", () => {
+  validatePuzzle(fixture, "a".repeat(64));
+  validatePuzzle(fixture);
+  const unsupported = structuredClone(fixture);
+  unsupported.pieces[0].piece = "future-unknown-piece";
+  rejected(unsupported, "a".repeat(64));
+});
+Deno.test("unsupported versions, scene paths and impersonated registration are rejected", () => {
   for (
     const [field, value] of [
-      ["version", 3],
+      ["version", 4],
       ["id", "../escape"],
       ["environment_snapshot", "res://evil.tscn"],
       ["campaign", {}],
@@ -113,4 +119,23 @@ Deno.test("mounted controls accept compatible state wiring and reject unsafe mou
     change(invalid);
     rejected(invalid);
   }
+});
+
+Deno.test("format 3 declarative guidance accepts stable targets and rejects executable or dangling fields", () => {
+  const p = structuredClone(fixture);
+  p.version = 3;
+  p.guidance = [{kind: "attention", target: p.pieces[0].uid, connector: -1, text: "Select the release.", appear: "build", complete: "selected"}];
+  validatePuzzle(p, compatibility);
+  for (const change of [
+    (s: Record<string, unknown>) => s.scene = "res://evil.tscn",
+    (s: Record<string, unknown>) => s.target = "missing",
+    (s: Record<string, unknown>) => s.connector = 999,
+    (s: Record<string, unknown>) => s.complete = "script",
+    (s: Record<string, unknown>) => s.position = [0, null, 0],
+  ]) {
+    const invalid = structuredClone(p);
+    change(invalid.guidance[0]);
+    rejected(invalid);
+  }
+  rejected({...p, version: 2});
 });

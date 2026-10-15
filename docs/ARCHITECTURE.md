@@ -77,6 +77,10 @@ GameManager creates `CommunityService` with the session's PuzzleStore and a `Sup
 
 ## Presentation and cameras
 
+`ConstructionWorkspace/Guidance` owns world-space guidance presentation for authored steps, editor previews, and objective location. It instantiates `scenes/guidance/marker.tscn`, which contains imported Kenney icons and editable materials, with no collision or construction membership. Selection, construction, context, simulation-state, and objective-progress signals update it; a one-shot timer ends previews. It has no per-frame processing. Placement hides its marker while existing snap/connector overlays own the target.
+
+Puzzle format 3 adds bounded declarative `guidance` steps. Stable construction UIDs and connector indices resolve targets against live pieces; explicit points cover locations. Missing targets hide safely and produce authoring validation errors. Official Introduction content can show steps automatically; other puzzles require the player's Hint action. Goal briefly locates objective targets, cycling through multiple objectives without exposing a reference layout. The existing HUD guidance strip displays step text. Context changes clear state, and simulation reset restarts the sequence against the retained build.
+
 Saved scenes under `scenes/ui/` own static layout; `resources/sandbox_theme.tres` owns shared styling. WorkspaceHUD binds the common controls, the inspector edits a selection, the Connect tool edits relationships, and the authoring drawer edits definition-wide data. `SelectionOverlay` projects connector handles and snap contacts from BuildManager's targets; construction does not create presentation nodes for them.
 
 `ConstructionInput` applies saved keyboard overrides without resetting addon actions. The autoloads are SoundManager, PhantomCameraManager, SupabaseClient, and SteamClient. GameManager loads and saves settings and coordinates modal input suspension.

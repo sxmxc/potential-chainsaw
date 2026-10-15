@@ -32,6 +32,18 @@ In **Objectives**, select a collector or mechanism in the viewport or target men
 
 Use **Connect** for relationships between mechanisms. [Wire a machine](PIECE_AUTHORING.md#wire-a-machine) explains port selection and compatibility. Ordinary marble travel remains physical: an apparently aligned route or an activation signal does not guarantee delivery.
 
+### Author world guidance
+
+In **Objectives → World guidance**, choose **New step**, an indicator, and a target. Use the target menu or **Use selected piece**. Choose a numbered connector when pointing to an exposed connection; **Whole piece** follows the object's top. **World point** exposes X/Y/Z for a location. Add a short instruction, choose when to show it, then **Save step**. Select a saved step to edit it, or remove it. Steps run in list order. Metadata edits invalidate publication proof like other authoring changes; they do not have separate undo history.
+
+Indicators mean Look, Target, Direction, Interact, or Blocked. Direction follows a connector's outward axis or the piece's local forward axis. Steps can appear while building, during a run, or always. Completion supports selecting the target, connecting the specified connector through compatible track topology, starting a run, objective activity at the target, or dismissing the step. Objective activity means a delivery or activation recorded by the existing objective owner; it does not require the whole objective to be satisfied. Arbitrary scripts, expressions, and resource paths are unsupported.
+
+**Preview marker** shows the configured marker for five seconds in the editor. **Test as player** uses the same sequence and permissions as normal play. Official Introduction puzzles may show authored guidance automatically. Community and ordinary campaign puzzles show it only after **Hint**; **Goal** locates destinations without placement instructions and cycles through multiple objectives. Restarting the puzzle starts the sequence again. Returning from a run resets the sequence against the retained construction, so already-connected steps may immediately advance.
+
+Targets follow committed piece moves, rotation, configuration, and undo/redo. Removing a target leaves a visible validation error in the editor; select a replacement or remove the step before testing/publishing. Runtime presentation safely hides an unresolved target. Guidance references starting construction instances, not arbitrary nodes or future inventory instances.
+
+Open `scenes/development/guidance_workshop.tscn` and run that scene for a separate editable sample. It loads `resources/development/guidance_workshop.json` into the normal Puzzle Editor. Its steps select a real track, point at its exposed connector, advance on connection, and guide a run toward the collector. Choose **Test as player**, then **Hint**. The layout also demonstrates fixed platforms, stairs, a physical partition and machine, and selection-only robot/traffic props; inventory includes ordinary environmental tools. It is a development draft with no claimed successful-test proof or preserved solution. It does not change campaign puzzles or progression.
+
 ### Save the draft
 
 Choose **Save Draft** while developing. The folder button beside Save opens the puzzle library, and **New puzzle** is in Authoring tools. In project runs, the library opens as **Campaign puzzles**, with a selector for **Community puzzles**; exported builds show the community library only.
@@ -86,7 +98,7 @@ Personal tracks use format **1**, owned by `TrackSerializer`: `version`, `id`, `
 
 Rotation is an integer 0–3 in quarter turns about Y. Mechanism links live under `config.links` as `{event, target, action}`, with a target instance UID. Personal-track decoding skips unknown or authoring-only pieces with warnings and normalizes settings; puzzle imports reject missing catalog dependencies.
 
-`PuzzleStore.create()` produces puzzle format **2**, and readers accept versions **1 and 2**. Version 2 adds catalog scenery through `environment_instances`. The principal fields are:
+`PuzzleStore.create()` produces puzzle format **2**, and readers accept versions **1, 2, and 3**. Version 2 adds catalog scenery through `environment_instances`. Saving authored guidance upgrades a draft to version 3; existing files need no rewrite, and capturing scenery never downgrades version 3. Version 3 adds `guidance`: at most 32 steps, each containing `kind`, a starting-piece UID in `target` (or empty for a point), `connector` (-1 for the whole piece), optional `position: [x,y,z]`, optional `text` (200 characters), `appear`, and `complete`. Client and server validate these fields and target dependencies; publication proof includes them. The principal fields are:
 
 | Area | Fields and representation |
 | --- | --- |

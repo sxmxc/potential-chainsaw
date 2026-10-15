@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bxmkkpa22h5ws"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/building-floor-corner-round.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/floor-corner-round.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"building-floor-corner-round"
+display_name = "Floor corner round"
+category = "Architecture"
+usage_hint = "A physical building module. Align its faces or place on the grid. No track connectors."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-1.0, 0, -1.0, 2.0, 0.1, 2.0)
+behavior = "decoration"
+collision_enabled = true
+native_collision = true
+collision_solids = Array[AABB]([AABB(-1.0, 0, -1.0, 2.0, 0.1, 0.7), AABB(-1.0, 0, -0.3, 1.9, 0.1, 0.2), AABB(-1.0, 0, -0.1, 1.8, 0.1, 0.2), AABB(-1.0, 0, 0.1, 1.7, 0.1, 0.1), AABB(-1.0, 0, 0.2, 1.6, 0.1, 0.2), AABB(-1.0, 0, 0.4, 1.5, 0.1, 0.1), AABB(-1.0, 0, 0.5, 1.4, 0.1, 0.1), AABB(-1.0, 0, 0.6, 1.2, 0.1, 0.1), AABB(-1.0, 0, 0.7, 1.1, 0.1, 0.1), AABB(-1.0, 0, 0.8, 0.9, 0.1, 0.1), AABB(-1.0, 0, 0.9, 0.7, 0.1, 0.1)])

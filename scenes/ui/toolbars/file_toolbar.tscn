@@ -220,3 +220,17 @@ theme_type_variation = &"IconButton"
 icon = ExtResource("7_jiiw6")
 script = ExtResource("IconScript")
 icon_name = &"menu"
+
+[node name="LocateGoal" type="Button" parent="LeftIsland/Controls/Identity/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Goal"
+tooltip_text = "Locate the destination"
+theme_type_variation = &"QuietButton"
+
+[node name="RequestGuidance" type="Button" parent="LeftIsland/Controls/Identity/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hint"
+tooltip_text = "Show authored guidance"
+theme_type_variation = &"QuietButton"

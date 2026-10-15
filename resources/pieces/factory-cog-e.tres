@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://db3q74m7mvmjg"]
+
+[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" path="res://scenes/environment/factory-cog-e.tscn" id="Model"]
+[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/cog-e.png" id="Preview"]
+
+[resource]
+script = ExtResource("Definition")
+id = &"factory-cog-e"
+display_name = "Cog e"
+category = "Props"
+usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
+model = ExtResource("Model")
+thumbnail = ExtResource("Preview")
+bounds = AABB(-0.5, 0, -0.5, 1.0, 0.225, 1.0)
+behavior = "decoration"
+collision_enabled = false
+native_collision = false
+collision_solids = Array[AABB]([])

@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://d2s5cf04l5n1y" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/guidance_editor.tscn" id="GuidanceEditor"]
+
 [node name="PuzzleAuthoring" type="PanelContainer" unique_id=1619636925]
 visible = false
 custom_minimum_size = Vector2(448, 0)
@@ -664,6 +666,10 @@ layout_mode = 2
 clip_text = true
 text = "Remove selected goal"
 theme_type_variation = &"QuietButton"
+
+[node name="GuidanceEditor" parent="Surface/Contents/Body/Tabs/Objectives/Fields" instance=ExtResource("GuidanceEditor")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="Publish" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=166026776]
 visible = false

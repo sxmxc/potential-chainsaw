@@ -3,6 +3,7 @@ import manifest from "./catalog.json" with { type: "json" };
 type ObjectValue = Record<string, unknown>;
 type Asset = {
   scenery: boolean;
+  connectors: number;
   surface_mounted: boolean;
   release: boolean;
   collector: boolean;
@@ -169,11 +170,9 @@ function mountingBasis(value: unknown): value is number[] {
   return Math.abs(determinant - 1) < 0.00001;
 }
 
-export function validatePuzzle(value: unknown, catalog: unknown): ObjectValue {
-  require(
-    catalog === compatibility,
-    "This puzzle uses a different game catalog",
-  );
+// Keep the legacy digest argument for API-v1 callers. Support is established by
+// the schema, assets, settings and ports actually used below, not catalog equality.
+export function validatePuzzle(value: unknown, _catalog?: unknown): ObjectValue {
   require(object(value), "Invalid puzzle");
   keys(value, [
     "id",
@@ -193,6 +192,7 @@ export function validatePuzzle(value: unknown, catalog: unknown): ObjectValue {
     "restricted_zones",
     "objectives",
     "hints",
+    "guidance",
     "camera",
     "awards",
     "validation",
@@ -202,7 +202,7 @@ export function validatePuzzle(value: unknown, catalog: unknown): ObjectValue {
     "modified",
   ]);
   require(
-    safeId(value.id) && integer(value.version, 1, 2) &&
+    safeId(value.id) && integer(value.version, 1, 3) &&
       integer(value.revision, 1, 100000),
     "Unsupported puzzle identity or version",
   );
@@ -356,6 +356,28 @@ export function validatePuzzle(value: unknown, catalog: unknown): ObjectValue {
       hints.every((h) => typeof h === "string" && h.length <= 500),
     "Invalid hints",
   );
+  const guidance = value.guidance === undefined ? [] : value.guidance;
+  require(Array.isArray(guidance) && guidance.length <= 32, "Invalid guidance");
+  require(value.guidance === undefined || value.version === 3, "Guidance requires format 3");
+  for (const step of guidance) {
+    require(object(step), "Invalid guidance step");
+    keys(step, ["kind", "target", "connector", "position", "text", "appear", "complete"]);
+    require(["attention", "target", "direction", "interaction", "problem"].includes(step.kind as string) &&
+      ["build", "run", "always"].includes(step.appear as string) &&
+      ["selected", "connected", "run_started", "objective", "dismissed"].includes(step.complete as string), "Invalid guidance condition");
+    require((step.text === undefined || (typeof step.text === "string" && step.text.length <= 200)) &&
+      (step.position === undefined || vector(step.position, 3)) &&
+      integer(step.connector === undefined ? -1 : step.connector, -1, 100), "Invalid guidance presentation");
+    const uid = step.target === undefined ? "" : step.target;
+    require(typeof uid === "string" && (uid === "" || pieces.has(uid)), "Missing guidance target");
+    require(uid !== "" || (!(["selected", "connected", "objective"].includes(step.complete as string)) && (step.connector ?? -1) === -1), "Guidance needs a target");
+    if (step.complete === "connected") require(integer(step.connector, 0, 100), "Guidance needs a connector");
+    if (step.complete === "objective") require(objectives.some((goal) => goal.target === uid), "Missing guidance objective");
+    if (uid !== "" && (step.connector as number) >= 0) {
+      const asset = assets[pieces.get(uid)!.piece as string];
+      require((step.connector as number) < (asset.connectors ?? 0), "Missing guidance connector");
+    }
+  }
   const required = value.required_assets ?? [];
   require(
     Array.isArray(required) && required.length <= 500 &&

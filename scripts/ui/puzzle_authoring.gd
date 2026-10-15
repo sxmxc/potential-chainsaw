@@ -28,6 +28,7 @@ func close_drawer() -> void:
 
 func configure(puzzle_session: ConstructionSession) -> void:
 	session = puzzle_session
+	%GuidanceEditor.configure(session)
 	boundary = session.world.boundary
 	boundary.edited.connect(func(): metadata_changed(); refresh_zones(); refresh_region())
 	boundary.selection_changed.connect(refresh_region)

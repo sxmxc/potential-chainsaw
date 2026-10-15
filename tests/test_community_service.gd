@@ -182,6 +182,16 @@ func test_download_reuses_installation_and_rejects_identity_conflicts() -> void:
 	assert_eq(installed.data.puzzle._source, "community")
 	assert_false(PuzzleStore.is_official(installed.data.puzzle))
 	assert_true((await service.download_puzzle("online", 1)).ok, "Identical downloads are idempotent")
+	var unsupported := puzzle.duplicate(true)
+	unsupported.id = "community-unsupported-r1"
+	unsupported.pieces[0].piece = "unknown-future-piece"
+	adapter.result = CommunityService.success({"puzzle": unsupported})
+	assert_false((await service.download_puzzle("unsupported", 1)).ok, "Actual missing assets still block installation")
+	unsupported = puzzle.duplicate(true)
+	unsupported.id = "community-unsupported-r1"
+	unsupported.version = 999
+	adapter.result = CommunityService.success({"puzzle": unsupported})
+	assert_false((await service.download_puzzle("unsupported", 1)).ok, "Unsupported puzzle formats still block installation")
 	puzzle.name = "Unrelated replacement"
 	adapter.result = CommunityService.success({"puzzle": puzzle})
 	assert_false((await service.download_puzzle("online", 1)).ok)

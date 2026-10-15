@@ -21,7 +21,7 @@ static func capture(data: Dictionary, objects: Array[BuildingPiece]) -> void:
 			data.environment_instances.append({"uid": record.uid, "asset": record.piece.trim_prefix("environment:"), "position": record.position, "rotation": record.rotation})
 		else:
 			data.pieces.append(record)
-	if not data.environment_instances.is_empty(): data.version = 2
+	if not data.environment_instances.is_empty(): data.version = maxi(2, int(data.version))
 
 static func transform_for(item: Dictionary) -> Transform3D:
 	return Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), Vector3(item.position[0], item.position[1], item.position[2]))
