@@ -17,6 +17,8 @@ Context transitions reset simulation, tools, restrictions, environment, and cons
 
 `scenes/world.tscn` and `WorldManager` compose BuildManager, SimulationManager, boundaries, and cameras. The workspace can operate without the main menu. It is the common editing and physics path for every mode.
 
+`WorldManager` alone enables construction input: its host enables camera input through `set_input_enabled`, and construction additionally requires the BUILD simulation state and an inactive boundary editor. Simulation state and boundary interaction signals refresh that decision. Worlds start with input disabled, so the menu showcase needs no reset-time overrides. Modal suspension remains in effect across simulation resets and boundary cancellation.
+
 ## Construction and resource registries
 
 `BuildManager` owns placement, direct manipulation, selection, configuration, wiring edits, and Godot `UndoRedo` history. Its `validate_edit` checks proposed geometry and the complete resulting player layout before changing live nodes; preview and commit use this same path. Rejected edits retain live pieces, mechanism children, selection, and history. History only records accepted edits, stores construction snapshots, and restores selection through stable instance IDs. Duplication remaps links within an assembly; removal validates the layout with dangling targets removed.

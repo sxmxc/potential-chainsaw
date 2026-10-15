@@ -15,10 +15,8 @@ func _ready() -> void:
 	world_manager.load_construction(data.pieces)
 	# No completion objective: this is a closed physical circulation machine.
 	world_manager.simulation.puzzle={"objectives":[],"time_limit":3600}
-	world_manager.build.enabled=false
 	world_manager.build.grid_visible=false
 	world_manager.build.refresh_grid()
-	world_manager.camera.enabled=false
 	animation.play("showcase")
 	animation.advance(0)
 	world_manager.camera._update(1)
@@ -33,12 +31,9 @@ func set_active(value: bool) -> void:
 		director.set_active(false)
 		animation.pause()
 		world_manager.simulation.reset()
-		world_manager.build.enabled=false
-		world_manager.build.refresh_grid()
 
 func start_roll() -> void:
 	world_manager.simulation.start()
-	world_manager.build.enabled=false
 	loops+=1
 
 func _process(_delta: float) -> void:

@@ -40,8 +40,6 @@ func start() -> bool:
 	connect_before_run = build.connect_mode
 	build.cancel()
 	build.select(null)
-	build.enabled = false
-	build.refresh_grid()
 	construction_before = build.snapshot()
 	objectives.reset(puzzle.get("objectives", []))
 	for piece in build.pieces:
@@ -56,6 +54,7 @@ func start() -> bool:
 				if not behavior_node.marble_collected.is_connected(collected): behavior_node.marble_collected.connect(collected)
 	elapsed = 0
 	state = State.RUNNING
+	state_changed.emit(state,"Testing")
 	# Queue initial emissions until every receiver has entered its run lifecycle.
 	draining_signals = true
 	for piece in build.pieces:
@@ -67,9 +66,7 @@ func start() -> bool:
 				_behavior_output(port, behavior_node.output_values[port], piece)
 	draining_signals = false
 	_flush_signals()
-	if state != State.RUNNING: return false
-	state_changed.emit(state,"Testing")
-	return true
+	return state == State.RUNNING
 
 func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:
 	body.reparent(self)
@@ -179,11 +176,7 @@ func reset() -> void:
 			body.queue_free()
 	marbles.clear()
 	marble = null
-	if build:
-		build.enabled = true
-		build.refresh_grid()
-	state = State.BUILD
-	if restore_connect: build.set_connect_mode(true)
 	elapsed = 0
 	objectives.reset(puzzle.get("objectives", []))
 	state_changed.emit(state,"")
+	if restore_connect: build.set_connect_mode(true)

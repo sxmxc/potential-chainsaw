@@ -52,17 +52,11 @@ func deactivate() -> void:
 	hide()
 
 func suspend_input() -> void:
+	world.set_input_enabled(false)
 	world.boundary.cancel()
-	world.build.enabled = false
-	world.camera.enabled = false
-	world.build.preview.hide()
-	world.build.refresh_grid()
 
 func resume_input() -> void:
-	world.build.enabled = is_visible_in_tree() and world.simulation.state == SimulationManager.State.BUILD and world.boundary.tool.is_empty() and not world.boundary.selecting
-	world.camera.enabled = is_visible_in_tree()
-	world.build.refresh_grid()
-	hud.refresh()
+	world.set_input_enabled(is_visible_in_tree())
 
 func has_modal() -> bool:
 	return authoring.get_node("%ExportDialog").visible

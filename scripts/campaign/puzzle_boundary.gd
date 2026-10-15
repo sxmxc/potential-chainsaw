@@ -3,6 +3,7 @@ extends MeshInstance3D
 
 signal edited
 signal selection_changed
+signal interaction_changed
 
 @export var build: BuildManager
 var session: ConstructionSession
@@ -19,7 +20,7 @@ func set_editing(active: bool) -> void:
 	cancel()
 	selecting = active and session.is_authoring
 	if selecting: build.cancel()
-	build.enabled = not selecting and session.is_authoring and build.camera.enabled
+	interaction_changed.emit()
 	refresh()
 
 func select_region(index: int) -> void:
@@ -73,6 +74,7 @@ func refresh() -> void:
 		tool = ""
 		first_corner = null
 		zone_index = -1
+		interaction_changed.emit()
 	visible = not session.is_sandbox
 	if not visible: return
 	var lines := ImmediateMesh.new()
@@ -99,7 +101,7 @@ func begin(zone: bool = false, index: int = -1) -> void:
 	zone_index = index
 	first_corner = null
 	build.cancel()
-	build.enabled = false
+	interaction_changed.emit()
 	build.show_status(("Restricted area" if zone else "Build area") + " · click two opposite corners · Esc cancels")
 
 func cancel() -> void:
@@ -110,7 +112,7 @@ func cancel() -> void:
 	tool = ""
 	first_corner = null
 	zone_index = -1
-	build.enabled = not selecting and build.camera.enabled
+	interaction_changed.emit()
 
 func _input(event: InputEvent) -> void:
 	if not session.is_authoring or not build.camera.enabled: return
