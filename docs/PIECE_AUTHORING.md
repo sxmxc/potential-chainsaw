@@ -1,34 +1,44 @@
 # Authoring pieces and automation
 
-Every placed object is a `BuildingPiece`. Its `PieceDefinition` supplies the stable ID, model scene, presentation, connectors, and measured placement geometry. Functionality comes from optional `PieceBehavior` nodes in that scene, including its root; one piece can compose several behaviors. The definition's `behavior` string is a catalog tag, not a script factory.
+A new piece needs a definition and a model scene. The definition makes it a catalog asset; the scene supplies its visible geometry, collision, and optional behavior. This guide is for developers adding or maintaining those assets. For what the existing mechanisms do, see [Mechanisms](MECHANISMS.md).
 
-## Edit or add a piece
+Every placed object is a `BuildingPiece`, whether it is a track, an adjustable support, a gate, or scenery. Static models need no behavior script. Functional models compose `PieceBehavior` nodes, and the common instance discovers them throughout the model hierarchy, including the root. The definition's `behavior` field is only a catalog tag.
 
-Open the definition under `resources/pieces/` and its **Model** scene. Functional wrappers live under `scenes/mechanisms/`; imported GLBs remain unchanged. Examples include:
+## Start from a working piece
 
-- `sensor.tscn`: detection area and idle/occupied indicator animations.
-- `gate.tscn`, `diverter.tscn`, `launcher.tscn`: authored moving collision, detection, visuals, and exported node references.
-- `fan-*.tscn`: airflow housings/arrows or physical paddle collision arms, with different physics behavior.
-- `bucket_elevator.tscn` and `support-*.tscn`: adjustable assemblies using saved component scenes and definition subclasses.
-- `sandbox-start.tscn` and `sandbox-finish.tscn`: release scheduling and collector detection; display labels are presentation, while objectives use stable instance IDs.
+Open a suitable definition under `resources/pieces/` and follow its Model reference. Functional wrappers live under `scenes/mechanisms/`. The sensor is a small example: its scene combines track collision, a detection area, an animated indicator, and a behavior script. The gate and launcher demonstrate moving collision and exported node references; the elevator and supports demonstrate adjustable assemblies.
 
-To add a variant, duplicate a suitable wrapper and definition. Assign a new stable definition ID, name, category, thumbnail, and model. Bind behavior node references and make shared resources unique before editing them. Static pieces need no behavior node.
+For a variant, duplicate the wrapper and definition, assign a new stable ID, and set its display name, category, thumbnail, and model. Make shared resources unique before changing them. Preserve imported GLBs; assemble and adjust them in the wrapper scene.
 
-Inspect actual mesh dimensions, pivots, orientation, and hierarchy before updating bounds/connectors/occupied volumes/samples. Keep collision aligned with geometry. Enable **Native collision** for wrappers owning their shapes; ordinary meshes use the common generated triangle collision. Existing mesh-matched collision scenes are under `scenes/mechanisms/collision/`. Collider-free decorations can use pick-only bounds.
+Inspect the actual mesh, pivot, orientation, and hierarchy before defining connectors or placement geometry. A filename does not establish dimensions. Bounds, occupied volumes, and surface samples affect placement; the collision shape affects marble travel. They need to agree closely enough that a valid preview represents a usable physical object.
 
-Behavior **Configuration fields** are arrays of `PieceSetting` resources: key, label, description, type, default, range, step, and unit. These saved fields supply both the inspector and definition normalization/authoring restrictions. `PieceDefinition` reads nested/inherited scene metadata through `SceneState`. Do not add a parallel name-keyed settings table.
+Ordinary meshes receive generated triangle collision. Set **Native collision** when the wrapper owns its collision shapes, as the mechanical scenes do. Existing mesh-matched shapes live under `scenes/mechanisms/collision/`. A decoration that should remain selectable without blocking marbles can disable physical collision and use the common pick bounds.
 
-Ordinary normalization retains omitted defaults and unknown keys, including `links`; runtime configuration resolves defaults separately. Adjustable definition subclasses may materialize their geometry settings. `configured` and `normalized_configuration` belong on those subclasses; use **Height setting**, **Ground placement**, and **Height offset** for existing contextual placement behavior.
+## Give the instance settings
 
-Save the definition and register it in YARD's `resources/registries/piece_registry.tres`. The registry entry ID must equal `PieceDefinition.id`. Editor Play/export scans and indexes; headless tests consume the saved index. No separate catalog or runtime directory scan is needed. If online compatibility changes, regenerate the [community manifest](COMMUNITY_SERVICE.md#api-v1).
+Author editable fields on the behavior's **Configuration fields** array using `PieceSetting` resources. Each field declares a key, label, description, kind, default, and, for numbers, range, step, and unit. For example, the sensor scene declares the flag `detect_exit`, shown in the inspector as “Emit exit event.” The script reads that key from its configuration when a marble leaves.
 
-Verify placement, configuration, undo/redo, duplication, save/reload, simulation, pause, and reset. Geometry or mechanism changes need actual collision/transition tests, including multiple marbles where applicable.
+The same saved resources supply the inspector, definition normalization, and authoring restrictions. `PieceDefinition` reads scene metadata through `SceneState`, including nested and inherited scenes. Keep these declarations in the scene rather than add a second settings table in UI code.
 
-## Behavior contract
+Configuration has three stages:
 
-Extend `PieceBehavior`. `configure(settings)` receives resolved instance configuration; call `super.configure` when overriding it. `reset()` restores configured initial state and clears timers/capture/runtime work. `start_run()` starts a simulation. `active` follows pause/resume/end and emits `activity_changed`; `enabled` is the behavior's own enabled state. Ghosts set `preview_only` and disable processing/collision.
+- `normalized_configuration()` prepares saved overrides. The base implementation normalizes declared values that are present, leaves omitted defaults omitted, and retains unknown keys such as `links`.
+- `resolved_configuration()` fills defaults before passing settings to behaviors.
+- `configured()` returns the definition used for instance geometry. The base returns itself; adjustable subclasses return adapted geometry without mutating the catalog resource.
 
-Pulse inputs are callback entries in `inputs`; pulse outputs are names in `outputs`:
+Use `SupportDefinition` or `ElevatorDefinition` as references when a setting changes bounds or connectors. Their normalizers also materialize geometry settings. Existing **Height setting**, **Ground placement**, and **Height offset** properties connect adjustable pieces to contextual placement; do not reproduce that logic in an inspector widget.
+
+## Implement the behavior lifecycle
+
+Extend `PieceBehavior`. `configure(settings)` stores resolved configuration and calls `reset()`. Call the base implementation when overriding it. Reset must restore configured initial state and clear timers, captures, and other run work. `start_run()` begins activity; `active` changes on pause, resume, and run end and emits `activity_changed`. `enabled` is the behavior's own setting, distinct from whether the simulation is running.
+
+Preview instances set `preview_only`, disable processing, and remove collision participation. Initialization must still work when the scene is created as a preview. Do not begin a run in `_ready()` or require an application menu to exist.
+
+The sensor illustrates the division: `_ready()` connects detection signals and declares its pulse outputs; entry/exit callbacks update occupancy while running; reset clears occupancy and returns the indicator to idle. A bucket elevator has more state to restore, but follows the same lifecycle. If a behavior captures a marble, restore its physics and collision on release and reset, and preserve capture correctly through pause.
+
+### Declare ports
+
+Pulse inputs are callbacks in `inputs`; pulse outputs are names in `outputs`. This minimal example shows the contract:
 
 ```gdscript
 extends PieceBehavior
@@ -41,14 +51,32 @@ func _trigger(value: Variant) -> void:
     emit_output("finished", value)
 ```
 
-Persistent ports use `state_inputs` and `state_outputs`, with initial values. Each state input also needs an `inputs` callback. `emit_output` latches state and emits only changes; do not emit the underlying signal directly. Base reset restores declared initial values; subclasses restore their dependent state too.
+`receive()` handles the input's running/preview checks before calling the callback. Use `emit_output()` rather than emit `output_raised` directly, so declaration checks and persistent state handling remain intact.
 
-Input/output names and setting keys must be unambiguous across a piece's components. Links address stable piece IDs and port names, so internal node paths can change without rewriting links. Pulse connects to pulse; state connects to state. Current Sensor provides a persistent `occupied` output alongside entered/exited pulses. The interface supports composing further behaviors; it does not imply shipped logic-gate or sound-block pieces.
+State ports describe a value that remains meaningful between events. Declare initial values in `state_inputs` or `state_outputs`; a state input also needs its callback in `inputs`. Base reset restores those values. The sensor, for example, exposes `occupied` alongside its `entered` and optional `exited` pulses. Occupied stays true until the last detected marble leaves.
 
-Simulation delivers FIFO in source emission and saved-link order. Receiver outputs join that queue. Unchanged state values permit feedback to settle; exceeding the scene's delivery limit (default 16,384) fails the run. Pause rejects delivery; reset clears the queue and start seeds persistent connections. See [Architecture](ARCHITECTURE.md#behaviors-physics-and-automation).
+Keep port names and setting keys unique across components on one piece. Links address a piece UID and a port name, not the behavior's node path. Pulse outputs connect to pulse inputs and state outputs to state inputs. The component contract allows more behaviors to be composed; it does not imply that logic-gate or sound-block pieces already exist in the catalog.
+
+Simulation queues outputs in FIFO order, preserving emission and saved-link order. Receiver outputs join that queue. State outputs suppress unchanged values, and persistent wires are seeded at run start and on resume. A non-settling transaction fails after the scene's delivery limit, default 16,384. When implementing feedback, check both initial state and reset rather than assume an entry event will always arrive.
+
+## Register and verify
+
+Save the definition in YARD's `resources/registries/piece_registry.tres`. The entry ID must equal `PieceDefinition.id`; saves and published content depend on that identity. `PieceCatalog` handles loading and filtering, so no runtime directory scan or second catalog is needed.
+
+Editor Play and export rebuild the registry index. Headless runtime tests consume the saved index, so ensure it is current before diagnosing a missing entry there. If a piece changes online compatibility, regenerate both [community catalog manifests](COMMUNITY_SERVICE.md#api-v1).
+
+Check placement and rejection previews, settings, duplication, undo/redo, save/reload, and puzzle restrictions. Run the mechanism through start, pause, resume, and reset. Geometry and transport changes also need real collision tests, including multiple marbles where relevant. A correctly declared connector or passing parser cannot establish a successful physical transition.
 
 ## Wire a machine
 
-Choose **Connect**, drag a send handle onto a compatible receiving piece, and choose ports/actions in the relationship card when needed. Escape cancels the drag/card, then leaves Connect. **Wires** independently shows directional relationships during normal building. Click a wire to inspect, change, or remove it. Selecting a mechanism emphasizes related links.
+In the game, choose **Connect**, drag a send handle onto a compatible receiving piece, and choose the ports/actions in the relationship card if needed. For example, connect a sensor's `entered` output to a gate's `open` action. Escape cancels the drag or card, then leaves Connect mode.
 
-The shared UI calls `BuildManager.edit_link`; settings permissions, puzzle validation, and undo/redo apply. Duplicating an assembly remaps internal links; deleting targets removes dangling links. JSON retains `{event, target, action}` under source `config.links`. Simulation hides wiring and reset restores the previous Connect mode/overlay presentation.
+**Wires** independently displays directional relationships during ordinary building. Click a wire to inspect, change, or remove it; selecting a mechanism emphasizes related links. Simulation hides this editing presentation and reset restores the previous Connect mode.
+
+The UI calls `BuildManager.edit_link()`, so configuration permissions, validation, and undo/redo apply. Links are stored under the source instance's `config.links`:
+
+```json
+{"event": "entered", "target": "gate-instance-uid", "action": "open"}
+```
+
+Here `gate-instance-uid` stands for the target instance's saved UID, not its catalog ID. Duplicating a whole assembly remaps internal targets to the copies. Removing a target prunes links to it. Keep new wiring features within that operation contract so player rules and saved machines stay consistent.

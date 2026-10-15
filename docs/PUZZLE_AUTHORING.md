@@ -1,87 +1,128 @@
 # Puzzle authoring and distribution
 
+A puzzle is an incomplete machine plus rules for finishing it. Its starting layout tells the player what is already there; inventory and permissions define what they may change; objectives decide whether the result works. The reference solution is kept separately and never used to judge similarity to the player's design.
+
+Use the shared visual editor to author puzzles. Before building, identify the engineering problem, the choices the player should make, and the mechanics you have observed in simulation. A machine that runs successfully may still need human playtesting to become a good puzzle.
+
 ## Create a puzzle
 
-Run `scenes/main.tscn` and choose **Puzzle Editor** for community authoring. In a project run, **Ctrl+Shift+P** enters official authoring. The project-only **Publish to** selector in the Publish page changes destination without recreating the draft. Exported builds offer community publication only.
+Run the game and choose **Puzzle Editor** for community authoring. In a project run, **Ctrl+Shift+P** opens official authoring. The project-only **Publish to** selector changes the destination without recreating the draft. Exported builds offer community publication only.
 
-The editor uses the shared construction workspace, toolbox, snapping, selection, configuration, and undo/redo. Open **Authoring tools** for definition-wide settings; use the selection inspector for object settings and player permissions.
+Build the incomplete starting machine using the normal toolbox, snapping, selection, settings, and Connect tools. Place at least one marble release and the pieces that objectives will target. Use the selection inspector for individual settings and player permissions; open **Authoring tools** for the whole puzzle.
 
-1. Build the incomplete starting machine. Place a marble release and targets for its objectives. Releases configure quantity, spacing, delay, initial speed, and an optional display label.
-2. In **Setup**, enter the title, objective description, creator, difficulty, hints, and time limit. Capture the intended camera. Optional time/piece awards do not affect the mandatory outcome. Official authoring also exposes chapter metadata, level order, and prerequisites.
-3. Select starting pieces and set **Player permissions** in the inspector. Permissions cover moving, rotation, removal, and configuration. You can restrict a configuration key and its numeric range. The form currently exposes one restricted key per starting piece; inventory-wide limits can cover several keys. Authoring-only environment pieces are fixed during play; ordinary decorative props follow normal piece permissions.
-4. In **Inventory**, click thumbnails in the shared Pieces browser to add types, then edit their quantities inline. Only added pieces consume inventory; starting pieces do not. Zero removes a type. Configuration limits can restrict added instances, including adjustable geometry.
-5. In **Boundaries**, draw the build region with two corners and lower/upper elevations. Draw forbidden regions similarly; select a region in the viewport or region list to redraw/remove it. Drag a region to move it; Escape cancels a drag or drawing. Elevation controls edit the selected region. **Exact dimensions** exposes its X/Z origin, width, and depth. Opening a dialog cancels an unfinished region gesture.
-6. In **Objectives**, select a collector or mechanism in the viewport (or target menu) for delivery or activation. Select an existing goal to edit it, or choose **New goal**. Delivery supports a quantity and optional source release; **All marbles** fills the quantity from configured releases. All objectives must succeed. Activation checks whether the event occurred, not how many times it occurred.
-7. Use the shared **Connect** tool for mechanism wiring; see [Piece authoring](PIECE_AUTHORING.md#wire-a-machine).
-8. **Save Draft**. The folder button beside Save opens the draft/published library; **New puzzle** is in Authoring tools. Project runs open **Campaign puzzles**, with a selector for **Community puzzles**. Opening a packaged puzzle selects official authoring, retains its ID and campaign registration, and allows editing regardless of player progression. Saves remain drafts until a tested revision is added to the campaign. Exported builds show the community library only. Opening another context saves dirty authoring work first and stays put if saving fails.
+### Define the challenge
 
-Construction, settings, permissions, and wiring follow shared editing rules. Metadata is saved explicitly and has no separate undo history. Describe what the player must achieve without giving away the construction. A working machine still needs human playtesting to assess whether its choices make an interesting puzzle.
+In **Setup**, enter a name, an outcome-focused description, creator, difficulty, hints, and the available time. Capture a camera view that makes the initial problem legible. Time and piece-budget awards are optional goals; they do not change mandatory completion. Official authoring also exposes chapter metadata, level order, and prerequisites.
+
+Starting pieces are fixed unless you grant permissions. Select them and expand **Player permissions** in the inspector to allow moving, rotating, configuring, removing, or duplicating. You can limit configuration to a selected key and a numeric range. The form edits one restricted key per starting piece; the data format can retain existing restrictions on several keys.
+
+For example, a fixed gate can still be configurable if the challenge is about timing rather than moving the gate. Wiring is configuration too, so take permitted keys into account when the player should be able to connect signals. Verify that freedom in a player test rather than infer it from which controls are visible.
+
+In **Inventory**, clicking catalog thumbnails in the shared Pieces browser adds piece types to the player's toolbox. Edit their quantities inline; zero removes a type. Starting pieces do not consume inventory, but new instances, including duplicates, do. The selected inventory type can have numeric configuration restrictions, including limits on adjustable geometry. Type-wide `configuration_limits` also apply to starting instances of that type.
+
+Numeric range enforcement has a gap for omitted settings: it checks values present in saved configuration, while a behavior can receive its default at runtime. A default outside the authored range can therefore pass unchecked. Test newly placed pieces as well as edited settings, and do not rely on a range excluding an omitted default.
+
+### Set the space and outcomes
+
+In **Boundaries**, draw the build region with two corners, then set its lower and upper elevations. Add restricted regions in the same way. Select a region in the world or list to redraw or remove it; drag to move it, and use Escape to cancel a drag or drawing. **Exact dimensions** exposes its X/Z origin, width, and depth. Opening a dialog cancels an unfinished region gesture. Selection by itself does not dirty the draft.
+
+Boundaries govern new and transformed construction. Unchanged starting pieces may extend outside the player's build region, which lets the authored machine frame the problem without making all of it editable space. Changing geometry through a setting is still an edit that can violate the region.
+
+In **Objectives**, select a collector or mechanism in the viewport or target menu. Choose an existing goal to edit it, or create a new one. Delivery requires a quantity of distinct marbles at a collector, optionally from one release. **Require all released marbles** fills the quantity from the configured releases. Activation requires a named output to have occurred; it does not count repeated activations. Every objective must succeed, and an individual deadline can constrain it further.
+
+Use **Connect** for relationships between mechanisms. [Wire a machine](PIECE_AUTHORING.md#wire-a-machine) explains port selection and compatibility. Ordinary marble travel remains physical: an apparently aligned route or an activation signal does not guarantee delivery.
+
+### Save the draft
+
+Choose **Save Draft** while developing. The folder button beside Save opens the puzzle library, and **New puzzle** is in Authoring tools. In project runs, the library opens as **Campaign puzzles**, with a selector for **Community puzzles**; exported builds show the community library only.
+
+Opening a packaged puzzle retains its ID and registration and permits authoring regardless of player progression. Edits stay in a draft until a tested revision is added to the campaign. Navigation saves dirty authoring work first and stays put if that save fails. Save explicitly after important changes; metadata has no separate undo history, while construction, piece settings, and wiring use the shared edit history.
 
 ## Test and publish
 
-1. Choose **Test as Player**. ConstructionSession captures a separate authored baseline and loads the actual inventory, permissions, scenery, boundaries, and objectives.
-2. Solve with normal tools, then **Test Track** in the real simulation. Reset retains your player construction; **Restart puzzle** reloads its starting layout.
-3. After success, choose **Save solution**. This stores the construction from that successful run separately from the starting layout, together with a validation fingerprint, engine version, elapsed seconds, and test timestamp.
-4. **Return to Editor** restores the baseline. The test-only **Load reference** action can load a saved solution, but it still must obey current rules and complete the simulation. Ordinary players cannot use it.
-5. In **Publish**, review readiness and choose **Validate**. The primary action becomes **Publish locally** or **Add to Campaign** when the draft is ready. A current successful test and preserved solution are required. Content edits invalidate proof; test and save a new solution before publishing again.
+Publication depends on three separate things: the intended starting machine, a solution that obeys the player's rules, and a successful run of that solution for the current draft.
 
-Opening a published puzzle for editing retains its ID. Gameplay content changes advance its revision and leave the previous published copy playable while the new draft is tested. Merely changing the publication destination does not invalidate proof. Selecting objects does not change content.
+1. Choose **Test as Player**. The session captures the authored baseline and enters a separate copy with real inventory, permissions, scenery, boundaries, and objectives.
+2. Solve with the normal tools and run **Test Track**. Reset retains the player construction; **Restart puzzle** reloads the starting layout. Retries are unlimited.
+3. After success, choose **Save solution**. This stores the successful construction separately from the starting layout, together with its fingerprint, engine version, elapsed time, and test timestamp.
+4. **Return to Editor** restores the baseline. A test-only **Load reference** action can load the saved solution, but it must still obey current rules and complete a run. Ordinary players cannot use it.
+5. In **Publish**, review readiness and use **Validate** to inspect problems. When ready, the primary action becomes **Publish locally** or **Add to Campaign**.
 
-For portable sharing, publish locally and choose **Export puzzle**. Another player uses **Community puzzles → Import puzzle**. **Publish online** first preserves the same local published revision, then opens the online browser for submission. It returns a `<UUID>@<revision>` share code, accepted by **Open shared puzzle**. **My puzzles** lists owned online publications and supports unpublishing. Installed copies survive unpublishing. See [Community service](COMMUNITY_SERVICE.md) for authentication and backend setup; local publication/import/export requires neither account nor network.
+Edits covered by the validation fingerprint require another successful test and saved solution. This includes presentation fields such as the name and description, not just track changes. Selecting objects does not change content. Changing the publication destination or campaign registration alone does not invalidate proof.
 
-## Scenery
+Reopening a published puzzle preserves its ID. Changing fingerprinted content advances the revision and returns it to draft status; the prior published copy remains playable while you work. Keep this identity rather than create a replacement puzzle merely to revise it.
 
-Registered Building Kit and Factory Kit pieces use the same toolbox and editing tools as track. They are decorative/fixed geometry, not additional working mechanisms. During player tests and puzzle play they are outside inventory and cannot be selected or edited.
+## Share a community puzzle
 
-Surface snapping uses the collision hit and measured occupied volumes. Flat faces and edges offer attachments; Tab cycles alternatives and R retains deliberate rotation. Track connectors still align full transforms across elevations. Without an attachment, use the grid and active height. Blue previews indicate grid placement, green attachment, and red rejection.
+Publish locally, then choose **Export puzzle** to write a portable JSON file. Another player installs it through **Community puzzles → Import puzzle**. This workflow needs no account or network connection.
 
-Face contact is permitted; solid penetration is rejected. Door/window volumes preserve openings. Columns have a registered wall-joint exception. Sloping/curved surfaces do not automatically provide rectangular attachments. Machinery placement bounds approximate its shape while physical collision uses mesh geometry; the decorative control display is pickable without blocking marbles.
+**Publish online** first retains a local published copy, then opens the online browser for submission. The service returns a `<UUID>@<revision>` share code for **Open shared puzzle**. **My puzzles** lists the current owner's publications and supports unpublishing. An installed copy remains playable after its online publication is removed. Authentication and server setup live in [Community service](COMMUNITY_SERVICE.md).
 
-Scenery changes participate in the validation fingerprint, including registered resource dependencies. Geometry changes require a fresh player test before republishing. Runtime scenes are resolved from the current registry; publication does not freeze a scene snapshot.
+Imports and downloads use the same `PuzzleStore.install_community()` path. It validates size, types, registered assets, the definition, and solution rules before writing. A conflicting ID in drafts, local publications, or imports is rejected rather than renamed or overwritten; an identical reimport keeps its identity. Imported proof records the author's prior run, rather than independently proving physics on the receiving machine.
+
+## Scenery and physical space
+
+Registered Building Kit and Factory Kit scenery is authored with the same tools as track. Definitions marked `authoring_only` become fixed environment geometry in play and player tests, outside selection and inventory. Ordinary decorative props, such as trees, remain normal construction pieces and follow their permissions. Decorative machinery does not become a working mechanism merely because its model resembles one.
+
+Surface snapping uses collision hits and measured occupied volumes. Flat faces and edges offer attachments; Tab cycles alternatives and R preserves deliberate rotation. Track connectors align the full transform across elevations. Without an attachment, the grid and active building height supply placement. Blue previews indicate grid placement, green attachment, and red rejection.
+
+Face contact is permitted and solid penetration rejected. Door/window volumes preserve openings, and columns have a registered wall-joint exception. Curved or sloping surfaces do not automatically offer rectangular attachments. Decorative machinery can have approximate placement bounds while using mesh collision physically; the control display is selectable without blocking marble travel.
+
+Authoring-only scenery dependencies contribute to the validation fingerprint. Their geometry changes require a new local test before republishing. Puzzle files resolve current registered assets; publication does not freeze scene snapshots.
 
 ## Formats and storage
 
-`TrackSerializer` reads/writes personal track format **1**: `version`, `id`, `name`, `modified`, and `pieces`. A construction record contains `uid`, catalog `piece`, `position: [x,y,z]`, quarter-turn `rotation`, and `config`. Mechanism `config.links` contains `{event, target, action}`. Personal-track decoding skips unknown/authoring-only pieces with warnings and normalizes configuration; puzzle imports instead reject missing catalog dependencies.
+Personal tracks use format **1**, owned by `TrackSerializer`: `version`, `id`, `name`, `modified`, and `pieces`. A construction record identifies the asset separately from the placed instance:
 
-`PuzzleStore.create()` creates puzzle format **2**; readers accept versions **1 and 2**. Version 2 provides catalog scenery through `environment_instances`. The primary fields are:
+```json
+{
+  "uid": "sensor-instance",
+  "piece": "sensor",
+  "position": [0, 0, 0],
+  "rotation": 0,
+  "config": {"detect_exit": true}
+}
+```
 
-| Data | Representation |
+Rotation is an integer 0–3 in quarter turns about Y. Mechanism links live under `config.links` as `{event, target, action}`, with a target instance UID. Personal-track decoding skips unknown or authoring-only pieces with warnings and normalizes settings; puzzle imports reject missing catalog dependencies.
+
+`PuzzleStore.create()` produces puzzle format **2**, and readers accept versions **1 and 2**. Version 2 adds catalog scenery through `environment_instances`. The principal fields are:
+
+| Area | Fields and representation |
 | --- | --- |
-| Identity/presentation | `id`, `revision`, `name`, `description`, `creator`, `difficulty`, `status`, `hints` |
-| Starting layout/reference | `pieces`, `solution`: construction records; the solution is separate from the start |
-| Player rules | `permissions` by starting UID; `inventory` and `configuration_limits` by piece ID |
-| Geometry | `bounds: [min_x,min_z,max_x,max_z,min_y,max_y]`; each restricted zone is `[x,y,z,size_x,size_y,size_z]` |
-| Scenery | `environment_instances`: `{uid, asset, position, rotation}` with registered authoring-only asset IDs |
-| Outcomes | `objectives`, optional `time_limit`, optional `awards` |
-| View/proof | `camera: {focus,yaw,pitch,distance}`, `validation`, `required_assets` |
+| Identity and presentation | `id`, `revision`, `name`, `description`, `creator`, `difficulty`, `status`, `hints` |
+| Construction | `pieces` for the start; `solution` for the separate solved construction |
+| Player rules | `permissions` keyed by starting UID; `inventory` and `configuration_limits` keyed by piece ID |
+| Build space | `bounds: [min_x,min_z,max_x,max_z,min_y,max_y]`; restricted zones are `[x,y,z,size_x,size_y,size_z]` |
+| Fixed scenery | `environment_instances`: `{uid, asset, position, rotation}`; asset omits the registry's `environment:` prefix |
+| Completion | `objectives`, optional `time_limit`, optional `awards` |
+| View and publication | `camera: {focus,yaw,pitch,distance}`, `validation`, `required_assets` |
 
-Rotation is an integer 0–3 about Y. Arbitrary scene/script paths, per-instance scale, node properties, and the retired `environment`, `environment_placement`, and `environment_snapshot` fields are unsupported. Files with retired scenery fields fail with a rebuild message. Author through the visual editor rather than hand-editing JSON.
+Arbitrary scene/script paths, per-instance scale, and node properties are unsupported. The retired `environment`, `environment_placement`, and `environment_snapshot` fields are rejected with instructions to rebuild using catalog pieces. Use the visual editor rather than hand-editing playable JSON.
 
-Paths below use Godot's resource/user roots:
-
-| Path | Owner/content |
+| Location | Content |
 | --- | --- |
 | `res://resources/campaign/` | Official puzzle JSON |
-| `res://resources/campaign_manifest.json` | Official membership, paths, chapter IDs, order, prerequisites |
+| `res://resources/campaign_manifest.json` | Official membership, paths, chapter IDs, order, and prerequisites |
 | `res://resources/campaign_chapters.json` | Chapter presentation/navigation metadata |
-| `user://tracks/` | Personal track saves |
-| `user://puzzles/drafts/` | Editable drafts, optionally with draft-only `campaign` registration |
+| `user://tracks/` | Personal tracks |
+| `user://puzzles/drafts/` | Editable drafts, with optional draft-only `campaign` registration |
 | `user://puzzles/published/` | Local community publications |
-| `user://puzzles/community/` | Installed JSON/online imports |
-| `user://campaign_progress.json` | Official completion, best results, awards |
-| `user://campaign_state.json` | Official route/resume and Introduction choice |
-| `user://community_progress.json` | Separate community completion by stable puzzle ID |
+| `user://puzzles/community/` | Installed JSON and online puzzles |
+| `user://campaign_progress.json` | Official completion, best results, and awards |
+| `user://campaign_state.json` | Official route/resume state and Introduction choice |
+| `user://community_progress.json` | Separate community completion by puzzle ID |
 
-PuzzleStore saves through the shared `SaveStorage` JSON writer, which checks a flushed temporary file before replacing the destination. Imports and online downloads both use `install_community`: size/type/asset/definition/solution-rule checks precede installation. Conflicting IDs in drafts, local publications, or imports fail without overwriting; identical reimports retain identity. Imported author proof records a prior run, not a trusted physics guarantee. Resource hashes are not compared across packaged builds; editing/republishing requires a new local test.
+`SaveStorage` flushes a temporary JSON file before replacing the destination. PuzzleStore owns domain validation and campaign publication rollback. Imported resource hashes are not compared across packaged builds, where resource representations can differ; editing and republishing requires fresh local proof.
 
 ## Official campaign and progression
 
-Only project runs with the editor feature and `project.godot` present can **Add to Campaign**. It validates the puzzle, writes published content, and updates the manifest and chapters, restoring previous bytes if a write fails. Exported debug/release builds cannot promote project resources. Existing registered paths and IDs are retained; conflicting/stale revisions are rejected.
+**Add to Campaign** is available only when running the Godot project with the editor feature and `project.godot` present. It validates and writes the published puzzle, manifest, and chapters, restoring previous bytes on a write failure. Existing registered paths and IDs are retained, and stale/conflicting revisions are rejected. Exported debug builds do not gain this permission.
 
-Official membership comes from the manifest loader's provenance, never from a field in an imported puzzle. Portable publications omit campaign registration and `_source`. An imported puzzle with an official ID remains community content and uses independent completion records. Local publications do not override packaged campaign entries.
+Official membership comes from the manifest loader's provenance, never an imported field. Portable publications omit campaign registration and `_source`. Even an imported file with an official puzzle ID is community content with independent completion; local publications do not override the packaged campaign.
 
-The manifest currently registers `campaign-01` through `campaign-10` in optional Introduction and four Chapter 1 puzzles. Introduction levels are independently available. Main chapters check their own prerequisites; a level with no explicit prerequisites uses the preceding level in its chapter. Introduction requirements are treated as satisfied for main-route unlocking, including legacy references. Awards never gate progress. Skip Introduction enters the main route without marking tutorial levels complete; completing Introduction reaches that route too.
+The manifest registers `campaign-01` through `campaign-10` in the optional Introduction and four Chapter 1 puzzles. Introduction levels are independently available. Main-route levels use explicit prerequisites, or the preceding level in their chapter when none are specified. Introduction requirements are treated as satisfied for main-route unlocking, including legacy references. Awards never gate progress. Skipping Introduction enters the main route without marking tutorial puzzles complete; finishing it reaches that route too.
 
-Legacy embedded chapter/order/prerequisite fields are moved to draft registration on load, rebinding valid proof for this metadata-only conversion. Shared chapter metadata determines runtime navigation; the manifest can preserve a legacy chapter override for authoring. Existing completion records survive route initialization. Future campaign content requires separate authoring, simulation, and playtesting.
+Legacy embedded chapter, order, and prerequisite fields are converted into draft registration on load, preserving valid proof for that metadata-only conversion. Shared chapter metadata drives navigation. Existing completion records survive route initialization; preserve their stable IDs when maintaining content.
 
-The Windows export preset includes campaign/example JSON, `resources/community_catalog.json`, and `addons/supabase_client/*.cfg`. Keep registry resources, imported models, and scene dependencies included. User-directory content is not shipped automatically. See [Architecture](ARCHITECTURE.md#verification) for isolated GUT checks; tests must not republish bundled content.
+The Windows export preset includes campaign/example JSON, the community catalog, and public addon configuration. Registry resources, imported models, and scene dependencies must also be available; user-directory content is not shipped automatically. Use [isolated tests](ARCHITECTURE.md#verification) for persistence changes, and never republish bundled campaign fixtures as a test side effect.

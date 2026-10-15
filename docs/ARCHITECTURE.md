@@ -1,72 +1,98 @@
 # Architecture
 
+Marble Engineer has one construction workspace. Building freely, editing a puzzle, and solving that puzzle all use the same placement, selection, wiring, and physics code. The important difference is the data and permissions loaded into that workspace.
+
+This guide explains those boundaries and where a change belongs. For hands-on workflows, see [Piece authoring](PIECE_AUTHORING.md), [Puzzle authoring](PUZZLE_AUTHORING.md), and [UI design](UI_DESIGN.md).
+
 ## Application and workspace
 
-`scenes/main.tscn` runs `GameManager`, which hosts navigation, menus, dialogs, settings, and the community service. `scenes/construction_workspace.tscn` contains the shared World, `ConstructionSession`, HUD, and authoring drawer. `ConstructionWorkspace` binds them and handles context actions; application actions travel to GameManager through signals.
+`scenes/main.tscn` runs `GameManager`, the application host. It owns navigation, dialogs, settings, and the community service. `scenes/construction_workspace.tscn` combines a World, a `ConstructionSession`, and the shared HUD. `ConstructionWorkspace` binds them and sends application actions to GameManager through signals. The workspace can also operate without the main menu.
 
-`ConstructionSession` owns four contexts:
+The session determines what the construction means:
 
-| Context | Construction and persistence |
+| Context | Data and rules |
 | --- | --- |
-| Sandbox | Unrestricted player catalog; personal track identity and saves |
-| Authoring | Starting layout, scenery, metadata, rules, draft saves, publication |
-| Puzzle Play | Loaded official or community puzzle under `PuzzleRules` |
-| Player Test | Isolated authored copy with the same player rules; successful runs can become reference solutions |
+| Sandbox | Unrestricted player catalog and personal track saves |
+| Authoring | A puzzle's starting layout, scenery, metadata, rules, and draft/publication actions |
+| Puzzle Play | An official or community puzzle enforced by `PuzzleRules` |
+| Player Test | An isolated authored copy using the player's rules, with the ability to preserve a successful solution |
 
-Context transitions reset simulation, tools, restrictions, environment, and construction history before loading the new data. Session `context_changed` signals a transition; `changed` refreshes metadata/progress. Returning from a player test restores the captured authoring baseline. Simulation reset retains the current player construction.
+A player test is a useful example of why these contexts share an implementation. The session captures the authored baseline, then loads it through the same player path used for puzzle play. The author must solve with the actual inventory and permissions. Returning to the editor restores the baseline; it does not replace the incomplete starting machine with the solved construction.
 
-`scenes/world.tscn` and `WorldManager` compose BuildManager, SimulationManager, boundaries, and cameras. The workspace can operate without the main menu. It is the common editing and physics path for every mode.
+Context changes clear the previous run, tools, rules, environment, and history before loading new content. A simulation reset is smaller: it removes runtime marbles and resets behaviors while retaining the current construction. Features that load a different puzzle belong in the session; features that reset a run belong in simulation.
 
-`WorldManager` alone enables construction input: its host enables camera input through `set_input_enabled`, and construction additionally requires the BUILD simulation state and an inactive boundary editor. Simulation state and boundary interaction signals refresh that decision. Worlds start with input disabled, so the menu showcase needs no reset-time overrides. Modal suspension remains in effect across simulation resets and boundary cancellation.
+`WorldManager` in `scenes/world.tscn` binds construction, simulation, boundaries, and cameras. Hosts enable input through `set_input_enabled()`. WorldManager then enables building only in the BUILD state while no boundary interaction owns the pointer. This keeps a reset from accidentally re-enabling editing behind a dialog. Worlds begin with input disabled.
 
-## Construction and resource registries
+## Editing is a validated change
 
-`BuildManager` owns placement, direct manipulation, selection, configuration, wiring edits, and Godot `UndoRedo` history. Its `validate_edit` checks proposed geometry and the complete resulting player layout before changing live nodes; preview and commit use this same path. Rejected edits retain live pieces, mechanism children, selection, and history. History only records accepted edits, stores construction snapshots, and restores selection through stable instance IDs. Duplication remaps links within an assembly; removal validates the layout with dangling targets removed.
+`BuildManager` owns construction edits and UndoRedo history. An edit first describes a proposed result, checks geometry and player rules, and only then changes live pieces. `validate_edit()` is shared by placement previews and commits. Rejection must leave the machine, selection, and history intact.
 
-`BuildManager/PlacementPreview` is the native Node3D assembly used during placement, movement, and duplication. Preview BuildingPiece children own their configuration and local transforms; the parent supplies the proposed rigid group transform and visibility. Snapping, validation, and commit read those children through `placement_items()` rather than maintaining parallel preview records. Cancellation removes the preview children and restores hidden originals.
+During placement, movement, and duplication, `BuildManager/PlacementPreview` is a Node3D assembly containing preview `BuildingPiece` children. Each child holds its configuration and local transform; the parent holds the proposed group transform. Snapping and validation read this assembly through `placement_items()`. This makes an elevator's adjusted height, for example, part of the same proposal the player sees and commits.
 
-`SnapManager` owns connector topology, cursor-directed attachment candidates, and placement geometry checks. Compatible exposed connectors align the full transform, including elevation. Scenery surface attachment uses collision hits and measured occupied volumes; the grid/active height supplies free placement. Preview and commit validate the complete group. Direct dragging keeps a stable grab plane and cursor offset, retaining internal height differences.
+Movement hides the originals while the preview is active. Cancellation restores them. A confirmed group operation produces one history entry containing construction snapshots; stable instance IDs restore selection. Duplicating an assembly remaps links between its members, while deleting targets prunes dangling links. New edit tools should use these operations rather than mutate nodes behind the history system.
 
-`BuildingPiece` is the common placed node. `PieceDefinition` supplies stable identity, scene, presentation, connectors, and measured geometry. Its `normalized_configuration`, `resolved_configuration`, and `configured` methods separate saved overrides, runtime defaults, and instance geometry. `ElevatorDefinition` and `SupportDefinition` adapt geometry without modifying shared resources.
+### Snapping and placement geometry
 
-YARD's `resources/registries/piece_registry.tres` defines membership and indexes `category` and `behavior`. Entry IDs must match `PieceDefinition.id`. `PieceCatalog` resolves via `Registry.load_entry`, filters with `Registry.where`, retains loaded resources, and sorts presentation. Categories come from definitions. Supports resolve their component resources through that same registry.
+`SnapManager` finds cursor-directed attachment candidates and checks placement geometry. An exposed compatible track connector aligns the whole transform, including elevation and orientation. It takes precedence over the free-placement grid plane. Surface attachment instead uses collision hits and measured occupied volumes; without a suitable attachment, the active grid height supplies placement.
 
-The installed YARD build hook rescans/reindexes on editor Play and export. Headless runtime tests use the saved index; they do not run that hook. The installed README's manual reindex advice does not match its disabled Reindex button. Consult the addon implementation/class reference without editing vendor documentation.
+A group remains a rigid assembly during a drag, including differences in height. Its own pieces are excluded from snap targets. Maintaining that relationship matters more than independently snapping every member, which would deform the machine.
 
-All placed objects use the shared registry and `BuildingPiece`; there is no separate scenery catalog or arbitrary-scene placement workflow. A remaining distinction applies to definitions marked `authoring_only`: PuzzleEnvironment saves these as `environment_instances` and loads them as fixed geometry outside player inventory. Ordinary props such as trees are regular construction pieces and do not use this path. See [Puzzle formats](PUZZLE_AUTHORING.md#formats-and-storage).
+Placement geometry and physics collision serve different purposes. Bounds and occupied volumes help reject overlapping constructions and find surfaces. Mesh collision or authored shapes determine how a marble actually contacts a piece. Passing placement checks does not prove the route will work in a run.
+
+## Pieces, definitions, and the catalog
+
+A `BuildingPiece` is a placed instance. Its `PieceDefinition` is the shared resource describing identity, presentation, model scene, connectors, and placement geometry. The instance stores a stable UID and configuration. Those two identities have different jobs: the definition ID selects an asset; the UID identifies a particular gate or catcher in a saved machine.
+
+Definitions separate three configuration operations. `normalized_configuration()` prepares saved overrides, `resolved_configuration()` fills runtime defaults, and `configured()` supplies instance-specific geometry. `ElevatorDefinition` and `SupportDefinition` adapt bounds/connectors without changing the shared definition. This is why changing one elevator's height does not resize every elevator using that resource.
+
+YARD's `resources/registries/piece_registry.tres` is the catalog authority. `PieceCatalog` resolves resources through `Registry.load_entry()` and queries indexed fields through `Registry.where()`, then sorts them for presentation. Entry IDs must equal `PieceDefinition.id`. Editor Play and export rebuild the registry index; headless runtime tests read its saved state. Add pieces to this registry rather than scan folders at runtime.
+
+Tracks, mechanisms, supports, and scenery use this common piece system. Definitions marked `authoring_only` are a special case for puzzle environments: authors manipulate them with the shared tools, then `PuzzleEnvironment` saves them as `environment_instances` and loads them as fixed geometry during play. Ordinary decorative props remain regular construction pieces. The distinction is a definition flag, not whether an object looks decorative.
 
 ## Behaviors, physics, and automation
 
-`BuildingPiece` discovers `PieceBehavior` nodes throughout its model, including the root. Static pieces have none; a piece can compose multiple behaviors. The definition's `behavior` field is a catalog tag. Functionality comes from the scene, rather than a central mechanism factory.
+A model scene may contain any number of `PieceBehavior` nodes, including its root. `BuildingPiece` discovers them and applies instance configuration. The definition's `behavior` string is a catalog tag; changing it does not create functionality. Settings are scene-authored `PieceSetting` resources, read by definitions as well as the inspector. [Piece authoring](PIECE_AUTHORING.md) explains how to extend this contract.
 
-Behavior nodes own settings, ports, gameplay, and reset state. Scene-authored `PieceSetting` arrays supply both inspector fields and definition validation. Definitions read saved scene metadata through `SceneState`, including nested/inherited scenes. Ordinary GLBs use generated mesh collision; native-collision scenes retain authored shapes. See [Piece authoring](PIECE_AUTHORING.md) for the extension contract.
+`SimulationManager` owns BUILD, RUNNING, PAUSED, SUCCESS, and FAILED states. At run start it validates wiring, captures the construction, starts behaviors, and seeds persistent signal connections. Releases spawn `Marble` rigid bodies, and collectors report deliveries. Behaviors own their mechanical state; simulation owns the run and its outcomes.
 
-`SimulationManager` owns run states (`BUILD`, `RUNNING`, `PAUSED`, `SUCCESS`, `FAILED`), marbles, objectives, and signal delivery. Releases schedule/spawn bodies; collectors report deliveries. Ordinary travel uses `Marble`, a `RigidBody3D`. Elevator buckets temporarily capture bodies using Marble's physics snapshot and restore them on release/reset. Pause retains velocities and capture state. Reset clears runtime bodies, behavior state, and queued signals.
+Ordinary marble motion uses rigid-body physics. The bucket elevator temporarily captures a marble and carries it deliberately, restoring its saved physics/collision state when released or reset. Pause preserves velocities and capture state. Reset clears bodies, behavior state, and queued signals. A mechanism that captures marbles needs to respect all three transitions, including the case where several marbles are waiting or in transit.
 
-Ordinary Sandbox runs require exactly one release and have no timer; a catcher ends the run on arrival. Puzzle contexts support multiple releases, evaluate all authored objectives, and use `time_limit` (90 seconds when absent). Lost marbles fail a run. Delivery counts distinct marbles, optionally from one release; activation objectives require a named output to have occurred. Activation quantity is not counted. Completion does not compare layouts to a reference solution.
+Ordinary Sandbox testing requires exactly one release and has no deadline. A catcher ends that run on arrival. Puzzle contexts may have several releases and must satisfy every authored objective before the run deadline; an omitted deadline defaults to 90 seconds. Losing a marble fails the run. Delivery objectives count distinct marbles, optionally from one release. Activation objectives record that a named output occurred, not how often. No objective compares the player layout to a reference solution.
 
-Behaviors expose pulse and persistent-state ports. Links live in source configuration as `{event, target, action}` using stable instance IDs. BuildManager validates port declarations/compatibility; its `edit_link` uses normal permissions and history. Simulation propagates outputs FIFO in emission/link order. State ports suppress unchanged values and seed connections at run start. Non-settling propagation fails after the scene's delivery limit (default 16,384) in one transaction.
+### Signals between pieces
 
-## Navigation, cameras, and presentation
+Links are saved on the source instance in `config.links` as `{event, target, action}`. The target is a UID and the other fields are port names, so reorganizing a model's internal nodes need not break saved wiring. `BuildManager.edit_link()` applies the normal permission, validation, and history rules.
 
-GameManager owns `CommunityService`, configured with the session's PuzzleStore and `SupabaseCommunityBackend`. The adapter uses the `SupabaseClient` autoload; no separate client is instantiated by the game. UI consumes the game-facing result contract. [Community service](COMMUNITY_SERVICE.md) owns backend, authentication, and deployment details.
+Pulse ports describe events; state ports latch a value. Simulation delivers signals in FIFO order, preserving emission and saved-link order. Receiver outputs join the queue rather than recurse. State ports suppress unchanged values, allowing feedback to settle. A transaction exceeding the scene's delivery limit fails the run with a wiring error. This protects a run from an endless signal loop without silently dropping actions.
 
-Autoloads are `SoundManager`, `PhantomCameraManager`, `SupabaseClient`, and `SteamClient`. Construction input defaults live in `project.godot`; `ConstructionInput` applies/restores the game's keyboard overrides, saved in `user://settings.cfg`, without resetting addon actions.
+## Persistence and distribution
 
-Saved UI scenes under `scenes/ui/` and `resources/sandbox_theme.tres` own layout/styling. WorkspaceHUD binds shared controls; the selection inspector owns piece settings and permissions; the Connect tool owns mechanism relationships; the authoring drawer owns definition-wide data. Toolbars emit actions. See [UI design](UI_DESIGN.md).
+`SaveStorage` resolves save paths, checks identifiers, and writes JSON through a flushed temporary file before replacement. TrackSerializer owns personal-track data; PuzzleStore owns puzzle drafts, publication, and installation; PuzzleProgress owns completion and route state. Settings use ConfigFile separately. Keep domain validation with those owners rather than add it to the generic writer.
 
-`SelectionOverlay` owns connector handles and the active snap contact, projected from BuildManager's targets and placement candidates. BuildManager refreshes exposed targets after construction/group changes; it creates no connector presentation nodes. Handle and contact colors/sizes come from the shared theme, and the overlay clears them when construction input or snapping is disabled.
+Official campaign membership comes from the manifest loader, not a field supplied by a puzzle file. Community content has separate completion records and cannot replace an official entry merely by claiming its ID. Publication retains a separate starting layout, solution, and successful-test fingerprint. [Puzzle authoring](PUZZLE_AUTHORING.md#formats-and-storage) covers formats, paths, compatibility, and revision handling.
 
-`SimulationCamera` coordinates marble selection and `scenes/camera/marble_chase.tscn`. Phantom Camera owns the rendered transform; the construction camera retains the free-view pose. Chase targets follow motion rather than marble rotation. Stopping, reset, completion, or target loss restores the free view. Spring-arm clearance can still leave a close view obstructed inside enclosed mechanisms.
+GameManager creates `CommunityService` with the session's PuzzleStore and a `SupabaseCommunityBackend`. UI requests game operations from the service; the adapter translates provider routes, authentication, and response envelopes. The generic `SupabaseClient` autoload handles JSON transport and password sessions. `SteamClient` owns local Steam integration and ticket handles. This boundary keeps online infrastructure out of puzzle rules and keeps local play independent of the service. See [Community service](COMMUNITY_SERVICE.md) for the server side.
 
-The menu showcase has a separate SubViewport/World3D and loads `resources/menu_machine.json` through the same construction/simulation systems. AnimationPlayer provides its wide motion; `MenuCameraDirector` schedules detail/chase shots on separate host layers. GameManager switches music at menu/workspace transitions because both worlds stay loaded. Showcase simulation must not write player constructions or progression.
+## Presentation and cameras
+
+Saved scenes under `scenes/ui/` own static layout; `resources/sandbox_theme.tres` owns shared styling. WorkspaceHUD binds the common controls, the inspector edits a selection, the Connect tool edits relationships, and the authoring drawer edits definition-wide data. `SelectionOverlay` projects connector handles and snap contacts from BuildManager's targets; construction does not create presentation nodes for them.
+
+`ConstructionInput` applies saved keyboard overrides without resetting addon actions. The autoloads are SoundManager, PhantomCameraManager, SupabaseClient, and SteamClient. GameManager loads and saves settings and coordinates modal input suspension.
+
+`SimulationCamera` selects marbles and coordinates `scenes/camera/marble_chase.tscn`. Phantom Camera controls the rendered view while the construction camera retains the free-view pose. Follow targets use motion rather than marble rotation. Stopping follow, reset, completion, or target loss returns to the free view; close views can still be obstructed inside enclosed mechanisms.
+
+The menu showcase has its own SubViewport and World3D but uses the same construction and simulation systems to load `resources/menu_machine.json`. AnimationPlayer supplies wide motion and `MenuCameraDirector` schedules detail/chase shots. Both worlds remain loaded, so GameManager owns music transitions. The showcase must stay independent of player saves and progression.
 
 ## Verification
 
-`project.godot` targets Godot 4.7 with Jolt at 120 Hz. See the [README](../README.md#development) for bundled versions, GUT invocation, and export setup. Run suites by filename with `-gselect=construction_groups`, for example. GUT is the supported runner.
+Use the GUT panel or the [README command](../README.md#development). `.gutconfig.json` discovers `tests/test_*.gd`; select a file with a flag such as `-gselect=construction_groups`. Pure tests extend `GutTest`. Persistence tests extend `tests/support/game_test.gd`, which redirects application saves through `MARBLE_ENGINEER_TEST_DATA` into a unique fixture and cleans it up. Restore globals and InputMap bindings locally; do not redirect APPDATA or Godot caches.
 
-`.gutconfig.json` discovers `tests/test_*.gd`. Pure tests extend `GutTest`. Persistence tests use `tests/support/game_test.gd`, which temporarily redirects application saves with `MARBLE_ENGINEER_TEST_DATA` into unique `user://gut-tests/` fixtures and removes them. Tests that change InputMap restore their bindings locally. Do not redirect APPDATA or Godot caches.
+The default suite checks owners and contracts: editing, connector geometry, puzzle rules, distribution, save replacement, camera math, settings, and service behavior. It does not launch the full application, play campaign solutions, or call hosted services. Use interactive checks for the workflow a change affects, and actual simulation for physical routes. Backend checks are described in [Community service](COMMUNITY_SERVICE.md#verification).
 
-`SaveStorage` owns save-path resolution, identifier checks, and JSON file replacement. TrackSerializer, PuzzleStore, and PuzzleProgress own their formats and call `write_json` directly; an empty error string means success. The writer flushes and checks the temporary file before replacing the destination, and removes the temporary file if replacement fails. PuzzleStore retains ownership of campaign publication rollback across its three files. Settings use Godot's ConfigFile format.
+For a scene or script change, a headless editor import is also a useful parsing/resource check:
 
-The default suite contains focused checks for construction edits and connector geometry, puzzle validation/distribution, save replacement, camera-pan math, settings persistence, and community/client contracts. It does not boot `main.tscn`, play campaign solutions, capture screenshots, or test live hosted services. UI flows, physical marble routes, and release authentication are manual checks when affected. See [Community service](COMMUNITY_SERVICE.md#verification) for backend checks.
+```powershell
+godot --headless --editor --path . --quit
+```
+
+A clean parse and passing unit tests are useful evidence, but neither establishes that an authored machine works or that an interface is readable.

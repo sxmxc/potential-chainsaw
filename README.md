@@ -1,67 +1,69 @@
 <!-- markdownlint-disable MD033 -->
-# <img src="./icon.svg" alt="Marble Engineer Icon" width="48" align="center"> Marble Engineer
+# <img src="./icon.svg" alt="Marble Engineer icon" width="48" align="center"> Marble Engineer
 
-Marble Engineer is a 3D marble-track construction and physics puzzle game made with Godot and Kenney's Marble Kit. Build a machine, release its marbles, and watch where the design works—or where it needs another try. Tracks connect across elevations, and mechanisms can lift, launch, divert, or stop marbles.
+Marble Engineer is a 3D construction and physics puzzle game about making a machine work. Connect tracks across different heights, lift marbles in a bucket elevator, or use a sensor to open a gate at the right moment. Release the marbles, watch what happens, and return to building with your layout intact.
 
-**Sandbox** gives you unrestricted inventory and personal track saves. **Campaign** asks you to solve authored machines with limited pieces, fixed parts, and physical objectives. The current campaign registers ten optional Introduction puzzles and four Chapter 1 puzzles. **Puzzle Editor** uses the same building tools to create starting layouts, set player permissions, and test solutions before publishing.
+Sandbox gives you room to experiment with an unrestricted player toolbox and personal track saves. Campaign starts with an incomplete machine: work around fixed pieces, choose how to spend a limited inventory, and meet its physical objectives. The ten Introduction puzzles are optional; you can go straight to the main campaign.
 
-Community puzzles can be shared as JSON files or through the optional online service. Local building, campaign play, authoring, and JSON sharing do not require an account. Online creator actions use Steam ticket verification when Steam is initialized, or an existing email/password account otherwise. Production Steam authentication still needs validation with the game's release AppID and credentials.
+The Puzzle Editor uses the same building tools to turn your own machine into a challenge. Keep the starting layout separate from your solution, decide what the player can change, and test under those rules before publishing. Share puzzles as JSON files or browse and publish through the optional community service. Local play, authoring, and file sharing work without an account.
 
-The project is in development; the configured game version is `0.0.1`.
+The game is in development.
 
 ## Run from source
 
-1. Clone the repository and import `project.godot` in Godot **4.7**. The executable used for this documentation audit reports **4.7.2**. The game uses GDScript; .NET is not required.
-2. Let Godot import assets and load the bundled addons. Keep the configured plugins enabled.
-3. Press **F6** with `scenes/main.tscn` open, or **F5** to run the configured main scene.
+Import `project.godot` in Godot **4.7**, let asset import finish, then press **F5**. The main scene is `scenes/main.tscn`. The project uses GDScript, so .NET is not required.
 
-From the repository root, with Godot on `PATH`:
+With Godot on your path, you can also run from the repository root:
 
 ```powershell
 godot --path .
 ```
 
-The project uses Forward Plus rendering and Jolt physics at 120 ticks per second. Bundled dependencies include GodotSteam 4.23.1, Phantom Camera 0.11.0.3, YARD 1.3.1, SoundManager 1.0, and GUT 9.7.1. Steam initialization currently uses development AppID `480`; an unavailable Steam client produces a warning, while local play remains available. GodotSteam's native library must still load for the platform running the project.
+Keep the bundled plugins enabled. The project uses Forward Plus rendering and Jolt physics at 120 ticks per second. GodotSteam includes native libraries that must load on your platform; Steam itself may be unavailable without preventing local play. Online setup is covered in the [community service guide](docs/COMMUNITY_SERVICE.md).
 
-## Build and test a track
+## Build your first track
 
-Choose a piece from the toolbox, then click to place it repeatedly. Point near an exposed connector to align position, rotation, and elevation automatically. Away from a connector, placement uses the grid and active building height. Click a selected track's `+` connector marker to choose a compatible extension.
+In Sandbox, choose a piece from the toolbox and click to place it. Point near an open connector to attach the next piece: snapping aligns its direction and height. Away from a connector, the grid and active building height guide placement. A selected track's `+` marker opens compatible extensions.
 
-Click to select and drag to move. Groups retain their relative positions and heights; each confirmed group edit is one undoable action. Add a marble release before testing. Ordinary Sandbox testing requires exactly one release, which can emit multiple marbles; a finish catcher is optional. Reset returns to building without discarding your layout.
+Add one marble release, extend a route, and choose **Test Track**. The release can emit several marbles. A finish catcher is optional in Sandbox; reaching one ends the run. Pause to inspect the machine, or reset to adjust the track and try again. For a more involved example, try a saved example track or read the [mechanisms guide](docs/MECHANISMS.md).
+
+Click to select, drag to move, and Shift-click to build a selection. Dragging a box from empty space selects a group; double-clicking a track selects its connected tracks. Groups move and rotate together, and a group edit takes one undo step.
 
 | Action | Default control |
 | --- | --- |
-| Select together | Shift-click or drag a box from empty space |
-| Select connected tracks / all editable pieces | Double-click / Ctrl+A |
 | Rotate / duplicate / delete | R / Ctrl+D / Delete |
-| Cancel an operation or clear selection | Escape |
+| Cancel or clear selection | Escape |
 | Undo / redo | Ctrl+Z / Ctrl+Y or Ctrl+Shift+Z |
+| Select all editable pieces | Ctrl+A |
 | Cycle attachments | Tab |
-| Change free-placement height | Page Up / Page Down; hold Shift for finer steps |
+| Raise / lower building height | Page Up / Page Down; Shift for finer steps |
 | Save / test or pause | Ctrl+S / Space |
 | Orbit / pan / zoom | Right drag / middle drag / wheel |
 | Vertical pan / keyboard pan | Shift + middle drag / WASD |
-| Frame selection / construction | F / Home |
+| Frame selection / whole construction | F / Home |
 | Toggle grid / snapping | G / C |
 
-Settings contains keyboard bindings, camera, audio, and graphics options. During a run, click an exposed marble or use the camera button to follow it; stop following to return to the free view.
+Settings lets you change keyboard bindings, camera, audio, and graphics options. During a run, click a visible marble or use the camera button to follow it. Stop following to return to your free camera view.
 
 ## Development
 
-Use the GUT panel in Godot, or run the focused suite:
+Start with [Architecture](docs/ARCHITECTURE.md) to understand the shared workspace and system boundaries. For specific work, use these guides:
+
+- [Puzzle authoring and distribution](docs/PUZZLE_AUTHORING.md): create, test, publish, and maintain puzzles.
+- [Piece authoring](docs/PIECE_AUTHORING.md): add catalog pieces, settings, behaviors, and ports.
+- [UI design](docs/UI_DESIGN.md): scene layout, shared styling, input, and motion.
+- [Community service](docs/COMMUNITY_SERVICE.md): backend setup, compatibility, and Steam authentication.
+- [SupabaseClient addon](addons/supabase_client/README.md): the reusable Godot client, independent of the game.
+- [AGENTS.md](AGENTS.md): instructions for coding agents working in this repository.
+
+Run tests through the bundled GUT panel or from the repository root:
 
 ```powershell
 godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit
 ```
 
-Add `-gselect=settings_and_input` to select a file. Tests cover rules, construction operations, geometry, persistence, and service contracts without running the application or campaign routes. Persistence fixtures isolate player saves. See [Architecture](docs/ARCHITECTURE.md#verification) for verification boundaries.
+Add `-gselect=construction_groups`, for example, to select a test file by name. The suite checks system contracts, editing operations, geometry, persistence, and service behavior. [Verification guidance](docs/ARCHITECTURE.md#verification) explains save isolation and when interactive testing is also needed.
 
-The Windows Desktop export preset writes to `build/windows/`. Install matching Godot export templates and create that output directory before exporting through **Project → Export**. The preset includes campaign/example JSON and public Supabase configuration; backend source is excluded. Other platforms need their own export configuration and matching native dependencies.
+The Windows Desktop export preset writes to `build/windows/`. Install matching Godot export templates and create the output directory before using **Project → Export**. The preset includes campaign and example JSON plus public Supabase configuration, and excludes backend source. Other platforms need an export preset and compatible native dependencies.
 
-- [Architecture and system ownership](docs/ARCHITECTURE.md)
-- [Puzzle authoring, formats, and distribution](docs/PUZZLE_AUTHORING.md)
-- [Mechanisms](docs/MECHANISMS.md) and [piece authoring](docs/PIECE_AUTHORING.md)
-- [Community backend and Steam authentication](docs/COMMUNITY_SERVICE.md)
-- [UI design](docs/UI_DESIGN.md)
-- [Reusable Supabase client](addons/supabase_client/README.md)
-- [Coding-agent instructions](AGENTS.md)
+Track models come from Kenney's Marble Kit.
