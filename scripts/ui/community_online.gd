@@ -32,6 +32,7 @@ func configure(value: CommunityService, puzzle_session: ConstructionSession, win
 	%SignOut.pressed.connect(sign_out)
 	%PublishOnline.pressed.connect(publish)
 	service.authentication_changed.connect(refresh_account)
+	browser.dismissing.connect(func(): generation += 1; %Password.clear())
 	browser.visibility_changed.connect(func():
 		if not browser.visible:
 			generation += 1
@@ -130,7 +131,7 @@ func download_revision(id: String, revision: int) -> void:
 	var ticket := begin()
 	var result := await service.download_puzzle(id, revision)
 	if not finish(ticket, result, "Puzzle installed."): return
-	if result.ok: session.player(result.data.puzzle); browser.hide()
+	if result.ok: browser.dismiss(func(): session.player(result.data.puzzle))
 
 func open_share() -> void:
 	var parts: PackedStringArray = %ShareCode.text.strip_edges().split("@")

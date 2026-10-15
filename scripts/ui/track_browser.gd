@@ -1,14 +1,13 @@
-extends Window
+extends "res://scripts/ui/modal_window.gd"
 
 signal track_requested(id: String, example: bool)
-signal closed
 var serializer: TrackSerializer
 var rows: Array = []
 var examples: bool = false
 var confirmation: ConfirmationDialog
 
 func _ready() -> void:
-	close_requested.connect(close)
+	super()
 	%Load.pressed.connect(load_selected)
 	%RenameButton.pressed.connect(func():
 		if not %Rename.visible:
@@ -38,7 +37,7 @@ func open(show_examples: bool = false) -> void:
 	%RenameButton.visible=not examples
 	%Delete.visible=not examples
 	refresh()
-	popup_centered()
+	present()
 
 func refresh() -> void:
 	%List.clear()
@@ -65,9 +64,7 @@ func load_selected() -> void:
 	var index=selected_index()
 	if index<0: %Info.text="Choose a track first"; return
 	var id=rows[index].id
-	hide()
-	track_requested.emit(id,examples)
-	closed.emit()
+	dismiss(func(): track_requested.emit(id,examples); closed.emit())
 
 func rename_selected() -> void:
 	var index=selected_index()
@@ -82,12 +79,3 @@ func delete_selected() -> void:
 	if index<0: %Info.text="Choose a track first"; return
 	confirmation.dialog_text="Delete ‘%s’? This cannot be undone." % rows[index].name
 	confirmation.popup_centered()
-
-func close() -> void:
-	hide()
-	closed.emit()
-
-func _unhandled_key_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		close()
-		get_viewport().set_input_as_handled()

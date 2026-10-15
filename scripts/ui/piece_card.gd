@@ -3,6 +3,7 @@ signal chosen(definition: PieceDefinition)
 var definition: PieceDefinition
 const TOOLTIP=preload("res://scenes/ui/widgets/compact_tooltip.tscn")
 func _ready() -> void:
+	ButtonFeedback.install(self)
 	pressed.connect(func():chosen.emit(definition))
 	toggled.connect(func(selected): %SelectedMark.visible=selected)
 func bind(piece: PieceDefinition, selected: bool) -> void:

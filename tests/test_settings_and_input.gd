@@ -19,7 +19,7 @@ func after_each() -> void:
 	await super()
 
 func settle() -> void:
-	for frame in 4: await get_tree().process_frame
+	await wait_seconds(UIMotion.ENTER_TIME + UIMotion.EXIT_TIME + UIMotion.SCREEN_TIME)
 
 func mouse_button(position: Vector2, button: int, pressed: bool) -> void:
 	sender.mouse_motion(position)
@@ -111,6 +111,7 @@ func test_key_rebinding_conflicts_and_escape() -> void:
 	assert_eq(InputMap.action_get_events("build_rotate")[0].keycode, KEY_J, "Saved binding replaces the default on reload")
 	var piece = game.workspace.world.build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY)
 	dialog.close()
+	await settle()
 	game.workspace.world.build.select(piece)
 	game.workspace.world.build._unhandled_input(event)
 	assert_almost_eq(piece.rotation.y, PI / 2, 0.001, "Rebound shortcut rotates the selected track")
@@ -230,4 +231,5 @@ func test_settings_tabs_fit_supported_resolutions() -> void:
 			assert_lt(game.settings_dialog.size.y, resolution.y, "Settings fit the viewport")
 			assert_lt(game.settings_dialog.size.x, resolution.x, "Settings fit horizontally")
 		game.settings_dialog.close()
+		await settle()
 		assert_true(game.workspace.world.build.enabled)

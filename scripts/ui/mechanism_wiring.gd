@@ -21,6 +21,10 @@ var pointer := Vector2.ZERO
 var context_anchor := Vector2.ZERO
 var confirmation: PackedVector2Array = []
 var confirmation_until: int = 0
+var context_motion: UIMotion
+
+func _ready() -> void:
+	context_motion = UIMotion.attach(%Context, Vector2.ZERO, UIMotion.SURFACE_SCALE)
 
 static func readable(value: String) -> String:
 	match value:
@@ -59,7 +63,7 @@ func toggle_overlay() -> void:
 	build.options_changed.emit()
 
 func clear_context() -> void:
-	%Context.hide()
+	context_motion.set_open(false)
 	context_source = ""
 	context_target = ""
 	context_index = -1
@@ -225,7 +229,7 @@ func open_context(source_id: String, target_id: String, event: String, index: in
 	choices(%Events, source.compatible_events(target), context_event)
 	if %Events.item_count > 0: context_event = %Events.get_item_metadata(%Events.selected)
 	refresh_actions()
-	%Context.show()
+	context_motion.set_open(true)
 	%Hint.hide()
 
 func choices(control: OptionButton, values: Array, selected: String) -> void:

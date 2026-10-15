@@ -83,8 +83,7 @@ func fit_content() -> void:
 	var rows: int=ceili(float(buttons.size())/%Pieces.columns)
 	var content_height: float=rows*row_height+maxi(0,rows-1)*%Pieces.get_theme_constant("v_separation")
 	var overhead: float=get_combined_minimum_size().y-%Scroll.custom_minimum_size.y
-	var parent_height: float = get_parent().size.y if get_parent() is Control else get_viewport().get_visible_rect().size.y * 0.68
-	var available: float = maxf(0, minf(parent_height, get_viewport().get_visible_rect().size.y * 0.68) - overhead)
+	var available: float = maxf(0.0, minf(get_parent().size.y, custom_maximum_size.y) - overhead)
 	%Scroll.custom_minimum_size.y=minf(content_height,available) if rows>0 else 0.0
 func clear_choice() -> void:
 	selected_id=&""

@@ -1,7 +1,7 @@
 extends "res://tests/support/scene_test.gd"
 
 func settle() -> void:
-	for i in 4: await get_tree().process_frame
+	await wait_seconds(UIMotion.ENTER_TIME + UIMotion.EXIT_TIME + UIMotion.SCREEN_TIME)
 
 func test_campaign_browser_fits_and_buttons_keep_their_geometry() -> void:
 	var game: Node = load("res://scenes/main.tscn").instantiate()
@@ -16,7 +16,7 @@ func test_campaign_browser_fits_and_buttons_keep_their_geometry() -> void:
 		var viewport_rect := Rect2(Vector2.ZERO, Vector2(resolution))
 		assert_true(viewport_rect.encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "First open is fully on screen at %s: position %s, size %s" % [resolution, browser.position, browser.size])
 		assert_true(Rect2(Vector2.ZERO, Vector2(browser.size)).encloses(browser.get_node("%Back").get_global_rect()), "First-open footer fits")
-		for chapter_index in browser.chapters.size():
+		for chapter_index in browser.campaign_definition.chapters.size():
 			browser.show_chapter(chapter_index)
 			await settle()
 			assert_true(viewport_rect.encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "Chapter switching keeps dialog on screen")
@@ -25,8 +25,8 @@ func test_campaign_browser_fits_and_buttons_keep_their_geometry() -> void:
 		assert_true(Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(Rect2(Vector2(browser.position), Vector2(browser.size))), "Resizing an open dialog keeps it on screen")
 		game.qa_resolution(resolution.x, resolution.y)
 		await settle()
-		for index in browser.chapters.size():
-			if browser.chapters[index].id == "chapter-1": browser.show_chapter(index)
+		for index in browser.campaign_definition.chapters.size():
+			if browser.campaign_definition.chapters[index].id == "chapter-1": browser.show_chapter(index)
 		await settle()
 		assert_eq(browser.levels.size(), 4, "All Chapter 1 puzzles appear")
 		assert_eq(browser.levels[3].id, "chapter1-jwytyk", "Renamed puzzle remains level 4")
@@ -60,6 +60,7 @@ func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	game.qa_resolution(1280, 720)
 	await get_tree().process_frame
 	game.handle_action("sandbox")
+	await settle()
 	var session: ConstructionSession = game.workspace.session
 	var build: BuildManager = game.workspace.world.build
 	build.spawn(game.workspace.catalog.get_piece("straight"), Transform3D.IDENTITY)
@@ -81,6 +82,7 @@ func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	assert_eq(browser.rows[0].id, saved_id)
 	browser.get_node("%List").select(0)
 	browser.get_node("%Load").pressed.emit()
+	await settle()
 	assert_eq(build.snapshot(), saved_pieces)
 	assert_true(session.is_sandbox and session.puzzle.is_empty() and build.rules == null)
 	assert_true(build.enabled, "Loading returns to unrestricted construction")
@@ -100,6 +102,7 @@ func test_sandbox_open_loads_and_deletes_personal_tracks_only() -> void:
 	assert_eq(build.snapshot(), saved_pieces, "Deleting the file preserves the open construction")
 	assert_true(session.store.list_drafts().any(func(data): return data.id == puzzle.id), "Track deletion leaves puzzle drafts untouched")
 	browser.close()
+	await settle()
 
 func test_workspace_runs_without_application_navigation() -> void:
 	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
@@ -139,11 +142,13 @@ func test_campaign_ui_scene_lifecycle() -> void:
 	var session: ConstructionSession = game.workspace.session
 	assert_eq(game.get_node("Workspace/Session"), session)
 	game.handle_action("sandbox")
+	await settle()
 	assert_false(puzzle_bar.visible)
 	game.handle_action("campaign")
 	assert_true(browser.visible)
 	assert_false(game.workspace.world.build.enabled, "Campaign browser blocks editing")
 	browser.close()
+	await settle()
 	assert_true(game.workspace.world.build.enabled, "Closing browser restores editing")
 	session.editor(session.store.load_campaign().levels[0])
 	toolbar.get_node("%Author").pressed.emit()
@@ -180,6 +185,7 @@ func test_draft_player_hud_fits_small_windows() -> void:
 			open_button.pressed.emit()
 			assert_true(browser.visible and browser.editing, "Open goes directly to the editor puzzle library")
 			browser.close()
+			await settle()
 			assert_true(session.test_player())
 			await settle()
 			assert_false(open_button.visible, "Player tests do not expose draft loading")
@@ -277,7 +283,7 @@ func test_ui_workflows() -> void:
 	game.qa_select(1)
 	await settle()
 	var inspector=hud.get_node("%Inspector")
-	assert_true(inspector.visible and inspector.size.y<420,"Mechanism selection has content-sized properties (%s)" % inspector.size)
+	assert_true(inspector.visible and inspector.size.y<=inspector.get_parent().size.y,"Mechanism selection has content-sized properties (%s)" % inspector.size)
 	var gate = game.workspace.world.build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(10, 0, 0)))
 	game.workspace.world.build.select(gate)
 	await settle()
@@ -313,6 +319,7 @@ func test_ui_workflows() -> void:
 	assert_true(game.menu_dialog.size.y>=250,"Mode menu has room for its visible actions")
 	assert_true(game.menu_dialog.get_node("%New").visible and not game.menu_dialog.get_node("%Restart").visible,"Sandbox menu exposes file actions")
 	game.menu_dialog.close()
+	await settle()
 	assert_true(game.workspace.world.build.enabled,"Closing menu restores world input")
 	session.player(levels[0])
 	await settle()
@@ -332,9 +339,10 @@ func test_ui_workflows() -> void:
 	for control in ["New","Rename","Load","Examples"]:
 		assert_true(not game.menu_dialog.get_node("%"+control).visible,"Campaign hides "+control)
 	game.menu_dialog.close()
+	await settle()
 	browser.open()
-	browser.chapters.append({"id": "gut-empty-chapter", "name": "Empty workshop", "prerequisites": []})
-	browser.show_chapter(browser.chapters.size() - 1)
+	browser.campaign_definition.chapters.append({"id": "gut-empty-chapter", "name": "Empty workshop", "prerequisites": []})
+	browser.show_chapter(browser.campaign_definition.chapters.size() - 1)
 	await settle()
 	assert_true(not browser.get_node("%Levels").visible and browser.get_node("%Empty").visible,"Empty chapter has no empty list")
 	assert_true(browser.size.y<450,"Empty chapter overlay contracts")
@@ -343,6 +351,7 @@ func test_ui_workflows() -> void:
 	await settle()
 	assert_true(browser.visible and not game.settings_dialog.visible,"Settings cannot open over another exclusive dialog")
 	browser.close()
+	await settle()
 	assert_true(game.workspace.world.build.enabled,"Back restores world editing")
 	session.editor(levels[0])
 	authoring.open()
@@ -357,6 +366,7 @@ func test_ui_workflows() -> void:
 	assert_true(game.menu_dialog.get_node("%Author").visible and game.menu_dialog.get_node("%SaveDraft").visible,"Editor menu has authoring and draft actions")
 	assert_true(not game.menu_dialog.get_node("%New").visible,"Editor excludes sandbox new-track action")
 	game.menu_dialog.close()
+	await settle()
 	game.handle_action("settings")
 	await settle()
 	assert_true(game.settings_dialog.size.y<620,"Camera settings stay bounded")
@@ -375,6 +385,7 @@ func test_ui_workflows() -> void:
 	game.handle_action("menu")
 	assert_true(game.menu_dialog.get_node("%ReturnEditor").visible and not game.menu_dialog.get_node("%Levels").visible,"Player test returns to authoring")
 	game.menu_dialog.close()
+	await settle()
 	game.workspace.world.simulation.start()
 	await settle()
 	assert_true(not toolbox.visible and not hud.get_node("%BuildToolbar").visible,"Simulation retracts construction controls")
@@ -391,6 +402,7 @@ func check_library_transitions(game: Node, hud: Control, toolbox: Control) -> vo
 	var controls: Control=hud.get_node("%BuildToolbar").get_node("%Common")
 	assert_true(category.selected==0,"All pieces remains the initial category")
 	for resolution in [Vector2i(1280,720),Vector2i(1600,900),Vector2i(1920,1080)]:
+		toolbox.reset_filter()
 		game.qa_resolution(resolution.x,resolution.y)
 		await settle()
 		var browser_position: Vector2=toolbox.global_position

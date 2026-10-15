@@ -7,12 +7,20 @@ signal modal_closed
 var session: ConstructionSession
 var boundary: PuzzleBoundary
 var refreshing: bool = false
+var motion: UIMotion
+
+func _ready() -> void:
+	motion = UIMotion.attach(self, Vector2(UIMotion.PANEL_SHIFT, 0.0))
+	ButtonFeedback.install(self)
+
+func close_drawer() -> void:
+	motion.set_open(false)
 
 func configure(puzzle_session: ConstructionSession) -> void:
 	session = puzzle_session
 	boundary = session.world.boundary
 	boundary.edited.connect(func(): refresh_zones(); refresh_publish())
-	%Close.pressed.connect(hide)
+	%Close.pressed.connect(close_drawer)
 	%Destination.item_selected.connect(func(index):
 		if refreshing or not session.store.can_add_to_campaign(): return
 		session.official_authoring = index == 1
@@ -23,6 +31,7 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	%Advanced.pressed.connect(func(): %AdvancedFields.visible=not %AdvancedFields.visible)
 	%Tabs.tab_changed.connect(func(index):
 		for button in %Navigation.get_children(): button.button_pressed=int(button.get_meta("page"))==index
+		UIMotion.section(%Tabs.get_tab_control(index))
 		if %Tabs.get_tab_control(index).name == "Publish": refresh_publish())
 	for button in %Navigation.get_children(): button.pressed.connect(func(): %Tabs.current_tab=int(button.get_meta("page")))
 	session.changed.connect(func(): if visible: refresh_publish())
@@ -156,12 +165,12 @@ func open() -> void:
 		%Prerequisites.set_item_metadata(index, level.id)
 		if level.id in data.get("campaign", {}).get("prerequisites", []): %Prerequisites.select(index, false)
 	refreshing = false
-	show()
+	motion.set_open(true)
 	refresh_publish()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if visible and event.is_action_pressed("ui_cancel"):
-		hide()
+		close_drawer()
 		get_viewport().set_input_as_handled()
 
 func refresh_publish() -> void:

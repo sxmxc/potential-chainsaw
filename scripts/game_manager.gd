@@ -14,6 +14,11 @@ var after_save: Callable
 var music_context: String = ""
 var settings = preload("res://scripts/game_settings.gd").new()
 var community_service: CommunityService
+var navigation_tween: Tween
+var navigation_ready: bool = false
+var navigating: bool = false
+var menu_target: bool = true
+var completion_pending: Vector2i = Vector2i.ZERO
 
 func _ready() -> void:
 	get_tree().auto_accept_quit=false
@@ -35,9 +40,17 @@ func _ready() -> void:
 	%PuzzleBrowser.modal_opened.connect(open_modal)
 	%PuzzleBrowser.closed.connect(modal_closed)
 	%PuzzleCompletion.configure(workspace.session)
+	%PuzzleCompletion.presentation_requested.connect(func(minimum):
+		completion_pending = minimum
+		modal_closed())
+	%PuzzleCompletion.visibility_changed.connect(func():
+		if %PuzzleCompletion.visible: open_modal()
+		else: modal_closed())
 	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open(false, not PuzzleStore.is_official(workspace.session.puzzle)))
 	show_main_menu()
 	load_settings()
+	ButtonFeedback.install(%MainMenu)
+	navigation_ready = true
 
 func create_dialogs() -> void:
 	name_dialog=%NameDialog
@@ -102,7 +115,7 @@ func handle_action(action: String) -> void:
 		"menu":
 			open_modal()
 			menu_dialog.configure_context(workspace.session)
-			menu_dialog.popup_centered()
+			menu_dialog.present()
 		"levels": %PuzzleBrowser.open(false, not PuzzleStore.is_official(workspace.session.puzzle))
 		"open_puzzle":
 			if not workspace.session.is_authoring: return
@@ -111,7 +124,7 @@ func handle_action(action: String) -> void:
 			for dialog in [%PuzzleBrowser,%TrackBrowser,name_dialog,unsaved_dialog,message_dialog,menu_dialog]:
 				if dialog and dialog.visible and dialog.exclusive: return
 			open_modal()
-			settings_dialog.popup_centered()
+			settings_dialog.present()
 		"new": guard(workspace.session.sandbox)
 		"main": guard(show_main_menu)
 		"quit": guard(func(): get_tree().quit())
@@ -120,17 +133,51 @@ func show_workspace() -> void:
 	if music_context != "world":
 		workspace.world.play_music()
 		music_context = "world"
-	%MainMenu.showcase.set_active(false)
-	%MainMenu.hide()
+	change_screen(false)
 
 func show_main_menu() -> void:
 	if music_context != "menu":
 		%MainMenu.play_music()
 		music_context = "menu"
-	workspace.deactivate()
-	%MainMenu.show()
 	%MainMenu.get_node("%Sandbox").text = "Continue building" if workspace.session.is_sandbox and not workspace.world.build.pieces.is_empty() else "Sandbox"
-	%MainMenu.showcase.set_active(true)
+	change_screen(true)
+
+func change_screen(to_menu: bool) -> void:
+	if menu_target == to_menu and not navigating:
+		apply_screen(to_menu)
+		return
+	menu_target = to_menu
+	if navigation_tween: navigation_tween.kill()
+	if not navigation_ready:
+		apply_screen(to_menu)
+		return
+	navigating = true
+	workspace.suspend_input()
+	workspace.hud.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+	workspace.hud.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	%MainMenu.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+	%MainMenu.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	var focus := get_viewport().gui_get_focus_owner()
+	if focus: focus.release_focus()
+	%NavigationFade.show()
+	navigation_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	navigation_tween.tween_property(%NavigationFade, "modulate:a", 1.0, UIMotion.SCREEN_TIME * 0.45)
+	navigation_tween.tween_callback(func(): apply_screen(to_menu))
+	navigation_tween.tween_property(%NavigationFade, "modulate:a", 0.0, UIMotion.SCREEN_TIME * 0.55)
+	navigation_tween.tween_callback(func():
+		navigating = false
+		%NavigationFade.hide()
+		workspace.hud.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED
+		workspace.hud.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED
+		%MainMenu.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED
+		%MainMenu.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED
+		modal_closed()
+		if to_menu: %MainMenu.get_node("%Campaign").grab_focus())
+
+func apply_screen(to_menu: bool) -> void:
+	if to_menu: workspace.deactivate()
+	%MainMenu.visible = to_menu
+	%MainMenu.showcase.set_active(to_menu)
 
 func guard(action: Callable) -> void:
 	if workspace.session.is_playing:
@@ -145,14 +192,14 @@ func guard(action: Callable) -> void:
 	if workspace.world.build.dirty:
 		pending_action=action
 		open_modal()
-		unsaved_dialog.popup_centered()
+		unsaved_dialog.present()
 	else: action.call(); modal_closed()
 
 func prompt_save(as_copy: bool) -> void:
 	save_as=as_copy
 	name_field.text=workspace.session.track_name+" copy" if as_copy else workspace.session.track_name
 	open_modal()
-	name_dialog.popup_centered()
+	name_dialog.present()
 	name_field.grab_focus()
 	name_field.select_all()
 
@@ -174,18 +221,30 @@ func open_modal() -> void:
 	workspace.suspend_input()
 
 func modal_closed() -> void:
+	if navigating: return
 	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,%PuzzleBrowser]:
 		if dialog and dialog.visible: return
 	if workspace.has_modal(): return
+	if %PuzzleCompletion.visible: return
+	if completion_pending != Vector2i.ZERO:
+		var minimum := completion_pending
+		completion_pending = Vector2i.ZERO
+		if workspace.session.is_playing and workspace.world.simulation.state == SimulationManager.State.SUCCESS:
+			%PuzzleCompletion.present(minimum)
+			return
 	workspace.resume_input()
 
 func show_message(text: String) -> void:
 	open_modal()
 	message_dialog.dialog_text=text
-	message_dialog.popup_centered(Vector2i(500,160))
+	message_dialog.present(Vector2i(500,160))
 
 func _notification(what: int) -> void:
 	if what==NOTIFICATION_WM_CLOSE_REQUEST: handle_action("quit")
+
+func _input(event: InputEvent) -> void:
+	if navigating and event is InputEventKey:
+		get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_P and not ConstructionInput.typing(get_viewport()):

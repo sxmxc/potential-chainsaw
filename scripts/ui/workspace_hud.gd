@@ -6,7 +6,15 @@ var simulation: SimulationManager
 var library_open: bool = true
 var session: ConstructionSession
 var guidance_done: Dictionary = {}
-var notification_until: int = 0
+var notification_active: bool = false
+var toolbox_motion: UIMotion
+var status_motion: UIMotion
+
+func _ready() -> void:
+	toolbox_motion = UIMotion.attach(%Toolbox, Vector2(-UIMotion.PANEL_SHIFT, 0.0))
+	status_motion = UIMotion.attach(%Bottom)
+	ButtonFeedback.install(self)
+	%NotificationTimer.timeout.connect(func(): notification_active = false; refresh())
 const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 func configure(manager: BuildManager, simulator: SimulationManager, value: ConstructionSession) -> void:
 	session = value
@@ -50,33 +58,30 @@ func refresh_context() -> void:
 	%Toolbox.reset_filter()
 	%MechanismWiring.clear_interaction()
 	%MechanismWiring.overlay_enabled = false
-	notification_until = 0
+	notification_active = false
+	%NotificationTimer.stop()
 	%Inspector.refresh(build.selected)
 	refresh()
-
-func _process(_delta: float) -> void:
-	if not build: return
-	if notification_until > 0 and Time.get_ticks_msec() >= notification_until:
-		notification_until=0
-		refresh()
 
 func refresh() -> void:
 	%FileToolbar.refresh()
 	%BuildToolbar.refresh(library_open)
 	%EditToolbar.refresh()
-	%Toolbox.visible=library_open and simulation.state==SimulationManager.State.BUILD
-	if notification_until==0:
+	var show_library: bool = library_open and simulation.state == SimulationManager.State.BUILD
+	var focus := get_viewport().gui_get_focus_owner()
+	if not show_library and focus and %Toolbox.is_ancestor_of(focus):
+		%BuildToolbar.get_node("%Library").grab_focus()
+	toolbox_motion.set_open(show_library)
+	if not notification_active:
 		%Status.text=""
 		if build.operation in ["move","duplicate"]:
 			%Status.text="Click to place · Esc cancels"
 		elif build.chosen:
 			%Status.text="Point at a connector to attach" if build.snapping else "Free placement · R rotates · Esc cancels"
 		%Status.theme_type_variation=&"MutedLabel"
-	%Bottom.visible=not %Status.text.is_empty()
-	if build.chosen: %Bottom.hide()
+	status_motion.set_open(not %Status.text.is_empty() and not build.chosen)
 	%Inspector.visible=not build.selection.is_empty() and simulation.state==SimulationManager.State.BUILD and not build.chosen and %Inspector.has_properties()
 	if %AuthoringSlot.visible or build.connect_mode: %Inspector.hide()
-	%Bottom.size_flags_horizontal=0
 	if not build.chosen: %Toolbox.clear_choice()
 	else: %Toolbox.set_choice(build.chosen.id)
 	refresh_guidance()
@@ -105,17 +110,21 @@ func refresh_guidance() -> void:
 
 func show_status(text: String) -> void:
 	if build.chosen:
-		notification_until=0
-		%Bottom.hide()
+		notification_active=false
+		%NotificationTimer.stop()
+		status_motion.set_open(false)
 		%BuildToolbar.refresh_placement()
 		return
 	%Status.text=text
-	%Bottom.visible=not text.is_empty()
-	notification_until=Time.get_ticks_msec()+4000 if build.operation.is_empty() else 0
+	status_motion.set_open(not text.is_empty())
+	notification_active=build.operation.is_empty() and not text.is_empty()
+	%NotificationTimer.stop()
+	if notification_active: %NotificationTimer.start()
 	%Status.theme_type_variation=&"ErrorLabel" if text.begins_with("✕") else &"AccentLabel"
 func _state_changed(state: SimulationManager.State, message: String) -> void:
-	notification_until=0
+	notification_active=false
+	%NotificationTimer.stop()
 	refresh()
 	%Status.text=message
-	%Bottom.visible=not %Status.text.is_empty()
+	status_motion.set_open(not %Status.text.is_empty())
 	%Status.theme_type_variation=&"SuccessLabel" if state==SimulationManager.State.SUCCESS else (&"ErrorLabel" if state==SimulationManager.State.FAILED else &"AccentLabel")

@@ -38,7 +38,7 @@ func configure(value: ConstructionSession) -> void:
 		var imported := session.store.import_puzzle(path)
 		if imported.is_empty(): session.message_requested.emit(session.store.last_error)
 		else: open(false, true))
-	%NewPuzzle.pressed.connect(func(): hide(); session.editor())
+	%NewPuzzle.pressed.connect(func(): dismiss(session.editor))
 	%Open.pressed.connect(open_selected)
 	%Levels.item_activated.connect(func(_index): open_selected())
 	%PlayIntroduction.pressed.connect(func(): start_campaign(true))
@@ -56,15 +56,13 @@ func open_campaign() -> void:
 func start_campaign(play_introduction: bool) -> void:
 	var target = session.progress.start_campaign(campaign_definition, play_introduction)
 	if not target.is_empty():
-		hide()
-		session.player(target)
+		dismiss(func(): session.player(target))
 	else: open()
 
 func resume_campaign() -> void:
 	var target = campaign_definition.resume_level(session.progress.route, session.progress.records)
 	if target.is_empty(): open(); return
-	hide()
-	session.player(target)
+	dismiss(func(): session.player(target))
 
 func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	editing = editor_mode
@@ -113,6 +111,7 @@ func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 		if chapter.id == session.progress.route.get("current_chapter", ""): selected = i
 	if not campaign_definition.chapters.is_empty():
 		show_chapter(selected)
+	present()
 	fit_contents.call_deferred()
 
 func show_chapter(index: int) -> void:
@@ -158,9 +157,11 @@ func show_chapter(index: int) -> void:
 				break
 		%Levels.select(selected)
 		select_level(selected)
+	if visible: UIMotion.section(%Levels)
 	fit_contents.call_deferred()
 
 func fit_contents() -> void:
+	if not visible or closing: return
 	reset_size()
 	popup_centered()
 
@@ -176,10 +177,10 @@ func open_selected() -> void:
 	var selected = %Levels.get_selected_items()
 	if selected.is_empty(): return
 	var data = levels[selected[0]]
-	if editing: session.editor(data, session.official_authoring)
-	elif (community or campaign_definition.unlocked(data, session.progress.records)): session.player(data)
-	else: return
-	hide()
+	if not editing and not community and not campaign_definition.unlocked(data, session.progress.records): return
+	dismiss(func():
+		if editing: session.editor(data, session.official_authoring)
+		else: session.player(data))
 
 func is_completed(data: Dictionary) -> bool:
 	return session.progress.community_records.get(data.id, {}).get("completed", false) if community else session.progress.records.get(data.id, {}).get("completed", false)

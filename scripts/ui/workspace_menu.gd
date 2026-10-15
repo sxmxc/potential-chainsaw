@@ -3,9 +3,9 @@ signal action_requested(action: String)
 func _ready() -> void:
 	super()
 	for item in [[%New,"new"],[%Rename,"rename"],[%Load,"load"],[%Examples,"examples"],[%Settings,"settings"],[%Main,"main"],[%Quit,"quit"]]:
-		item[0].pressed.connect(func():hide(); action_requested.emit(item[1]))
+		item[0].pressed.connect(func():dismiss(func(): action_requested.emit(item[1])))
 	for item in [[%Restart,"restart_puzzle"],[%Levels,"levels"],[%Author,"author"],[%SaveDraft,"save"],[%TestPlayer,"test_player"],[%ReturnEditor,"return_editor"],[%Preserve,"preserve_solution"],[%Reference,"reference"]]:
-		item[0].pressed.connect(func():hide(); action_requested.emit(item[1]))
+		item[0].pressed.connect(func():dismiss(func(): action_requested.emit(item[1])))
 	%Resume.pressed.connect(close)
 
 func configure_context(session: ConstructionSession) -> void:

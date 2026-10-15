@@ -3,6 +3,10 @@ signal library_toggled
 var wiring: Control
 var build: BuildManager
 var simulation: SimulationManager
+var motion: UIMotion
+
+func _ready() -> void:
+	motion = UIMotion.attach(self)
 func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 	build=manager
 	simulation=simulator
@@ -30,7 +34,7 @@ func refresh(library_open: bool) -> void:
 	%Library.tooltip_text="Collapse pieces" if library_open else "Expand pieces"
 	%Height.text="%s m" % ConstructionInput.height_text(build.height)
 	%Select.disabled=not build.enabled
-	visible=simulation.state==SimulationManager.State.BUILD
+	motion.set_open(simulation.state==SimulationManager.State.BUILD)
 	refresh_placement()
 
 func refresh_placement() -> void:

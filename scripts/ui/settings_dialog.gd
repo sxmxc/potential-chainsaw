@@ -18,7 +18,7 @@ func _ready() -> void:
 	super()
 	%Close.pressed.connect(close)
 	%ResetCamera.pressed.connect(func(): reset_camera.emit())
-	%Tabs.tab_changed.connect(func(_index): cancel_binding(); fit_content.call_deferred())
+	%Tabs.tab_changed.connect(func(index): cancel_binding(); UIMotion.section(%Tabs.get_tab_control(index)); fit_content.call_deferred())
 	visibility_changed.connect(func():
 		if visible: refresh_values(); fit_content.call_deferred()
 		else: cancel_binding())
@@ -86,7 +86,7 @@ func cancel_binding() -> void:
 	%BindingStatus.text = "Click a shortcut to change it. Escape always cancels."
 
 func _input(event: InputEvent) -> void:
-	if not visible or pending_action.is_empty() or not event is InputEventKey or not event.pressed or event.echo: return
+	if not visible or closing or pending_action.is_empty() or not event is InputEventKey or not event.pressed or event.echo: return
 	get_viewport().set_input_as_handled()
 	if event.keycode == KEY_ESCAPE:
 		cancel_binding()
@@ -110,7 +110,7 @@ func _input(event: InputEvent) -> void:
 	settings_changed.emit(false)
 
 func fit_content() -> void:
-	if not visible: return
+	if not visible or closing: return
 	var available: Vector2 = get_parent().get_viewport().get_visible_rect().size
 	size = Vector2i(mini(720, int(available.x) - 32), mini(int(get_node("Surface").get_combined_minimum_size().y), int(available.y) - 32))
 	popup_centered(size)
