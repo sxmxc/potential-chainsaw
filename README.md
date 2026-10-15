@@ -47,13 +47,13 @@ Settings contains keyboard bindings, camera, audio, and graphics options. During
 
 ## Development
 
-Use the GUT panel in Godot, or run the checked-in suites:
+Use the GUT panel in Godot, or run the focused suite:
 
 ```powershell
 godot --headless --path . --script addons/gut/gut_cmdln.gd -gexit
 ```
 
-Add `-gselect=settings_and_input` to select a suite by filename. Persistence fixtures isolate player saves. See [Architecture](docs/ARCHITECTURE.md#verification) for verification boundaries.
+Add `-gselect=settings_and_input` to select a file. Tests cover rules, construction operations, geometry, persistence, and service contracts without running the application or campaign routes. Persistence fixtures isolate player saves. See [Architecture](docs/ARCHITECTURE.md#verification) for verification boundaries.
 
 The Windows Desktop export preset writes to `build/windows/`. Install matching Godot export templates and create that output directory before exporting through **Project → Export**. The preset includes campaign/example JSON and public Supabase configuration; backend source is excluded. Other platforms need their own export configuration and matching native dependencies.
 

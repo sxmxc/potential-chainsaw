@@ -52,18 +52,6 @@ func test_steam_protected_operations_use_tickets_without_supabase_sessions() -> 
 	assert_true(transport.headers.is_empty(), "Public browsing never obtains a Steam ticket")
 	assert_eq(ticket_source.released.size(), 2)
 
-func test_hosted_public_browse_when_requested() -> void:
-	if OS.get_environment("MARBLE_ENGINEER_LIVE_COMMUNITY_TEST") != "1":
-		pending("Set MARBLE_ENGINEER_LIVE_COMMUNITY_TEST=1 to check the deployed service")
-		return
-	var service := service_with(standalone_backend())
-	var result := await service.browse_puzzles()
-	assert_true(result.ok, str(result.error))
-	if not result.ok: return
-	assert_true(result.data.get("puzzles") is Array)
-	assert_lte(result.data.puzzles.size(), 20)
-	assert_false(service.is_signed_in(), "Public browse needs no account")
-
 class FakeBackend extends Node:
 	signal authentication_changed
 	var result: Dictionary = CommunityService.success()

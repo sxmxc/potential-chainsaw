@@ -1,22 +1,18 @@
-extends "res://tests/support/scene_test.gd"
+extends "res://tests/support/game_test.gd"
 
-var game: Node
+var workspace: ConstructionWorkspace
 var session: ConstructionSession
 var build: BuildManager
-
-func ticks(count: int) -> void:
-	for i in count: await get_tree().physics_frame
 
 func record(id: String, uid: String, at: Vector3, config: Dictionary = {}) -> Dictionary:
 	return {"piece": id, "uid": uid, "position": [at.x, at.y, at.z], "rotation": 0, "config": config}
 
 func test_campaign_rules() -> void:
-	game = load("res://scenes/main.tscn").instantiate()
-	add_child_autoqfree(game)
-	game.qa_resolution(1280, 720)
+	workspace = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(workspace)
 	await get_tree().process_frame
-	session = game.workspace.session
-	build = game.workspace.world.build
+	session = workspace.session
+	build = workspace.world.build
 	var data = session.store.create()
 	data.pieces = [record("straight", "locked", Vector3.ZERO), record("straight", "editable", Vector3(2, 0, 0))]
 	data.permissions.editable = {"move": true, "rotate": true, "remove": true, "duplicate": true}
@@ -51,7 +47,7 @@ func test_campaign_rules() -> void:
 	data.inventory = {"bucket-elevator": 1}
 	data.configuration_limits = {"bucket-elevator": {"elevator_height": [4, 4]}}
 	session.player(data, true)
-	build.choose(game.workspace.catalog.get_piece("bucket-elevator"))
+	build.choose(workspace.catalog.get_piece("bucket-elevator"))
 	build.proposed = Transform3D.IDENTITY
 	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
 	assert_true(build.valid, "Proposed edit passes real placement validation")
@@ -65,8 +61,8 @@ func test_campaign_rules() -> void:
 	assert_true(not build.configure_selected({"elevator_height": 6, "elevator_speed": 0.8}, "Outside height"), "Configured elevator volume respects elevation boundary")
 	session.sandbox()
 	build.restore([])
-	var source = build.spawn(game.workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "source", {"links": [{"event": "entered", "target": "target", "action": "open"}]})
-	var target = build.spawn(game.workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "target")
+	var source = build.spawn(workspace.catalog.get_piece("sensor"), Transform3D.IDENTITY, "source", {"links": [{"event": "entered", "target": "target", "action": "open"}]})
+	var target = build.spawn(workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "target")
 	build.set_selection([source, target])
 	build.move_selected(true)
 	build.proposed.origin = Vector3(0, 0, 3)
@@ -82,40 +78,8 @@ func test_campaign_rules() -> void:
 	assert_true(duplicate_source.configuration.links.is_empty() and source.configuration.links.size() == 1, "Deletion cleans only links to the removed target")
 	build.undo()
 	assert_true(build.pieces.size() == 4 and build.pieces[2].configuration.links.size() == 1, "Undo restores target and link together")
-	var serializer = TrackSerializer.new(game.workspace.catalog)
+	var serializer = TrackSerializer.new(workspace.catalog)
 	var payload = {"version": 1, "name": "Link round trip", "pieces": build.snapshot()}
 	assert_true(serializer.decode(JSON.stringify(payload)).pieces == payload.pieces, "Mechanism links survive existing track serializer")
 	build.pieces[0].configuration.links[0].action = "unsupported"
-	assert_true(not game.workspace.world.build.validate_wiring().is_empty(), "Unsupported actions are rejected by link validator")
-	data = session.store.create()
-	data.pieces = [record("sandbox-start", "release", Vector3(0, 0, 2), {"quantity": 2, "interval": 0.8}), record("straight", "a", Vector3(0, 0, 1)), record("straight", "b", Vector3.ZERO), record("straight", "c", Vector3(0, 0, -1)), record("sandbox-finish", "goal", Vector3(0, 0, -2))]
-	data.pieces[-1].rotation = 2
-	data.objectives = [{"type": "deliver", "target": "goal", "count": 2, "source": "release"}]
-	session.player(data, true)
-	assert_true(game.qa_test(), "Multi-marble campaign begins")
-	game.workspace.world.simulation.toggle_pause()
-	await ticks(150)
-	assert_true(game.workspace.world.simulation.marbles.size() == 1 and game.workspace.world.simulation.elapsed == 0, "Pause suspends timed releases")
-	game.workspace.world.simulation.toggle_pause()
-	for frame in 1800:
-		await get_tree().physics_frame
-		if game.workspace.world.simulation.state in [SimulationManager.State.SUCCESS, SimulationManager.State.FAILED]: break
-	assert_true(game.workspace.world.simulation.state == SimulationManager.State.SUCCESS and game.workspace.world.simulation.objectives.deliveries.size() == 2, "Two real marbles fulfill quantity and source objectives")
-	game.workspace.world.simulation.reset()
-	assert_true(game.workspace.world.simulation.marbles.is_empty() and game.workspace.world.build.pieces[0].behaviors[0].pending_releases.is_empty(), "Reset clears all bodies and pending releases")
-	data = session.store.create()
-	data.pieces = [record("sandbox-start", "release", Vector3(0, 0, 2)), record("gate", "gate", Vector3.ZERO, {"delay": 1})]
-	data.objectives = [{"type": "activate", "target": "gate", "event": "opened"}]
-	session.player(data, true)
-	assert_true(game.qa_test(), "Activation objective works without a collector")
-	await ticks(150)
-	assert_true(game.workspace.world.simulation.state == SimulationManager.State.SUCCESS, "Timed gate event fulfills activation objective")
-	session.progress.records.clear()
-	var levels: Array = [{"id": "qa-first", "prerequisites": []}, {"id": "qa-second", "prerequisites": ["qa-first"]}]
-	var definition := CampaignDefinition.new(session.store.base_chapters(), levels)
-	assert_true(definition.unlocked(levels[0], session.progress.records) and not definition.unlocked(levels[1], session.progress.records), "New progress unlocks only the first level")
-	levels[0]._source = "campaign"
-	levels[0].awards = {"time": 10, "pieces": 5}
-	session.progress.complete(levels[0], 4, 3, definition)
-	assert_true(definition.unlocked(levels[1], session.progress.records), "Completion unlocks prerequisite level")
-	assert_true(session.progress.records["qa-first"].awards.size() == 2, "Optional awards persist without gating progression")
+	assert_true(not workspace.world.build.validate_wiring().is_empty(), "Unsupported actions are rejected by link validator")

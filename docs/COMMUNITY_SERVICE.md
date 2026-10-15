@@ -106,8 +106,6 @@ deno task test
 Pop-Location
 ```
 
-The tests mock database/Auth/Valve calls; they verify validators, route/owner enforcement, and failure handling, not hosted authentication. Database tests additionally need the isolated local stack. Godot suites include `test_community_service.gd`, `test_community_ui.gd`, `test_steam_community.gd`, and `test_supabase_client.gd`; run them through the normal GUT command in the [README](../README.md#development).
-
-Live GUT checks are opt-in: `MARBLE_ENGINEER_LIVE_COMMUNITY_TEST=1` enables hosted public browsing; `MARBLE_ENGINEER_LIVE_STEAM_TEST=1` requests/cancels a real Steam ticket; `MARBLE_ENGINEER_LIVE_STEAM_BACKEND_TEST=1` verifies tickets through owned listings. Set flags only for the intended environment with Steam running where required. Ordinary tests do not require live service access.
+The tests mock database/Auth/Valve calls; they verify validators, route/owner enforcement, and failure handling, not hosted authentication. Database tests additionally need the isolated local stack. Godot checks in `test_community_service.gd` and `test_supabase_client.gd` cover service/client contracts with fakes and a local HTTP server; run them through the normal GUT command in the [README](../README.md#development). The GUT suite does not call hosted services or request real Steam tickets.
 
 Before release, verify public browsing, authentication, tested-puzzle publication, retrieval/installation, actual play, unpublishing, and unauthenticated/other-owner denial. Also verify offline play. This documentation audit did not inspect hosted migrations, function versions, secrets, account state, or live content, and did not repeat historical development-authentication checks. Hosted status and production readiness must be verified independently.

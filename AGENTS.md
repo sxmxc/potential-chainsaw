@@ -46,7 +46,7 @@ Read [Architecture](docs/ARCHITECTURE.md) for ownership and [Puzzle authoring](d
 ## Verification and delivery
 
 - Use installed GUT and `tests/test_*.gd`, through its panel or standard CLI in the README. Do not invent verification runners or one-off test scripts, force compiler warnings, or modify/publish campaign fixtures as a test side effect.
-- Pure tests extend `GutTest`. Persistence tests extend `tests/support/game_test.gd`; tests loading `main.tscn` extend `tests/support/scene_test.gd`. Use GUT lifecycle/autofree methods, isolate saves, and restore previous globals. Do not inspect addon internals or runner paths for teardown.
+- Pure tests extend `GutTest`. Persistence tests extend `tests/support/game_test.gd`. Keep the default suite focused on owners and contracts; do not add full-application navigation, screenshots, campaign playthroughs, or live-service checks unless explicitly requested. Use GUT lifecycle/autofree methods, isolate saves, and restore previous globals. Do not inspect addon internals or runner paths for teardown.
 - Run parsing/resource checks and focused tests appropriate to the change. Verify interactive, physics, reset, undo/redo, save/load, and cross-mode behavior where affected. Parsing alone does not establish gameplay correctness; keep verification proportionate.
 - Update the owning documentation when behavior, APIs, formats, or setup changes. Keep README human-facing, architecture explanations in their guides, and this file operational. Do not modify third-party documentation or licenses.
 - Report what changed, what actually passed, and what remains unverified. Never claim physics, screenshots, deployments, or live authentication were tested without evidence.
