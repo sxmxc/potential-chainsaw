@@ -41,7 +41,7 @@ func _draw() -> void:
 		draw_line(screen-Vector2(0,3),screen+Vector2(0,3),color,1.5,true)
 	# Surface snaps have no connector handle. Show the chosen contact for both
 	# surfaces and connectors through this same presentation owner.
-	if not is_instance_valid(build.ghost) or not build.ghost.visible or not build.is_snapped or build.candidates.is_empty(): return
+	if not build.preview.visible or not build.is_snapped or build.candidates.is_empty(): return
 	var point: Vector3 = build.candidates[build.candidate_index()].point
 	if build.camera.is_position_behind(point): return
 	var contact_screen := build.camera.unproject_position(point)

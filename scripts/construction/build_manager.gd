@@ -20,11 +20,8 @@ var pieces: Array[BuildingPiece] = []
 var selection: Array[BuildingPiece] = []
 var selected: BuildingPiece
 var chosen: PieceDefinition
-var ghost: BuildingPiece
-var ghosts: Array[BuildingPiece] = []
-var moving: BuildingPiece
+@onready var preview: Node3D = $PlacementPreview
 var moving_group: Array[BuildingPiece] = []
-var preview_items: Array[Dictionary] = []
 var preview_ports: Array[Dictionary] = []
 var operation: String = ""
 var turn: int = 0
@@ -37,7 +34,6 @@ var snapping: bool = true
 var authoring: bool = false
 var connect_mode: bool = false
 var enabled: bool = false
-var proposed: Transform3D = Transform3D.IDENTITY
 var valid: bool = false
 var is_snapped: bool = false
 var validation_message: String = ""
@@ -117,9 +113,10 @@ func choose(definition: PieceDefinition) -> void:
 	chosen=definition
 	turn=0
 	operation="place"
-	preview_items=[{"definition":definition,"local":Transform3D.IDENTITY,"config":{}}]
 	movement_height=height
-	make_ghost()
+	add_preview_piece(definition)
+	preview_ports=snap.boundary_sources(placement_items())
+	refresh_targets()
 	if not definition.height_setting.is_empty(): resize_height_preview(height)
 	options_changed.emit()
 
@@ -129,16 +126,20 @@ func choose_extension(definition: PieceDefinition, target: Dictionary) -> void:
 	sticky_target=target.key
 	update_preview()
 
-func make_ghost() -> void:
-	preview_ports=snap.boundary_sources(preview_items)
-	for item in preview_items:
-		var preview=PIECE_SCENE.instantiate() as BuildingPiece
-		add_child(preview)
-		preview.setup(item.definition,true,item.config)
-		preview.visible=false
-		ghosts.append(preview)
-	ghost=ghosts[0]
-	refresh_targets()
+func add_preview_piece(definition: PieceDefinition, local: Transform3D = Transform3D.IDENTITY, config: Dictionary = {}, uid: String = "") -> void:
+	var piece := PIECE_SCENE.instantiate() as BuildingPiece
+	preview.add_child(piece)
+	piece.setup(definition, true, config)
+	piece.transform = local
+	piece.instance_id = uid
+
+# The scene hierarchy owns preview configuration and relative transforms.
+# Placement validation consumes a fresh view of those nodes, never a second copy.
+func placement_items() -> Array[Dictionary]:
+	var items: Array[Dictionary] = []
+	for piece: BuildingPiece in preview.get_children():
+		items.append({"definition": piece.definition, "local": piece.transform, "config": piece.configuration, "uid": piece.instance_id})
+	return items
 
 func select(piece: BuildingPiece) -> void:
 	var values: Array[BuildingPiece] = []
@@ -172,16 +173,14 @@ func set_connect_mode(active: bool) -> void:
 
 func cancel() -> void:
 	connect_mode = false
-	for preview in ghosts:
-		if is_instance_valid(preview): preview.queue_free()
-	ghosts.clear()
-	ghost=null
+	preview.hide()
+	for piece in preview.get_children():
+		preview.remove_child(piece)
+		piece.queue_free()
 	for piece in moving_group:
 		if is_instance_valid(piece): piece.visible=true
 	moving_group.clear()
-	moving=null
 	chosen=null
-	preview_items.clear()
 	preview_ports.clear()
 	operation=""
 	forced_target.clear()
@@ -210,14 +209,14 @@ func set_height(value: float) -> void:
 	options_changed.emit()
 
 func resize_height_preview(value: float) -> void:
-	if ghosts.is_empty(): return
-	var config=ghost.configuration.duplicate(true)
+	if preview.get_child_count() == 0: return
+	var piece := preview.get_child(0) as BuildingPiece
+	var config=piece.configuration.duplicate(true)
 	config[String(chosen.height_setting)] = value
 	config=chosen.normalized_configuration(config)
-	if config==ghost.configuration: return
-	ghost.apply_configuration(config)
-	preview_items[0].definition=ghost.definition
-	preview_items[0].config=ghost.configuration.duplicate(true)
+	if config==piece.configuration: return
+	piece.apply_configuration(config)
+	preview_ports=snap.boundary_sources(placement_items())
 
 func refresh_grid() -> void:
 	if not grid_mesh: return
@@ -241,7 +240,7 @@ func refresh_targets() -> void:
 	targets = snap.exposed(pieces, moving_group)
 
 func _process(_delta: float) -> void:
-	if enabled and is_instance_valid(ghost): update_preview()
+	if enabled and chosen: update_preview()
 
 func plane_point(screen: Vector2, elevation: float) -> Variant:
 	var origin=camera.project_ray_origin(screen)
@@ -251,9 +250,9 @@ func plane_point(screen: Vector2, elevation: float) -> Variant:
 	return origin+direction*distance if distance>=0 else null
 
 func update_preview() -> void:
-	if not chosen or ghosts.is_empty(): return
+	if not chosen or preview.get_child_count() == 0: return
 	if get_viewport().gui_get_hovered_control()!=null or camera.drag_button!=0:
-		for preview in ghosts: preview.hide()
+		preview.hide()
 		return
 	var preview_height=movement_height
 	var height_placement=operation=="place" and chosen.ground_placement and not chosen.height_setting.is_empty()
@@ -267,21 +266,22 @@ func update_preview() -> void:
 			if flat: preview_height=under_cursor.position.y+level+chosen.height_offset
 		resize_height_preview(preview_height)
 	var point=plane_point(cursor_position,grab_height if direct_drag else preview_height)
-	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else proposed.origin
+	var free_position: Vector3 = snap.grid_position(point+pointer_offset) if point!=null else preview.position
 	if operation=="place": free_position.y=height
 	else: free_position.y=movement_height
 	if height_placement: free_position.y=0
-	proposed=Transform3D(Basis(Vector3.UP,turn*PI/2),free_position)
+	preview.transform=Transform3D(Basis(Vector3.UP,turn*PI/2),free_position)
+	var items := placement_items()
 	var grab_offset: Variant = null
 	if direct_drag: grab_offset = pointer_offset
-	candidates=snap.screen_candidates(preview_items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,proposed,grab_offset) if snapping else []
+	candidates=snap.screen_candidates(items,preview_ports,targets,camera,cursor_position,pieces,moving_group,sticky_target,forced_target,preview.transform,grab_offset) if snapping else []
 	is_snapped=not candidates.is_empty()
 	if is_snapped:
 		if not candidates.any(func(value: Dictionary): return value.key==candidate_key): candidate_cycled=false
 		var candidate: Dictionary=candidates[0]
 		for value in candidates:
 			if value.key==candidate_key and (value.error.is_empty() or not candidate.error.is_empty()) and (not value.target.get("surface",false) or candidate_cycled): candidate=value; break
-		proposed=candidate.transform
+		preview.transform=candidate.transform
 		candidate_key=candidate.key
 		sticky_target=candidate.target.key
 	else:
@@ -289,9 +289,9 @@ func update_preview() -> void:
 		candidate_cycled=false
 		sticky_target=""
 		if point==null:
-			for preview in ghosts: preview.hide()
+			preview.hide()
 			return
-	validation_message = validate_edit(preview_items, proposed, moving_group)
+	validation_message = validate_edit(items, preview.transform, moving_group)
 	valid=validation_message.is_empty()
 	apply_preview()
 	var message="✕  "+validation_message if not valid else ("Aligned · click to place" if is_snapped else "Click to place · R rotate · right-click cancel")
@@ -300,10 +300,9 @@ func update_preview() -> void:
 	show_status(message)
 
 func apply_preview() -> void:
-	for index in ghosts.size():
-		ghosts[index].transform=proposed*preview_items[index].local
-		ghosts[index].visible=true
-		ghosts[index].tint(Color(1,0.29,0.32,0.55) if not valid else (Color(0.2,0.9,0.68,0.4) if is_snapped else Color(0.38,0.72,1,0.35)))
+	preview.show()
+	for piece: BuildingPiece in preview.get_children():
+		piece.tint(Color(1,0.29,0.32,0.55) if not valid else (Color(0.2,0.9,0.68,0.4) if is_snapped else Color(0.38,0.72,1,0.35)))
 
 func candidate_index() -> int:
 	for i in candidates.size():
@@ -317,16 +316,17 @@ func cycle_candidate() -> void:
 	update_preview()
 
 func commit() -> void:
-	if not enabled or not is_instance_valid(ghost) or not ghost.visible or not valid: return
+	if not enabled or not chosen or not preview.visible or not valid: return
 	if chosen.authoring_only and not authoring: return
-	var placement_error = validate_edit(preview_items, proposed, moving_group)
+	var items := placement_items()
+	var placement_error = validate_edit(items, preview.transform, moving_group)
 	if not placement_error.is_empty(): show_status(placement_error); return
 	var before=snapshot(true)
 	var mode=operation
 	var edited: Array[BuildingPiece] = []
-	for index in preview_items.size():
-		var item: Dictionary=preview_items[index]
-		var placement: Transform3D=proposed*item.local
+	for index in items.size():
+		var item: Dictionary=items[index]
+		var placement: Transform3D=preview.transform*item.local
 		if mode=="move":
 			moving_group[index].transform=placement
 			edited.append(moving_group[index])
@@ -335,7 +335,7 @@ func commit() -> void:
 			edited.append(piece)
 	if mode == "duplicate":
 		var duplicated_ids: Dictionary = {}
-		for index in edited.size(): duplicated_ids[preview_items[index].get("uid", "")] = edited[index].instance_id
+		for index in edited.size(): duplicated_ids[items[index].uid] = edited[index].instance_id
 		for piece in edited:
 			for link in piece.configuration.get("links", []):
 				if duplicated_ids.has(link.target): link.target = duplicated_ids[link.target]
@@ -468,15 +468,15 @@ func move_selected(duplicate_piece: bool = false) -> void:
 	turn=roundi(selected.rotation.y/(PI/2))
 	var frame=Transform3D(Basis(Vector3.UP,turn*PI/2),pivot)
 	movement_height=pivot.y
-	proposed=frame
+	preview.transform=frame
 	operation="duplicate" if duplicate_piece else "move"
 	for piece in selection:
-		preview_items.append({"definition":piece.definition,"local":frame.affine_inverse()*piece.transform,"config":piece.configuration.duplicate(true),"uid":piece.instance_id})
+		add_preview_piece(piece.base_definition, frame.affine_inverse()*piece.transform, piece.configuration, piece.instance_id)
 		if not duplicate_piece:
 			moving_group.append(piece)
 			piece.hide()
-	moving=selected if not duplicate_piece else null
-	make_ghost()
+	preview_ports=snap.boundary_sources(placement_items())
+	refresh_targets()
 	options_changed.emit()
 
 func rotate_piece() -> void:

@@ -106,6 +106,9 @@ script = ExtResource("Host")
 [node name="BuildManager" type="Node3D" parent="." unique_id=587075082]
 script = ExtResource("3")
 
+[node name="PlacementPreview" type="Node3D" parent="BuildManager"]
+visible = false
+
 [node name="SimulationManager" type="Node3D" parent="." unique_id=366871744]
 script = ExtResource("4")
 

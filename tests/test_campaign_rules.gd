@@ -20,21 +20,21 @@ func test_campaign_rules() -> void:
 	session.player(data, true)
 	build.set_selection(build.pieces)
 	build.move_selected()
-	assert_true(build.ghost == null, "Mixed group cannot move fixed members")
+	assert_true(build.preview.get_child_count() == 0, "Mixed group cannot move fixed members")
 	build.rotate_piece()
 	assert_true(build.snapshot() == data.pieces, "Mixed group rotation is atomic")
 	build.elevate_selected(0.5)
 	assert_true(build.snapshot() == data.pieces, "Mixed group elevation is atomic")
 	build.move_selected(true)
-	assert_true(build.ghost == null, "Mixed group duplication blocked")
+	assert_true(build.preview.get_child_count() == 0, "Mixed group duplication blocked")
 	build.delete_selected()
 	assert_true(build.pieces.size() == 2, "Mixed group deletion blocked")
 	build.select(build.pieces[1])
 	build.move_selected(true)
-	build.proposed.origin = Vector3(4, 0, 0)
-	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	build.preview.position = Vector3(4, 0, 0)
+	build.valid = build.snap.validate_group(build.placement_items(), build.preview.transform, build.pieces, build.moving_group).is_empty()
 	assert_true(build.valid, "Proposed edit passes real placement validation")
-	build.ghost.visible = true
+	build.apply_preview()
 	build.commit()
 	assert_true(build.pieces.size() == 3 and build.rules.remaining("straight", build.snapshot()) == 1, "Duplicating authored editable piece costs inventory")
 	build.undo()
@@ -48,10 +48,10 @@ func test_campaign_rules() -> void:
 	data.configuration_limits = {"bucket-elevator": {"elevator_height": [4, 4]}}
 	session.player(data, true)
 	build.choose(workspace.catalog.get_piece("bucket-elevator"))
-	build.proposed = Transform3D.IDENTITY
-	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	build.preview.transform = Transform3D.IDENTITY
+	build.valid = build.snap.validate_group(build.placement_items(), build.preview.transform, build.pieces, build.moving_group).is_empty()
 	assert_true(build.valid, "Proposed edit passes real placement validation")
-	build.ghost.visible = true
+	build.apply_preview()
 	build.commit()
 	build.cancel()
 	build.select(build.pieces[0])
@@ -65,10 +65,10 @@ func test_campaign_rules() -> void:
 	var target = build.spawn(workspace.catalog.get_piece("gate"), Transform3D(Basis.IDENTITY, Vector3(2, 0, 0)), "target")
 	build.set_selection([source, target])
 	build.move_selected(true)
-	build.proposed.origin = Vector3(0, 0, 3)
-	build.valid = build.snap.validate_group(build.preview_items, build.proposed, build.pieces, build.moving_group).is_empty()
+	build.preview.position = Vector3(0, 0, 3)
+	build.valid = build.snap.validate_group(build.placement_items(), build.preview.transform, build.pieces, build.moving_group).is_empty()
 	assert_true(build.valid, "Proposed edit passes real placement validation")
-	build.ghost.visible = true
+	build.apply_preview()
 	build.commit()
 	var duplicate_source = build.pieces[2]
 	var duplicate_target = build.pieces[3]

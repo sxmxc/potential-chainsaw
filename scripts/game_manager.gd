@@ -268,7 +268,7 @@ func load_settings() -> void:
 
 func qa_summary() -> Dictionary:
 	var hovered=get_viewport().gui_get_hovered_control()
-	return {"pieces":workspace.world.build.pieces.size(),"selected":workspace.world.build.selection.size(),"operation":workspace.world.build.operation,"candidates":workspace.world.build.candidates.size(),"state":workspace.world.simulation.state,"dirty":workspace.world.build.dirty,"track":workspace.session.track_name,"catalog":workspace.catalog.REGISTRY.size(),"height":workspace.world.build.height,"main_menu":%MainMenu.visible,"ghost":workspace.world.build.ghost!=null and workspace.world.build.ghost.visible,"valid":workspace.world.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
+	return {"pieces":workspace.world.build.pieces.size(),"selected":workspace.world.build.selection.size(),"operation":workspace.world.build.operation,"candidates":workspace.world.build.candidates.size(),"state":workspace.world.simulation.state,"dirty":workspace.world.build.dirty,"track":workspace.session.track_name,"catalog":workspace.catalog.REGISTRY.size(),"height":workspace.world.build.height,"main_menu":%MainMenu.visible,"ghost":workspace.world.build.preview.visible,"valid":workspace.world.build.valid,"hovered":str(hovered.get_path()) if hovered else "","mouse":str(get_viewport().get_mouse_position())}
 
 func qa_example(id: String) -> void:
 	workspace.session.load_track(id,true)

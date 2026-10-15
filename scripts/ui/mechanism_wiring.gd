@@ -86,7 +86,7 @@ func covered(point: Vector2) -> bool:
 func anchor(piece: BuildingPiece) -> Vector3:
 	var visual := piece
 	var moving_index := build.moving_group.find(piece)
-	if moving_index >= 0 and moving_index < build.ghosts.size(): visual = build.ghosts[moving_index]
+	if moving_index >= 0 and moving_index < build.preview.get_child_count(): visual = build.preview.get_child(moving_index) as BuildingPiece
 	var bounds := visual.definition.bounds
 	return visual.global_transform * (bounds.get_center() + Vector3.UP * bounds.size.y * 0.5)
 

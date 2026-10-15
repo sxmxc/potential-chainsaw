@@ -55,7 +55,7 @@ func suspend_input() -> void:
 	world.boundary.cancel()
 	world.build.enabled = false
 	world.camera.enabled = false
-	if world.build.ghost: world.build.ghost.hide()
+	world.build.preview.hide()
 	world.build.refresh_grid()
 
 func resume_input() -> void:

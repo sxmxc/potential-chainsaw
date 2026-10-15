@@ -3,6 +3,66 @@ extends "res://tests/support/game_test.gd"
 var game: Node
 var build: BuildManager
 
+func test_group_preview_preserves_relative_transforms_through_cancel_and_commit() -> void:
+	game = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	build = game.world.build
+	var definition := build.catalog.get_piece("straight")
+	var first := build.spawn(definition, Transform3D(Basis(Vector3.UP, PI / 2), Vector3(1, 1, 0)), "first")
+	var second := build.spawn(definition, Transform3D(Basis.IDENTITY, Vector3(3, 2, 0)), "second")
+	build.set_selection([first, second])
+	var before := build.snapshot()
+	build.move_selected()
+	build.preview.transform = Transform3D(Basis(Vector3.UP, PI), Vector3(5, 3, 0))
+	build.valid = true
+	build.apply_preview()
+	var shown: Array[Transform3D] = []
+	for piece: BuildingPiece in build.preview.get_children(): shown.append(piece.global_transform)
+	assert_true(shown[0].origin.is_equal_approx(Vector3(5, 3, 0)))
+	assert_true(shown[1].origin.is_equal_approx(Vector3(5, 4, -2)), "Group rotation retains relative elevation")
+	assert_eq(build.snapshot(), before, "Preview leaves original construction untouched")
+	build.cancel()
+	assert_true(first.visible and second.visible, "Cancel restores hidden originals")
+	assert_eq(build.snapshot(), before)
+	assert_false(build.history.has_undo(), "Cancel does not record an edit")
+	build.move_selected()
+	build.preview.transform = Transform3D(Basis(Vector3.UP, PI), Vector3(5, 3, 0))
+	build.valid = true
+	build.apply_preview()
+	build.commit()
+	assert_true(first.global_transform.is_equal_approx(shown[0]), "Commit matches the visible preview")
+	assert_true(second.global_transform.is_equal_approx(shown[1]))
+	var after := build.snapshot()
+	build.undo()
+	assert_eq(build.snapshot(), before, "One undo restores the assembly")
+	build.redo()
+	assert_eq(build.snapshot(), after)
+
+func test_resized_preview_commits_and_reloads_its_configuration_and_geometry() -> void:
+	game = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	build = game.world.build
+	build.choose(build.catalog.get_piece("support-single"))
+	build.resize_height_preview(6.0)
+	build.preview.transform = Transform3D(Basis.IDENTITY, Vector3(5, 0, 0))
+	build.valid = true
+	build.apply_preview()
+	var shown := build.preview.get_child(0) as BuildingPiece
+	var shown_bounds := shown.definition.bounds
+	var shown_config := shown.configuration.duplicate(true)
+	assert_eq(shown_config.support_height, 6.0)
+	build.commit()
+	build.cancel()
+	assert_eq(build.pieces.size(), 1)
+	assert_eq(build.pieces[0].configuration, shown_config)
+	assert_eq(build.pieces[0].definition.bounds, shown_bounds, "Committed geometry matches the resized preview")
+	var saved := build.snapshot()
+	build.restore(saved)
+	assert_eq(build.snapshot(), saved)
+	assert_eq(build.pieces[0].definition.bounds, shown_bounds, "Reload preserves configured geometry")
+
 func test_rejected_edits_preserve_live_nodes_and_history() -> void:
 	game = load("res://scenes/construction_workspace.tscn").instantiate()
 	add_child_autoqfree(game)
@@ -41,7 +101,7 @@ func test_rejected_edits_preserve_live_nodes_and_history() -> void:
 	build.elevate_selected(0.5)
 	assert_eq(build.selected.position.y, 1.5, "A permitted elevation applies to the group")
 	build.move_selected()
-	build.proposed.origin = Vector3(4, 2, 0)
+	build.preview.position = Vector3(4, 2, 0)
 	build.valid = true
 	build.apply_preview()
 	build.commit()

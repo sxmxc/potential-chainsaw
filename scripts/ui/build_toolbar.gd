@@ -40,9 +40,9 @@ func refresh(library_open: bool) -> void:
 func refresh_placement() -> void:
 	%Placement.visible=build.chosen!=null
 	if not build.chosen: return
-	%ActivePiece.text="%d-piece assembly" % build.preview_items.size() if build.preview_items.size()>1 else build.chosen.display_name
+	%ActivePiece.text="%d-piece assembly" % build.preview.get_child_count() if build.preview.get_child_count()>1 else build.chosen.display_name
 	%ActivePiece.tooltip_text=%ActivePiece.text
-	var preview_visible: bool=build.ghost!=null and build.ghost.visible
+	var preview_visible: bool=build.preview.visible
 	var feedback: String=""
 	if preview_visible and not build.valid: feedback="✕ "+build.validation_message
 	elif preview_visible and build.is_snapped:
