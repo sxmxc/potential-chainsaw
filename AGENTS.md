@@ -1,171 +1,52 @@
 # AGENTS.md — Marble Engineer
 
-## Purpose
+Operational instructions for coding agents. The repository defines current behavior; design constraints below are not evidence that a feature is complete.
 
-Marble Engineer is a Godot 4.x 3D marble-track construction and physics puzzle game using Kenney's Marble Kit. Players build modular tracks, test them with physics-driven marbles, and solve campaign puzzles by completing or modifying authored machines.
+## Investigate before editing
 
-This file is a standing engineering and design contract for coding agents. **The repository is the source of truth.** Verify existing scenes, classes, APIs, asset geometry, and feature status before making assumptions. This document describes intended conventions; it does not claim every system is already implemented.
+- Read the relevant guide and trace the affected scene, owner, callers, signals, resources, and tests. Check input, persistence, permissions, and lifecycle interactions when relevant.
+- Inspect `project.godot` and installed addon metadata before choosing APIs. The project targets Godot 4.7, GDScript, Jolt physics, and Forward Plus. Consult official Godot/addon documentation for unfamiliar APIs.
+- Inspect actual GLB geometry, pivots, hierarchy, orientation, and collision needs. Never infer dimensions or functionality from filenames. Preserve original imported assets; edit wrapper scenes/resources.
+- State the smallest coherent change and its regression risks. Preserve unrelated edits and user content; use a version-control checkpoint before substantial refactors when appropriate. Ask about new game-design choices rather than inventing mechanics or content.
 
-## Product boundaries
+## System map and boundaries
 
-- **Sandbox:** unrestricted building, experimenting, testing, and saving constructions.
-- **Campaign:** authored physics puzzles with inventories, fixed/editable pieces, objectives, and progression.
-- **Puzzle Editor:** developer-facing visual authoring using the **same** construction and simulation systems; draft, test as player, validate, publish.
-- **Introduction:** the original 10 tutorial-style puzzles are optional/skippable and must be preserved. The main campaign should not be a series of obvious assembly exercises.
+Read [Architecture](docs/ARCHITECTURE.md) for ownership and [Puzzle authoring](docs/PUZZLE_AUTHORING.md) for formats and publication.
 
-Do not introduce separate construction or marble simulation engines for each mode. Apply mode-specific rules through data and permissions. Do not make the sandbox a required prerequisite for campaign play.
+- `scenes/construction_workspace.tscn` binds the World, `ConstructionSession`, and shared HUD. Session contexts are Sandbox, Authoring, Puzzle Play, and Player Test. Apply mode differences through data and permissions; never create another construction or simulation engine.
+- `scripts/construction/` owns placement, snapping, selection, history, definitions, and behavior contracts. `scripts/simulation/` owns marble runs. `scripts/campaign/` owns puzzle rules, persistence, objectives, registration, and progression. `GameManager` hosts application navigation and dialogs.
+- YARD's `resources/registries/piece_registry.tres` is the authoritative catalog. Use `PieceCatalog` and the registry API; do not add filesystem scans or parallel catalogs. Registry IDs must equal `PieceDefinition.id`. Editor Play/export rebuilds indexes; headless runtime tests consume the saved index. Preserve stable piece and instance IDs.
+- Tracks, mechanisms, supports, and authoring scenery use the shared piece system. Functional scenes compose `PieceBehavior` nodes with scene-authored `PieceSetting` resources. Reuse this lifecycle, configuration, and port contract; see [Piece authoring](docs/PIECE_AUTHORING.md).
+- Game code calls `CommunityService`; provider details belong in `scripts/community/supabase_backend.gd`. Keep `addons/supabase_client/` reusable and project-agnostic: no puzzle schemas, Steam, game routes, or campaign rules. `SteamClient` owns local Steam integration; only server ticket verification establishes online identity. See [Community service](docs/COMMUNITY_SERVICE.md).
 
-## Before changing anything
+## Engineering conventions
 
-1. Read the relevant project documentation and inspect the affected scenes, Resources, scripts, and tests.
-2. Identify the current code path and its callers. Check input mappings, signals, save formats, theme inheritance, and lifecycle interactions where relevant.
-3. Verify the actual Godot version and available plugins before choosing APIs.
-4. Inspect imported GLBs for dimensions, pivots, orientation, mesh hierarchy, and collision requirements; **never infer geometry from filenames alone**.
-5. Describe the smallest coherent change and its regression risks. Prefer working within existing architecture over adding parallel managers or abstractions.
-6. Preserve unrelated features and existing user content. Make a version-control checkpoint before substantial refactors when appropriate.
+- Use typed GDScript where practical, focused scenes, reusable Resources, signals, InputMap actions, and explicit ownership. Check inherited members before naming variables. Fix warnings in touched scripts; do not suppress warnings to pass checks.
+- Keep behavior local and traceable. Reuse existing owners instead of adding managers, forwarding layers, fallback paths, duplicate state, or speculative abstractions.
+- Preserve save/progress compatibility and stable content IDs; introduce explicit migrations when changing formats. Puzzle data resolves registered assets only; arbitrary scene references and published scenery snapshots are retired.
+- Preview and commit must use the same placement validation. Connector snapping aligns position, orientation, and elevation using visible cursor-intended targets; the active grid plane is a fallback. Preserve cancellable direct dragging and rigid group transforms. Exclude the moving group from snap targets and record group operations atomically.
+- Enforce puzzle permissions in actual operations, including shortcuts, settings, links, duplication, history, and group edits. Definitions marked `authoring_only` are excluded from player inventory; ordinary decorative props are regular construction pieces. Floating tracks are allowed; mandatory supports require a design decision.
+- Ordinary marble travel uses rigid-body physics. Controlled transport is allowed while intentionally captured, as with the existing bucket elevator; restore physics/collision state on release/reset. Shrouded fans provide airflow; exposed `fan-simple-*` models are rotating paddles. Verify transitions and multi-marble behavior in simulation.
 
-Do not silently expand scope. When behavior is ambiguous or involves a new game-design choice, state the assumption and seek a decision rather than inventing systems or content.
+## Puzzles and content
 
-## Godot engineering standards
+- Preserve the ten optional Introduction puzzles, stable IDs, progress, and reference solutions. Introduction and Sandbox must not gate the main campaign.
+- Author puzzles through the shared visual editor. Record the engineering problem, meaningful player choices, constraints, and mechanics before building a level. Base designs on observed behavior, not assumed physics.
+- Test as Player with real inventory, permissions, and objectives; preserve the working solution separately from the incomplete starting layout. Publishing requires a current successful test and saved solution. Objectives judge simulation results, never similarity to one layout. Human playtesting is needed to assess fun.
+- Retries remain unlimited and simulation reset preserves the build. Do not change global marble physics to rescue unverified content or deliver untested puzzle batches.
 
-- Before adding code, trace the existing owner, callers and scene signals; reuse that system and consult official Godot and installed addon documentation.
-- Keep behavior local and traceable. Remove redundant state and forwarding layers; do not add managers or fallback paths to hide invalid states.
-- Check inherited engine members before naming variables. Repair warnings in touched scripts; introduce no parser warnings and never suppress them to pass checks.
-- Keep feature changes focused: defer unrelated refactors and verify the affected behavior proportionately with GUT and parsing checks.
+## UI and writing
 
-- Follow Godot-native conventions: typed GDScript where practical, focused scenes, reusable Resources, signals, InputMap actions, and explicit state ownership.
-- Keep scene composition, data, presentation, and behavior separate. Avoid monolithic scripts, duplicate state machines, sprawling autoloads, and hardcoded node paths scattered across unrelated files.
-- Use stable IDs for piece definitions and placed instances. Maintain backward compatibility for existing saved constructions, puzzle definitions, and progress; introduce migrations when formats change.
-- YARD's `resources/registries/piece_registry.tres` is authoritative for piece membership and indexed metadata. Resolve pieces through its runtime API and the existing PieceCatalog; do not add filesystem scans or parallel catalogs. Registry entry IDs must match `PieceDefinition.id`. Indexing is automatic on editor Play/export; headless tests consume the saved index. Preserve catalog placement IDs and authoring-only permissions; puzzle data must not load unregistered scenes.
-- Prefer a small, understandable implementation over general-purpose frameworks. New components must solve an existing need.
-- Do not edit original imported assets destructively. Wrap assets in reusable scenes and add companion collision, connectors, or behavior there.
-- Test both headless parsing/resource loading and real interactive/physics workflows when relevant. Compilation alone is not verification.
-
-## Construction contract
-
-- The construction engine is shared by all modes. The same transform, snapping, placement-validation, editing, history, and serialization behavior must apply wherever permissions allow.
-- Connector-first snapping should align compatible pieces in full 3D (position, orientation, **and elevation**) without requiring the player to manually select the target's building level. Use visible, cursor-intended connectors; do not snap to arbitrary distant candidates.
-- The grid and active height are useful fallbacks for free placement, not prerequisites for extending existing tracks.
-- Direct manipulation is standard: click to select; drag to move; Shift-click and box selection; group move/rotate/duplicate/delete; connected-section selection where implemented. Routine edits should not require selecting a separate Move tool.
-- A selected group moves as one rigid arrangement, retaining internal transforms and elevation differences; snapping targets exclude its own internal connectors. Group operations are single undoable actions.
-- All transformations must be reversible or cancellable. Avoid sudden jumps to the ground plane or changes caused by incidental raycast hits.
-- Respect mode permissions in the actual editing operations, including shortcuts, duplication, group editing, and undo/redo—not only in the UI.
-- Floating tracks are allowed by default. Do not introduce structural integrity or mandatory supports without an explicit design decision.
-
-## Physics and mechanisms
-
-- Marble travel outside explicitly defined transport/capture mechanisms is driven by Godot rigid-body physics. Do not replace ordinary rolling with scripted track following.
-- Use accurate-enough track collisions, stable transitions, physically understandable forces, and clean simulation start/reset behavior.
-- Controlled attachment or kinematic transport is allowed for mechanisms such as the bucket elevator **only while the marble is intentionally captured**. Make transfer visible and believable; restore physics and collision state reliably on release/reset.
-- Reuse existing mechanism contracts for activation, configuration, saving, and resets. Do not implement separate event systems for individual pieces.
-- Fan families have distinct behavior: shrouded fans apply directional airflow; the exposed `fan-simple-*` models are physical rotating paddles. Confirm model geometry and existing behavior before editing them.
-- The bucket elevator exists in the project; inspect and extend it rather than replacing it.
-- Do not assume a mechanism, collision transition, force setting, or multi-marble interaction works just because it is logically plausible. Reproduce and test it.
-
-## Puzzle and campaign design
-
-- The existing 10 introductory levels are **optional Introduction content**. Do not delete, overwrite, or relabel their stable identifiers casually; preserve progress and known-good solutions.
-- Design main-campaign puzzles around **observed game behavior**, not invented physics outcomes (for example, never assume a curve sheds or requires a particular speed without testing).
-- Before authoring a level, record its actual engineering problem, available mechanics, starting conditions, player choices, constraints, and why those choices are meaningful.
-- Construct and verify a working solution in the real simulation. Save that solution separately from the incomplete player-facing starting layout.
-- Verify that difficulty comes from reasoning, not tedious positioning, opaque rules, frame-perfect timing, or unpredictable collision behavior.
-- Do not fill a campaign quota with generic gaps, superficial variations, or mechanism-showcase exercises. A mechanically working level is not automatically a good puzzle.
-- Validate outcomes through simulation objectives, **not** by comparing the player's construction to one prescribed layout. Legitimate alternate solutions are welcome.
-- Keep player retries unlimited unless explicitly directed otherwise. Testing a puzzle must not erase the player's build.
-- Environment placements belong in puzzle data; registered reusable scenes own meshes/collision. Edit instances through the shared construction toolbox and controls. Use catalog-only placements in every mode; arbitrary scene references and published scenery snapshots are retired. Never count scenery as track inventory.
-- Puzzle Editor must use actual in-game construction and support draft → test as player → validation → publish, with isolated test copies. Do not require hand-editing JSON or GDScript to author levels.
-- Publishing requires tested completion conditions and a known-good solution. Do not claim fun has been established without human playtesting.
-
-## UI architecture
-
-- Build UI in editable `.tscn` scenes using Godot `Control` and `Container` nodes, anchors, and size flags. Use a shared `.tres` `Theme`, theme type variations, and reusable widgets.
-- GDScript should primarily implement behavior, data binding, state changes, and truly dynamic content. Do not build static screens as one-off code-generated controls or scatter colors, dimensions, and `StyleBox` instances through scripts.
-- Local scene-specific layout values are valid. Do not force every margin or coordinate into the global Theme.
-- Sandbox, Campaign, and Puzzle Editor should share presentation components but present **mode-appropriate** actions. Never show sandbox save/rename/new-track actions in a campaign pause menu.
-- Preserve comfortable font sizes and touch targets. Fix oversized UI by changing **information architecture and contextual visibility**, not by globally shrinking everything.
-- Keep the construction and marble simulation as the visual priority. Avoid full-width instruction banners, unnecessarily tall empty toolboxes, always-open inspector panels, and duplicated status text.
-- Make the piece toolbox catalog-driven with recognizable thumbnails, clear selection states, scrolling for larger inventories, and sensible sizing for small ones.
-- Verify UI by running the project and reviewing actual screens at 1280×720, 1600×900, and 1920×1080 when possible. Report honestly if visual inspection is unavailable.
-
-## Godot UI Layout Requirements
-
-Use Godot 4's native Control layout, Container, anchoring, sizing, and Theme systems.
-
-**Do not manually implement layouts that Godot already handles.**
-
-- Build UI composition using appropriate Containers, anchors, size flags, and minimum sizes.
-- Use shared Theme resources for typography, spacing, margins, colors, and control styling.
-- Prefer scene-authored layouts over programmatically positioning and sizing every control.
-- Do not scatter arbitrary pixel dimensions, offsets, and spacing values throughout scripts.
-- Do not calculate ordinary UI positions from viewport dimensions or hardcoded screen resolutions.
-- Do not use `_process()` to continuously reposition normal interface controls.
-- Do not override Container-managed positioning and sizing with manual offsets.
-- Do not use nested Containers unnecessarily or introduce abstractions for simple layout problems.
-- Use intentional fixed dimensions only when justified by design, such as icon sizes, minimum interaction targets, and bounded panel widths.
-- For world-anchored interaction elements, such as mechanism connection handles, use proper 3D-to-screen projection. Keep their visual dimensions consistent and centralize presentation parameters rather than scattering magic numbers.
-- Account for labels, content growth, and available space using Godot's layout capabilities instead of implementing individual screen-resolution exceptions.
-
-### Existing UI Cleanup
-
-When modifying an existing interface, identify and remove obsolete manual sizing, positioning hacks, and duplicated styling where native Godot layout features can replace them.
-
-Do not simply wrap hardcoded calculations in helper functions or move magic numbers into another script.
-
-Do not refactor unrelated interfaces without reason.
-
-### Verification
-
-Design and review primarily at 1920×1080.
-
-Do not create hardcoded 1080p layouts. Native layout behavior should accommodate ordinary desktop window resizing without requiring resolution-specific code.
-
-Only test additional resolutions when the change actually concerns window scaling or layout behavior.
-
-**The goal is a deliberately designed interface using Godot's existing layout tools—not a collection of manually positioned controls that happen to look acceptable at one resolution.**
-
-## Player-facing writing
-
-- Treat UI copy as authored game content, not filler. Write for a player, not a developer or marketing deck.
-- Be short, natural, specific, and consistent. Prefer sentence case for ordinary UI text; reserve all caps for intentional display treatments.
-- Avoid repeating a level title in its objective, describing obvious buttons, stacking slogans, or exposing internal state terminology.
-- Introduction hints should appear contextually; normal campaign objectives state **what** to achieve, not the exact piece or sequence to use.
-- Prefer `1 piece` / `2 pieces` over malformed counters; avoid unjustified decimal precision (`0.000 m`) and dense shortcut paragraphs.
-- Examples of direction, not mandatory replacements:
-  - `FIRST CONNECTION · BRIDGE THE MISSING TRACK AND DELIVER ONE MARBLE` → `Get the marble to the finish.` (the title is already elsewhere).
-  - `CHOOSE STRAIGHT, POINT AT A GLOWING CONNECTOR, AND CLICK` → contextual `Select a straight track`, then `Click a connector to attach` only when needed.
-  - `1 PIECES · HOVER FOR DETAILS` → `1 piece` or omit.
-  - `PUZZLES ARE BEING PREPARED. NO PUBLISHED PUZZLES YET` → `No levels available yet.`
-- Review every new screen for duplicated information, awkward terminology, and instructions that give away puzzle solutions.
-
-## Main menu and visual identity
-
-- Preserve the current Marble Engineer identity and the animated, real-3D marble-track showcase. Do not replace it with a static background simply to simplify UI implementation.
-- Keep menu controls composed around the showcase instead of obscuring it. Use real shared piece scenes and believable simulation where practical.
-- Favor deliberate framing, lighting, and motion over generic decoration. The colorful Kenney track should remain prominent.
+- Build editable `.tscn` layouts with native Controls, Containers, anchors, size flags, and minimum sizes. Shared styling belongs in `resources/sandbox_theme.tres`; local scene layout values are valid. Scripts bind data and behavior rather than constructing static screens.
+- Remove obsolete manual layout hacks in the interface being changed. Do not calculate ordinary positions from viewport dimensions, reposition normal controls in `_process()`, or override Container layout. Intentional icon sizes and bounded panel widths are valid. Project world-anchored handles from 3D and centralize their presentation parameters.
+- Keep the construction visible, controls readable, and actions appropriate to the current mode. Resolve oversized UI with contextual visibility and information structure. Preserve the identity, logo, and animated real-3D menu showcase. See [UI design](docs/UI_DESIGN.md).
+- Write short, natural player-facing copy in sentence case. Avoid duplicated titles/status, developer terminology, dense shortcut paragraphs, and campaign instructions that reveal solutions.
+- Review affected UI primarily at 1920×1080. Check additional sizes when resizing/layout behavior is affected; do not repeat multi-resolution screenshots for routine changes. Report when visual inspection is unavailable.
 
 ## Verification and delivery
 
-For each substantive task:
-
-1. Identify files and systems impacted and the user-visible behavior being changed.
-2. Implement the smallest coherent change, preserving scene/resource conventions.
-3. Run available tests and headless project validation; test interactive, visual, and physics behavior where the change requires them.
-4. Check regressions in Sandbox, Campaign, and Puzzle Editor as relevant; check save/load, undo/redo, permissions, and reset behavior.
-5. Report what changed, what was **actually tested**, and what remains unverified. Never claim a screenshot was inspected or physics was simulated when it was not.
-
-### Do not
-
-- Invent mechanics, level solutions, asset geometry, or reliability claims.
-- Change global marble physics to rescue an unverified level without analyzing consequences.
-- Recreate systems that already exist or rewrite the project to accommodate a small feature.
-- Deliver untested puzzle batches to meet an arbitrary level count.
-- Call generic-looking, oversized, text-heavy panels “polished” without examining user workflows.
-- Hide missing functionality behind visual polish or claim completion based only on successful parsing.
-
-**Core standard:** players should spend their time designing and testing marble machines—not fighting the editor. Agents should spend their time validating that experience—not generating plausible-looking code or content.
-
-## Test framework
-
-Use the installed GUT plugin and `tests/test_*.gd` suites for automated tests. Run through the GUT panel or its standard CLI. Do not add custom verification runners, force compiler warnings, create one-off test scripts, or publish/modify campaign fixtures as a test side effect. Preserve player saves with isolated GUT fixtures.
-
-Use documented GUT lifecycle and autofree methods. Pure tests extend `GutTest`; persistence tests use `tests/support/game_test.gd`; tests loading `main.tscn` use `tests/support/scene_test.gd` to restore the globals that scene changes. Scope additional setup to the test that needs it, restore prior values rather than defaults, and assert observable outcomes without bypassing validation. Do not inspect runner scene paths or addon internals for teardown.
+- Use installed GUT and `tests/test_*.gd`, through its panel or standard CLI in the README. Do not invent verification runners or one-off test scripts, force compiler warnings, or modify/publish campaign fixtures as a test side effect.
+- Pure tests extend `GutTest`. Persistence tests extend `tests/support/game_test.gd`; tests loading `main.tscn` extend `tests/support/scene_test.gd`. Use GUT lifecycle/autofree methods, isolate saves, and restore previous globals. Do not inspect addon internals or runner paths for teardown.
+- Run parsing/resource checks and focused tests appropriate to the change. Verify interactive, physics, reset, undo/redo, save/load, and cross-mode behavior where affected. Parsing alone does not establish gameplay correctness; keep verification proportionate.
+- Update the owning documentation when behavior, APIs, formats, or setup changes. Keep README human-facing, architecture explanations in their guides, and this file operational. Do not modify third-party documentation or licenses.
+- Report what changed, what actually passed, and what remains unverified. Never claim physics, screenshots, deployments, or live authentication were tested without evidence.

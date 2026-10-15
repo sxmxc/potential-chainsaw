@@ -1,25 +1,25 @@
-# UI design rules
+# UI design
 
-The track is the focal point. A dark teal workbench background gives the warm Kenney surfaces a quiet setting. Mint identifies primary actions and connector alignment; gold identifies selection and finish; coral identifies rejection. Every placement state also has a text label and symbol, so color is supplementary.
+The construction is the visual priority. Preserve the animated real-3D menu machine, colorful Kenney pieces, stylized gold logo, dark teal surfaces, mint actions, gold selection, and coral rejection. Pair color feedback with text or symbols.
 
-## Tokens
+## Scenes and theme
 
-The shared `resources/sandbox_theme.tres` is authoritative for colors, fonts and sizes. The approved overhaul uses Nunito Sans: regular body text, semibold controls, bold headings. Keep the original stylized logo in gold. Type roles are supporting text 14, body/buttons/piece names 16, menu navigation 18, section headings 20, dialog headings 28, and brand 54. Fonts and full license notices live in `assets/font/`. Spacing follows 4 / 8 / 12 / 16 / 24. Ordinary targets should be at least 40 pixels high and primary actions 44. Controls need normal, hover, pressed, disabled and keyboard-focus states. Primary buttons share a Theme type variation rather than individual styling.
+`resources/sandbox_theme.tres` owns shared fonts, colors, spacing, control states, and type variations. Body text uses Nunito Sans; the logo uses Dimitri. Font resources and license notices live under `assets/font/`. Inspect the Theme for current numeric values rather than maintaining a second token list here.
 
-## Layouts and workflows
+Compose static UI in editable `scenes/ui/*.tscn` scenes with Controls and Containers. Anchors position outer panels; Containers own internal sizing. Use size flags, minimum sizes, scrolling, and contextual visibility for content growth. Local layout dimensions are valid; ordinary viewport-position calculations and Container overrides are not. World-anchored wiring handles use 3D projection.
 
-- Main menu: unboxed left navigation around the animated real-3D showcase, with Campaign emphasized, Sandbox, saves, examples, Community puzzles, Puzzle Editor, settings and a separated Quit action.
-- Build: separate content-sized file/history and test/menu islands. A bottom-left library uses recognizable model thumbnails, search and categories for larger catalogs, and a compact one-column layout for single-piece inventories. Bottom contextual strips expose placement helpers and selection actions. Drag selected pieces directly. The right inspector appears only for configurable single pieces; group actions live in the selection strip. Temporary status and Introduction hints occupy bounded contextual cards.
-- Bounded numeric piece settings use the shared `setting_slider.tscn`: live value and units above the slider, minimum and maximum below. Dragging updates the displayed number and commits one configuration/history change on release; arrow keys retain the setting's step size. Authoring limits and inventory counts remain numeric fields.
-- Simulation: hide the library and inspector, emphasize test state and pause/restart/return controls. Preserve camera navigation. No world editing.
-- Track browser: one modal list with load, rename and confirmed deletion. Empty state explains how to create a save. Examples use the same browser.
-- Settings: audio levels, display/graphics options, camera controls, rebindable keyboard shortcuts, and restore defaults. Saved native controls in a scrollable, tabbed modal with predictable focus and Escape behavior.
-- Campaign: horizontal chapter navigation, optional Introduction, completion/lock symbols and a compact empty state. Objectives describe the outcome; Introduction hints appear only when useful. Campaign menus expose campaign actions.
-- Puzzle Editor: a right-side authoring drawer leaves the world editable. Its five-page navigation uses a vertical rail. Advanced setup metadata is disclosed separately. Publishing shows the existing player-test, saved-solution and current-validation requirements. Player authoring exposes local publication and JSON sharing; project authoring additionally exposes a destination selector and campaign registration. All scenery placement uses registered pieces; there is no scene-file placement control. The shared header exposes Test as player.
-- Placement: blue preview for isolated grid placement, mint for connector alignment, coral for physical rejection; pair these with textual instructions and a connector target marker. Selection uses gold. Rotation remains deliberate rather than changing automatically during snapping.
+## Workflows
 
-At 1280×720, secondary controls collapse and the library can retract; typography remains readable. Containers own internal sizing; anchors own viewport-relative outer panels. The world must receive no placement clicks through interface panels or modals. No shortcuts operate while a text field is focused.
+- Main menu: navigation beside the showcase, with Campaign prominent and secondary actions quieter.
+- Building: separate file/history and test/menu islands; a collapsible toolbox with catalog thumbnails, search, and categories; contextual placement/selection controls. Keep filters and scroll state while browsing. Small inventories should not create tall empty panels.
+- Inspector: settings for a configurable single piece, player permissions during authoring, and connection counts. Group operations belong in the selection controls. Use shared numeric-setting widgets to commit one history change after a slider drag.
+- Wiring: Connect edits relationships; Wires independently displays them while normal building continues. Presentation uses the existing port contract.
+- Simulation: hide editing controls and expose pause, reset, and camera-follow actions. Keep navigation available.
+- Puzzle Editor: a right-side drawer with Setup, Inventory, Boundaries, Objectives, and Publish pages. Object edits stay in the shared world/inspector. Publishing exposes actual test/solution/validation requirements.
+- Browsers and dialogs: one clear title, focus entry/restoration, Escape behavior, scrolling, and blocked world input. Actions reflect the current context; campaign menus do not offer personal-track management.
 
-## Reviewing changes
+Player copy should be short and specific. Objectives state outcomes; contextual Introduction hints teach tools. Avoid repeated titles, internal state terms, dense shortcut prose, and unnecessary decimal precision. Preserve readable type and comfortable interaction targets rather than shrinking the whole interface.
 
-Review affected screens at 1280×720, 1600×900 and 1920×1080. Check clipping, scrolling, text readability, focus and input reaching the world. Exercise the affected building workflow through editing, undo/redo, test/reset and save/reopen. Keep reusable architecture rules in [Architecture](ARCHITECTURE.md); inspect current styles in the Theme editor.
+## Review
+
+Review affected screens primarily at 1920×1080. Test additional window sizes when the change concerns resizing, clipping, or layout; routine changes do not need repeated three-resolution screenshot passes. Check focus, scrolling, pointer blocking, and the affected workflow. Report visual limitations honestly. Physics and persistence verification belong to their owning systems; screenshots do not establish those behaviors.
