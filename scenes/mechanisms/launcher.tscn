@@ -1,24 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d08p4i3g3v4hb"]
 
-[ext_resource type="Script" path="res://scripts/mechanisms/launcher.gd" id="Script"]
-
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
+[ext_resource type="Script" uid="uid://cnbkhcrhsub6r" path="res://scripts/mechanisms/launcher.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/straight.tres" id="TrackShape"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_strength"]
 script = ExtResource("Setting")
 key = &"strength"
-label = "Added speed"
-description = "Launch speed added (m/s)"
+label = "Launch speed"
+description = "Output speed (m/s); replaces incoming velocity and spin"
 default_number = 4.0
 minimum = 0.5
 maximum = 8.0
-step = 0.1
 unit = "m/s"
-
 
 [sub_resource type="Resource" id="Setting_angle"]
 script = ExtResource("Setting")
@@ -26,11 +21,9 @@ key = &"angle"
 label = "Launch angle"
 description = "Launch angle (degrees)"
 default_number = 25.0
-minimum = 0.0
 maximum = 65.0
 step = 1.0
 unit = "°"
-
 
 [sub_resource type="Resource" id="Setting_enabled"]
 script = ExtResource("Setting")
@@ -39,14 +32,11 @@ label = "Enabled"
 kind = 1
 default_flag = true
 
-
 [sub_resource type="Resource" id="Setting_external"]
 script = ExtResource("Setting")
 key = &"external"
 label = "Wait for Fire trigger"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="Resource" id="Setting_auto_rearm"]
 script = ExtResource("Setting")
@@ -54,7 +44,6 @@ key = &"auto_rearm"
 label = "Automatically rearm"
 kind = 1
 default_flag = true
-
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
@@ -64,17 +53,17 @@ bounce = 0.02
 resource_local_to_scene = true
 size = Vector3(0.5, 0.65, 0.1)
 
+[sub_resource type="PhysicsMaterial" id="LoadingStopPhysics"]
+friction = 0.05
+
+[sub_resource type="BoxShape3D" id="LoadingStopShape"]
+size = Vector3(0.48, 0.55, 0.1)
+
 [sub_resource type="StandardMaterial3D" id="LoadingStopMaterial"]
 resource_local_to_scene = true
 albedo_color = Color(0.5019608, 0.7254902, 0.6862745, 1)
 
 [sub_resource type="BoxMesh" id="LoadingStopMesh"]
-size = Vector3(0.48, 0.55, 0.1)
-
-[sub_resource type="PhysicsMaterial" id="LoadingStopPhysics"]
-friction = 0.05
-
-[sub_resource type="BoxShape3D" id="LoadingStopShape"]
 size = Vector3(0.48, 0.55, 0.1)
 
 [sub_resource type="StandardMaterial3D" id="ArrowMaterial"]
@@ -84,50 +73,128 @@ albedo_color = Color(1, 0.7764706, 0.427451, 1)
 [sub_resource type="BoxMesh" id="ArrowMesh"]
 size = Vector3(0.08, 0.08, 0.6)
 
-[node name="Launcher" type="Node3D" node_paths=PackedStringArray("area", "loading_stop", "arrow")]
+[sub_resource type="Animation" id="Armed"]
+resource_name = "armed"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow/Handle:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Fire"]
+resource_name = "fire"
+length = 0.12
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow/Handle:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.07, 0.12),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -0.9, -0.9]
+}
+
+[sub_resource type="Animation" id="Rearm"]
+resource_name = "rearm"
+length = 0.38
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow/Handle:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.38),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-0.9, 0.0]
+}
+
+[sub_resource type="Animation" id="Unarmed"]
+resource_name = "unarmed"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow/Handle:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.9]
+}
+
+[sub_resource type="AnimationLibrary" id="HandleAnimations"]
+_data = {
+&"armed": SubResource("Armed"),
+&"fire": SubResource("Fire"),
+&"rearm": SubResource("Rearm"),
+&"unarmed": SubResource("Unarmed")
+}
+
+[node name="Launcher" type="Node3D" unique_id=24537666 node_paths=PackedStringArray("area", "loading_stop", "arrow", "handle_animation")]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_strength"), SubResource("Setting_angle"), SubResource("Setting_enabled"), SubResource("Setting_external"), SubResource("Setting_auto_rearm")])
 area = NodePath("Detection")
 loading_stop = NodePath("LoadingStop")
 arrow = NodePath("Arrow")
+handle_animation = NodePath("HandleAnimation")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_strength"), SubResource("Setting_angle"), SubResource("Setting_enabled"), SubResource("Setting_external"), SubResource("Setting_auto_rearm")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("TrackPhysics")
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=1358554778]
 collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Model" parent="Track" unique_id=729714436 instance=ExtResource("Model")]
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=950702499]
 shape = ExtResource("TrackShape")
 
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.55, -0.55)
+[node name="Detection" type="Area3D" parent="." unique_id=1089038142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.55)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=1388842911]
 shape = SubResource("DetectionShape")
 
-[node name="LoadingStop" type="AnimatableBody3D" parent="."]
-position = Vector3(0, 1.25, -0.8)
-physics_material_override = SubResource("LoadingStopPhysics")
-collision_layer = 1
+[node name="LoadingStop" type="AnimatableBody3D" parent="." unique_id=325010571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.8)
 collision_mask = 2
+physics_material_override = SubResource("LoadingStopPhysics")
 sync_to_physics = false
 
-[node name="Collision" type="CollisionShape3D" parent="LoadingStop"]
+[node name="Collision" type="CollisionShape3D" parent="LoadingStop" unique_id=359819619]
 shape = SubResource("LoadingStopShape")
 
-[node name="Visual" type="MeshInstance3D" parent="LoadingStop"]
-mesh = SubResource("LoadingStopMesh")
+[node name="Visual" type="MeshInstance3D" parent="LoadingStop" unique_id=1308891056]
 material_override = SubResource("LoadingStopMaterial")
+mesh = SubResource("LoadingStopMesh")
 
-[node name="Arrow" type="MeshInstance3D" parent="."]
-position = Vector3(0.4, 0.65, -0.05)
-rotation = Vector3(-0.436332313, 0, 0)
-mesh = SubResource("ArrowMesh")
+[node name="Arrow" type="Node3D" parent="." unique_id=190592799]
+transform = Transform3D(1, 0, 0, 0, 0.90630776, -0.42261827, 0, 0.42261827, 0.90630776, 0.4, 0.65, 0.25)
+
+[node name="Handle" type="Node3D" parent="Arrow" unique_id=562285382]
+
+[node name="Visual" type="MeshInstance3D" parent="Arrow/Handle" unique_id=828588764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
 material_override = SubResource("ArrowMaterial")
+mesh = SubResource("ArrowMesh")
+
+[node name="HandleAnimation" type="AnimationPlayer" parent="." unique_id=1013043616]
+callback_mode_process = 2
+libraries/ = SubResource("HandleAnimations")
 
 [editable path="Track/Model"]

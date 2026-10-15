@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://b5jg7djlew457"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/building-detail-pipe.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/detail-pipe.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_hl617"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://xsldtpcwolth" path="res://scenes/environment/building-detail-pipe.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cayaoa1yis8uv" path="res://assets/models/environment/kenney_building/Previews/detail-pipe.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -15,5 +16,3 @@ thumbnail = ExtResource("Preview")
 bounds = AABB(-0.21708, 0, -0.21708, 0.43416, 0.42768, 0.43416)
 behavior = "decoration"
 collision_enabled = false
-native_collision = false
-collision_solids = Array[AABB]([])

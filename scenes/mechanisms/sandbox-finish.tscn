@@ -1,13 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://s4xo1afmjed6"]
 
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/end-square.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://b0fciajfgugtj" path="res://assets/models/build_pieces/GLB format/banner-high.glb" id="Banner"]
+[ext_resource type="Script" uid="uid://bv6dcrnxi6tmh" path="res://scripts/mechanisms/marble_collector.gd" id="Behavior"]
+[ext_resource type="PackedScene" uid="uid://nj1mshutedu8" path="res://assets/models/build_pieces/GLB format/end-square.glb" id="Model"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/end-square.tres" id="Shape"]
-
-[ext_resource type="Script" path="res://scripts/mechanisms/marble_collector.gd" id="Behavior"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/banner-high.glb" id="Banner"]
 
 [sub_resource type="Resource" id="DisplayLabel"]
 script = ExtResource("Setting")
@@ -32,48 +29,45 @@ outer_radius = 0.29
 [sub_resource type="BoxShape3D" id="DetectionShape"]
 size = Vector3(0.7, 0.7, 0.7)
 
-[node name="Collector" type="Node3D" node_paths=PackedStringArray("area", "display_label")]
+[node name="Collector" type="Node3D" unique_id=1912991248 node_paths=PackedStringArray("area", "display_label")]
 script = ExtResource("Behavior")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("DisplayLabel")])
 area = NodePath("Detection")
 display_label = NodePath("Track/Model/BillboardLabel3D")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("DisplayLabel")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=997986187]
 collision_mask = 2
 physics_material_override = SubResource("Physics")
 
+[node name="Model" parent="Track" unique_id=1712413475 instance=ExtResource("Model")]
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Banner" parent="Track/Model" unique_id=197855970 instance=ExtResource("Banner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44176403, 0)
 
-[node name="Banner" parent="Track/Model" instance=ExtResource("Banner")]
-position = Vector3(0, 0.44176403, 0)
-
-[node name="FinishLabel" type="Label3D" parent="Track/Model"]
+[node name="FinishLabel" type="Label3D" parent="Track/Model" unique_id=1331958431]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.3, 0)
 no_depth_test = true
 text = "Finish"
 
-[node name="BillboardLabel3D" type="Label3D" parent="Track/Model"]
-position = Vector3(0, 1.6, 0)
+[node name="BillboardLabel3D" type="Label3D" parent="Track/Model" unique_id=339625643]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 visible = false
 billboard = 1
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=2096580952]
 shape = ExtResource("Shape")
 
-[node name="Marker" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.72, 0)
-mesh = SubResource("MarkerMesh")
+[node name="Marker" type="MeshInstance3D" parent="." unique_id=1109883859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0)
 material_override = SubResource("MarkerMaterial")
+mesh = SubResource("MarkerMesh")
 
-[editable path="Track/Model"]
-
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.5, 0)
+[node name="Detection" type="Area3D" parent="." unique_id=1905402671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=557234453]
 shape = SubResource("DetectionShape")
+
+[editable path="Track/Model"]

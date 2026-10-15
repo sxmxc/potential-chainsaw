@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bmelogicand01"]
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/mechanisms/logic/and.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://resources/thumbnails/logic-and.png" id="Preview"]
+
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_jwx81"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://7eox2vqdiqpw" path="res://scenes/mechanisms/logic/and.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cd5ndgcu68cru" path="res://resources/thumbnails/logic-and.png" id="Preview"]
+
 [resource]
 script = ExtResource("Definition")
 id = &"logic-and"
@@ -12,8 +15,8 @@ usage_hint = "Point at a machine surface to mount. R rotates; Connect wires comp
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.28, 0.004, -0.22, 0.56, 0.149, 0.44)
-collision_solids = Array[AABB]([AABB(-0.28, 0.004, -0.22, 0.56, 0.149, 0.44)])
 behavior = "logic"
-surface_mounted = true
-native_collision = true
+collision_solids = Array[AABB]([AABB(-0.28, 0.004, -0.22, 0.56, 0.149, 0.44)])
 collision_enabled = false
+native_collision = true
+surface_mounted = true

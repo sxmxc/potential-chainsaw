@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://cqrvtgdlstrx8"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-conveyor-long.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/conveyor-long.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_crbfg"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://0l4y6qd8448u" path="res://scenes/environment/factory-conveyor-long.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cojcmnubqh0m" path="res://assets/models/environment/kenney_factory/Previews/conveyor-long.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,7 @@ category = "Props"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors. Visual machinery only; no motor, transport, or signal behavior."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-1.0, 0, -0.5, 2.0, 0.4, 1.0)
+bounds = AABB(-1, 0, -0.5, 2, 0.4, 1)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-1, 0, -0.5, 2, 0.1, 1), AABB(-1, 0.1, -0.5, 2, 0.3, 0.9), AABB(-1, 0.1, 0.4, 0.3, 0.3, 0.1), AABB(-0.7, 0.2, 0.4, 1.7, 0.2, 0.1), AABB(0.7, 0.1, 0.4, 0.3, 0.1, 0.1)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-1.0, 0, -0.5, 2.0, 0.1, 1.0), AABB(-1.0, 0.1, -0.5, 2.0, 0.3, 0.9), AABB(-1.0, 0.1, 0.4, 0.3, 0.3, 0.1), AABB(-0.7, 0.2, 0.4, 1.7, 0.2, 0.1), AABB(0.7, 0.1, 0.4, 0.3, 0.1, 0.1)])

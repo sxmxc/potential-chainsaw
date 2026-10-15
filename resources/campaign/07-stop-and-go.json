@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Hold the marble, then release it with a timed gate.",
   "difficulty": "Workshop",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "selected",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "stopper",
+      "text": "Select the gate to set its opening time."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "stopper",
+      "text": "Set Timed opening to about 2 seconds, then press Run."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Select the gate and set Timed opening to about 2 seconds. The fan keeps light pressure on the waiting marble."
   ],
@@ -24,7 +51,6 @@
       "type": "deliver"
     }
   ],
-  "order": 7.0,
   "permissions": {
     "stopper": {
       "config_keys": [
@@ -59,7 +85,7 @@
         0.0,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -70,7 +96,7 @@
         0.0,
         1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "approach"
     },
     {
@@ -83,7 +109,7 @@
         0.0,
         0.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "stopper"
     },
     {
@@ -94,7 +120,7 @@
         0.0,
         -1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "exit"
     },
     {
@@ -105,7 +131,7 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     },
     {
@@ -119,15 +145,12 @@
         0.0,
         3.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "air"
     }
   ],
-  "prerequisites": [
-    "campaign-06"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -207,10 +230,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "63b681f8d123c5f00621f5a8ae4a0e54e4d92557cc78979f9a7d5baa08066b1e",
+    "fingerprint": "0eb5aa4ebb8805f08d7d4daa7404c7623409d29f09174d3785bdf3774332c2f7",
     "physics_success": true,
-    "seconds": 6.80833333333346,
-    "tested_at": "2026-10-12T03:49:56"
+    "seconds": 4.78333333333336,
+    "tested_at": "2026-10-15T21:41:04"
   },
-  "version": 1.0
+  "version": 3.0
 }

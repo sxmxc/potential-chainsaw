@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://816wp88y5yxp"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/guidance_editor.tscn" id="GuidanceEditor"]
 [ext_resource type="Script" uid="uid://d2s5cf04l5n1y" path="res://scripts/ui/puzzle_authoring.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/guidance_editor.tscn" id="GuidanceEditor"]
 
 [node name="PuzzleAuthoring" type="PanelContainer" unique_id=1619636925]
 visible = false
@@ -28,8 +27,8 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PanelTitle"
-autowrap_mode = 3
 text = "Puzzle Editor"
+autowrap_mode = 3
 
 [node name="Close" type="Button" parent="Surface/Contents/Header" unique_id=361899213]
 unique_name_in_owner = true
@@ -47,7 +46,6 @@ size_flags_vertical = 3
 [node name="Navigation" type="HFlowContainer" parent="Surface/Contents/Body" unique_id=1244611106]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 0)
 
 [node name="Setup" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1991393340]
 layout_mode = 2
@@ -90,9 +88,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_type_variation = &"SettingsTabs"
 current_tab = 0
 tabs_visible = false
-theme_type_variation = &"SettingsTabs"
 
 [node name="Settings" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=1424370597]
 layout_mode = 2
@@ -127,11 +125,11 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 wrap_mode = 1
 
-[node name="CreatorLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+[node name="CreatorLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1047315129]
 layout_mode = 2
 text = "Creator"
 
-[node name="Creator" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+[node name="Creator" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=995527379]
 unique_name_in_owner = true
 layout_mode = 2
 max_length = 80
@@ -146,19 +144,6 @@ text = "Rules and campaign settings"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-
-[node name="HintLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=744687803]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Tutorial guidance"
-autowrap_mode = 3
-
-[node name="Hint" type="TextEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1298895389]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-wrap_mode = 1
 
 [node name="ChapterIdLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1146824171]
 unique_name_in_owner = true
@@ -236,8 +221,8 @@ popup/item_2/id = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Time available (seconds)"
+autowrap_mode = 3
 
 [node name="TimeLimit" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1633161861]
 unique_name_in_owner = true
@@ -299,8 +284,8 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "Set starting view from camera"
+clip_text = true
 
 [node name="CameraStatus" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1158161579]
 unique_name_in_owner = true
@@ -323,32 +308,30 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Click pieces in the Pieces browser to add them to the player’s toolbox. Change quantities here; zero removes a piece."
+autowrap_mode = 3
 
 [node name="InventoryList" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Inventory/Fields" unique_id=1023858971]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 0)
-size_flags_vertical = 1
 
-
-[node name="InventorySelection" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields"]
+[node name="InventorySelection" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields" unique_id=932589182]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PanelHeading"
 autowrap_mode = 3
 
-[node name="InventoryRulesToggle" type="Button" parent="Surface/Contents/Body/Tabs/Inventory/Fields"]
+[node name="InventoryRulesToggle" type="Button" parent="Surface/Contents/Body/Tabs/Inventory/Fields" unique_id=772791136]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Mechanism restrictions"
 theme_type_variation = &"QuietButton"
+text = "Mechanism restrictions"
 
-[node name="InventoryRules" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Inventory/Fields"]
+[node name="InventoryRules" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Inventory/Fields" unique_id=1315152457]
 unique_name_in_owner = true
-layout_mode = 2
 visible = false
+layout_mode = 2
+
 [node name="InventorySetting" type="OptionButton" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=3068067]
 unique_name_in_owner = true
 layout_mode = 2
@@ -358,8 +341,8 @@ fit_to_longest_item = false
 [node name="InventoryMinLabel" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=904579323]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Minimum allowed value"
+autowrap_mode = 3
 
 [node name="InventoryMin" type="SpinBox" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=1824415187]
 unique_name_in_owner = true
@@ -370,8 +353,8 @@ step = 0.1
 [node name="InventoryMaxLabel" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=1385210238]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Maximum allowed value"
+autowrap_mode = 3
 
 [node name="InventoryMax" type="SpinBox" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=111564916]
 unique_name_in_owner = true
@@ -383,15 +366,15 @@ step = 0.1
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "Save restriction"
+clip_text = true
 
 [node name="ClearInventoryLimits" type="Button" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=234766387]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "Clear restrictions for this piece"
+clip_text = true
 
 [node name="Boundaries" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=980557070]
 visible = false
@@ -407,22 +390,22 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Select a region in the world or below. Drag it to move, or draw new corners to resize. Gold marks the selection; coral regions prohibit building."
+autowrap_mode = 3
 
 [node name="DrawBuild" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=478174631]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "Redraw build area"
+clip_text = true
 
-
-[node name="RegionSummary" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields"]
+[node name="RegionSummary" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=481361048]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PanelHeading"
 autowrap_mode = 3
+
 [node name="MinHeightLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1997980899]
 unique_name_in_owner = true
 layout_mode = 2
@@ -452,25 +435,25 @@ max_value = 1000.0
 step = 0.125
 value = 0.5
 
-[node name="RegionPrecision" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields"]
+[node name="RegionPrecision" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1227223109]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Exact dimensions"
 
-[node name="RegionDimensions" type="GridContainer" parent="Surface/Contents/Body/Tabs/Boundaries/Fields"]
+[node name="RegionDimensions" type="GridContainer" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1189440697]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 columns = 2
 
-[node name="XLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="XLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=806386912]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"SmallMutedLabel"
 text = "Origin X (m)"
 
-[node name="RegionX" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="RegionX" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=1468563889]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -478,74 +461,76 @@ min_value = -1000.0
 max_value = 1000.0
 step = 0.125
 
-[node name="ZLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="ZLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=939366513]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Origin Z (m)"
 
-[node name="RegionZ" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="RegionZ" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=457584704]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
 step = 0.125
 
-[node name="WidthLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="WidthLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=340638229]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Width (m)"
 
-[node name="RegionWidth" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="RegionWidth" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=2072370310]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 1.0
 max_value = 2000.0
 step = 0.125
+value = 1.0
 
-[node name="DepthLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="DepthLabel" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=1772920915]
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Depth (m)"
 
-[node name="RegionDepth" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions"]
+[node name="RegionDepth" type="SpinBox" parent="Surface/Contents/Body/Tabs/Boundaries/Fields/RegionDimensions" unique_id=1901278012]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 1.0
 max_value = 2000.0
 step = 0.125
+value = 1.0
 
 [node name="DrawZone" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=41872508]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "+ Restricted area"
+clip_text = true
 
 [node name="ClearZones" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1404660171]
 unique_name_in_owner = true
 layout_mode = 2
-clip_text = true
-text = "Remove all restricted regions"
 theme_type_variation = &"QuietButton"
+text = "Remove all restricted regions"
+clip_text = true
 
 [node name="RestrictedList" type="ItemList" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1298652702]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
 
 [node name="ModifyZone" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=925823303]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-clip_text = true
 text = "Redraw selected area"
+clip_text = true
 
 [node name="RemoveZone" type="Button" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=509377831]
 unique_name_in_owner = true
 layout_mode = 2
-clip_text = true
-text = "Remove selected area"
 theme_type_variation = &"QuietButton"
+text = "Remove selected area"
+clip_text = true
 
 [node name="Objectives" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=368207551]
 visible = false
@@ -557,25 +542,24 @@ metadata/_tab_index = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-
-[node name="ObjectivesHelp" type="Label" parent="Surface/Contents/Body/Tabs/Objectives/Fields"]
+[node name="ObjectivesHelp" type="Label" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=1847745242]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Select a goal to edit it. Select a collector or mechanism in the world to choose its target."
 autowrap_mode = 3
+
 [node name="ObjectiveList" type="ItemList" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=1140400992]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 100)
-size_flags_vertical = 1
+layout_mode = 2
 
-
-[node name="NewObjective" type="Button" parent="Surface/Contents/Body/Tabs/Objectives/Fields"]
+[node name="NewObjective" type="Button" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=983195921]
 unique_name_in_owner = true
 layout_mode = 2
-text = "+ New goal"
 theme_type_variation = &"QuietButton"
+text = "+ New goal"
+
 [node name="ObjectiveType" type="OptionButton" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=1932406357]
 unique_name_in_owner = true
 layout_mode = 2
@@ -592,8 +576,8 @@ popup/item_1/id = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-autowrap_mode = 3
 text = "Destination · select here or in the world"
+autowrap_mode = 3
 
 [node name="ObjectiveTarget" type="OptionButton" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=548102714]
 unique_name_in_owner = true
@@ -656,20 +640,19 @@ step = 0.5
 [node name="AddObjective" type="Button" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=282480943]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "Add objective"
 clip_text = true
-theme_type_variation = &"PrimaryButton"
 
 [node name="RemoveObjective" type="Button" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=557957017]
 unique_name_in_owner = true
 layout_mode = 2
-clip_text = true
-text = "Remove selected goal"
 theme_type_variation = &"QuietButton"
+text = "Remove selected goal"
+clip_text = true
 
-[node name="GuidanceEditor" parent="Surface/Contents/Body/Tabs/Objectives/Fields" instance=ExtResource("GuidanceEditor")]
+[node name="GuidanceEditor" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=1532397718 instance=ExtResource("GuidanceEditor")]
 unique_name_in_owner = true
-layout_mode = 2
 
 [node name="Publish" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=166026776]
 visible = false
@@ -681,39 +664,39 @@ metadata/_tab_index = 4
 layout_mode = 2
 size_flags_horizontal = 3
 
-
-[node name="DestinationLabel" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="DestinationLabel" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=1962847081]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Publish to"
 
-[node name="Destination" type="OptionButton" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="Destination" type="OptionButton" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=947535803]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "Community library"
 popup/item_0/id = 0
 popup/item_1/text = "Official campaign"
 popup/item_1/id = 1
 
-[node name="Readiness" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="Readiness" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=1153149388]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
 autowrap_mode = 3
 
-[node name="NextStep" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="NextStep" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=147395675]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
 
-[node name="NextAction" type="Button" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="NextAction" type="Button" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=2021885998]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "Test as player"
+
 [node name="TestStatus" type="Label" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=2043475286]
 unique_name_in_owner = true
 layout_mode = 2
@@ -736,11 +719,9 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-text = ""
 autowrap_mode = 3
 
-
-[node name="DraftActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="DraftActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=1985354451]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -762,16 +743,15 @@ layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Validate"
 
-
-[node name="ShareActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="ShareActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=1794248097]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PublishOnline" type="Button" parent="Surface/Contents/Body/Tabs/Publish/Fields/ShareActions"]
+[node name="PublishOnline" type="Button" parent="Surface/Contents/Body/Tabs/Publish/Fields/ShareActions" unique_id=266627717]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Publish online"
 theme_type_variation = &"SecondaryButton"
+text = "Publish online"
 
 [node name="Export" type="Button" parent="Surface/Contents/Body/Tabs/Publish/Fields/ShareActions" unique_id=403388515]
 unique_name_in_owner = true
@@ -779,8 +759,7 @@ layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Export puzzle"
 
-
-[node name="FileActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields"]
+[node name="FileActions" type="HFlowContainer" parent="Surface/Contents/Body/Tabs/Publish/Fields" unique_id=1135769943]
 unique_name_in_owner = true
 layout_mode = 2
 

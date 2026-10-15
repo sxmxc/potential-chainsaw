@@ -41,11 +41,11 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "Resume"
 
-
-[node name="ContextActions" type="VBoxContainer" parent="Surface/Contents"]
+[node name="ContextActions" type="VBoxContainer" parent="Surface/Contents" unique_id=724113582]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CompactVBox"
+
 [node name="Restart" type="Button" parent="Surface/Contents/ContextActions" unique_id=971778576]
 unique_name_in_owner = true
 visible = false
@@ -130,16 +130,15 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"QuietButton"
 text = "Example tracks"
 
-
-[node name="NavigationDivider" type="HSeparator" parent="Surface/Contents"]
+[node name="NavigationDivider" type="HSeparator" parent="Surface/Contents" unique_id=1934460804]
 unique_name_in_owner = true
 layout_mode = 2
 
-
-[node name="NavigationActions" type="VBoxContainer" parent="Surface/Contents"]
+[node name="NavigationActions" type="VBoxContainer" parent="Surface/Contents" unique_id=1908642636]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CompactVBox"
+
 [node name="Settings" type="Button" parent="Surface/Contents/NavigationActions" unique_id=235832359]
 unique_name_in_owner = true
 layout_mode = 2
@@ -158,5 +157,5 @@ text = "Main menu"
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Quit"
 theme_type_variation = &"DangerButton"
+text = "Quit"

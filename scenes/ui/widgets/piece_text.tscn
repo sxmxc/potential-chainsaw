@@ -1,14 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://npyhivu5smxe"]
 
-[node name="PieceText" type="HBoxContainer"]
-layout_mode = 2
+[node name="PieceText" type="HBoxContainer" unique_id=2388438]
 
-[node name="Caption" type="Label" parent="."]
+[node name="Caption" type="Label" parent="." unique_id=1756621574]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Value" type="LineEdit" parent="."]
+[node name="Value" type="LineEdit" parent="." unique_id=1926281672]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(132, 44)
 layout_mode = 2

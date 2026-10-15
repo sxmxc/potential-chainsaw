@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://4k6s2x6iranl"]
 
-[ext_resource type="Script" path="res://scripts/ui/construction_preview.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dk153pcdu7kcj" path="res://scripts/ui/construction_preview.gd" id="Script"]
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -10,7 +10,7 @@ ambient_light_color = Color(0.8, 0.91, 1, 1)
 ambient_light_energy = 0.8
 tonemap_mode = 2
 
-[node name="ConstructionPreview" type="SubViewportContainer"]
+[node name="ConstructionPreview" type="SubViewportContainer" unique_id=1738624470]
 custom_minimum_size = Vector2(300, 210)
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -18,25 +18,26 @@ mouse_filter = 2
 stretch = true
 script = ExtResource("Script")
 
-[node name="PreviewViewport" type="SubViewport" parent="."]
+[node name="PreviewViewport" type="SubViewport" parent="." unique_id=343438221]
 unique_name_in_owner = true
 own_world_3d = true
-size = Vector2i(480, 300)
-render_target_update_mode = 1
+handle_input_locally = false
 msaa_3d = 2
+size = Vector2i(300, 210)
+render_target_update_mode = 4
 
-[node name="Environment" type="WorldEnvironment" parent="PreviewViewport"]
+[node name="Environment" type="WorldEnvironment" parent="PreviewViewport" unique_id=659844903]
 environment = SubResource("Environment")
 
-[node name="Light" type="DirectionalLight3D" parent="PreviewViewport"]
-rotation_degrees = Vector3(-55, -30, 0)
+[node name="Light" type="DirectionalLight3D" parent="PreviewViewport" unique_id=1374813966]
+transform = Transform3D(0.8660254, 0.40957603, -0.28678823, 0, 0.57357645, 0.81915206, 0.5, -0.7094065, 0.49673176, 0, 0, 0)
 light_energy = 1.5
 
-[node name="Models" type="Node3D" parent="PreviewViewport"]
-physics_interpolation_mode = 2
+[node name="Models" type="Node3D" parent="PreviewViewport" unique_id=1712325800]
 unique_name_in_owner = true
+physics_interpolation_mode = 2
 
-[node name="PreviewCamera" type="Camera3D" parent="PreviewViewport"]
+[node name="PreviewCamera" type="Camera3D" parent="PreviewViewport" unique_id=1299474714]
 unique_name_in_owner = true
 physics_interpolation_mode = 2
 projection = 1

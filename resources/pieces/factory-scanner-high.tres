@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://chg3cewa5bv0j"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-scanner-high.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/scanner-high.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_wbl7w"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://bijossu6j580g" path="res://scenes/environment/factory-scanner-high.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://bsbkwpvoiiojr" path="res://assets/models/environment/kenney_factory/Previews/scanner-high.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -14,6 +15,5 @@ model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.242, 0, -0.887, 0.484, 1.27, 1.774)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-0.242, 0, -0.887, 0.484, 0.3, 0.4), AABB(-0.242, 0, 0.513, 0.484, 0.3, 0.374), AABB(-0.242, 0.3, -0.887, 0.4, 0.8, 0.3), AABB(-0.242, 0.3, 0.513, 0.4, 0.9, 0.3), AABB(-0.242, 0.9, -0.587, 0.484, 0.1, 0.3), AABB(-0.242, 0.9, -0.287, 0.4, 0.1, 0.8), AABB(-0.242, 1, -0.587, 0.484, 0.27, 0.1), AABB(-0.242, 1, -0.487, 0.1, 0.2, 1), AABB(-0.242, 1.1, -0.787, 0.4, 0.1, 0.2), AABB(-0.242, 1.2, -0.487, 0.484, 0.07, 0.2), AABB(-0.242, 1.2, 0.213, 0.484, 0.07, 0.3), AABB(-0.142, 1, -0.387, 0.384, 0.2, 0.1), AABB(-0.142, 1, -0.287, 0.3, 0.2, 0.6), AABB(-0.142, 1, 0.413, 0.384, 0.2, 0.1), AABB(-0.142, 1.1, -0.487, 0.384, 0.1, 0.1), AABB(-0.142, 1.1, 0.313, 0.384, 0.1, 0.1), AABB(-0.042, 0, 0.413, 0.1, 0.1, 0.1), AABB(0.058, 1, -0.487, 0.184, 0.1, 0.1), AABB(0.058, 1, 0.313, 0.184, 0.1, 0.1), AABB(0.158, 0.9, 0.213, 0.084, 0.1, 0.3), AABB(0.158, 1, 0.213, 0.084, 0.2, 0.1)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-0.242, 0, -0.887, 0.484, 0.3, 0.4), AABB(-0.242, 0, 0.513, 0.484, 0.3, 0.374), AABB(-0.242, 0.3, -0.887, 0.4, 0.8, 0.3), AABB(-0.242, 0.3, 0.513, 0.4, 0.9, 0.3), AABB(-0.242, 0.9, -0.587, 0.484, 0.1, 0.3), AABB(-0.242, 0.9, -0.287, 0.4, 0.1, 0.8), AABB(-0.242, 1.0, -0.587, 0.484, 0.27, 0.1), AABB(-0.242, 1.0, -0.487, 0.1, 0.2, 1.0), AABB(-0.242, 1.1, -0.787, 0.4, 0.1, 0.2), AABB(-0.242, 1.2, -0.487, 0.484, 0.07, 0.2), AABB(-0.242, 1.2, 0.213, 0.484, 0.07, 0.3), AABB(-0.142, 1.0, -0.387, 0.384, 0.2, 0.1), AABB(-0.142, 1.0, -0.287, 0.3, 0.2, 0.6), AABB(-0.142, 1.0, 0.413, 0.384, 0.2, 0.1), AABB(-0.142, 1.1, -0.487, 0.384, 0.1, 0.1), AABB(-0.142, 1.1, 0.313, 0.384, 0.1, 0.1), AABB(-0.042, 0, 0.413, 0.1, 0.1, 0.1), AABB(0.058, 1.0, -0.487, 0.184, 0.1, 0.1), AABB(0.058, 1.0, 0.313, 0.184, 0.1, 0.1), AABB(0.158, 0.9, 0.213, 0.084, 0.1, 0.3), AABB(0.158, 1.0, 0.213, 0.084, 0.2, 0.1)])

@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dolc1ejq1jg6t"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/cog-e.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://cg4cjbk44iqpq" path="res://assets/models/environment/kenney_factory/GLB format/cog-e.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=250879932]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0.15, 0)
+[node name="Visual" parent="." unique_id=206361927 instance=ExtResource("Model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)

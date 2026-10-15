@@ -11,6 +11,41 @@
   "camera": {},
   "description": "Lift, detect, release, and launch into the upper collector.",
   "difficulty": "Machine",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "connected",
+      "connector": 0.0,
+      "kind": "attention",
+      "target": "release",
+      "text": "Attach a 4 m Bucket Elevator here to reach the sensor."
+    },
+    {
+      "appear": "build",
+      "complete": "dismissed",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "detector",
+      "text": "Use Connect to link Entered to gate Open and launcher Fire."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "jump",
+      "text": "Add a landing track beyond the jump gap. Select the launcher to preview its arc, then press Run."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Add the 4 m elevator and a landing track. Link sensor Entered to gate Open and launcher Fire. Leave a one-cell jump gap."
   ],
@@ -27,7 +62,6 @@
       "type": "deliver"
     }
   ],
-  "order": 10.0,
   "permissions": {
     "detector": {
       "config_keys": [
@@ -70,7 +104,7 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "release"
     },
     {
@@ -83,7 +117,7 @@
         4.0,
         -2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "detector"
     },
     {
@@ -94,7 +128,7 @@
         4.0,
         -3.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "stopper"
     },
     {
@@ -109,7 +143,7 @@
         4.0,
         -4.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "jump"
     },
     {
@@ -120,15 +154,12 @@
         4.0,
         -7.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     }
   ],
-  "prerequisites": [
-    "campaign-09"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {},
@@ -232,10 +263,10 @@
   "time_limit": 75.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "f8d6bf6f3b66cc51754f6b75a8ebf25ddb99e58a128004d1742d02c181a83046",
+    "fingerprint": "15dbb3d7a8e6675f8df6bccce757d1fe0f26e8a5b0f8502751bd1c8038e00b1c",
     "physics_success": true,
-    "seconds": 21.4749999999994,
-    "tested_at": "2026-10-12T03:50:17"
+    "seconds": 12.5083333333333,
+    "tested_at": "2026-10-15T21:41:27"
   },
-  "version": 1.0
+  "version": 3.0
 }

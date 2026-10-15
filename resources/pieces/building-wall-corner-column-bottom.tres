@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://cjef8pw0xakog"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/building-wall-corner-column-bottom.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/wall-corner-column-bottom.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_g2elj"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://bnd5c7h4nqgl1" path="res://scenes/environment/building-wall-corner-column-bottom.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://dwif3bfd7lr0k" path="res://assets/models/environment/kenney_building/Previews/wall-corner-column-bottom.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,7 @@ category = "Architecture"
 usage_hint = "A physical building module. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-1.0, 0, -1.0, 2.125, 2.4, 2.125)
+bounds = AABB(-1, 0, -1, 2.125, 2.4, 2.125)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-1, 0, 0.8, 2.125, 0.1, 0.2), AABB(-1, 0.1, 0.8, 2, 2.3, 0.2), AABB(0.7, 0, 1, 0.425, 0.4, 0.1), AABB(0.8, 0, -1, 0.2, 2.4, 1.8), AABB(0.8, 0, 1.1, 0.3, 0.4, 0.025), AABB(0.8, 0.4, 1, 0.3, 2, 0.1), AABB(1, 0, 0.7, 0.1, 0.4, 0.1), AABB(1, 0.3, 0.8, 0.125, 0.1, 0.2), AABB(1, 0.4, 0.8, 0.1, 2, 0.2), AABB(1.1, 0.1, 0.8, 0.025, 0.2, 0.2)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-1.0, 0, 0.8, 2.125, 0.1, 0.2), AABB(-1.0, 0.1, 0.8, 2.0, 2.3, 0.2), AABB(0.7, 0, 1.0, 0.425, 0.4, 0.1), AABB(0.8, 0, -1.0, 0.2, 2.4, 1.8), AABB(0.8, 0, 1.1, 0.3, 0.4, 0.025), AABB(0.8, 0.4, 1.0, 0.3, 2.0, 0.1), AABB(1.0, 0, 0.7, 0.1, 0.4, 0.1), AABB(1.0, 0.3, 0.8, 0.125, 0.1, 0.2), AABB(1.0, 0.4, 0.8, 0.1, 2.0, 0.2), AABB(1.1, 0.1, 0.8, 0.025, 0.2, 0.2)])

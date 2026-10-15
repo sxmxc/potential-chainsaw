@@ -1,22 +1,22 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://0hyt2dm67tcl"]
 
-[ext_resource type="Script" path="res://scripts/construction/construction_workspace.gd" id="Workspace"]
-[ext_resource type="PackedScene" path="res://scenes/world.tscn" id="World"]
-[ext_resource type="Script" path="res://scripts/construction/construction_session.gd" id="Session"]
-[ext_resource type="PackedScene" path="res://scenes/ui/workspace_hud.tscn" id="HUD"]
-[ext_resource type="Script" path="res://scripts/construction/world_guidance.gd" id="Guidance"]
+[ext_resource type="Script" uid="uid://ckfnvr65owpq2" path="res://scripts/construction/world_guidance.gd" id="Guidance"]
+[ext_resource type="PackedScene" uid="uid://c4if8edlanmt2" path="res://scenes/ui/workspace_hud.tscn" id="HUD"]
+[ext_resource type="Script" uid="uid://doo8dannse4ra" path="res://scripts/construction/construction_session.gd" id="Session"]
+[ext_resource type="Script" uid="uid://df86wlnv7dj1q" path="res://scripts/construction/construction_workspace.gd" id="Workspace"]
+[ext_resource type="PackedScene" uid="uid://50icefkc4yta" path="res://scenes/world.tscn" id="World"]
 
-[node name="ConstructionWorkspace" type="Node3D"]
+[node name="ConstructionWorkspace" type="Node3D" unique_id=1507531889]
 script = ExtResource("Workspace")
 
-[node name="World" parent="." instance=ExtResource("World")]
+[node name="World" parent="." unique_id=129058787 instance=ExtResource("World")]
 
-[node name="Session" type="Node" parent="."]
+[node name="Session" type="Node" parent="." unique_id=1749988761]
 script = ExtResource("Session")
 
-[node name="Guidance" type="Node3D" parent="."]
+[node name="Guidance" type="Node3D" parent="." unique_id=2140623358]
 script = ExtResource("Guidance")
 
-[node name="Interface" type="CanvasLayer" parent="."]
+[node name="Interface" type="CanvasLayer" parent="." unique_id=1869975123]
 
-[node name="HUD" parent="Interface" instance=ExtResource("HUD")]
+[node name="HUD" parent="Interface" unique_id=606175772 instance=ExtResource("HUD")]

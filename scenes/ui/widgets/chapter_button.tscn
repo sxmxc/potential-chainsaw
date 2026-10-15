@@ -31,7 +31,7 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
 
-[node name="Progress" type="ProgressBar" parent="Margin/Contents"]
+[node name="Progress" type="ProgressBar" parent="Margin/Contents" unique_id=914062292]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2

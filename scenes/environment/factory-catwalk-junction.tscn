@@ -1,21 +1,20 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bjordoyie4qym"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/catwalk-junction.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://do53sbdi53oxk" path="res://assets/models/environment/kenney_factory/GLB format/catwalk-junction.glb" id="Model"]
 [ext_resource type="Shape3D" path="res://scenes/environment/collision/factory-catwalk-junction.tres" id="Shape"]
 
 [sub_resource type="PhysicsMaterial" id="Material"]
 friction = 0.18
 bounce = 0.02
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1625732372]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0.147247, 0)
+[node name="Visual" parent="." unique_id=698676948 instance=ExtResource("Model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.147247, 0)
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=310155030]
 collision_mask = 2
 physics_material_override = SubResource("Material")
 
-[node name="Collision" type="CollisionShape3D" parent="Body"]
+[node name="Collision" type="CollisionShape3D" parent="Body" unique_id=525076267]
 shape = ExtResource("Shape")

@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dn7xsk6t6lpxw"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/building-wall-window-wide-square.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/wall-window-wide-square.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_l1vcm"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://ceq6cfjbyqp6y" path="res://scenes/environment/building-wall-window-wide-square.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cedc2n866cgv7" path="res://assets/models/environment/kenney_building/Previews/wall-window-wide-square.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,7 @@ category = "Architecture"
 usage_hint = "A physical building module. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-0.1, 0, -2.0, 0.2, 2.4, 4.0)
+bounds = AABB(-0.1, 0, -2, 0.2, 2.4, 4)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-0.1, 0, -2, 0.2, 0.7, 4), AABB(-0.1, 0.7, -2, 0.2, 1.7, 0.6), AABB(-0.1, 0.7, -1.4, 0.1, 1.7, 3.4), AABB(0, 0.7, 1.4, 0.1, 1.7, 0.6), AABB(0, 1.8, -1.4, 0.1, 0.6, 2.8)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-0.1, 0, -2.0, 0.2, 0.7, 4.0), AABB(-0.1, 0.7, -2.0, 0.2, 1.7, 0.6), AABB(-0.1, 0.7, -1.4, 0.1, 1.7, 3.4), AABB(0, 0.7, 1.4, 0.1, 1.7, 0.6), AABB(0, 1.8, -1.4, 0.1, 0.6, 2.8)])

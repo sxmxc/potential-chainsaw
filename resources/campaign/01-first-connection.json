@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Bridge the missing track and deliver one marble.",
   "difficulty": "Introduction",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "connected",
+      "connector": 0.0,
+      "kind": "attention",
+      "target": "approach",
+      "text": "Add a Straight track at this end to bridge the gap."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "release",
+      "text": "Press Run to release the marble."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Choose Straight, point at a glowing connector, and click. Test track runs the marble."
   ],
@@ -26,7 +53,6 @@
       "type": "deliver"
     }
   ],
-  "order": 1.0,
   "permissions": {},
   "pieces": [
     {
@@ -39,7 +65,7 @@
         0.0,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -50,7 +76,7 @@
         0.0,
         1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "approach"
     },
     {
@@ -61,7 +87,7 @@
         0.0,
         -1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "exit"
     },
     {
@@ -72,13 +98,12 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     }
   ],
-  "prerequisites": [],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -142,10 +167,10 @@
   "time_limit": 45.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "84efd8105ce8732e80638d88379dd4074fccf0b2bb4da88bcd064af305a723f1",
+    "fingerprint": "9e7903b0ab928cab07eae010ebe188b06e165619853aa09ac10202480def134a",
     "physics_success": true,
     "seconds": 2.94999999999999,
-    "tested_at": "2026-10-12T03:49:35"
+    "tested_at": "2026-10-15T21:40:34"
   },
-  "version": 1.0
+  "version": 3.0
 }

@@ -1,20 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://pdmfvxbc7aeq"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/column.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://bybjois8p2qmt" path="res://assets/models/environment/kenney_building/GLB format/column.glb" id="Model"]
 
 [sub_resource type="BoxShape3D" id="Solid"]
-size = Vector3(0.5,2.4,0.5)
+size = Vector3(0.5, 2.4, 0.5)
 
-[node name="column" type="Node3D"]
+[node name="column" type="Node3D" unique_id=578119839]
 
-[node name="Model" parent="." instance=ExtResource("Model")]
-position = Vector3(0,0,0)
-scale = Vector3(1,1,1)
+[node name="Model" parent="." unique_id=13524307 instance=ExtResource("Model")]
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=403633337]
 collision_mask = 2
 
-[node name="Solid" type="CollisionShape3D" parent="Body"]
-position = Vector3(0,1.2,0)
+[node name="Solid" type="CollisionShape3D" parent="Body" unique_id=601732505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 shape = SubResource("Solid")

@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Use airflow to carry the slow marble uphill.",
   "difficulty": "Workshop",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "selected",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "air",
+      "text": "Select this fan to adjust its airflow."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "air",
+      "text": "Enable airflow, then press Run. Adjust power if the marble stalls."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "The shrouded standing fan blows along its axis. Enable it; then tune power if needed."
   ],
@@ -24,7 +51,6 @@
       "type": "deliver"
     }
   ],
-  "order": 4.0,
   "permissions": {
     "air": {
       "config_keys": [
@@ -57,7 +83,7 @@
         0.0,
         3.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "air"
     },
     {
@@ -70,7 +96,7 @@
         0.0,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -81,7 +107,7 @@
         0.0,
         1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "approach"
     },
     {
@@ -92,7 +118,7 @@
         0.0,
         -0.5
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "uphill"
     },
     {
@@ -103,15 +129,12 @@
         0.25,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     }
   ],
-  "prerequisites": [
-    "campaign-03"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -179,10 +202,10 @@
   "time_limit": 30.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "4512f24de640061db4e8a5b3d107d9637990642e9f0fe8001d03f652a0fa00c4",
+    "fingerprint": "ed1b0c7a6ec5474c97c2610bd4785ed81e2cda42ff4ec0e89c346a15be377595",
     "physics_success": true,
-    "seconds": 2.89999999999999,
-    "tested_at": "2026-10-12T03:49:39"
+    "seconds": 2.89166666666666,
+    "tested_at": "2026-10-15T21:40:46"
   },
-  "version": 1.0
+  "version": 3.0
 }

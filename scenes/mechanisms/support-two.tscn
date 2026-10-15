@@ -3,9 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://c7f0p3xip6hrj" path="res://assets/models/build_pieces/GLB format/support-two-bottom.glb" id="Bottom"]
 [ext_resource type="PackedScene" uid="uid://blnhh71w72wd7" path="res://assets/models/build_pieces/GLB format/support-two-middle.glb" id="Middle"]
 [ext_resource type="Script" uid="uid://d3ma337kim6us" path="res://scripts/construction/resizable_support.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="PackedScene" uid="uid://biu4ffwvc0jod" path="res://assets/models/build_pieces/GLB format/support-two-top.glb" id="Top"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_support_height"]
 script = ExtResource("Setting")
@@ -18,19 +17,16 @@ maximum = 30.0
 step = 0.125
 unit = "m"
 
-
 [sub_resource type="Resource" id="Setting_support_double_top"]
 script = ExtResource("Setting")
 key = &"support_double_top"
 label = "Double top"
 kind = 1
-default_flag = false
-
 
 [node name="SupportAssembly" type="Node3D" unique_id=1905151203]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_support_height"), SubResource("Setting_support_double_top")])
 family = "support-two"
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_support_height"), SubResource("Setting_support_double_top")])
 
 [node name="Bottom" parent="." unique_id=1172121356 instance=ExtResource("Bottom")]
 

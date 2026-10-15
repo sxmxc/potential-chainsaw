@@ -5,19 +5,13 @@
 [ext_resource type="AudioStream" uid="uid://dkxvrhepgeq1l" path="res://assets/audio/songs/build_song_loop.mp3" id="2_71j4m"]
 [ext_resource type="Script" uid="uid://e6mltjx8dm12" path="res://scripts/construction/build_manager.gd" id="3"]
 [ext_resource type="Script" uid="uid://bej5vd0fbyqnm" path="res://scripts/simulation/simulation_manager.gd" id="4"]
+[ext_resource type="Script" uid="uid://beptvdde6r8mq" path="res://scripts/campaign/puzzle_boundary.gd" id="Boundary"]
 [ext_resource type="Script" uid="uid://ovweg5s3aqqm" path="res://scripts/camera/simulation_camera.gd" id="CameraController"]
 [ext_resource type="PackedScene" uid="uid://m747ayl0rb6e" path="res://scenes/camera/marble_chase.tscn" id="Chase"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="Host"]
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="Lens"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
-
-[ext_resource type="Script" path="res://scripts/campaign/puzzle_boundary.gd" id="Boundary"]
-
-[sub_resource type="StandardMaterial3D" id="BoundaryMaterial"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 1, 1, 1)
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_m1kxf"]
 stream_count = 1
@@ -54,6 +48,10 @@ roughness = 0.9
 
 [sub_resource type="PlaneMesh" id="Floor"]
 size = Vector2(600, 600)
+
+[sub_resource type="StandardMaterial3D" id="BoundaryMaterial"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
 
 [sub_resource type="Resource" id="FreeTransition"]
 resource_local_to_scene = true
@@ -106,16 +104,16 @@ script = ExtResource("Host")
 [node name="BuildManager" type="Node3D" parent="." unique_id=587075082]
 script = ExtResource("3")
 
-[node name="PlacementPreview" type="Node3D" parent="BuildManager"]
+[node name="PlacementPreview" type="Node3D" parent="BuildManager" unique_id=1426776319]
 visible = false
 
 [node name="SimulationManager" type="Node3D" parent="." unique_id=366871744]
 script = ExtResource("4")
 
-[node name="PuzzleBoundary" type="MeshInstance3D" parent="." node_paths=PackedStringArray("build")]
+[node name="PuzzleBoundary" type="MeshInstance3D" parent="." unique_id=38059732 node_paths=PackedStringArray("build")]
 visible = false
-cast_shadow = 0
 material_override = SubResource("BoundaryMaterial")
+cast_shadow = 0
 script = ExtResource("Boundary")
 build = NodePath("../BuildManager")
 

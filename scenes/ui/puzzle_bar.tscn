@@ -1,31 +1,31 @@
 [gd_scene format=3 uid="uid://cla2de6nd36p7"]
 
-[ext_resource type="Script" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/undo.svg" id="Back"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/save.svg" id="Save"]
+[ext_resource type="Texture2D" uid="uid://bfeabh60a4uqs" path="res://assets/ui/icons/undo.svg" id="Back"]
+[ext_resource type="Texture2D" uid="uid://bxui4xoxv2gxo" path="res://assets/ui/icons/save.svg" id="Save"]
+[ext_resource type="Script" uid="uid://dsjtodkys2qvo" path="res://scripts/ui/puzzle_bar.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="PuzzleBar" type="PanelContainer"]
+[node name="PuzzleBar" type="PanelContainer" unique_id=5064882]
 size_flags_vertical = 4
 theme = ExtResource("Theme")
 theme_type_variation = &"UnframedPanel"
 script = ExtResource("Script")
 
-[node name="Actions" type="HBoxContainer" parent="."]
+[node name="Actions" type="HBoxContainer" parent="." unique_id=2052061412]
 layout_mode = 2
 
-[node name="ReturnEditor" type="Button" parent="Actions"]
+[node name="ReturnEditor" type="Button" parent="Actions" unique_id=1990084702]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Return to editor"
 theme_type_variation = &"IconButton"
 icon = ExtResource("Back")
-tooltip_text = "Return to editor"
 
-[node name="SolutionActions" type="MenuButton" parent="Actions"]
+[node name="SolutionActions" type="MenuButton" parent="Actions" unique_id=1141126956]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Solution tools"
 theme_type_variation = &"IconButton"
 icon = ExtResource("Save")
-tooltip_text = "Solution tools"

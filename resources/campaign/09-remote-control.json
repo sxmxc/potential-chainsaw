@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Connect the sensor entry event to the gate Open action.",
   "difficulty": "Workshop",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "selected",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "detector",
+      "text": "Select the sensor to wire the gate."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "detector",
+      "text": "Use Connect: sensor Entered to gate Open. Then test."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Select the green sensor: choose Entered, the Marble Gate target, and Open, then Connect event."
   ],
@@ -24,7 +51,6 @@
       "type": "deliver"
     }
   ],
-  "order": 9.0,
   "permissions": {
     "detector": {
       "config_keys": [
@@ -48,7 +74,7 @@
         0.0,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -61,7 +87,7 @@
         0.0,
         1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "detector"
     },
     {
@@ -72,7 +98,7 @@
         0.0,
         0.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "stopper"
     },
     {
@@ -83,7 +109,7 @@
         0.0,
         -1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "exit"
     },
     {
@@ -94,7 +120,7 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     },
     {
@@ -108,15 +134,12 @@
         0.0,
         3.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "air"
     }
   ],
-  "prerequisites": [
-    "campaign-08"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -202,10 +225,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "867083155ab3ac9929632c27e7500bb7fb4b8772e727f70799ecd327ae2e3b5d",
+    "fingerprint": "e588cd1906b401294e4c9cd0ad5983a6ee9a2c39e8af3499a4afa402f7024dc8",
     "physics_success": true,
     "seconds": 3.23333333333332,
-    "tested_at": "2026-10-12T03:50:07"
+    "tested_at": "2026-10-15T21:41:14"
   },
-  "version": 1.0
+  "version": 3.0
 }

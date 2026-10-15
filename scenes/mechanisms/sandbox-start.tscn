@@ -50,16 +50,16 @@ key = &"display_label"
 label = "Display Label"
 kind = 2
 
-[sub_resource type="PhysicsMaterial" id="Physics"]
-friction = 0.18
-bounce = 0.02
-
 [sub_resource type="Resource" id="Setting_signal_controlled"]
 script = ExtResource("Setting")
 key = &"signal_controlled"
 label = "Signal-controlled release"
 description = "Wait for Release pulses. Early or cooldown pulses are ignored; quantity remains the total supply."
 kind = 1
+
+[sub_resource type="PhysicsMaterial" id="Physics"]
+friction = 0.18
+bounce = 0.02
 
 [sub_resource type="StandardMaterial3D" id="MarkerMaterial"]
 albedo_color = Color(0.3490196, 0.8980392, 0.6941177, 1)

@@ -4,9 +4,13 @@ var rectangle := Rect2()
 var active := false
 var build: BuildManager
 var exclusions: Array[Control] = []
+@onready var trajectories: MeshInstance3D = $Trajectories
 
 func _process(_delta: float) -> void:
 	if build: queue_redraw()
+
+func _physics_process(_delta: float) -> void:
+	_update_trajectories()
 
 func set_marquee(value: Rect2, shown: bool) -> void:
 	rectangle=value
@@ -18,7 +22,8 @@ func _draw() -> void:
 		# Projected world feedback is genuinely dynamic; styles come from the Theme.
 		draw_rect(rectangle,get_theme_color("marquee_fill","ConstructionOverlay"),true)
 		draw_rect(rectangle,get_theme_color("marquee_border","ConstructionOverlay"),false,2.0)
-	if not build or not build.enabled or not build.snapping or build.connect_mode: return
+	if not build or not build.enabled: return
+	if not build.snapping or build.connect_mode: return
 	for target in build.targets:
 		if not build.chosen and target.piece not in build.selection: continue
 		if build.chosen:
@@ -49,3 +54,28 @@ func _draw() -> void:
 		if control.is_visible_in_tree() and control.get_global_rect().has_point(contact_screen): return
 	var contact_color := get_theme_color("connector_active" if build.valid else "connector_invalid", "ConstructionOverlay")
 	draw_circle(contact_screen, get_theme_constant("contact_radius", "ConstructionOverlay"), contact_color, true, -1, true)
+
+func _update_trajectories() -> void:
+	var mesh := trajectories.mesh as ImmediateMesh
+	mesh.clear_surfaces()
+	trajectories.visible = is_visible_in_tree() and build != null and build.enabled
+	if not trajectories.visible: return
+	var pieces: Array[BuildingPiece] = []
+	if build.chosen:
+		pieces.assign(build.preview.get_children())
+	else:
+		pieces = build.selection
+	if build.chosen and not build.preview.visible: return
+	var trajectory_material := trajectories.material_override as StandardMaterial3D
+	trajectory_material.albedo_color = get_theme_color("connector_active", "ConstructionOverlay")
+	var excluded: Array[RID] = []
+	for piece: BuildingPiece in build.moving_group:
+		for body: CollisionObject3D in piece.find_children("*", "CollisionObject3D", true, false):
+			excluded.append(body.get_rid())
+	for piece: BuildingPiece in pieces:
+		for behavior: PieceBehavior in piece.behaviors:
+			var points := behavior.build_trajectory(excluded)
+			if points.size() < 2: continue
+			mesh.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
+			for point in points: mesh.surface_add_vertex(point)
+			mesh.surface_end()

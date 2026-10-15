@@ -1,17 +1,17 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://b2vrko2k2ra81"]
 
-[ext_resource type="Script" path="res://scripts/ui/community_online.gd" id="1"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="2"]
+[ext_resource type="Script" uid="uid://cre6khawujvo2" path="res://scripts/ui/community_online.gd" id="1"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="2"]
 
-[node name="CommunityOnline" type="VBoxContainer"]
+[node name="CommunityOnline" type="VBoxContainer" unique_id=2017061164]
 visible = false
 theme = ExtResource("2")
 script = ExtResource("1")
 
-[node name="Filters" type="HBoxContainer" parent="."]
+[node name="Filters" type="HBoxContainer" parent="." unique_id=304583810]
 layout_mode = 2
 
-[node name="Search" type="LineEdit" parent="Filters"]
+[node name="Search" type="LineEdit" parent="Filters" unique_id=198179962]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -19,172 +19,170 @@ placeholder_text = "Search online puzzles"
 max_length = 100
 clear_button_enabled = true
 
-[node name="Mine" type="CheckButton" parent="Filters"]
+[node name="Mine" type="CheckButton" parent="Filters" unique_id=821744482]
 unique_name_in_owner = true
 layout_mode = 2
 text = "My publications"
 
-[node name="Refresh" type="Button" parent="Filters"]
+[node name="Refresh" type="Button" parent="Filters" unique_id=1137917743]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Refresh"
 
-[node name="Account" type="Button" parent="Filters"]
+[node name="Account" type="Button" parent="Filters" unique_id=1126619576]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Sign in"
 
-[node name="SignIn" type="VBoxContainer" parent="."]
+[node name="SignIn" type="VBoxContainer" parent="." unique_id=1497770476]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="SessionNote" type="Label" parent="SignIn"]
+[node name="SessionNote" type="Label" parent="SignIn" unique_id=1163789609]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
 
-[node name="Email" type="LineEdit" parent="SignIn"]
+[node name="Email" type="LineEdit" parent="SignIn" unique_id=1373787584]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Email address"
 max_length = 254
 
-[node name="Credentials" type="HBoxContainer" parent="SignIn"]
+[node name="Credentials" type="HBoxContainer" parent="SignIn" unique_id=327265961]
 layout_mode = 2
 
-[node name="Password" type="LineEdit" parent="SignIn/Credentials"]
+[node name="Password" type="LineEdit" parent="SignIn/Credentials" unique_id=940816506]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Password"
-secret = true
 max_length = 1024
+secret = true
 
-[node name="SignInButton" type="Button" parent="SignIn/Credentials"]
+[node name="SignInButton" type="Button" parent="SignIn/Credentials" unique_id=1726432121]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Sign in"
 theme_type_variation = &"PrimaryButton"
+text = "Sign in"
 
-[node name="SignOut" type="Button" parent="SignIn/Credentials"]
+[node name="SignOut" type="Button" parent="SignIn/Credentials" unique_id=978032704]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Sign out"
 theme_type_variation = &"SecondaryButton"
+text = "Sign out"
 
-
-[node name="Discover" type="HBoxContainer" parent="."]
+[node name="Discover" type="HBoxContainer" parent="." unique_id=194492720]
 layout_mode = 2
 
-
-[node name="Results" type="VBoxContainer" parent="Discover"]
+[node name="Results" type="VBoxContainer" parent="Discover" unique_id=961569990]
 layout_mode = 2
 size_flags_horizontal = 3
-[node name="OnlineLevels" type="ItemList" parent="Discover/Results"]
+
+[node name="OnlineLevels" type="ItemList" parent="Discover/Results" unique_id=690789756]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 260)
 layout_mode = 2
 size_flags_vertical = 3
-custom_minimum_size = Vector2(320, 260)
 theme_type_variation = &"RouteList"
 
-
-[node name="Creation" type="VBoxContainer" parent="Discover"]
-layout_mode = 2
+[node name="Creation" type="VBoxContainer" parent="Discover" unique_id=438760123]
 custom_minimum_size = Vector2(370, 0)
+layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="OnlineTitle" type="Label" parent="Discover/Creation"]
+[node name="OnlineTitle" type="Label" parent="Discover/Creation" unique_id=87715002]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
 autowrap_mode = 3
 
-[node name="Creator" type="Label" parent="Discover/Creation"]
+[node name="Creator" type="Label" parent="Discover/Creation" unique_id=1753729605]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"AccentLabel"
 autowrap_mode = 3
 
-[node name="Installed" type="Label" parent="Discover/Creation"]
+[node name="Installed" type="Label" parent="Discover/Creation" unique_id=373260122]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-[node name="OnlineDetails" type="Label" parent="Discover/Creation"]
+
+[node name="OnlineDetails" type="Label" parent="Discover/Creation" unique_id=122786851]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"MutedLabel"
-autowrap_mode = 3
-text = "Select a puzzle."
 size_flags_vertical = 3
+theme_type_variation = &"MutedLabel"
+text = "Select a puzzle."
+autowrap_mode = 3
 
-[node name="CopyShare" type="Button" parent="Discover/Creation"]
+[node name="CopyShare" type="Button" parent="Discover/Creation" unique_id=1797706254]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Copy share code"
-theme_type_variation = &"QuietButton"
 
-[node name="Unpublish" type="Button" parent="Discover/Creation"]
+[node name="Unpublish" type="Button" parent="Discover/Creation" unique_id=2057378765]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Unpublish"
-theme_type_variation = &"QuietButton"
 
-[node name="Download" type="Button" parent="Discover/Creation"]
+[node name="Download" type="Button" parent="Discover/Creation" unique_id=279743776]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Download and play"
 theme_type_variation = &"PrimaryButton"
-size_flags_horizontal = 1
+text = "Download and play"
 
-[node name="Actions" type="HBoxContainer" parent="."]
+[node name="Actions" type="HBoxContainer" parent="." unique_id=1912382370]
 layout_mode = 2
 
-[node name="PreviousPage" type="Button" parent="Actions"]
+[node name="PreviousPage" type="Button" parent="Actions" unique_id=1575295112]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Previous"
 theme_type_variation = &"SecondaryButton"
+text = "Previous"
 
-
-[node name="PageNumber" type="Label" parent="Actions"]
+[node name="PageNumber" type="Label" parent="Actions" unique_id=896788311]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
-[node name="NextPage" type="Button" parent="Actions"]
+
+[node name="NextPage" type="Button" parent="Actions" unique_id=2114901015]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Next"
 theme_type_variation = &"SecondaryButton"
+text = "Next"
 
-[node name="ShareToggle" type="Button" parent="."]
+[node name="ShareToggle" type="Button" parent="." unique_id=1988903125]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Have a share code?"
 
-[node name="Shared" type="HBoxContainer" parent="."]
+[node name="Shared" type="HBoxContainer" parent="." unique_id=2038487054]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="ShareCode" type="LineEdit" parent="Shared"]
+[node name="ShareCode" type="LineEdit" parent="Shared" unique_id=459644760]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Share code"
 max_length = 150
 
-[node name="OpenShare" type="Button" parent="Shared"]
+[node name="OpenShare" type="Button" parent="Shared" unique_id=1416919278]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Open shared puzzle"
 theme_type_variation = &"SecondaryButton"
+text = "Open shared puzzle"
 
-[node name="PublishOnline" type="Button" parent="."]
+[node name="PublishOnline" type="Button" parent="." unique_id=675969517]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -192,13 +190,13 @@ theme_type_variation = &"PrimaryButton"
 text = "Publish online"
 clip_text = true
 
-[node name="Feedback" type="Label" parent="."]
+[node name="Feedback" type="Label" parent="." unique_id=690256464]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
 
-[node name="SearchDelay" type="Timer" parent="."]
+[node name="SearchDelay" type="Timer" parent="." unique_id=1969968134]
 unique_name_in_owner = true
 wait_time = 0.3
 one_shot = true

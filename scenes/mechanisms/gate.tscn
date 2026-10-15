@@ -1,48 +1,43 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://3gmc8xu8kcci"]
 
-[ext_resource type="Script" path="res://scripts/mechanisms/gate.gd" id="Script"]
-
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
+[ext_resource type="Script" uid="uid://dqmfku5rsi2bm" path="res://scripts/mechanisms/gate.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/straight.tres" id="TrackShape"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_delay"]
 script = ExtResource("Setting")
 key = &"delay"
 label = "Open after"
 description = "0 waits for a linked Open action."
-default_number = 0.0
-minimum = 0.0
 maximum = 60.0
 step = 0.25
 unit = "s"
-
 
 [sub_resource type="Resource" id="Setting_auto_close"]
 script = ExtResource("Setting")
 key = &"auto_close"
 label = "Close after"
 description = "0 keeps the gate open."
-default_number = 0.0
-minimum = 0.0
 maximum = 60.0
 step = 0.25
 unit = "s"
-
 
 [sub_resource type="Resource" id="Setting_open"]
 script = ExtResource("Setting")
 key = &"open"
 label = "Initially open"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
 bounce = 0.02
+
+[sub_resource type="PhysicsMaterial" id="BarrierPhysics"]
+friction = 0.05
+
+[sub_resource type="BoxShape3D" id="BarrierShape"]
+size = Vector3(0.48, 0.55, 0.1)
 
 [sub_resource type="StandardMaterial3D" id="BarrierMaterial"]
 resource_local_to_scene = true
@@ -51,53 +46,44 @@ albedo_color = Color(1, 0.7764706, 0.427451, 1)
 [sub_resource type="BoxMesh" id="BarrierMesh"]
 size = Vector3(0.48, 0.55, 0.1)
 
-[sub_resource type="PhysicsMaterial" id="BarrierPhysics"]
-friction = 0.05
-
-[sub_resource type="BoxShape3D" id="BarrierShape"]
-size = Vector3(0.48, 0.55, 0.1)
-
 [sub_resource type="BoxShape3D" id="DetectionShape"]
 resource_local_to_scene = true
 size = Vector3(0.5, 0.75, 0.5)
 
-[node name="Gate" type="Node3D" node_paths=PackedStringArray("barrier", "clearance")]
+[node name="Gate" type="Node3D" unique_id=1719899585 node_paths=PackedStringArray("barrier", "clearance")]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_delay"), SubResource("Setting_auto_close"), SubResource("Setting_open")])
 barrier = NodePath("Barrier")
 clearance = NodePath("Detection")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_delay"), SubResource("Setting_auto_close"), SubResource("Setting_open")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("TrackPhysics")
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=2099432016]
 collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Model" parent="Track" unique_id=2103796667 instance=ExtResource("Model")]
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=458657952]
 shape = ExtResource("TrackShape")
 
-[node name="Barrier" type="AnimatableBody3D" parent="."]
-position = Vector3(0, 0.525, 0)
-physics_material_override = SubResource("BarrierPhysics")
-collision_layer = 1
+[node name="Barrier" type="AnimatableBody3D" parent="." unique_id=599581123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 collision_mask = 2
+physics_material_override = SubResource("BarrierPhysics")
 sync_to_physics = false
 
-[node name="Collision" type="CollisionShape3D" parent="Barrier"]
+[node name="Collision" type="CollisionShape3D" parent="Barrier" unique_id=1294563541]
 shape = SubResource("BarrierShape")
 
-[node name="Visual" type="MeshInstance3D" parent="Barrier"]
-mesh = SubResource("BarrierMesh")
+[node name="Visual" type="MeshInstance3D" parent="Barrier" unique_id=1940869634]
 material_override = SubResource("BarrierMaterial")
+mesh = SubResource("BarrierMesh")
 
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.6, 0)
+[node name="Detection" type="Area3D" parent="." unique_id=1723624473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=561217900]
 shape = SubResource("DetectionShape")
 
 [editable path="Track/Model"]

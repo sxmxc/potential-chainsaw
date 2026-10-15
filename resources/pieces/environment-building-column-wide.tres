@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaaj"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/column-wide.glb" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/column-wide.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_10jlq"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://tkt7ocwoeeke" path="res://assets/models/environment/kenney_building/GLB format/column-wide.glb" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cgbh8v3ng6hld" path="res://assets/models/environment/kenney_building/Previews/column-wide.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
 id = &"environment:building-column-wide"
 display_name = "Wide column"
 category = "Architecture"
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-placement_offset = Vector3(0, 0, 0)
 bounds = AABB(-0.35, 0, -0.35, 0.7, 2.4, 0.7)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-0.35, 0, -0.35, 0.7, 0.4, 0.05), AABB(-0.35, 0, 0.3, 0.7, 0.4, 0.05), AABB(-0.35, 0, -0.3, 0.05, 0.4, 0.6), AABB(0.3, 0, -0.3, 0.05, 0.4, 0.6), AABB(-0.3, 0.4, -0.3, 0.6, 2, 0.6)])

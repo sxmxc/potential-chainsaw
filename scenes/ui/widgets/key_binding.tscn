@@ -1,17 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://p3fc4pk8dk81"]
 
-[node name="KeyBinding" type="HBoxContainer"]
+[node name="KeyBinding" type="HBoxContainer" unique_id=1322427275]
 
-[node name="Caption" type="Label" parent="."]
+[node name="Caption" type="Label" parent="." unique_id=1018945595]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Action"
 
-[node name="Binding" type="Button" parent="."]
+[node name="Binding" type="Button" parent="." unique_id=927762707]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(230, 40)
-clip_text = true
+layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Shortcut"
+clip_text = true

@@ -1,8 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c2neo7g1raxpe"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/screen-hanging-small.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://cdi62c1iwqm8t" path="res://assets/models/environment/kenney_factory/GLB format/screen-hanging-small.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1102569283]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=1834528422 instance=ExtResource("Model")]

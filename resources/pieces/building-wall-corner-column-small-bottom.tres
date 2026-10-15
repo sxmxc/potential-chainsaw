@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://8ibgl21scys2"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/building-wall-corner-column-small-bottom.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/wall-corner-column-small-bottom.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_jpn03"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://b1w4bmcfq8jmy" path="res://scenes/environment/building-wall-corner-column-small-bottom.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://b2el36m4ea3kw" path="res://assets/models/environment/kenney_building/Previews/wall-corner-column-small-bottom.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -14,6 +15,5 @@ model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(0, 0, 0, 1.125, 2.4, 1.125)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(0, 0, 0.8, 1.125, 0.1, 0.2), AABB(0, 0.1, 0.8, 1, 2.3, 0.2), AABB(0.7, 0, 1, 0.425, 0.4, 0.1), AABB(0.8, 0, 0, 0.2, 2.4, 0.8), AABB(0.8, 0, 1.1, 0.3, 0.4, 0.025), AABB(0.8, 0.4, 1, 0.3, 2, 0.1), AABB(1, 0, 0.7, 0.1, 0.4, 0.1), AABB(1, 0.3, 0.8, 0.125, 0.1, 0.2), AABB(1, 0.4, 0.8, 0.1, 2, 0.2), AABB(1.1, 0.1, 0.8, 0.025, 0.2, 0.2)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(0, 0, 0.8, 1.125, 0.1, 0.2), AABB(0, 0.1, 0.8, 1.0, 2.3, 0.2), AABB(0.7, 0, 1.0, 0.425, 0.4, 0.1), AABB(0.8, 0, 0, 0.2, 2.4, 0.8), AABB(0.8, 0, 1.1, 0.3, 0.4, 0.025), AABB(0.8, 0.4, 1.0, 0.3, 2.0, 0.1), AABB(1.0, 0, 0.7, 0.1, 0.4, 0.1), AABB(1.0, 0.3, 0.8, 0.125, 0.1, 0.2), AABB(1.0, 0.4, 0.8, 0.1, 2.0, 0.2), AABB(1.1, 0.1, 0.8, 0.025, 0.2, 0.2)])

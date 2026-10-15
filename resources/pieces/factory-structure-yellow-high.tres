@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://c1ybv8fh3rrj4"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-structure-yellow-high.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/structure-yellow-high.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_wel6a"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://fortiy4ittpj" path="res://scenes/environment/factory-structure-yellow-high.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://cekkwgu06xnur" path="res://assets/models/environment/kenney_factory/Previews/structure-yellow-high.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -14,6 +15,5 @@ model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.15, 0, -0.55, 0.3, 1.5, 1.1)
 behavior = "decoration"
-collision_enabled = true
-native_collision = true
 collision_solids = Array[AABB]([AABB(-0.15, 0, -0.55, 0.3, 0.3, 0.3), AABB(-0.15, 0, 0.25, 0.3, 0.3, 0.3), AABB(-0.15, 0.3, -0.55, 0.3, 1.2, 0.1), AABB(-0.15, 0.3, -0.45, 0.1, 1.2, 0.2), AABB(-0.15, 0.3, 0.25, 0.3, 1.2, 0.1), AABB(-0.15, 0.3, 0.35, 0.1, 1.2, 0.2), AABB(-0.05, 0.2, -0.25, 0.1, 0.3, 0.5), AABB(-0.05, 0.3, -0.35, 0.2, 1.2, 0.1), AABB(-0.05, 0.3, 0.45, 0.2, 1.2, 0.1), AABB(-0.05, 0.4, -0.45, 0.2, 0.8, 0.1), AABB(-0.05, 0.4, 0.35, 0.2, 0.8, 0.1), AABB(-0.05, 1.1, -0.25, 0.1, 0.3, 0.5), AABB(-0.05, 1.3, -0.45, 0.2, 0.2, 0.1), AABB(-0.05, 1.3, 0.35, 0.2, 0.2, 0.1), AABB(0.05, 0.3, -0.45, 0.1, 0.1, 0.1), AABB(0.05, 0.3, 0.35, 0.1, 0.1, 0.1), AABB(0.05, 1.2, -0.45, 0.1, 0.1, 0.1), AABB(0.05, 1.2, 0.35, 0.1, 0.1, 0.1)])
+native_collision = true

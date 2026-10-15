@@ -1,19 +1,20 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://dmeenvnewaal"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/border-high.glb" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/border-high.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_26xwd"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://cff4c455gi5e1" path="res://assets/models/environment/kenney_building/GLB format/border-high.glb" id="Model"]
+[ext_resource type="Texture2D" uid="uid://c5p6akp6flaq6" path="res://assets/models/environment/kenney_building/Previews/border-high.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
 id = &"environment:building-border-high"
 display_name = "High border"
 category = "Architecture"
+usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 placement_offset = Vector3(-0.15, 0, 0)
 bounds = AABB(-0.1, 0, -1, 0.2, 0.5, 2)
 behavior = "decoration"
-usage_hint = "Add a finishing touch to your construction."
 authoring_only = true
 collision_solids = Array[AABB]([AABB(-0.1, 0, -1, 0.1, 0.5, 2), AABB(0, 0.4, -1, 0.1, 0.1, 2)])

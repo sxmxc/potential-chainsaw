@@ -38,11 +38,9 @@ func _reset_count(_value: Variant) -> void:
 	_update_display()
 
 func _update_display() -> void:
-	if !config.get("infinite_count", false):
-		if display: display.text = "%d / %d" % [count, threshold]
-	else:
-		if display: display.text = "%d" % [count]
-	if config.get("3d_label", false):
-		if display3D: display3D.text = str(count)
-	display3D.visible = config.get("3d_label", false)
+	if display:
+		display.text = str(count) if config.get("infinite_count", false) else "%d / %d" % [count, threshold]
+	if display3D:
+		display3D.text = str(count)
+		display3D.visible = bool(config.get("3d_label", false))
 	if indicator: indicator.visible = reached

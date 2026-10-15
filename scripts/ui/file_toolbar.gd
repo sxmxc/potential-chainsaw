@@ -5,7 +5,6 @@ var simulation: SimulationManager
 var session: ConstructionSession
 var cameras: SimulationCamera
 const FOLLOW_ICON = preload("res://assets/ui/icons/follow.svg")
-const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 func configure(manager: BuildManager, simulator: SimulationManager, value: ConstructionSession) -> void:
 	session = value
 	%LocateGoal.pressed.connect(session.get_parent().guidance.locate_objectives)
@@ -35,7 +34,7 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	refresh()
 func refresh() -> void:
 	%LocateGoal.visible = session.is_playing
-	%RequestGuidance.visible = session.is_playing and not session.puzzle.get("guidance", []).is_empty()
+	%RequestGuidance.visible = session.is_playing and session.get_parent().guidance.has_hints()
 	%TrackName.text = session.track_name
 	%Undo.disabled=not build.enabled or not build.history.has_undo()
 	%Redo.disabled=not build.enabled or not build.history.has_redo()
@@ -59,7 +58,7 @@ func refresh() -> void:
 	%SaveStatus.theme_type_variation="AccentSmallLabel" if build.dirty else "SmallMutedLabel"
 	%Progress.visible=false
 	if session and not session.is_sandbox:
-		%SaveStatus.text = "Draft" if session.is_authoring else Copy.objective(session.puzzle)
+		%SaveStatus.text = "Draft" if session.is_authoring else session.puzzle.get("description", "")
 		%SaveStatus.theme_type_variation="MutedLabel"
 		var counts: Array[String] = []
 		for objective in session.puzzle.get("objectives", []):

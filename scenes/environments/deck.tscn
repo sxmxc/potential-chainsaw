@@ -1,20 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dyu8mvdkw7mwq"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/floor.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://dh1jbfvw4ofl6" path="res://assets/models/environment/kenney_building/GLB format/floor.glb" id="Model"]
 
 [sub_resource type="BoxShape3D" id="Solid"]
-size = Vector3(2,0.1,2)
+size = Vector3(2, 0.1, 2)
 
-[node name="deck" type="Node3D"]
+[node name="deck" type="Node3D" unique_id=826601555]
 
-[node name="Model" parent="." instance=ExtResource("Model")]
-position = Vector3(0,0,0)
-scale = Vector3(1,1,1)
+[node name="Model" parent="." unique_id=968330693 instance=ExtResource("Model")]
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=1354146051]
 collision_mask = 2
 
-[node name="Solid" type="CollisionShape3D" parent="Body"]
-position = Vector3(0,0.05,0)
+[node name="Solid" type="CollisionShape3D" parent="Body" unique_id=122335640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 shape = SubResource("Solid")

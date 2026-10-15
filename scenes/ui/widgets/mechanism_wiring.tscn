@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cd3ebxsveh6mr"]
 
-[ext_resource type="Script" path="res://scripts/ui/mechanism_wiring.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Script" uid="uid://dxx2cgd0ldpya" path="res://scripts/ui/mechanism_wiring.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="MechanismWiring" type="Control"]
+[node name="MechanismWiring" type="Control" unique_id=1205804587]
 z_index = -1
 layout_mode = 3
 anchors_preset = 15
@@ -15,75 +15,77 @@ mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-[node name="Hint" type="PanelContainer" parent="."]
+[node name="Hint" type="PanelContainer" parent="." unique_id=329830983]
 unique_name_in_owner = true
 visible = false
+layout_mode = 0
 mouse_filter = 2
 
-[node name="Text" type="Label" parent="Hint"]
+[node name="Text" type="Label" parent="Hint" unique_id=509807353]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 
-[node name="Context" type="PanelContainer" parent="."]
-z_index = 2
+[node name="Context" type="PanelContainer" parent="." unique_id=1689142834]
 unique_name_in_owner = true
 visible = false
+z_index = 2
 custom_minimum_size = Vector2(328, 0)
+layout_mode = 0
 theme_type_variation = &"ContextPanel"
 
-[node name="Contents" type="VBoxContainer" parent="Context"]
+[node name="Contents" type="VBoxContainer" parent="Context" unique_id=306502830]
 layout_mode = 2
 
-[node name="Relationship" type="Label" parent="Context/Contents"]
+[node name="Relationship" type="Label" parent="Context/Contents" unique_id=907856325]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CardLabel"
 autowrap_mode = 3
 
-[node name="Ports" type="HBoxContainer" parent="Context/Contents"]
+[node name="Ports" type="HBoxContainer" parent="Context/Contents" unique_id=820347041]
 layout_mode = 2
 
-[node name="Events" type="OptionButton" parent="Context/Contents/Ports"]
+[node name="Events" type="OptionButton" parent="Context/Contents/Ports" unique_id=107858228]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(138, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-clip_text = true
 tooltip_text = "Signal sent by the source"
+clip_text = true
+fit_to_longest_item = false
 
-[node name="Direction" type="Label" parent="Context/Contents/Ports"]
+[node name="Direction" type="Label" parent="Context/Contents/Ports" unique_id=1788031237]
 layout_mode = 2
-text = "→"
 theme_type_variation = &"AccentLabel"
+text = "→"
 
-[node name="Actions" type="OptionButton" parent="Context/Contents/Ports"]
+[node name="Actions" type="OptionButton" parent="Context/Contents/Ports" unique_id=665007358]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(138, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-clip_text = true
 tooltip_text = "Receiver response"
+clip_text = true
+fit_to_longest_item = false
 
-[node name="Controls" type="HBoxContainer" parent="Context/Contents"]
+[node name="Controls" type="HBoxContainer" parent="Context/Contents" unique_id=494232255]
 layout_mode = 2
 
-[node name="Apply" type="Button" parent="Context/Contents/Controls"]
+[node name="Apply" type="Button" parent="Context/Contents/Controls" unique_id=141370834]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PrimaryButton"
 text = "Connect"
 
-[node name="Remove" type="Button" parent="Context/Contents/Controls"]
+[node name="Remove" type="Button" parent="Context/Contents/Controls" unique_id=379715510]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Remove"
 
-[node name="Dismiss" type="Button" parent="Context/Contents/Controls"]
+[node name="Dismiss" type="Button" parent="Context/Contents/Controls" unique_id=290740190]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"

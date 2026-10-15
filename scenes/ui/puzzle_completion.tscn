@@ -29,15 +29,15 @@ theme_type_variation = &"SectionVBox"
 [node name="Title" type="Label" parent="Surface/Contents" unique_id=966304359]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Puzzle complete"
 theme_type_variation = &"CelebrationTitle"
+text = "Puzzle complete"
 
 [node name="Name" type="Label" parent="Surface/Contents" unique_id=1462470442]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-autowrap_mode = 3
 theme_type_variation = &"PanelTitle"
+autowrap_mode = 3
 
 [node name="Result" type="Label" parent="Surface/Contents" unique_id=1824852314]
 unique_name_in_owner = true
@@ -53,13 +53,13 @@ layout_mode = 2
 theme_type_variation = &"SuccessLabel"
 autowrap_mode = 3
 
-
-[node name="NextDestination" type="Label" parent="Surface/Contents"]
+[node name="NextDestination" type="Label" parent="Surface/Contents" unique_id=820866562]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
+
 [node name="Next" type="Button" parent="Surface/Contents" unique_id=1850249896]
 unique_name_in_owner = true
 layout_mode = 2

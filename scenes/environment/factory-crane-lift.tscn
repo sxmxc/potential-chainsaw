@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c3p8guljkrlla"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/crane-lift.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://dcf01stwdax7g" path="res://assets/models/environment/kenney_factory/GLB format/crane-lift.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1234732149]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 2.25, 0)
+[node name="Visual" parent="." unique_id=1087356805 instance=ExtResource("Model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)

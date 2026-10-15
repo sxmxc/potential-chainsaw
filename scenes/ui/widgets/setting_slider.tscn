@@ -1,41 +1,41 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cy34w78dj03ka"]
 
-[ext_resource type="Script" path="res://scripts/ui/setting_slider.gd" id="Script"]
-[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="Theme"]
+[ext_resource type="Script" uid="uid://n2rlmyiplypn" path="res://scripts/ui/setting_slider.gd" id="Script"]
+[ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="SettingSlider" type="HSlider"]
+[node name="SettingSlider" type="HSlider" unique_id=686904881]
 custom_minimum_size = Vector2(0, 56)
 size_flags_horizontal = 3
 theme = ExtResource("Theme")
 scrollable = false
 script = ExtResource("Script")
 
-[node name="Current" type="Label" parent="."]
+[node name="Current" type="Label" parent="." unique_id=1306223509]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 22.0
 grow_horizontal = 2
-mouse_filter = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="Minimum" type="Label" parent="."]
+[node name="Minimum" type="Label" parent="." unique_id=886067375]
 unique_name_in_owner = true
 layout_mode = 1
+anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_top = -20.0
 grow_vertical = 0
-mouse_filter = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "0"
 
-[node name="Maximum" type="Label" parent="."]
+[node name="Maximum" type="Label" parent="." unique_id=1548106262]
 unique_name_in_owner = true
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 1.0
@@ -43,7 +43,6 @@ anchor_bottom = 1.0
 offset_top = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "100"
 horizontal_alignment = 2

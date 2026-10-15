@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://bub1u1g4gwqby"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/building-barricade-window-a.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_building/Previews/barricade-window-a.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_66mww"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://cghdyo2v6sjsw" path="res://scenes/environment/building-barricade-window-a.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://de4q50uwcined" path="res://assets/models/environment/kenney_building/Previews/barricade-window-a.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -14,6 +15,5 @@ model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.075, 0, -0.627898, 0.075, 0.960181, 1.255797)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-0.075, 0, -0.427898, 0.075, 0.2, 1.055797), AABB(-0.075, 0.1, -0.627898, 0.075, 0.3, 0.2), AABB(-0.075, 0.2, -0.427898, 0.075, 0.1, 1), AABB(-0.075, 0.6, -0.627898, 0.075, 0.3, 0.6), AABB(-0.075, 0.7, -0.027898, 0.075, 0.260181, 0.655797)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-0.075, 0, -0.427898, 0.075, 0.2, 1.055797), AABB(-0.075, 0.1, -0.627898, 0.075, 0.3, 0.2), AABB(-0.075, 0.2, -0.427898, 0.075, 0.1, 1.0), AABB(-0.075, 0.6, -0.627898, 0.075, 0.3, 0.6), AABB(-0.075, 0.7, -0.027898, 0.075, 0.260181, 0.655797)])

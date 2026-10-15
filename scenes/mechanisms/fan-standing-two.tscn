@@ -1,12 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dhsc6ul43vuqm"]
 
-[ext_resource type="Script" path="res://scripts/mechanisms/airflow.gd" id="Script"]
-
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/fan-standing-two.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://b7h8ot21kaf17" path="res://assets/models/build_pieces/GLB format/fan-standing-two.glb" id="Model"]
+[ext_resource type="Script" uid="uid://b2vhnxwnnp2c1" path="res://scripts/mechanisms/airflow.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/fan-standing-two.tres" id="TrackShape"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_power"]
 script = ExtResource("Setting")
@@ -14,11 +11,9 @@ key = &"power"
 label = "Air power"
 description = "Air power (N)"
 default_number = 1.2
-minimum = 0.0
 maximum = 5.0
 step = 0.05
 unit = "N"
-
 
 [sub_resource type="Resource" id="Setting_range"]
 script = ExtResource("Setting")
@@ -31,7 +26,6 @@ maximum = 10.0
 step = 0.25
 unit = "m"
 
-
 [sub_resource type="Resource" id="Setting_enabled"]
 script = ExtResource("Setting")
 key = &"enabled"
@@ -39,14 +33,11 @@ label = "Initially enabled"
 kind = 1
 default_flag = true
 
-
 [sub_resource type="Resource" id="Setting_reverse"]
 script = ExtResource("Setting")
 key = &"reverse"
 label = "Reverse airflow"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
@@ -69,46 +60,43 @@ top_radius = 0.0
 bottom_radius = 0.1
 height = 0.2
 
-[node name="Airflow" type="Node3D" node_paths=PackedStringArray("blade", "area", "arrow")]
+[node name="Airflow" type="Node3D" unique_id=211819706 node_paths=PackedStringArray("area", "blade", "arrow")]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_power"), SubResource("Setting_range"), SubResource("Setting_enabled"), SubResource("Setting_reverse")])
-blade = NodePath("Track/Model/fan-standing-two/fan")
 area = NodePath("Detection")
-arrow = NodePath("Arrow")
+blade = NodePath("Track/Model/fan-standing-two/fan")
 axis = Vector3(0, 0, -1)
 origin = Vector3(0, 0.5, -0.15)
+arrow = NodePath("Arrow")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_power"), SubResource("Setting_range"), SubResource("Setting_enabled"), SubResource("Setting_reverse")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("TrackPhysics")
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=1971742408]
 collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Model" parent="Track" unique_id=1685402552 instance=ExtResource("Model")]
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=201858389]
 shape = ExtResource("TrackShape")
 
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.5, -2.15)
+[node name="Detection" type="Area3D" parent="." unique_id=239707670]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -2.15)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=108851894]
 shape = SubResource("DetectionShape")
 
-[node name="Arrow" type="Node3D" parent="."]
-position = Vector3(0.58, 0.5, -0.15)
-rotation = Vector3(-1.57079633, 0, 0)
+[node name="Arrow" type="Node3D" parent="." unique_id=1242913435]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.58, 0.5, -0.15)
 
-[node name="Shaft" type="MeshInstance3D" parent="Arrow"]
-position = Vector3(0, 0.2, 0)
+[node name="Shaft" type="MeshInstance3D" parent="Arrow" unique_id=1223824268]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+material_override = SubResource("ArrowMaterial")
 mesh = SubResource("ShaftMesh")
-material_override = SubResource("ArrowMaterial")
 
-[node name="Tip" type="MeshInstance3D" parent="Arrow"]
-position = Vector3(0, 0.45, 0)
-mesh = SubResource("TipMesh")
+[node name="Tip" type="MeshInstance3D" parent="Arrow" unique_id=1421706948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 material_override = SubResource("ArrowMaterial")
+mesh = SubResource("TipMesh")
 
 [editable path="Track/Model"]

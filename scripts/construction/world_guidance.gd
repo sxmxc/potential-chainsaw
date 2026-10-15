@@ -18,7 +18,7 @@ var objective_index: int = 0
 func _ready() -> void:
 	marker = MARKER.instantiate()
 	add_child(marker)
-	marker.hide()
+	marker.clear()
 	timer = Timer.new()
 	timer.one_shot = true
 	add_child(timer)
@@ -37,6 +37,7 @@ func configure(value: ConstructionSession) -> void:
 		else: refresh())
 
 func restart() -> void:
+	marker.clear()
 	step_index = 0
 	requested = false
 	objective_index = 0
@@ -45,12 +46,24 @@ func restart() -> void:
 	refresh()
 
 func request() -> void:
+	temporary.clear()
+	timer.stop()
+	var count: int = session.puzzle.get("guidance", []).size()
+	if count == 0: count = session.puzzle.get("hints", []).size()
+	if step_index >= count: step_index = 0
 	requested = true
 	refresh()
 
 func dismiss() -> void:
-	step_index += 1
+	if not temporary.is_empty():
+		temporary.clear()
+		timer.stop()
+	else:
+		step_index += 1
 	refresh()
+
+func has_hints() -> bool:
+	return session != null and (not session.puzzle.get("guidance", []).is_empty() or session.puzzle.get("hints", []).any(func(text): return not str(text).strip_edges().is_empty()))
 
 func preview(step: Dictionary) -> void:
 	temporary = step.duplicate(true)
@@ -61,7 +74,7 @@ func locate_objectives() -> void:
 	if not session.is_playing: return
 	var goals: Array = session.puzzle.get("objectives", [])
 	if goals.is_empty(): return
-	preview({"kind": "target", "target": goals[objective_index % goals.size()].target, "connector": -1, "text": "Destination"})
+	preview({"kind": "target", "target": goals[objective_index % goals.size()].target, "connector": -1})
 	objective_index += 1
 
 func active_step() -> Dictionary:
@@ -70,6 +83,14 @@ func active_step() -> Dictionary:
 	var automatic: bool = PuzzleStore.is_official(session.puzzle) and session.puzzle.get("campaign", {}).get("chapter", {}).get("introduction", false)
 	if not automatic and not requested: return {}
 	var steps: Array = session.puzzle.get("guidance", [])
+	# Read older puzzle formats through this owner without rewriting their saved data.
+	if steps.is_empty():
+		var hints: Array = session.puzzle.get("hints", [])
+		if session.world.simulation.state != SimulationManager.State.BUILD: return {}
+		while step_index < hints.size():
+			if not str(hints[step_index]).strip_edges().is_empty(): return {"text": str(hints[step_index])}
+			step_index += 1
+		return {}
 	while step_index < steps.size():
 		var step: Dictionary = steps[step_index]
 		if not completed(step):
@@ -114,16 +135,20 @@ func resolve(step: Dictionary) -> Dictionary:
 
 func refresh() -> void:
 	if not marker or not session: return
-	marker.hide()
+	var show_marker := false
 	instruction = ""
 	var step := active_step()
 	if not step.is_empty():
-		var target := resolve(step)
-		if not target.is_empty():
+		if not step.has("kind"):
 			instruction = step.get("text", "")
-			marker.present(step.get("kind", "attention"), target.point, target.direction)
-			# Placement and connector handles already show the cursor's exact target.
-			marker.visible = session.world.build.chosen == null
+		else:
+			var target := resolve(step)
+			if not target.is_empty():
+				instruction = step.get("text", "")
+				# Placement and connector handles already show the cursor's exact target.
+				show_marker = session.world.build.chosen == null
+				if show_marker: marker.present(step.get("kind", "attention"), target.point, target.direction)
+	if not show_marker: marker.clear()
 	changed.emit()
 
 static func shape_errors(data: Dictionary) -> Array[String]:

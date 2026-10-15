@@ -1,96 +1,122 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b5clksnf16hrg"]
 
 [sub_resource type="StandardMaterial3D" id="Metal"]
-albedo_color = Color(0.14, 0.20, 0.24, 1)
+albedo_color = Color(0.14, 0.2, 0.24, 1)
 metallic = 0.35
 roughness = 0.7
+
+[sub_resource type="BoxMesh" id="Plate"]
+size = Vector3(0.56, 0.025, 0.44)
+
+[sub_resource type="BoxMesh" id="Cover"]
+size = Vector3(0.46, 0.1, 0.34)
+
 [sub_resource type="StandardMaterial3D" id="Face"]
 albedo_color = Color(0.09, 0.13, 0.17, 1)
-[sub_resource type="StandardMaterial3D" id="Terminal"]
-albedo_color = Color(0.95, 0.67, 0.26, 1)
+
+[sub_resource type="BoxMesh" id="Panel"]
+size = Vector3(0.34, 0.008, 0.24)
+
+[sub_resource type="StandardMaterial3D" id="Light"]
+shading_mode = 0
+albedo_color = Color(0.35, 0.9, 0.69, 1)
+
+[sub_resource type="BoxMesh" id="Lamp"]
+size = Vector3(0.2, 0.009, 0.025)
+
+[sub_resource type="BoxShape3D" id="PickShape"]
+size = Vector3(0.56, 0.14, 0.44)
+
 [sub_resource type="StandardMaterial3D" id="Steel"]
 albedo_color = Color(0.55, 0.64, 0.66, 1)
 metallic = 0.65
-[sub_resource type="StandardMaterial3D" id="Light"]
-albedo_color = Color(0.35, 0.90, 0.69, 1)
-shading_mode = 0
-[sub_resource type="BoxMesh" id="Plate"]
-size = Vector3(0.56, 0.025, 0.44)
-[sub_resource type="BoxMesh" id="Cover"]
-size = Vector3(0.46, 0.10, 0.34)
-[sub_resource type="BoxMesh" id="Panel"]
-size = Vector3(0.34, 0.008, 0.24)
+
 [sub_resource type="CylinderMesh" id="Screw"]
 top_radius = 0.015
 bottom_radius = 0.015
 height = 0.012
 radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="Terminal"]
+albedo_color = Color(0.95, 0.67, 0.26, 1)
+
 [sub_resource type="CylinderMesh" id="Pin"]
 top_radius = 0.021
 bottom_radius = 0.021
 height = 0.018
 radial_segments = 8
-[sub_resource type="BoxMesh" id="Lamp"]
-size = Vector3(0.20, 0.009, 0.025)
-[sub_resource type="BoxShape3D" id="PickShape"]
-size = Vector3(0.56, 0.14, 0.44)
 
-[node name="Housing" type="Node3D"]
-[node name="Plate" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.0165, 0)
+[node name="Housing" type="Node3D" unique_id=342556647]
+
+[node name="Plate" type="MeshInstance3D" parent="." unique_id=4905473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0165, 0)
+material_override = SubResource("Metal")
 mesh = SubResource("Plate")
+
+[node name="Cover" type="MeshInstance3D" parent="." unique_id=233930834]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.079, 0)
 material_override = SubResource("Metal")
-[node name="Cover" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.079, 0)
 mesh = SubResource("Cover")
-material_override = SubResource("Metal")
-[node name="Panel" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.133, 0)
-mesh = SubResource("Panel")
+
+[node name="Panel" type="MeshInstance3D" parent="." unique_id=149921679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.133, 0)
 material_override = SubResource("Face")
-[node name="Indicator" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.143, 0.085)
-mesh = SubResource("Lamp")
+mesh = SubResource("Panel")
+
+[node name="Indicator" type="MeshInstance3D" parent="." unique_id=996072621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.143, 0.085)
 material_override = SubResource("Light")
-[node name="IndicatorWell" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.138, 0.085)
 mesh = SubResource("Lamp")
+
+[node name="IndicatorWell" type="MeshInstance3D" parent="." unique_id=1602976106]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.138, 0.085)
 material_override = SubResource("Metal")
-[node name="PickBody" type="StaticBody3D" parent="."]
+mesh = SubResource("Lamp")
+
+[node name="PickBody" type="StaticBody3D" parent="." unique_id=1427785695]
 collision_layer = 4
 collision_mask = 0
-[node name="Shape" type="CollisionShape3D" parent="PickBody"]
-position = Vector3(0, 0.074, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="PickBody" unique_id=497290911]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.074, 0)
 shape = SubResource("PickShape")
-[node name="Fastener0" type="MeshInstance3D" parent="."]
-position = Vector3(-0.25, 0.034, -0.19)
-mesh = SubResource("Screw")
+
+[node name="Fastener0" type="MeshInstance3D" parent="." unique_id=1678846890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.034, -0.19)
 material_override = SubResource("Steel")
-[node name="Fastener1" type="MeshInstance3D" parent="."]
-position = Vector3(0.25, 0.034, -0.19)
 mesh = SubResource("Screw")
+
+[node name="Fastener1" type="MeshInstance3D" parent="." unique_id=1137427162]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.034, -0.19)
 material_override = SubResource("Steel")
-[node name="Fastener2" type="MeshInstance3D" parent="."]
-position = Vector3(-0.25, 0.034, 0.19)
 mesh = SubResource("Screw")
+
+[node name="Fastener2" type="MeshInstance3D" parent="." unique_id=1367283684]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.034, 0.19)
 material_override = SubResource("Steel")
-[node name="Fastener3" type="MeshInstance3D" parent="."]
-position = Vector3(0.25, 0.034, 0.19)
 mesh = SubResource("Screw")
+
+[node name="Fastener3" type="MeshInstance3D" parent="." unique_id=689579633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.034, 0.19)
 material_override = SubResource("Steel")
-[node name="Terminal0" type="MeshInstance3D" parent="."]
-position = Vector3(-0.205, 0.137, -0.1)
-mesh = SubResource("Pin")
+mesh = SubResource("Screw")
+
+[node name="Terminal0" type="MeshInstance3D" parent="." unique_id=957221916]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, -0.1)
 material_override = SubResource("Terminal")
-[node name="Terminal1" type="MeshInstance3D" parent="."]
-position = Vector3(-0.205, 0.137, 0)
 mesh = SubResource("Pin")
+
+[node name="Terminal1" type="MeshInstance3D" parent="." unique_id=1679793269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, 0)
 material_override = SubResource("Terminal")
-[node name="Terminal2" type="MeshInstance3D" parent="."]
-position = Vector3(-0.205, 0.137, 0.1)
 mesh = SubResource("Pin")
+
+[node name="Terminal2" type="MeshInstance3D" parent="." unique_id=1038458710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, 0.1)
 material_override = SubResource("Terminal")
-[node name="Terminal3" type="MeshInstance3D" parent="."]
-position = Vector3(0.205, 0.137, 0)
 mesh = SubResource("Pin")
+
+[node name="Terminal3" type="MeshInstance3D" parent="." unique_id=1266333269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.205, 0.137, 0)
 material_override = SubResource("Terminal")
+mesh = SubResource("Pin")

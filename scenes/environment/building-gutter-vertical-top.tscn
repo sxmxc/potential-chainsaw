@@ -1,8 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cax5q1n8dqha3"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/gutter-vertical-top.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://djmneu5d1b11a" path="res://assets/models/environment/kenney_building/GLB format/gutter-vertical-top.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1841864768]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=1990014965 instance=ExtResource("Model")]

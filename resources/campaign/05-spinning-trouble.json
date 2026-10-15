@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Set the exposed paddle turning to clear the passage.",
   "difficulty": "Workshop",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "selected",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "paddle",
+      "text": "Select the paddle to change its speed."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "paddle",
+      "text": "Set a negative speed to push toward the finish, then press Run."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "A negative speed turns the paddle toward the destination. Its blades move marbles by contact."
   ],
@@ -24,7 +51,6 @@
       "type": "deliver"
     }
   ],
-  "order": 5.0,
   "permissions": {
     "paddle": {
       "config_keys": [
@@ -54,7 +80,7 @@
         0.0,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -65,7 +91,7 @@
         0.0,
         1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "approach"
     },
     {
@@ -76,7 +102,7 @@
         0.0,
         0.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "middle"
     },
     {
@@ -87,7 +113,7 @@
         0.0,
         -1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "exit"
     },
     {
@@ -98,7 +124,7 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     },
     {
@@ -111,15 +137,12 @@
         0.0,
         0.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "paddle"
     }
   ],
-  "prerequisites": [
-    "campaign-04"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -196,10 +219,10 @@
   "time_limit": 30.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "e2c8ef433b88b116e290fb7fc89c74c6ed407529cd4d0334ce519c3c2f885919",
+    "fingerprint": "84395564e2908388aebf4c7f62c2881bafa3b19cd414a2a55361da4090365b63",
     "physics_success": true,
     "seconds": 2.94999999999999,
-    "tested_at": "2026-10-12T03:49:45"
+    "tested_at": "2026-10-15T21:40:49"
   },
-  "version": 1.0
+  "version": 3.0
 }

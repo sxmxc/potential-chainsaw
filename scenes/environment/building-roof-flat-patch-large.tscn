@@ -1,21 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bmexyycmsm6rg"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/roof-flat-patch-large.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://cmifx13fvu33v" path="res://assets/models/environment/kenney_building/GLB format/roof-flat-patch-large.glb" id="Model"]
 [ext_resource type="Shape3D" path="res://scenes/environment/collision/building-roof-flat-patch-large.tres" id="Shape"]
 
 [sub_resource type="PhysicsMaterial" id="Material"]
 friction = 0.18
 bounce = 0.02
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=740994408]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=889912252 instance=ExtResource("Model")]
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=1389144667]
 collision_mask = 2
 physics_material_override = SubResource("Material")
 
-[node name="Collision" type="CollisionShape3D" parent="Body"]
+[node name="Collision" type="CollisionShape3D" parent="Body" unique_id=1819889678]
 shape = ExtResource("Shape")

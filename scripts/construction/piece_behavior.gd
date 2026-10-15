@@ -23,6 +23,10 @@ func configure(settings: Dictionary) -> void:
 func start_run() -> void:
 	active = not preview_only
 
+## Optional world-space path shown by the shared build overlay for selection/preview.
+func build_trajectory(_excluded: Array[RID] = []) -> PackedVector3Array:
+	return PackedVector3Array()
+
 ## Called after simulation has settled the initial persistent-state wires.
 func signals_ready() -> void:
 	initializing_signals = false

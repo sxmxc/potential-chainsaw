@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Route the marble into the right-hand collector.",
   "difficulty": "Workshop",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "selected",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "fork",
+      "text": "Select the diverter to change its route."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "goal",
+      "text": "Turn off Route left to send the marble to this finish, then press Run."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Clear Route left in the diverter inspector. The left catcher is not the objective."
   ],
@@ -24,7 +51,6 @@
       "type": "deliver"
     }
   ],
-  "order": 8.0,
   "permissions": {
     "fork": {
       "config_keys": [
@@ -48,7 +74,7 @@
         0.0,
         -2.5
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "release"
     },
     {
@@ -59,7 +85,7 @@
         0.0,
         -1.5
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "approach"
     },
     {
@@ -72,7 +98,7 @@
         0.0,
         0.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "fork"
     },
     {
@@ -83,7 +109,7 @@
         0.0,
         0.5
       ],
-      "rotation": 1.0,
+      "rotation": 1,
       "uid": "right"
     },
     {
@@ -94,7 +120,7 @@
         0.0,
         0.5
       ],
-      "rotation": 1.0,
+      "rotation": 1,
       "uid": "goal"
     },
     {
@@ -105,7 +131,7 @@
         0.0,
         0.5
       ],
-      "rotation": 1.0,
+      "rotation": 1,
       "uid": "side"
     },
     {
@@ -116,15 +142,12 @@
         0.0,
         0.5
       ],
-      "rotation": 3.0,
+      "rotation": 3,
       "uid": "wrong-goal"
     }
   ],
-  "prerequisites": [
-    "campaign-07"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -212,10 +235,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "4b1a4e22ef11df924d0a19a2e500fc055c4c3280af401fa4778bc393f6506131",
+    "fingerprint": "662288d1d549c12481b2e46fadc1e8aa348a4e1903446ad82db453524cb36366",
     "physics_success": true,
     "seconds": 5.38333333333339,
-    "tested_at": "2026-10-12T03:50:02"
+    "tested_at": "2026-10-15T21:41:10"
   },
-  "version": 1.0
+  "version": 3.0
 }

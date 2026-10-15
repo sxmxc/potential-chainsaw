@@ -1,159 +1,183 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bmc1c66hjkrr7"]
 
-[ext_resource type="Script" path="res://scripts/ui/guidance_editor.gd" id="Script"]
+[ext_resource type="Script" uid="uid://ioeb4ck3bhuj" path="res://scripts/ui/guidance_editor.gd" id="Script"]
 
-[node name="GuidanceEditor" type="VBoxContainer"]
-layout_mode = 2
+[node name="GuidanceEditor" type="VBoxContainer" unique_id=1577565089]
 script = ExtResource("Script")
 
-[node name="Heading" type="Label" parent="."]
+[node name="Heading" type="Label" parent="." unique_id=656117539]
 unique_name_in_owner = true
 layout_mode = 2
-text = "World guidance"
 theme_type_variation = &"DialogTitle"
+text = "Player hints"
 
-[node name="Help" type="Label" parent="."]
+[node name="Help" type="Label" parent="." unique_id=856828929]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Steps run in order. Introduction shows them automatically; other puzzles offer optional guidance. Targets follow pieces. Preview lasts five seconds."
+theme_type_variation = &"SmallMutedLabel"
+text = "Point to a piece and write a short hint. Hints appear in order; Introduction shows them automatically."
 autowrap_mode = 3
-theme_type_variation = &"SmallMutedLabel"
 
-[node name="StepList" type="ItemList" parent="."]
+[node name="StepList" type="ItemList" parent="." unique_id=765874507]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
 
-[node name="NewStep" type="Button" parent="."]
+[node name="StepActions" type="HBoxContainer" parent="." unique_id=1433680683]
 unique_name_in_owner = true
 layout_mode = 2
-text = "+ New step"
+
+[node name="NewStep" type="Button" parent="StepActions" unique_id=2025497224]
+unique_name_in_owner = true
+layout_mode = 2
 theme_type_variation = &"QuietButton"
+text = "+ New hint"
 
-[node name="MarkerKindLabel" type="Label" parent="."]
+[node name="DeleteStep" type="Button" parent="StepActions" unique_id=506362826]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Indicator"
-theme_type_variation = &"SmallMutedLabel"
+theme_type_variation = &"QuietButton"
+text = "Remove"
 
-[node name="MarkerKind" type="OptionButton" parent="."]
+[node name="StepTargetLabel" type="Label" parent="." unique_id=212981283]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Point to"
+
+[node name="StepTarget" type="OptionButton" parent="." unique_id=754408407]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true
 fit_to_longest_item = false
 
-[node name="StepTargetLabel" type="Label" parent="."]
+[node name="UseSelection" type="Button" parent="." unique_id=840989139]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Target"
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="StepTarget" type="OptionButton" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="UseSelection" type="Button" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Use selected piece"
-theme_type_variation = &"QuietButton"
 
-[node name="StepConnectorLabel" type="Label" parent="."]
+[node name="StepTextLabel" type="Label" parent="." unique_id=1680518712]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Connector"
 theme_type_variation = &"SmallMutedLabel"
+text = "Hint"
 
-[node name="StepConnector" type="OptionButton" parent="."]
+[node name="StepText" type="LineEdit" parent="." unique_id=908816933]
 unique_name_in_owner = true
 layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="StepAppearLabel" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Show"
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="StepAppear" type="OptionButton" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="StepCompleteLabel" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Advance when"
-theme_type_variation = &"SmallMutedLabel"
-
-[node name="StepComplete" type="OptionButton" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-fit_to_longest_item = false
-
-[node name="PointFields" type="HFlowContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-
-
-[node name="PointX" type="SpinBox" parent="PointFields"]
-unique_name_in_owner = true
-layout_mode = 2
-prefix = "X"
-min_value = -1000.0
-max_value = 1000.0
-step = 0.125
-custom_minimum_size = Vector2(115, 0)
-
-[node name="PointY" type="SpinBox" parent="PointFields"]
-unique_name_in_owner = true
-layout_mode = 2
-prefix = "Y"
-min_value = -1000.0
-max_value = 1000.0
-step = 0.125
-custom_minimum_size = Vector2(115, 0)
-
-[node name="PointZ" type="SpinBox" parent="PointFields"]
-unique_name_in_owner = true
-layout_mode = 2
-prefix = "Z"
-min_value = -1000.0
-max_value = 1000.0
-step = 0.125
-custom_minimum_size = Vector2(115, 0)
-
-[node name="StepText" type="LineEdit" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "Short instruction (optional)"
+placeholder_text = "What should the player do?"
 max_length = 200
 
-[node name="SaveStep" type="Button" parent="."]
+[node name="StepCompleteLabel" type="Label" parent="." unique_id=343192625]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Save step"
-theme_type_variation = &"PrimaryButton"
-
-[node name="PreviewStep" type="Button" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Preview marker"
-theme_type_variation = &"QuietButton"
-
-[node name="DeleteStep" type="Button" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove selected step"
-theme_type_variation = &"QuietButton"
-
-[node name="StepStatus" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 2
-autowrap_mode = 3
 theme_type_variation = &"SmallMutedLabel"
+text = "Next hint when"
+
+[node name="StepComplete" type="OptionButton" parent="." unique_id=1743918818]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="AdvancedToggle" type="Button" parent="." unique_id=1177472275]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+toggle_mode = true
+text = "Advanced"
+
+[node name="Advanced" type="VBoxContainer" parent="." unique_id=1607191707]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MarkerKindLabel" type="Label" parent="Advanced" unique_id=884834207]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Indicator"
+
+[node name="MarkerKind" type="OptionButton" parent="Advanced" unique_id=420841832]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="StepConnectorLabel" type="Label" parent="Advanced" unique_id=438277514]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Point at"
+
+[node name="StepConnector" type="OptionButton" parent="Advanced" unique_id=1430864582]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="StepAppearLabel" type="Label" parent="Advanced" unique_id=732240915]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Show"
+
+[node name="StepAppear" type="OptionButton" parent="Advanced" unique_id=1614871775]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="PointFields" type="HFlowContainer" parent="Advanced" unique_id=1136917479]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PointX" type="SpinBox" parent="Advanced/PointFields" unique_id=1060986731]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+prefix = "X"
+
+[node name="PointY" type="SpinBox" parent="Advanced/PointFields" unique_id=976839312]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+prefix = "Y"
+
+[node name="PointZ" type="SpinBox" parent="Advanced/PointFields" unique_id=1126744655]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.125
+prefix = "Z"
+
+[node name="SaveActions" type="HBoxContainer" parent="." unique_id=1774295498]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SaveStep" type="Button" parent="SaveActions" unique_id=377109730]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Add hint"
+
+[node name="PreviewStep" type="Button" parent="SaveActions" unique_id=1529613209]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Preview"
+
+[node name="StepStatus" type="Label" parent="." unique_id=477194562]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+autowrap_mode = 3

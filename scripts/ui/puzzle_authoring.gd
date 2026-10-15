@@ -70,7 +70,6 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	%ChapterRequirements.text_changed.connect(func(_text): update_chapter())
 	%PuzzleName.text_changed.connect(func(text): if not refreshing: session.puzzle.name = text)
 	%Description.text_changed.connect(func(): if not refreshing: session.puzzle.description = %Description.text)
-	%Hint.text_changed.connect(func(): if not refreshing: session.puzzle.hints = [%Hint.text])
 	%Order.value_changed.connect(func(value): if not refreshing and session.official_authoring: session.puzzle.campaign.order = int(value))
 	%Difficulty.item_selected.connect(func(index): if not refreshing: session.puzzle.difficulty = %Difficulty.get_item_text(index))
 	%TimeLimit.value_changed.connect(func(value): if not refreshing: session.puzzle.time_limit = value)
@@ -130,7 +129,6 @@ func configure(puzzle_session: ConstructionSession) -> void:
 		else: field.value_changed.connect(func(_value): metadata_changed())
 	%Creator.text_changed.connect(func(value): if not refreshing: session.puzzle.creator = value; metadata_changed())
 	%Description.text_changed.connect(metadata_changed)
-	%Hint.text_changed.connect(metadata_changed)
 	%Difficulty.item_selected.connect(func(_index): metadata_changed())
 	%Prerequisites.multi_selected.connect(func(_index, _selected): metadata_changed())
 	for button in [%SetInventoryLimit, %ClearInventoryLimits, %ClearZones, %RemoveZone, %RemoveObjective, %CaptureCamera]:
@@ -149,7 +147,6 @@ func open() -> void:
 	%Destination.select(1 if session.official_authoring else 0)
 	%PuzzleName.text = data.name
 	%Description.text = data.description
-	%Hint.text = "\n".join(data.get("hints", []))
 	for field in [%ChapterId, %ChapterIdLabel, %ChapterName, %ChapterNameLabel, %ChapterOrder, %ChapterOrderLabel, %ChapterOptional, %ChapterIntroduction, %ChapterRequirements, %ChapterRequirementsLabel, %Order, %OrderLabel, %Prerequisites, %PrerequisiteLabel]:
 		field.visible = session.official_authoring
 	%Export.visible = not session.official_authoring

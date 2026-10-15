@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://4mkdt12rsfv8"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/structure-factory-floor.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/floor-large.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_f6d4j"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://67e7m41b0fc7" path="res://scenes/environment/structure-factory-floor.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://dm74nrkko16ib" path="res://assets/models/environment/kenney_factory/Previews/floor-large.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,7 @@ category = "Architecture"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-1.0, 0, -1.0, 2.0, 0.1, 2.0)
+bounds = AABB(-1, 0, -1, 2, 0.1, 2)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-1, 0, -1, 2, 0.1, 2)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-1.0, 0, -1.0, 2.0, 0.1, 2.0)])

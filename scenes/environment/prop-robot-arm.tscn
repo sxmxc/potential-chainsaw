@@ -1,8 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dh5pjfsx0s66j"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/robot-arm-b.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://d3j2wgs31to76" path="res://assets/models/environment/kenney_factory/GLB format/robot-arm-b.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=232211287]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=525431717 instance=ExtResource("Model")]

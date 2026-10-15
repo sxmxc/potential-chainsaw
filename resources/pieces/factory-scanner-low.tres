@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://boqc8fij7xbo2"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-scanner-low.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/scanner-low.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_6vmmx"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://h6kjxka28js2" path="res://scenes/environment/factory-scanner-low.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://dgqllo646iwu3" path="res://assets/models/environment/kenney_factory/Previews/scanner-low.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -14,6 +15,5 @@ model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.35, 0, -0.8, 0.7, 1.07, 1.6)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-0.35, 0, -0.8, 0.7, 0.3, 0.3), AABB(-0.35, 0, 0.5, 0.7, 0.3, 0.2), AABB(-0.25, 0, 0.7, 0.4, 1, 0.1), AABB(-0.25, 0.3, -0.8, 0.4, 0.7, 0.2), AABB(-0.25, 0.3, 0.5, 0.4, 0.7, 0.2), AABB(-0.25, 0.7, -0.6, 0.5, 0.1, 0.3), AABB(-0.25, 0.7, -0.3, 0.4, 0.1, 0.8), AABB(-0.25, 0.8, -0.6, 0.5, 0.27, 0.1), AABB(-0.25, 0.8, -0.5, 0.1, 0.2, 1), AABB(-0.25, 1, -0.5, 0.5, 0.07, 0.2), AABB(-0.25, 1, 0.2, 0.5, 0.07, 0.3), AABB(-0.15, 0.8, -0.4, 0.4, 0.2, 0.1), AABB(-0.15, 0.8, -0.3, 0.3, 0.2, 0.6), AABB(-0.15, 0.8, 0.4, 0.4, 0.2, 0.1), AABB(-0.15, 0.9, -0.5, 0.4, 0.1, 0.1), AABB(-0.15, 0.9, 0.3, 0.4, 0.1, 0.1), AABB(0.05, 0.8, -0.5, 0.2, 0.1, 0.1), AABB(0.05, 0.8, 0.3, 0.2, 0.1, 0.1), AABB(0.15, 0.7, 0.2, 0.1, 0.1, 0.3), AABB(0.15, 0.8, 0.2, 0.1, 0.2, 0.1)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-0.35, 0, -0.8, 0.7, 0.3, 0.3), AABB(-0.35, 0, 0.5, 0.7, 0.3, 0.2), AABB(-0.25, 0, 0.7, 0.4, 1.0, 0.1), AABB(-0.25, 0.3, -0.8, 0.4, 0.7, 0.2), AABB(-0.25, 0.3, 0.5, 0.4, 0.7, 0.2), AABB(-0.25, 0.7, -0.6, 0.5, 0.1, 0.3), AABB(-0.25, 0.7, -0.3, 0.4, 0.1, 0.8), AABB(-0.25, 0.8, -0.6, 0.5, 0.27, 0.1), AABB(-0.25, 0.8, -0.5, 0.1, 0.2, 1.0), AABB(-0.25, 1.0, -0.5, 0.5, 0.07, 0.2), AABB(-0.25, 1.0, 0.2, 0.5, 0.07, 0.3), AABB(-0.15, 0.8, -0.4, 0.4, 0.2, 0.1), AABB(-0.15, 0.8, -0.3, 0.3, 0.2, 0.6), AABB(-0.15, 0.8, 0.4, 0.4, 0.2, 0.1), AABB(-0.15, 0.9, -0.5, 0.4, 0.1, 0.1), AABB(-0.15, 0.9, 0.3, 0.4, 0.1, 0.1), AABB(0.05, 0.8, -0.5, 0.2, 0.1, 0.1), AABB(0.05, 0.8, 0.3, 0.2, 0.1, 0.1), AABB(0.15, 0.7, 0.2, 0.1, 0.1, 0.3), AABB(0.15, 0.8, 0.2, 0.1, 0.2, 0.1)])

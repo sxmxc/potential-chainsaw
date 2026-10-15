@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://dvxqob13nvaqm"]
+
+[ext_resource type="Script" uid="uid://daiu2x71pu3q3" path="res://scripts/mechanisms/delay_module.gd" id="Behavior"]
+[ext_resource type="PackedScene" uid="uid://b5clksnf16hrg" path="res://scenes/mechanisms/logic/module_housing.tscn" id="Housing"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Delay"]
+script = ExtResource("Setting")
+key = &"delay"
+label = "Delay"
+description = "Wait this many seconds for each input. Zero forwards immediately. Reset clears waiting signals."
+default_number = 1.0
+maximum = 600.0
+unit = "s"
+
+[sub_resource type="StandardMaterial3D" id="Cover"]
+albedo_color = Color(0.46, 0.69, 0.34, 1)
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="Mark"]
+albedo_color = Color(0.78, 0.94, 0.89, 1)
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="Hand"]
+size = Vector3(0.008, 0.006, 0.043)
+
+[node name="Delay" type="Node3D" unique_id=1776724039 node_paths=PackedStringArray("indicator", "readout")]
+script = ExtResource("Behavior")
+indicator = NodePath("Housing/Indicator")
+readout = NodePath("Readout")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Delay")])
+
+[node name="Housing" parent="." unique_id=1718451895 instance=ExtResource("Housing")]
+
+[node name="Cover" parent="Housing" index="1" unique_id=233930834]
+material_override = SubResource("Cover")
+
+[node name="Terminal2" parent="Housing" index="12" unique_id=1038458710]
+visible = false
+
+[node name="Function" type="Label3D" parent="." unique_id=647249746]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.045, 0.15, -0.075)
+pixel_size = 0.003
+text = "DELAY"
+font_size = 22
+outline_size = 2
+
+[node name="Readout" type="Label3D" parent="." unique_id=283498301]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.045, 0.15, 0.017)
+pixel_size = 0.003
+text = "1 s"
+font_size = 20
+outline_size = 2
+
+[node name="InputLabel0" type="Label3D" parent="." unique_id=894719612]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.205, 0.15, -0.1)
+pixel_size = 0.002
+text = "IN"
+font_size = 12
+outline_size = 2
+
+[node name="InputLabel1" type="Label3D" parent="." unique_id=170385643]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.205, 0.15, 0)
+pixel_size = 0.002
+text = "RST"
+font_size = 12
+outline_size = 2
+
+[node name="OutputLabel" type="Label3D" parent="." unique_id=199821850]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.15, 0.167)
+pixel_size = 0.003
+text = "OUT"
+font_size = 16
+outline_size = 2
+
+[node name="Chevron0A" type="MeshInstance3D" parent="." unique_id=1634663777]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -0.125, 0.146, -0.039)
+material_override = SubResource("Mark")
+mesh = SubResource("Hand")
+
+[node name="Chevron0B" type="MeshInstance3D" parent="." unique_id=141498396]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -0.125, 0.146, -0.011)
+material_override = SubResource("Mark")
+mesh = SubResource("Hand")
+
+[node name="Chevron1A" type="MeshInstance3D" parent="." unique_id=1258408339]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -0.085, 0.146, -0.039)
+material_override = SubResource("Mark")
+mesh = SubResource("Hand")
+
+[node name="Chevron1B" type="MeshInstance3D" parent="." unique_id=1451291803]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -0.085, 0.146, -0.011)
+material_override = SubResource("Mark")
+mesh = SubResource("Hand")
+
+[editable path="Housing"]

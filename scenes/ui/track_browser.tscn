@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://csmksfq1onevj"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/construction_preview.tscn" id="Preview"]
 [ext_resource type="Script" uid="uid://bvyb82d60j2pq" path="res://scripts/ui/track_browser.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/construction_preview.tscn" id="Preview"]
 
 [node name="TrackBrowser" type="Window" unique_id=1612074212]
 transparent_bg = true
 title = "Your tracks"
+size = Vector2i(860, 480)
 visible = false
 transient = true
 exclusive = true
@@ -16,7 +16,6 @@ borderless = true
 transparent = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
-size = Vector2i(860, 480)
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=791295942]
 anchors_preset = 15
@@ -35,41 +34,40 @@ layout_mode = 2
 theme_type_variation = &"DialogTitle"
 text = "YOUR TRACKS"
 
-
-[node name="Browse" type="HBoxContainer" parent="Surface/Contents"]
+[node name="Browse" type="HBoxContainer" parent="Surface/Contents" unique_id=2022239609]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+
 [node name="List" type="ItemList" parent="Surface/Contents/Browse" unique_id=1044851652]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
 custom_minimum_size = Vector2(310, 0)
+layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_type_variation = &"RouteList"
 
-
-[node name="Selected" type="VBoxContainer" parent="Surface/Contents/Browse"]
+[node name="Selected" type="VBoxContainer" parent="Surface/Contents/Browse" unique_id=1107576422]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Preview" parent="Surface/Contents/Browse/Selected" instance=ExtResource("Preview")]
+[node name="Preview" parent="Surface/Contents/Browse/Selected" unique_id=570633365 instance=ExtResource("Preview")]
 unique_name_in_owner = true
 layout_mode = 2
 
-
-[node name="TrackTitle" type="Label" parent="Surface/Contents/Browse/Selected"]
+[node name="TrackTitle" type="Label" parent="Surface/Contents/Browse/Selected" unique_id=242940500]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PanelTitle"
 autowrap_mode = 3
 
-[node name="TrackDetails" type="Label" parent="Surface/Contents/Browse/Selected"]
+[node name="TrackDetails" type="Label" parent="Surface/Contents/Browse/Selected" unique_id=1443890625]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
+
 [node name="Info" type="Label" parent="Surface/Contents" unique_id=1471563570]
 unique_name_in_owner = true
 layout_mode = 2

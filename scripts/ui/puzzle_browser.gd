@@ -8,7 +8,6 @@ var community: bool = false
 var levels: Array[Dictionary] = []
 var campaign_definition: CampaignDefinition
 var chapter_index: int = 0
-const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 const CHAPTER_BUTTON = preload("res://scenes/ui/widgets/chapter_button.tscn")
 
 func configure_online(service: CommunityService) -> void:
@@ -194,7 +193,7 @@ func select_level(index: int) -> void:
 	if editing: %LevelState.text = ("Draft" if data.status != "published" else "Published") + " · " + str(data.get("difficulty", "Workshop"))
 	if community and not str(data.get("creator", "")).strip_edges().is_empty(): %LevelState.text += " · By " + str(data.creator).strip_edges()
 	%Preview.display(data, session.catalog)
-	%Details.text = Copy.objective(data)
+	%Details.text = data.get("description", "")
 	%Open.disabled = not editing and not community and not campaign_definition.unlocked(levels[index], session.progress.records)
 	if %Open.disabled: %Details.text += "\nComplete the required levels to unlock this level."
 	var resume: Dictionary=campaign_definition.resume_level(session.progress.route, session.progress.records)

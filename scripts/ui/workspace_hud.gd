@@ -5,17 +5,18 @@ var build: BuildManager
 var simulation: SimulationManager
 var library_open: bool = true
 var session: ConstructionSession
-var guidance_done: Dictionary = {}
 var notification_active: bool = false
 var toolbox_motion: UIMotion
 var status_motion: UIMotion
+var guidance_motion: UIMotion
+var displayed_instruction: String = ""
 
 func _ready() -> void:
 	toolbox_motion = UIMotion.attach(%Toolbox, Vector2(-UIMotion.PANEL_SHIFT, 0.0))
 	status_motion = UIMotion.attach(%Bottom)
+	guidance_motion = UIMotion.attach(%Guidance, Vector2(0, UIMotion.PANEL_SHIFT), UIMotion.SURFACE_SCALE)
 	ButtonFeedback.install(self)
 	%NotificationTimer.timeout.connect(func(): notification_active = false; refresh())
-const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 func configure(manager: BuildManager, simulator: SimulationManager, value: ConstructionSession) -> void:
 	session = value
 	build=manager
@@ -41,16 +42,13 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 		refresh())
 	%Toolbox.collapsed.connect(func():library_open=false; refresh())
 	%DismissGuidance.pressed.connect(func():
-		if session and not session.puzzle.get("guidance", []).is_empty():
-			session.get_parent().guidance.dismiss()
-		elif session: guidance_done[session.puzzle.get("id","")]=true
-		refresh())
+		session.get_parent().guidance.dismiss())
 	%Inspector.session = session
 	%Inspector.configure(build)
 	%Inspector.connections_requested.connect(func(): %MechanismWiring.set_tool(true))
 	%SelectionOverlay.set_marquee(Rect2(),false)
 	%SelectionOverlay.build=build
-	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar.get_node("%Placement"),%EditToolbar,%Bottom])
+	%SelectionOverlay.exclusions.assign([%Toolbox,%Inspector,%FileToolbar,%BuildToolbar.get_node("%Placement"),%EditToolbar,%Bottom,%Guidance])
 	for control in %BuildToolbar.get_node("%Common").get_children():
 		%SelectionOverlay.exclusions.append(control)
 	%MechanismWiring.exclusions = %SelectionOverlay.exclusions
@@ -68,6 +66,8 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	simulation.objective_progress.connect(func(): %FileToolbar.refresh())
 	refresh()
 func refresh_context() -> void:
+	guidance_motion.set_open(false, true)
+	displayed_instruction = ""
 	%Toolbox.reset_filter()
 	%MechanismWiring.clear_interaction()
 	%MechanismWiring.overlay_enabled = false
@@ -100,30 +100,25 @@ func refresh() -> void:
 	refresh_guidance()
 
 func refresh_guidance() -> void:
-	%Guidance.hide()
-	if session and session.is_playing and not session.puzzle.get("guidance", []).is_empty():
-		%GuidanceText.text = session.get_parent().guidance.instruction
-		%Guidance.visible = not %GuidanceText.text.is_empty()
+	if not session:
+		guidance_motion.set_open(false, true)
 		return
-	if not session or session.context != ConstructionSession.Context.PUZZLE_PLAY or session.puzzle.is_empty(): return
-	if simulation.state != SimulationManager.State.BUILD: return
-	if not PuzzleStore.is_official(session.puzzle): return
-	var id: String = session.puzzle.id
-	if session.progress.records.get(id, {}).get("completed", false) or guidance_done.has(id): return
-	var copy: Dictionary=Copy.introduction(session.puzzle)
-	if copy.is_empty() and not session.puzzle.campaign.chapter.get("introduction",false): return
-	if build.dirty:
-		guidance_done[id]=true
-		return
-	var hint: String=copy.get("begin","")
-	if build.chosen: hint=copy.get("placing",hint)
-	elif build.selected and build.selected.definition.behavior==copy.get("behavior",""):
-		hint=copy.get("selected",hint)
-	if hint.is_empty():
-		var hints: Array=session.puzzle.get("hints",[])
-		if not hints.is_empty(): hint=str(hints[0])
-	%GuidanceText.text=hint
-	%Guidance.visible=not hint.is_empty()
+	var guidance: WorldGuidance = session.get_parent().guidance
+	var instruction := guidance.instruction
+	if not instruction.is_empty():
+		var temporary := not guidance.temporary.is_empty()
+		var step := guidance.active_step()
+		var manual: bool = step.get("complete", "dismissed") == "dismissed"
+		var count: int = session.puzzle.get("guidance", []).size()
+		%GuidanceProgress.visible = not temporary and count > 1
+		%GuidanceProgress.text = "%d / %d" % [guidance.step_index + 1, count]
+		%DismissGuidance.visible = session.is_playing and (temporary or manual)
+		%DismissGuidance.text = "Close" if temporary else ("Done" if count > 0 and guidance.step_index == count - 1 else "Next")
+		%DismissGuidance.tooltip_text = "Close preview" if temporary else "Show the next hint"
+		%GuidanceText.text = instruction
+		if instruction != displayed_instruction and guidance_motion.wanted: UIMotion.section(%GuidanceText)
+	guidance_motion.set_open(not instruction.is_empty())
+	displayed_instruction = instruction
 
 func show_status(text: String) -> void:
 	if build.chosen:

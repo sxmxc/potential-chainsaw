@@ -3,6 +3,13 @@
 [ext_resource type="Script" uid="uid://dcs6s2ik8qs64" path="res://scripts/ui/selection_overlay.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[sub_resource type="StandardMaterial3D" id="TrajectoryMaterial"]
+resource_local_to_scene = true
+shading_mode = 0
+
+[sub_resource type="ImmediateMesh" id="TrajectoryMesh"]
+resource_local_to_scene = true
+
 [node name="SelectionOverlay" type="Control" unique_id=669948595]
 layout_mode = 3
 anchors_preset = 15
@@ -13,3 +20,9 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
+
+[node name="Trajectories" type="MeshInstance3D" parent="." unique_id=115702500]
+top_level = true
+material_override = SubResource("TrajectoryMaterial")
+cast_shadow = 0
+mesh = SubResource("TrajectoryMesh")

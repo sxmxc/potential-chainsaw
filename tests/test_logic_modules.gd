@@ -223,13 +223,19 @@ func test_puzzle_inventory_and_locked_accessory_reject_group_edits() -> void:
 	assert_eq(PuzzleRules.new(data, build.catalog).validate(before + [extra]), "")
 
 func test_cursor_surface_preview_commit_remount_and_cancel() -> void:
+	# Keep the GUT panel and the user's real mouse out of this synthetic cursor test.
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1920, 1080)
+	viewport.own_world_3d = true
+	add_child_autoqfree(viewport)
+	workspace.reparent(viewport)
 	workspace.get_node("Interface/HUD").hide()
 	var support := build.spawn(build.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 2, 0)), "support")
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	var camera := ConstructionCamera.new()
 	camera.automatic_composition = false
-	add_child_autoqfree(camera)
+	viewport.add_child(camera)
 	camera.set_process(false)
 	camera.position = Vector3(5, 2.25, 0)
 	camera.look_at(Vector3(0, 2.25, 0))
@@ -248,6 +254,7 @@ func test_cursor_surface_preview_commit_remount_and_cancel() -> void:
 	build.commit()
 	build.cancel()
 	assert_eq(build.pieces.size(), 2)
+	if build.pieces.size() != 2: return
 	var accessory: BuildingPiece = build.pieces[1]
 	assert_true(accessory.transform.is_equal_approx(shown), "Commit uses the visible normal and twist")
 	assert_eq(accessory.configuration.mount_target, support.instance_id)

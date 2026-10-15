@@ -1,27 +1,25 @@
 [gd_scene format=3 uid="uid://px6kesj8ilb"]
 
+[ext_resource type="PackedScene" uid="uid://b2vrko2k2ra81" path="res://scenes/ui/community_online.tscn" id="Online"]
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/construction_preview.tscn" id="Preview"]
 [ext_resource type="Script" uid="uid://dx0eii85w1adc" path="res://scripts/ui/puzzle_browser.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-
-[ext_resource type="PackedScene" path="res://scenes/ui/community_online.tscn" id="Online"]
-
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/construction_preview.tscn" id="Preview"]
 
 [node name="PuzzleBrowser" type="Window" unique_id=335018945]
 transparent_bg = true
 title = "Campaign"
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 borderless = true
 transparent = true
-wrap_controls = true
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=497165524]
-theme_type_variation = &"SurfacePanel"
 custom_minimum_size = Vector2(960, 0)
+theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1569012700]
 layout_mode = 2
@@ -60,18 +58,18 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LibrarySearch" type="LineEdit" parent="Surface/Contents/Browse"]
+[node name="LibrarySearch" type="LineEdit" parent="Surface/Contents/Browse" unique_id=278030751]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Find a puzzle or creator…"
 clear_button_enabled = true
 
-[node name="LibrarySource" type="OptionButton" parent="Surface/Contents/Browse"]
+[node name="LibrarySource" type="OptionButton" parent="Surface/Contents/Browse" unique_id=237678823]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "Campaign puzzles"
 popup/item_0/id = 0
 popup/item_1/text = "Community puzzles"
@@ -90,25 +88,24 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-
-[node name="Route" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn"]
+[node name="Route" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn" unique_id=1794043822]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ChapterName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Route"]
+[node name="ChapterName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Route" unique_id=1305297333]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PanelTitle"
+
 [node name="Levels" type="ItemList" parent="Surface/Contents/Browse/LevelColumn/Route" unique_id=1912233115]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 300)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_type_variation = &"RouteList"
 same_column_width = true
 fixed_icon_size = Vector2i(20, 32)
-custom_minimum_size = Vector2(320, 300)
-max_columns = 1
-size_flags_horizontal = 3
-theme_type_variation = &"RouteList"
 
 [node name="Empty" type="Label" parent="Surface/Contents/Browse/LevelColumn/Route" unique_id=1676400485]
 unique_name_in_owner = true
@@ -118,37 +115,36 @@ size_flags_vertical = 6
 theme_type_variation = &"MutedLabel"
 text = "No levels available yet."
 
-
-[node name="Selection" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn"]
-layout_mode = 2
+[node name="Selection" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn" unique_id=2045077402]
 custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Preview" parent="Surface/Contents/Browse/LevelColumn/Selection" instance=ExtResource("Preview")]
+[node name="Preview" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=127448580 instance=ExtResource("Preview")]
 unique_name_in_owner = true
 layout_mode = 2
 
-
-[node name="LevelName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection"]
+[node name="LevelName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=635318039]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"InspectorTitle"
 autowrap_mode = 3
 
-[node name="LevelState" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection"]
+[node name="LevelState" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=277291191]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"AccentSmallLabel"
 autowrap_mode = 3
+
 [node name="Details" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=1308003168]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "Select a level."
 autowrap_mode = 3
-custom_minimum_size = Vector2(0, 70)
 
-[node name="Network" parent="Surface/Contents" instance=ExtResource("Online")]
+[node name="Network" parent="Surface/Contents" unique_id=2108529347 instance=ExtResource("Online")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -178,26 +174,27 @@ layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "Play"
 
-[node name="Import" type="Button" parent="Surface/Contents/Actions"]
+[node name="Import" type="Button" parent="Surface/Contents/Actions" unique_id=25708194]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Import puzzle"
 
-[node name="NewPuzzle" type="Button" parent="Surface/Contents/Actions"]
+[node name="NewPuzzle" type="Button" parent="Surface/Contents/Actions" unique_id=115084426]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Create puzzle"
 
-[node name="OnlineBrowse" type="Button" parent="Surface/Contents/Actions"]
+[node name="OnlineBrowse" type="Button" parent="Surface/Contents/Actions" unique_id=486695738]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Browse online"
 
-[node name="ImportDialog" type="FileDialog" parent="."]
+[node name="ImportDialog" type="FileDialog" parent="." unique_id=1556364749]
 unique_name_in_owner = true
-access = 2
+title = "Open a File"
 file_mode = 0
+access = 2
 filters = PackedStringArray("*.json ; Marble Engineer puzzle")

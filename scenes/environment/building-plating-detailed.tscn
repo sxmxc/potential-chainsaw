@@ -1,21 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cgoe4gjxsi2fb"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_building/GLB format/plating-detailed.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://crpi8h0k4crx5" path="res://assets/models/environment/kenney_building/GLB format/plating-detailed.glb" id="Model"]
 [ext_resource type="Shape3D" path="res://scenes/environment/collision/building-plating-detailed.tres" id="Shape"]
 
 [sub_resource type="PhysicsMaterial" id="Material"]
 friction = 0.18
 bounce = 0.02
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1980147594]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=721086225 instance=ExtResource("Model")]
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=469157606]
 collision_mask = 2
 physics_material_override = SubResource("Material")
 
-[node name="Collision" type="CollisionShape3D" parent="Body"]
+[node name="Collision" type="CollisionShape3D" parent="Body" unique_id=1285801060]
 shape = ExtResource("Shape")

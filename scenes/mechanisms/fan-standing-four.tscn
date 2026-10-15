@@ -1,12 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=4 uid="uid://733rkfblvflx"]
 
-[ext_resource type="Script" path="res://scripts/mechanisms/airflow.gd" id="Script"]
-
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/fan-standing-four.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://le0sb5d541u0" path="res://assets/models/build_pieces/GLB format/fan-standing-four.glb" id="Model"]
+[ext_resource type="Script" uid="uid://b2vhnxwnnp2c1" path="res://scripts/mechanisms/airflow.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/fan-standing-four.tres" id="TrackShape"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_power"]
 script = ExtResource("Setting")
@@ -14,11 +11,9 @@ key = &"power"
 label = "Air power"
 description = "Air power (N)"
 default_number = 1.2
-minimum = 0.0
 maximum = 5.0
 step = 0.05
 unit = "N"
-
 
 [sub_resource type="Resource" id="Setting_range"]
 script = ExtResource("Setting")
@@ -31,7 +26,6 @@ maximum = 10.0
 step = 0.25
 unit = "m"
 
-
 [sub_resource type="Resource" id="Setting_enabled"]
 script = ExtResource("Setting")
 key = &"enabled"
@@ -39,14 +33,11 @@ label = "Initially enabled"
 kind = 1
 default_flag = true
 
-
 [sub_resource type="Resource" id="Setting_reverse"]
 script = ExtResource("Setting")
 key = &"reverse"
 label = "Reverse airflow"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
@@ -56,59 +47,74 @@ bounce = 0.02
 resource_local_to_scene = true
 size = Vector3(0.9, 0.9, 4)
 
-[sub_resource type="StandardMaterial3D" id="ArrowMaterial"]
-albedo_color = Color(0.3490196, 0.8980392, 0.6941177, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7spu"]
+albedo_color = Color(0.7647059, 0.6, 0.28627452, 1)
 
-[sub_resource type="CylinderMesh" id="ShaftMesh"]
-top_radius = 0.035
-bottom_radius = 0.035
-height = 0.4
+[sub_resource type="ArrayMesh" id="ArrayMesh_1kklx"]
+_surfaces = [{
+"aabb": AABB(-0.28284273, 0, -0.42426407, 0.56568545, 0.2, 0.84852815),
+"format": 34896613377,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAQAAAAMAAgAEAAAAAwAAAAQAAwAFAAEABgAEAAIABAAHAAMACAAFAAMAAQAFAAgAAwAHAAgACAACAAEACQAHAAQACAAHAAkABAAGAAkACQAKAAgAAgALAAYACQAGAAsACwACAAgACwAKAAkACAAKAAsA"),
+"name": "colormap",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("/78AAP//AAD//wAAVNUAAP9/AAD/fwAA/7//////AAAAAAAA/38AAP////9U1QAA/78AAAAAAAAAAP///38AAP9/////fwAA/7///wAAAAD/////qioAAP//AACqKgAA")
+}]
+blend_shape_mode = 0
 
-[sub_resource type="CylinderMesh" id="TipMesh"]
-top_radius = 0.0
-bottom_radius = 0.1
-height = 0.2
+[sub_resource type="ArrayMesh" id="ArrayMesh_tfwfl"]
+resource_name = "arrow-basic_arrow-basic"
+_surfaces = [{
+"aabb": AABB(-0.28284273, 0, -0.42426407, 0.56568545, 0.2, 0.84852815),
+"attribute_data": PackedByteArray("/9eY+f/XmPn/15j5/9eY+f/XmPn/15j5/9dlxv/XZcb/12XG/9dlxv/XZcb/12XG/9dlxv/XZcb/15j5/9eY+f/XZcb/15j5/9eY+f/XZcb/12XG/9eY+f/XmPn/12XG/9dlxv/XZcb/15j5/9eY+f/XZcb/15j5/9eY+f/XZcb/15j5/9eY+f/XZcb/12XG"),
+"format": 34896613399,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAgADAAAABAADAAIAAgAFAAQABgAHAAgACAAJAAYACgAJAAgACAALAAoADAANAA4ADgAPAAwAEAARABIAEgATABAAFAAVABYAFgAXABQAGAAZABoAGgAbABgAHAAdAB4AHgAfABwAIAAhACIAIgAjACAA"),
+"material": SubResource("StandardMaterial3D_o7spu"),
+"name": "colormap",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("/78AAP///7///wAAVNX/v/9/AAD/f/+/AAAAAP9//7//vwAAAAD/v///AACqKv+//7///wAA////////qir///9/////f///AAD///9/////v/////////////9U1f///7///////5//////VNX/n///AABU1f+f/78AAP///5//v///////n/+/AAD///+fAAAAAP9//58AAP///3//n/+///8AAP/f/78AAAAA/9///wAAqir/3/////+qKv/f/3////9//5//////qir/n///AACqKv+f/38AAP9//5//f////3//3/9/AAD/f//f//8AAFTV/9//////VNX/3wAAAAD/f//f/78AAAAA/9//v///AAD/3wAA////f//fAAD/fwAA/38AAP9/AAD/fwAA/38AAP9//3//v/9//7//f/+//3//v/9//7//f/+//38AAP9/AAD/fwAA/38AAP9/////f////3////9/////fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/f////3////9/////f///")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_1kklx")
 
-[node name="Airflow" type="Node3D" node_paths=PackedStringArray("blade", "area", "arrow")]
+[node name="Airflow" type="Node3D" unique_id=482170767 node_paths=PackedStringArray("area", "blade", "arrow")]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_power"), SubResource("Setting_range"), SubResource("Setting_enabled"), SubResource("Setting_reverse")])
-blade = NodePath("Track/Model/fan-standing-four/fan")
 area = NodePath("Detection")
-arrow = NodePath("Arrow")
+blade = NodePath("Track/Model/fan-standing-four/fan")
 axis = Vector3(0, 0, -1)
 origin = Vector3(0, 0.5, -0.15)
+arrow = NodePath("Arrow")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_power"), SubResource("Setting_range"), SubResource("Setting_enabled"), SubResource("Setting_reverse")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("TrackPhysics")
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=1207434990]
 collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Model" parent="Track" unique_id=477204642 instance=ExtResource("Model")]
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=1013938302]
 shape = ExtResource("TrackShape")
 
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.5, -2.15)
+[node name="Detection" type="Area3D" parent="." unique_id=539811955]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -2.15)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=1266421400]
 shape = SubResource("DetectionShape")
 
-[node name="Arrow" type="Node3D" parent="."]
-position = Vector3(0.58, 0.5, -0.15)
-rotation = Vector3(-1.57079633, 0, 0)
+[node name="Arrow" type="Node3D" parent="." unique_id=1896341279]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.58, 0.5, -0.15)
 
-[node name="Shaft" type="MeshInstance3D" parent="Arrow"]
-position = Vector3(0, 0.2, 0)
-mesh = SubResource("ShaftMesh")
-material_override = SubResource("ArrowMaterial")
+[node name="arrow-basic2" type="Node3D" parent="Arrow" unique_id=1331773692]
+transform = Transform3D(-1.0927847e-08, 0.25, 0, -0.25, -1.0927847e-08, 0, 0, 0, 0.25, -0.6, 0.30000007, 0)
 
-[node name="Tip" type="MeshInstance3D" parent="Arrow"]
-position = Vector3(0, 0.45, 0)
-mesh = SubResource("TipMesh")
-material_override = SubResource("ArrowMaterial")
+[node name="arrow-basic" type="MeshInstance3D" parent="Arrow/arrow-basic2" unique_id=658036043]
+mesh = SubResource("ArrayMesh_tfwfl")
 
 [editable path="Track/Model"]

@@ -1,5 +1,39 @@
 extends "res://tests/support/game_test.gd"
 
+func test_sandbox_runs_multiple_releases_and_resets_them_together() -> void:
+	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
+	add_child_autoqfree(workspace)
+	await get_tree().process_frame
+	var build := workspace.world.build
+	var simulation := workspace.world.simulation
+	assert_false(workspace.session.start_simulation(), "An empty build still needs a release")
+	assert_eq(simulation.state, SimulationManager.State.BUILD)
+	for index in 3:
+		build.spawn(workspace.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(index * 3, 2, 0)), "release-%d" % index, {"quantity": 2, "interval": 0.6, "start_delay": index * 0.1})
+	var construction := build.snapshot()
+	assert_true(workspace.session.start_simulation(), "Sandbox accepts more than one release")
+	while simulation.elapsed < 0.9 and simulation.state == SimulationManager.State.RUNNING:
+		await get_tree().physics_frame
+	assert_eq(simulation.marbles.size(), 6, "Every release runs its schedule")
+	var sources: Dictionary = {}
+	var identities: Dictionary = {}
+	for body in simulation.marbles:
+		var source: String = body.get_meta("source")
+		sources[source] = sources.get(source, 0) + 1
+		identities[body.get_meta("marble_id")] = true
+	assert_eq(sources, {"release-0": 2, "release-1": 2, "release-2": 2})
+	assert_eq(identities.size(), 6, "Release ordinals remain unique across sources")
+	simulation.toggle_pause()
+	for body in simulation.marbles: assert_true(body.freeze)
+	simulation.toggle_pause()
+	for body in simulation.marbles: assert_false(body.freeze)
+	simulation.reset()
+	assert_true(simulation.marbles.is_empty())
+	assert_eq(build.snapshot(), construction, "Reset retains every start drop")
+	assert_true(workspace.session.start_simulation())
+	assert_eq(simulation.marbles.size(), 1, "Restart begins a fresh schedule without retaining old marbles")
+	simulation.reset()
+
 func test_run_pause_and_reset_respect_workspace_input() -> void:
 	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
 	add_child_autoqfree(workspace)

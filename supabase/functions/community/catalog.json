@@ -2605,6 +2605,27 @@
 			},
 			"surface_mounted": true
 		},
+		"logic-delay": {
+			"collector": false,
+			"connectors": 0,
+			"inputs": {
+				"input": false,
+				"reset": false
+			},
+			"outputs": {
+				"output": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"delay": {
+					"kind": 0,
+					"maximum": 600.0,
+					"minimum": 0.0
+				}
+			},
+			"surface_mounted": true
+		},
 		"logic-memory": {
 			"collector": false,
 			"connectors": 0,
@@ -2657,6 +2678,38 @@
 			"release": false,
 			"scenery": false,
 			"settings": {},
+			"surface_mounted": true
+		},
+		"logic-timer": {
+			"collector": false,
+			"connectors": 0,
+			"inputs": {
+				"reset": false,
+				"start": false,
+				"stop": false
+			},
+			"outputs": {
+				"tick": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"auto_start": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"frequency": {
+					"kind": 0,
+					"maximum": 60.0,
+					"minimum": 0.01
+				},
+				"loop": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			},
 			"surface_mounted": true
 		},
 		"prop-robot-arm": {
@@ -3919,7 +3972,7 @@
 			"surface_mounted": false
 		}
 	},
-	"compatibility": "eea0eeaa7d0aaa224513ab304b517927a8ea7f50c8e5eaab6022155c5a0b56ab",
+	"compatibility": "a15c8d6d29fb6a608341ccb9c3b5d5c099835105188350f7c9af601400160662",
 	"format": 1,
 	"game_version": "0.0.1"
 }

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Registry" format=3 uid="uid://tdsg28sdm8xd"]
+[gd_resource type="Resource" script_class="Registry" format=3 uid="uid://dg382aj55vdaf"]
 
 [ext_resource type="Script" uid="uid://dqtv77mng5dyh" path="res://addons/yard/registry.gd" id="1_u45ou"]
 
@@ -56,6 +56,7 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
 &"uid://b8lvr3eoqs1aw": &"split-large-solid-left",
 &"uid://b8o336ygit1um": &"factory-floor",
 &"uid://baxaraq6vfvcl": &"factory-hopper-high-square",
+&"uid://baxcpppjfeusm": &"logic-delay",
 &"uid://bb0hl6q6ciwe8": &"ramp-end-c",
 &"uid://bb4sodsu2oxti": &"ramp-long-solid-b",
 &"uid://bba5kpd6ckac3": &"slant-a",
@@ -74,6 +75,7 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
 &"uid://bia3nqdlj7grc": &"building-door-rotate-square-a",
 &"uid://bikqq6b7jri53": &"split-large-right",
 &"uid://bioowdds15egt": &"end-square",
+&"uid://bix7u54oeyogj": &"logic-timer",
 &"uid://bj22baa03tesj": &"factory-conveyor-bars-high-slope",
 &"uid://bj2i2aaho1622": &"factory-conveyor-corner",
 &"uid://bjipb2aod0tth": &"factory-conveyor",
@@ -599,9 +601,11 @@ _string_ids_to_uids = Dictionary[StringName, StringName]({
 &"launcher": &"uid://cq1so7evmy8no",
 &"logic-and": &"uid://bmelogicand01",
 &"logic-counter": &"uid://dhk31hga328pg",
+&"logic-delay": &"uid://baxcpppjfeusm",
 &"logic-memory": &"uid://cydx4vhc32cl5",
 &"logic-not": &"uid://bmelogicnot01",
 &"logic-or": &"uid://bmelogicor01",
+&"logic-timer": &"uid://bix7u54oeyogj",
 &"prop-robot-arm": &"uid://bc67tut8x3idg",
 &"prop-traffic-light": &"uid://ctus7gqldb1bk",
 &"prop-window-machine": &"uid://ccjjdgauomrq3",

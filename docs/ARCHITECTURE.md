@@ -59,7 +59,7 @@ A model scene may contain any number of `PieceBehavior` nodes, including its roo
 
 Ordinary marble motion uses rigid-body physics. The bucket elevator temporarily captures a marble and carries it deliberately, restoring its saved physics/collision state when released or reset. Pause preserves velocities and capture state. Reset clears bodies, behavior state, and queued signals. A mechanism that captures marbles needs to respect all three transitions, including the case where several marbles are waiting or in transit.
 
-Ordinary Sandbox testing requires exactly one release and has no deadline. A catcher ends that run on arrival. Puzzle contexts may have several releases and must satisfy every authored objective before the run deadline; an omitted deadline defaults to 90 seconds. Losing a marble fails the run. Delivery objectives count distinct marbles, optionally from one release. Activation objectives record that a named output occurred, not how often. No objective compares the player layout to a reference solution.
+Ordinary Sandbox testing requires at least one release, runs every placed release, and has no deadline. A catcher ends that run on arrival. Puzzle contexts may have several releases and must satisfy every authored objective before the run deadline; an omitted deadline defaults to 90 seconds. Losing a marble fails the run. Delivery objectives count distinct marbles, optionally from one release. Activation objectives record that a named output occurred, not how often. No objective compares the player layout to a reference solution.
 
 ### Signals between pieces
 
@@ -82,6 +82,8 @@ GameManager creates `CommunityService` with the session's PuzzleStore and a `Sup
 Puzzle format 3 adds bounded declarative `guidance` steps. Stable construction UIDs and connector indices resolve targets against live pieces; explicit points cover locations. Missing targets hide safely and produce authoring validation errors. Official Introduction content can show steps automatically; other puzzles require the player's Hint action. Goal briefly locates objective targets, cycling through multiple objectives without exposing a reference layout. The existing HUD guidance strip displays step text. Context changes clear state, and simulation reset restarts the sequence against the retained build.
 
 Saved scenes under `scenes/ui/` own static layout; `resources/sandbox_theme.tres` owns shared styling. WorkspaceHUD binds the common controls, the inspector edits a selection, the Connect tool edits relationships, and the authoring drawer edits definition-wide data. `SelectionOverlay` projects connector handles and snap contacts from BuildManager's targets; construction does not create presentation nodes for them.
+
+`WorldGuidance` owns all player-hint progression, including reading text-only `hints` from older puzzles when no authored sequence exists. WorkspaceHUD only displays its instruction and forwards Next or Close. The editor authors hints only in Objectives; there is no parallel Setup hint field, per-puzzle copy table, or HUD tutorial state. Puzzle descriptions supply objective text directly.
 
 `ConstructionInput` applies saved keyboard overrides without resetting addon actions. The autoloads are SoundManager, PhantomCameraManager, SupabaseClient, and SteamClient. GameManager loads and saves settings and coordinates modal input suspension.
 

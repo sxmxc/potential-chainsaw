@@ -145,12 +145,12 @@ automatic_composition = false
 [node name="PhantomCameraHost" parent="World/Track/Camera" index="0" unique_id=384233019]
 host_layers = 2
 
-[node name="FreeView" parent="World/Track" index="7" unique_id=1419629802]
+[node name="FreeView" parent="World/Track" index="8" unique_id=1419629802]
 tween_resource = SubResource("Resource_xq7gy")
 host_layers = 2
 camera_3d_resource = SubResource("Resource_ttlna")
 
-[node name="SimulationCamera" parent="World/Track" index="8" unique_id=655534682]
+[node name="SimulationCamera" parent="World/Track" index="9" unique_id=655534682]
 player_selection = false
 
 [node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2" unique_id=1700862802]

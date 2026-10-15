@@ -48,6 +48,8 @@ Extend `PieceBehavior`. `configure(settings)` stores resolved configuration and 
 
 Preview instances set `preview_only`, disable processing, and remove collision participation. Initialization must still work when the scene is created as a preview. Do not begin a run in `_ready()` or require an application menu to exist.
 
+Behaviors can return world-space points from `build_trajectory(excluded)` for the shared `SelectionOverlay` to draw when selected or previewed. The default returns no path. The overlay's depth-tested 3D mesh updates during physics processing; its excluded body RIDs omit hidden moving originals. The launcher uses the same velocity calculation for its shot and its gravity arc, sweeping the shared `scenes/marble_shape.tres` collision shape until first contact. Its loading stop is excluded because it retracts before firing. No separate physics simulation or piece-specific overlay is needed.
+
 The sensor illustrates the division: `_ready()` connects detection signals and declares its pulse outputs; entry/exit callbacks update occupancy while running; reset clears occupancy and returns the indicator to idle. A bucket elevator has more state to restore, but follows the same lifecycle. If a behavior captures a marble, restore its physics and collision on release and reset, and preserve capture correctly through pause.
 
 ### Declare ports

@@ -1,21 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c6qj5nbhntn7e"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/pipe-glass-large-curve.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://d06rmdrpxywxu" path="res://assets/models/environment/kenney_factory/GLB format/pipe-glass-large-curve.glb" id="Model"]
 [ext_resource type="Shape3D" path="res://scenes/environment/collision/factory-pipe-glass-large-curve.tres" id="Shape"]
 
 [sub_resource type="PhysicsMaterial" id="Material"]
 friction = 0.18
 bounce = 0.02
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=1360704504]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=704072214 instance=ExtResource("Model")]
 
-[node name="Body" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Body" type="StaticBody3D" parent="." unique_id=452617491]
 collision_mask = 2
 physics_material_override = SubResource("Material")
 
-[node name="Collision" type="CollisionShape3D" parent="Body"]
+[node name="Collision" type="CollisionShape3D" parent="Body" unique_id=1162637307]
 shape = ExtResource("Shape")

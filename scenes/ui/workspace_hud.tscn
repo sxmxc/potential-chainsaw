@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c4if8edlanmt2"]
 
+[ext_resource type="PackedScene" uid="uid://816wp88y5yxp" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
 [ext_resource type="PackedScene" uid="uid://bxo0prqjwsv8i" path="res://scenes/ui/toolbars/build_toolbar.tscn" id="Build"]
 [ext_resource type="PackedScene" uid="uid://cklb7w7086xys" path="res://scenes/ui/toolbars/edit_toolbar.tscn" id="Edit"]
 [ext_resource type="PackedScene" uid="uid://4pjsxw6jdy1t" path="res://scenes/ui/widgets/extension_picker.tscn" id="Extension"]
@@ -9,10 +10,7 @@
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/workspace_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
-
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
-
-[ext_resource type="PackedScene" path="res://scenes/ui/puzzle_authoring.tscn" id="Authoring"]
 
 [node name="WorkspaceHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
@@ -25,9 +23,9 @@ mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
-
-[node name="MechanismWiring" parent="." instance=ExtResource("Wiring")]
+[node name="MechanismWiring" parent="." unique_id=23506445 instance=ExtResource("Wiring")]
 unique_name_in_owner = true
+layout_mode = 1
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1137512754]
 layout_mode = 0
@@ -80,30 +78,27 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="EditToolbar" parent="Margin/Layout/Body/Workspace" unique_id=646885837 instance=ExtResource("Edit")]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="Guidance" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=433491361]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 theme_type_variation = &"ContextPanel"
 
 [node name="Contents" type="HBoxContainer" parent="Margin/Layout/Body/Workspace/Guidance" unique_id=1629256354]
 layout_mode = 2
 
+[node name="GuidanceProgress" type="Label" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=15755412]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+
 [node name="GuidanceText" type="Label" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=286286119]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"MutedLabel"
+theme_type_variation = &"CardLabel"
 autowrap_mode = 3
 
 [node name="DismissGuidance" type="Button" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=343362771]
@@ -113,6 +108,14 @@ size_flags_vertical = 0
 tooltip_text = "Dismiss hint"
 theme_type_variation = &"QuietButton"
 text = "×"
+
+[node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EditToolbar" parent="Margin/Layout/Body/Workspace" unique_id=646885837 instance=ExtResource("Edit")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="Bottom" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=2007693626]
 unique_name_in_owner = true
@@ -133,9 +136,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="AuthoringSlot" type="HBoxContainer" parent="Margin/Layout/Body"]
+[node name="AuthoringSlot" type="HBoxContainer" parent="Margin/Layout/Body" unique_id=209203179]
+unique_name_in_owner = true
 visible = false
+layout_mode = 2
 mouse_filter = 2
+
+[node name="PuzzleAuthoring" parent="Margin/Layout/Body/AuthoringSlot" unique_id=49713239 instance=ExtResource("Authoring")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -152,11 +159,7 @@ grow_vertical = 1
 unique_name_in_owner = true
 visible = false
 
-[node name="PuzzleAuthoring" parent="Margin/Layout/Body/AuthoringSlot" instance=ExtResource("Authoring")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="NotificationTimer" type="Timer" parent="."]
+[node name="NotificationTimer" type="Timer" parent="." unique_id=477223121]
 unique_name_in_owner = true
 wait_time = 4.0
 one_shot = true

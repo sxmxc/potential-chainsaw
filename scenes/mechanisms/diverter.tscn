@@ -1,32 +1,31 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dxhbdwxmjfydn"]
 
-[ext_resource type="Script" path="res://scripts/mechanisms/diverter.gd" id="Script"]
-
-[ext_resource type="PackedScene" path="res://assets/models/build_pieces/GLB format/split-double-sides.glb" id="Model"]
-
+[ext_resource type="PackedScene" uid="uid://d1hlx0yn7sdol" path="res://assets/models/build_pieces/GLB format/split-double-sides.glb" id="Model"]
+[ext_resource type="Script" uid="uid://cq7dft2sgxtb8" path="res://scripts/mechanisms/diverter.gd" id="Script"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 [ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/split-double-sides.tres" id="TrackShape"]
-
-[ext_resource type="Script" path="res://scripts/construction/piece_setting.gd" id="Setting"]
 
 [sub_resource type="Resource" id="Setting_left"]
 script = ExtResource("Setting")
 key = &"left"
 label = "Route left"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="Resource" id="Setting_alternating"]
 script = ExtResource("Setting")
 key = &"alternating"
 label = "Alternate after crossing"
 kind = 1
-default_flag = false
-
 
 [sub_resource type="PhysicsMaterial" id="TrackPhysics"]
 friction = 0.18
 bounce = 0.02
+
+[sub_resource type="PhysicsMaterial" id="GuidePhysics"]
+friction = 0.05
+
+[sub_resource type="BoxShape3D" id="GuideShape"]
+size = Vector3(0.08, 0.48, 1.2)
 
 [sub_resource type="StandardMaterial3D" id="GuideMaterial"]
 resource_local_to_scene = true
@@ -35,54 +34,44 @@ albedo_color = Color(0.5019608, 0.7254902, 0.6862745, 1)
 [sub_resource type="BoxMesh" id="GuideMesh"]
 size = Vector3(0.08, 0.48, 1.2)
 
-[sub_resource type="PhysicsMaterial" id="GuidePhysics"]
-friction = 0.05
-
-[sub_resource type="BoxShape3D" id="GuideShape"]
-size = Vector3(0.08, 0.48, 1.2)
-
 [sub_resource type="BoxShape3D" id="DetectionShape"]
 resource_local_to_scene = true
 size = Vector3(2.6, 0.7, 1.6)
 
-[node name="Diverter" type="Node3D" node_paths=PackedStringArray("guide", "area")]
+[node name="Diverter" type="Node3D" unique_id=1939008848 node_paths=PackedStringArray("guide", "area")]
 script = ExtResource("Script")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_left"), SubResource("Setting_alternating")])
 guide = NodePath("Guide")
 area = NodePath("Detection")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_left"), SubResource("Setting_alternating")])
 
-[node name="Track" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("TrackPhysics")
-collision_layer = 1
+[node name="Track" type="StaticBody3D" parent="." unique_id=359670236]
 collision_mask = 2
+physics_material_override = SubResource("TrackPhysics")
 
-[node name="Model" parent="Track" instance=ExtResource("Model")]
+[node name="Model" parent="Track" unique_id=936063770 instance=ExtResource("Model")]
 
-
-[node name="Collision" type="CollisionShape3D" parent="Track"]
+[node name="Collision" type="CollisionShape3D" parent="Track" unique_id=1307133678]
 shape = ExtResource("TrackShape")
 
-[node name="Guide" type="AnimatableBody3D" parent="."]
-position = Vector3(0, 0.49, 0)
-rotation = Vector3(0, 0.523598776, 0)
-physics_material_override = SubResource("GuidePhysics")
-collision_layer = 1
+[node name="Guide" type="AnimatableBody3D" parent="." unique_id=2044152471]
+transform = Transform3D(0.8660254, 0, 0.5, 0, 1, 0, -0.5, 0, 0.8660254, 0, 0.49, 0)
 collision_mask = 2
+physics_material_override = SubResource("GuidePhysics")
 sync_to_physics = false
 
-[node name="Collision" type="CollisionShape3D" parent="Guide"]
+[node name="Collision" type="CollisionShape3D" parent="Guide" unique_id=86163639]
 shape = SubResource("GuideShape")
 
-[node name="Visual" type="MeshInstance3D" parent="Guide"]
-mesh = SubResource("GuideMesh")
+[node name="Visual" type="MeshInstance3D" parent="Guide" unique_id=1208770340]
 material_override = SubResource("GuideMaterial")
+mesh = SubResource("GuideMesh")
 
-[node name="Detection" type="Area3D" parent="."]
-position = Vector3(0, 0.55, 0)
+[node name="Detection" type="Area3D" parent="." unique_id=652181178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
 collision_layer = 0
 collision_mask = 2
 
-[node name="Collision" type="CollisionShape3D" parent="Detection"]
+[node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=1276173088]
 shape = SubResource("DetectionShape")
 
 [editable path="Track/Model"]

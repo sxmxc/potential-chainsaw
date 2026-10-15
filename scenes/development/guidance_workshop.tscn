@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://df0gtltedm3et"]
 
-[ext_resource type="PackedScene" path="res://scenes/construction_workspace.tscn" id="Workspace"]
+[ext_resource type="PackedScene" uid="uid://0hyt2dm67tcl" path="res://scenes/construction_workspace.tscn" id="Workspace"]
 
-[node name="GuidanceWorkshop" instance=ExtResource("Workspace")]
+[node name="GuidanceWorkshop" unique_id=440331637 instance=ExtResource("Workspace")]
 initial_puzzle = "res://resources/development/guidance_workshop.json"

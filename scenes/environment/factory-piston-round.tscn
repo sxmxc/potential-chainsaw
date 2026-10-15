@@ -1,8 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://7picem7vt6tx"]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/kenney_factory/GLB format/piston-round.glb" id="Model"]
+[ext_resource type="PackedScene" uid="uid://bxsyw1k23aiyj" path="res://assets/models/environment/kenney_factory/GLB format/piston-round.glb" id="Model"]
 
-[node name="EnvironmentModel" type="Node3D"]
+[node name="EnvironmentModel" type="Node3D" unique_id=522181661]
 
-[node name="Visual" parent="." instance=ExtResource("Model")]
-position = Vector3(0, 0, 0)
+[node name="Visual" parent="." unique_id=1470536020 instance=ExtResource("Model")]

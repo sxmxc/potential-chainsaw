@@ -12,6 +12,10 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0, 0, 0, 0)
 
+[sub_resource type="DPITexture" id="DPITexture_hsgjr"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uf0vx"]
 content_margin_left = 4.0
 content_margin_top = 4.0
@@ -75,6 +79,8 @@ size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_cl5ex")
 current_tab = 0
 tabs_visible = false
+tab_0/title = "Class 1"
+tab_1/icon = SubResource("DPITexture_hsgjr")
 script = ExtResource("2_moyid")
 tab_display_title = "Class"
 scan_tab_input_scene = ExtResource("3_cl5ex")
@@ -92,6 +98,8 @@ size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_cl5ex")
 current_tab = 0
 tabs_visible = false
+tab_0/title = "Dir 1"
+tab_1/icon = SubResource("DPITexture_hsgjr")
 script = ExtResource("2_moyid")
 tab_display_title = "Dir"
 scan_tab_input_scene = ExtResource("4_uf0vx")

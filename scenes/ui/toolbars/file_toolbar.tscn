@@ -5,9 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://ducsujldyyuh5" path="res://assets/ui/icons/follow.svg" id="FollowIcon"]
 [ext_resource type="Script" uid="uid://buakbbyctigdy" path="res://scripts/ui/icon_button.gd" id="IconScript"]
 [ext_resource type="Texture2D" uid="uid://b8e0wtmi6l0cv" path="res://assets/ui/icons/next_marble.svg" id="NextIcon"]
+[ext_resource type="PackedScene" uid="uid://cla2de6nd36p7" path="res://scenes/ui/puzzle_bar.tscn" id="PuzzleBar"]
 [ext_resource type="Script" uid="uid://bc0luytdo7dg5" path="res://scripts/ui/file_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-[ext_resource type="PackedScene" uid="uid://cla2de6nd36p7" path="res://scenes/ui/puzzle_bar.tscn" id="PuzzleBar"]
 
 [node name="FileToolbar" type="HBoxContainer" unique_id=21099837]
 anchors_preset = 10
@@ -43,15 +43,29 @@ text = "Untitled track"
 clip_text = true
 text_overrun_behavior = 3
 
+[node name="LocateGoal" type="Button" parent="LeftIsland/Controls/Identity/Heading" unique_id=1835557997]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Locate the destination"
+theme_type_variation = &"QuietButton"
+text = "Goal"
+
+[node name="RequestGuidance" type="Button" parent="LeftIsland/Controls/Identity/Heading" unique_id=1285390123]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Show authored guidance"
+theme_type_variation = &"QuietButton"
+text = "Hint"
+
 [node name="SaveStatus" type="Label" parent="LeftIsland/Controls/Identity" unique_id=1194057294]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
-max_lines_visible = 2
 text_overrun_behavior = 3
+max_lines_visible = 2
 
-[node name="Open" type="Button" parent="LeftIsland/Controls"]
+[node name="Open" type="Button" parent="LeftIsland/Controls" unique_id=706379363]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(40, 40)
@@ -132,10 +146,10 @@ theme_type_variation = &"AccentSmallLabel"
 [node name="Author" type="Button" parent="RightIsland/Controls" unique_id=1454071156]
 unique_name_in_owner = true
 visible = false
-layout_mode = 2
 custom_minimum_size = Vector2(40, 40)
-theme_type_variation = &"IconButton"
+layout_mode = 2
 tooltip_text = "Authoring tools"
+theme_type_variation = &"IconButton"
 script = ExtResource("IconScript")
 icon_name = &"pieces"
 
@@ -203,7 +217,7 @@ theme_type_variation = &"IconButton"
 icon = ExtResource("NextIcon")
 script = ExtResource("IconScript")
 
-[node name="PuzzleBar" parent="RightIsland/Controls" instance=ExtResource("PuzzleBar")]
+[node name="PuzzleBar" parent="RightIsland/Controls" unique_id=1289475011 instance=ExtResource("PuzzleBar")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -220,17 +234,3 @@ theme_type_variation = &"IconButton"
 icon = ExtResource("7_jiiw6")
 script = ExtResource("IconScript")
 icon_name = &"menu"
-
-[node name="LocateGoal" type="Button" parent="LeftIsland/Controls/Identity/Heading"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Goal"
-tooltip_text = "Locate the destination"
-theme_type_variation = &"QuietButton"
-
-[node name="RequestGuidance" type="Button" parent="LeftIsland/Controls/Identity/Heading"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Hint"
-tooltip_text = "Show authored guidance"
-theme_type_variation = &"QuietButton"

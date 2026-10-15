@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://bme4cgupndlsr"]
+
+[ext_resource type="Script" uid="uid://bn2lggqn64ali" path="res://scripts/mechanisms/timer_module.gd" id="Behavior"]
+[ext_resource type="PackedScene" uid="uid://b5clksnf16hrg" path="res://scenes/mechanisms/logic/module_housing.tscn" id="Housing"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Frequency"]
+script = ExtResource("Setting")
+key = &"frequency"
+label = "Frequency"
+description = "Signals per second. 2 sends one signal every half-second."
+default_number = 1.0
+minimum = 0.01
+maximum = 60.0
+unit = "signals/s"
+
+[sub_resource type="Resource" id="Loop"]
+script = ExtResource("Setting")
+key = &"loop"
+label = "Loop"
+description = "Repeat at the configured frequency. Turn off to send just one signal."
+kind = 1
+default_flag = true
+
+[sub_resource type="Resource" id="AutoStart"]
+script = ExtResource("Setting")
+key = &"auto_start"
+label = "Start automatically"
+description = "Begin timing when Run starts. Otherwise wait for a Start input."
+kind = 1
+default_flag = true
+
+[sub_resource type="StandardMaterial3D" id="Cover"]
+albedo_color = Color(0.48, 0.48, 0.85, 1)
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="Mark"]
+albedo_color = Color(0.78, 0.94, 0.89, 1)
+roughness = 0.65
+
+[sub_resource type="CylinderMesh" id="Dial"]
+top_radius = 0.053
+bottom_radius = 0.053
+height = 0.006
+radial_segments = 32
+
+[sub_resource type="BoxMesh" id="Hand"]
+size = Vector3(0.008, 0.006, 0.043)
+
+[node name="Timer" type="Node3D" unique_id=395286610 node_paths=PackedStringArray("indicator", "readout", "clock_hand")]
+script = ExtResource("Behavior")
+indicator = NodePath("Housing/Indicator")
+readout = NodePath("Readout")
+clock_hand = NodePath("ClockHand")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Frequency"), SubResource("Loop"), SubResource("AutoStart")])
+
+[node name="Housing" parent="." unique_id=337219451 instance=ExtResource("Housing")]
+
+[node name="Cover" parent="Housing" index="1" unique_id=233930834]
+material_override = SubResource("Cover")
+
+[node name="Function" type="Label3D" parent="." unique_id=711218041]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.045, 0.15, -0.075)
+pixel_size = 0.003
+text = "TIMER"
+font_size = 22
+outline_size = 2
+
+[node name="Readout" type="Label3D" parent="." unique_id=288364083]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.045, 0.15, 0.017)
+pixel_size = 0.003
+text = "1 /s"
+font_size = 20
+outline_size = 2
+
+[node name="InputLabel0" type="Label3D" parent="." unique_id=469412043]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.205, 0.15, -0.1)
+pixel_size = 0.002
+text = "GO"
+font_size = 12
+outline_size = 2
+
+[node name="InputLabel1" type="Label3D" parent="." unique_id=1514239012]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.205, 0.15, 0)
+pixel_size = 0.002
+text = "STOP"
+font_size = 12
+outline_size = 2
+
+[node name="InputLabel2" type="Label3D" parent="." unique_id=1281343748]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.205, 0.15, 0.1)
+pixel_size = 0.002
+text = "RST"
+font_size = 12
+outline_size = 2
+
+[node name="OutputLabel" type="Label3D" parent="." unique_id=1890212161]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.15, 0.167)
+pixel_size = 0.003
+text = "TICK"
+font_size = 16
+outline_size = 2
+
+[node name="Dial" type="MeshInstance3D" parent="." unique_id=767149775]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.103, 0.143, -0.025)
+material_override = SubResource("Mark")
+mesh = SubResource("Dial")
+
+[node name="ClockHand" type="Node3D" parent="." unique_id=842869512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.103, 0.15, -0.025)
+
+[node name="Hand" type="MeshInstance3D" parent="ClockHand" unique_id=497000217]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.018)
+material_override = SubResource("Cover")
+mesh = SubResource("Hand")
+
+[editable path="Housing"]

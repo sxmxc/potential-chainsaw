@@ -27,8 +27,8 @@ func start() -> bool:
 		for behavior_node in piece.behaviors:
 			if behavior_node is MarbleRelease: starts.append(behavior_node)
 			if behavior_node is MarbleCollector: finishes.append(behavior_node)
-	if starts.is_empty() or (puzzle.is_empty() and starts.size()!=1):
-		state_changed.emit(State.BUILD,"Add one marble release to test the track.")
+	if starts.is_empty():
+		state_changed.emit(State.BUILD,"Add a marble release to test the track.")
 		return false
 	if finishes.is_empty() and puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver"):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")

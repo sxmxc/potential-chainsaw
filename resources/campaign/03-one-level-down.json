@@ -11,6 +11,33 @@
   "camera": {},
   "description": "Connect the high release to the lower collector.",
   "difficulty": "Introduction",
+  "environment_instances": [],
+  "guidance": [
+    {
+      "appear": "build",
+      "complete": "connected",
+      "connector": 0.0,
+      "kind": "attention",
+      "target": "release",
+      "text": "Attach the high end of Ramp Long A here. Snapping sets its height."
+    },
+    {
+      "appear": "build",
+      "complete": "run_started",
+      "connector": -1.0,
+      "kind": "attention",
+      "target": "goal",
+      "text": "Join the lower track, then press Run."
+    },
+    {
+      "appear": "run",
+      "complete": "objective",
+      "connector": -1.0,
+      "kind": "target",
+      "target": "goal",
+      "text": "Deliver the marble here."
+    }
+  ],
   "hints": [
     "Attach the high end of Ramp Long A to the release. Connector snapping sets elevation for you."
   ],
@@ -26,7 +53,6 @@
       "type": "deliver"
     }
   ],
-  "order": 3.0,
   "permissions": {},
   "pieces": [
     {
@@ -39,7 +65,7 @@
         0.25,
         2.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "release"
     },
     {
@@ -50,7 +76,7 @@
         0.0,
         -1.0
       ],
-      "rotation": 0.0,
+      "rotation": 0,
       "uid": "runout"
     },
     {
@@ -61,15 +87,12 @@
         0.0,
         -2.0
       ],
-      "rotation": 2.0,
+      "rotation": 2,
       "uid": "goal"
     }
   ],
-  "prerequisites": [
-    "campaign-02"
-  ],
   "restricted_zones": [],
-  "revision": 1.0,
+  "revision": 2.0,
   "solution": [
     {
       "config": {
@@ -122,10 +145,10 @@
   "time_limit": 45.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "338df7931a7aad0762cfd198b7cc2a4e46319d181c20fff642aa7e379ace1f8d",
+    "fingerprint": "a685ce0eb266188a694a93a024cc72ab95ba3344bdcbbb2cff22af9f91729c3e",
     "physics_success": true,
     "seconds": 2.88333333333333,
-    "tested_at": "2026-10-12T03:49:38"
+    "tested_at": "2026-10-15T21:40:42"
   },
-  "version": 1.0
+  "version": 3.0
 }

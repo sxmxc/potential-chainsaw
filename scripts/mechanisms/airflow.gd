@@ -26,10 +26,10 @@ func switch_direction(_value: Variant = null) -> void:
 func update_field() -> void:
 	if not area: return
 	var reach = float(config.get("range", 4))
-	var direction = axis * (-1 if config.get("reverse", false) else 1)
-	arrow.position = origin + Vector3(0.58, 0, 0)
+	#var direction = axis * (-1 if config.get("reverse", false) else 1)
+	#arrow.position = origin + Vector3(0.58, 0, 0)
 	arrow.rotation.x = (-PI / 2 if axis == Vector3.FORWARD else 0.0) + (PI if config.get("reverse", false) else 0.0)
-	area.position = origin + direction * reach * 0.5
+	#area.position = origin + direction * reach * 0.5
 	var box: BoxShape3D = area.get_child(0).shape
 	var dimensions: Vector3 = box.size
 	dimensions[axis.abs().max_axis_index()] = reach

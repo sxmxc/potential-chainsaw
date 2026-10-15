@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://doklwt6xmsqh7"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-piston-square.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/piston-square.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_7r7t7"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://d3io86l8w7sa6" path="res://scenes/environment/factory-piston-square.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://c3milhssikv88" path="res://assets/models/environment/kenney_factory/Previews/piston-square.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,6 @@ category = "Props"
 usage_hint = "A static industrial detail. Selectable, but marbles pass through it. Visual machinery only; no motor, transport, or signal behavior."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-0.5, 0, -0.5, 1.0, 1.0, 1.0)
+bounds = AABB(-0.5, 0, -0.5, 1, 1, 1)
 behavior = "decoration"
 collision_enabled = false
-native_collision = false
-collision_solids = Array[AABB]([])

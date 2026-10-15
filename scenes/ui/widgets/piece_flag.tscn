@@ -1,4 +1,3 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cgttxyryvkp1f"]
 
-[node name="PieceFlag" type="CheckBox"]
-layout_mode = 2
+[node name="PieceFlag" type="CheckBox" unique_id=214692638]

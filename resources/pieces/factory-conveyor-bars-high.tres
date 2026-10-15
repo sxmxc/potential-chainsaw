@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="PieceDefinition" format=3 uid="uid://pv2r2y6w1cns"]
 
-[ext_resource type="Script" path="res://scripts/construction/piece_definition.gd" id="Definition"]
-[ext_resource type="PackedScene" path="res://scenes/environment/factory-conveyor-bars-high.tscn" id="Model"]
-[ext_resource type="Texture2D" path="res://assets/models/environment/kenney_factory/Previews/conveyor-bars-high.png" id="Preview"]
+[ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_eqac6"]
+[ext_resource type="Script" uid="uid://cotv61ee1ws8q" path="res://scripts/construction/piece_definition.gd" id="Definition"]
+[ext_resource type="PackedScene" uid="uid://ct0dvkbv6bjlu" path="res://scenes/environment/factory-conveyor-bars-high.tscn" id="Model"]
+[ext_resource type="Texture2D" uid="uid://iashdnwf8v1q" path="res://assets/models/environment/kenney_factory/Previews/conveyor-bars-high.png" id="Preview"]
 
 [resource]
 script = ExtResource("Definition")
@@ -12,8 +13,7 @@ category = "Props"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors. Visual machinery only; no motor, transport, or signal behavior."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
-bounds = AABB(-0.5, 0, -0.506147, 1.0, 0.42, 1.012295)
+bounds = AABB(-0.5, 0, -0.506147, 1, 0.42, 1.012295)
 behavior = "decoration"
-collision_enabled = true
+collision_solids = Array[AABB]([AABB(-0.5, 0, -0.506147, 1, 0.42, 0.2), AABB(-0.5, 0, 0.293853, 1, 0.4, 0.212295), AABB(-0.5, 0.1, -0.306147, 1, 0.3, 0.6), AABB(-0.5, 0.4, 0.393853, 1, 0.02, 0.112295), AABB(-0.4, 0, -0.306147, 0.1, 0.1, 0.6), AABB(-0.2, 0, -0.306147, 0.1, 0.1, 0.6), AABB(0.1, 0, -0.306147, 0.1, 0.1, 0.6), AABB(0.3, 0, -0.306147, 0.1, 0.1, 0.6)])
 native_collision = true
-collision_solids = Array[AABB]([AABB(-0.5, 0, -0.506147, 1.0, 0.42, 0.2), AABB(-0.5, 0, 0.293853, 1.0, 0.4, 0.212295), AABB(-0.5, 0.1, -0.306147, 1.0, 0.3, 0.6), AABB(-0.5, 0.4, 0.393853, 1.0, 0.02, 0.112295), AABB(-0.4, 0, -0.306147, 0.1, 0.1, 0.6), AABB(-0.2, 0, -0.306147, 0.1, 0.1, 0.6), AABB(0.1, 0, -0.306147, 0.1, 0.1, 0.6), AABB(0.3, 0, -0.306147, 0.1, 0.1, 0.6)])

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SupportDefinition" format=3 uid="uid://cwgjelvqtyofk"]
 
 [ext_resource type="Script" uid="uid://dkwrjqnib1biq" path="res://scripts/construction/connector.gd" id="1_mleyh"]
-[ext_resource type="Script" path="res://scripts/construction/support_definition.gd" id="Definition"]
+[ext_resource type="Script" uid="uid://cyfvsepw33077" path="res://scripts/construction/support_definition.gd" id="Definition"]
 [ext_resource type="PackedScene" uid="uid://o65ibuvr48jy" path="res://scenes/mechanisms/support-color-two.tscn" id="Model"]
 [ext_resource type="Texture2D" uid="uid://ds0egsveu88ec" path="res://assets/models/build_pieces/previews/support-color-two-top.png" id="Preview"]
 
@@ -11,11 +11,11 @@ id = &"support-color-two"
 display_name = "Support Color Two"
 category = "Supports"
 description = "Complete height-adjustable support using its matching bottom, middle and top."
+usage_hint = "One complete support. Its matching bottom, middle and top adjust to the building level. Select to change height or top style."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")
 bounds = AABB(-0.6, 0, -0.3, 1.2, 2.2, 0.6)
 behavior = "resizable_support"
-usage_hint = "One complete support. Its matching bottom, middle and top adjust to the building level. Select to change height or top style."
 height_setting = &"support_height"
 ground_placement = true
 height_offset = -0.25
