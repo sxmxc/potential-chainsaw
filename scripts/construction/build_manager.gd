@@ -325,16 +325,14 @@ func update_preview() -> void:
 		proposed=candidate.transform
 		candidate_key=candidate.key
 		sticky_target=candidate.target.key
-		validation_message=candidate.error
 	else:
 		candidate_key=""
 		candidate_cycled=false
 		sticky_target=""
-		validation_message=snap.validate_group(preview_items,proposed,pieces,moving_group)
 		if point==null:
 			for preview in ghosts: preview.hide()
 			return
-	if validation_message.is_empty() and rules: validation_message=rules.validate(proposed_snapshot())
+	validation_message = validate_edit(preview_items, proposed, moving_group)
 	valid=validation_message.is_empty()
 	apply_preview()
 	var message="✕  "+validation_message if not valid else ("Aligned · click to place" if is_snapped else "Click to place · R rotate · right-click cancel")
@@ -375,11 +373,8 @@ func update_marker_feedback() -> void:
 func commit() -> void:
 	if not enabled or not is_instance_valid(ghost) or not ghost.visible or not valid: return
 	if chosen.authoring_only and not authoring: return
-	var placement_error = snap.validate_group(preview_items, proposed, pieces, moving_group)
+	var placement_error = validate_edit(preview_items, proposed, moving_group)
 	if not placement_error.is_empty(): show_status(placement_error); return
-	if rules:
-		var rule_error = rules.validate(proposed_snapshot())
-		if not rule_error.is_empty(): show_status(rule_error); return
 	var before=snapshot(true)
 	var mode=operation
 	var edited: Array[BuildingPiece] = []
@@ -407,15 +402,9 @@ func commit() -> void:
 		candidate_cycled=false
 		sticky_target=""
 		refresh_connectors()
-	record(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
+	_record_edit(before,"Move assembly" if mode=="move" else ("Duplicate assembly" if mode=="duplicate" else "Place"))
 
-func record(before: Array, label: String) -> void:
-	if rules:
-		var problem = rules.validate(snapshot())
-		if not problem.is_empty():
-			restore(before)
-			show_status("Blocked: " + problem)
-			return
+func _record_edit(before: Array, label: String) -> void:
 	var after := snapshot(true)
 	if before == after: return
 	history.create_action(label)
@@ -436,27 +425,20 @@ func configure_piece(piece: BuildingPiece, config: Dictionary, label: String) ->
 	if rules and not rules.permits(piece.instance_id, "configure"):
 		show_status("Configuration is locked")
 		return false
-	var before=snapshot(true)
-	var previous=piece.configuration.duplicate(true)
-	snap.sample_indices.erase(piece.definition.get_instance_id())
-	var previous_definition := piece.definition
-	piece.apply_configuration(config)
-	var problem=snap.validate(piece.definition,piece.transform,pieces,piece) if piece.definition != previous_definition else ""
+	var normalized := piece.base_definition.normalized_configuration(config)
+	var definition := piece.base_definition.configured(normalized)
+	var items: Array[Dictionary] = [{"uid": piece.instance_id, "definition": definition, "local": piece.transform, "config": normalized}]
+	var problem := validate_edit(items, Transform3D.IDENTITY, [piece], false, definition != piece.definition)
 	if not problem.is_empty():
-		piece.apply_configuration(previous)
 		show_status("✕  "+problem)
 		selection_changed.emit(selected)
 		return false
-	if rules:
-		var rule_error = rules.validate(snapshot())
-		if not rule_error.is_empty():
-			piece.apply_configuration(previous)
-			show_status(rule_error)
-			selection_changed.emit(selected)
-			return false
-	if piece.configuration==previous: return true
+	if normalized == piece.configuration: return true
+	var before := snapshot(true)
+	snap.sample_indices.erase(piece.definition.get_instance_id())
+	piece.apply_configuration(normalized)
 	if piece in selection: piece.tint(Color(1,0.78,0.25,0.4))
-	record(before,label)
+	_record_edit(before,label)
 	selection_changed.emit(selected)
 	return true
 
@@ -510,6 +492,8 @@ func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
 
 func delete_selected() -> void:
 	if not enabled or selection.is_empty() or not selection_permitted("remove"): return
+	var problem := validate_edit([], Transform3D.IDENTITY, selection, true)
+	if not problem.is_empty(): show_status(problem); return
 	cancel()
 	var before=snapshot(true)
 	var removing=selection.duplicate()
@@ -523,7 +507,7 @@ func delete_selected() -> void:
 	for piece in pieces:
 		if not piece.configuration.has("links"): continue
 		piece.configuration.links = piece.configuration.links.filter(func(link): return link.get("target", "") in remaining_ids)
-	record(before,"Delete assembly")
+	_record_edit(before,"Delete assembly")
 
 func selection_pivot() -> Vector3:
 	# The first selected piece is a stable visible anchor, including measured slope offsets.
@@ -560,16 +544,9 @@ func rotate_piece() -> void:
 			candidate_cycled=false
 	elif selected:
 		if not selection_permitted("rotate"): return
-		var pivot=selection_pivot()
-		var rotation_transform=Transform3D(Basis(Vector3.UP,PI/2),pivot)
-		var items: Array[Dictionary] = []
-		for piece in selection: items.append({"definition":piece.definition,"local":Transform3D(piece.basis,piece.position-pivot)})
-		var error=snap.validate_group(items,rotation_transform,pieces,selection)
-		if not error.is_empty(): show_status("✕  "+error); return
-		var before=snapshot(true)
-		for index in selection.size(): selection[index].transform=rotation_transform*items[index].local
-		record(before,"Rotate assembly")
-		selection_changed.emit(selected)
+		var pivot := selection_pivot()
+		var rotation_basis := Basis(Vector3.UP, PI / 2)
+		_transform_selection(Transform3D(rotation_basis, pivot - rotation_basis * pivot), "Rotate assembly")
 
 func elevate_selected(delta: float) -> void:
 	if not selected or not enabled or not selection_permitted("move"): return
@@ -579,14 +556,17 @@ func elevate_selected(delta: float) -> void:
 		config[key] = float(selected.definition.resolved_configuration(config)[key]) + delta
 		configure_selected(config,"Height")
 		return
+	_transform_selection(Transform3D(Basis.IDENTITY, Vector3(0, delta, 0)), "Raise/lower assembly")
+
+func _transform_selection(placement: Transform3D, label: String) -> void:
 	var items: Array[Dictionary] = []
-	for piece in selection: items.append({"definition":piece.definition,"local":piece.transform})
-	var placement=Transform3D(Basis.IDENTITY,Vector3(0,delta,0))
-	var error=snap.validate_group(items,placement,pieces,selection)
-	if not error.is_empty(): show_status("✕  "+error); return
-	var before=snapshot(true)
-	for piece in selection: piece.position.y+=delta
-	record(before,"Raise/lower assembly")
+	for piece in selection:
+		items.append({"uid": piece.instance_id, "definition": piece.definition, "local": piece.transform, "config": piece.configuration})
+	var problem := validate_edit(items, placement, selection)
+	if not problem.is_empty(): show_status("✕  " + problem); return
+	var before := snapshot(true)
+	for index in selection.size(): selection[index].transform = placement * items[index].local
+	_record_edit(before, label)
 	selection_changed.emit(selected)
 
 func undo() -> void:
@@ -757,13 +737,25 @@ func selection_permitted(action: String) -> bool:
 			return false
 	return true
 
-func proposed_snapshot() -> Array:
+# Validate the complete proposed edit before changing live nodes or history.
+# Geometry uses the same group check for preview, placement and direct edits.
+func validate_edit(items: Array, placement: Transform3D, replaced: Array, prune_links: bool = false, check_geometry: bool = true) -> String:
+	if check_geometry:
+		var problem := snap.validate_group(items, placement, pieces, replaced)
+		if not problem.is_empty(): return problem
+	if not rules: return ""
 	var result: Array = []
 	for piece in pieces:
-		if piece not in moving_group and not piece.definition.authoring_only: result.append(piece.serialize())
-	for index in preview_items.size():
-		var item: Dictionary = preview_items[index]
+		if piece not in replaced and not piece.definition.authoring_only: result.append(piece.serialize())
+	for index in items.size():
+		var item: Dictionary = items[index]
 		if item.definition.authoring_only: continue
-		var placement: Transform3D = proposed * item.local
-		result.append({"uid": moving_group[index].instance_id if operation == "move" else "preview-new-%d" % index, "piece": String(item.definition.id), "position": [placement.origin.x, placement.origin.y, placement.origin.z], "rotation": posmod(roundi(placement.basis.get_euler().y / (PI / 2)), 4), "config": item.config.duplicate(true)})
-	return result
+		var transform_value: Transform3D = placement * item.local
+		var original := find_piece(item.get("uid", ""))
+		var uid: String = original.instance_id if original and original in replaced else "preview-new-%d" % index
+		result.append({"uid": uid, "piece": String(item.definition.id), "position": [transform_value.origin.x, transform_value.origin.y, transform_value.origin.z], "rotation": posmod(roundi(transform_value.basis.get_euler().y / (PI / 2)), 4), "config": item.config.duplicate(true)})
+	if prune_links:
+		var present: Array = result.map(func(item): return item.uid)
+		for item in result:
+			if item.config.has("links"): item.config.links = item.config.links.filter(func(link): return link.get("target", "") in present)
+	return rules.validate(result)

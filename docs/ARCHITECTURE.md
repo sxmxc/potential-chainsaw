@@ -19,7 +19,7 @@ Context transitions reset simulation, tools, restrictions, environment, and cons
 
 ## Construction and resource registries
 
-`BuildManager` owns placement, direct manipulation, selection, configuration, wiring edits, and Godot `UndoRedo` history. It validates complete proposed layouts before committing; a rejected member rejects a group edit. History stores construction snapshots and restores selection through stable instance IDs. Duplication remaps links within an assembly; removal cleans dangling targets.
+`BuildManager` owns placement, direct manipulation, selection, configuration, wiring edits, and Godot `UndoRedo` history. Its `validate_edit` checks proposed geometry and the complete resulting player layout before changing live nodes; preview and commit use this same path. Rejected edits retain live pieces, mechanism children, selection, and history. History only records accepted edits, stores construction snapshots, and restores selection through stable instance IDs. Duplication remaps links within an assembly; removal validates the layout with dangling targets removed.
 
 `SnapManager` owns connector topology, cursor-directed attachment candidates, and placement geometry checks. Compatible exposed connectors align the full transform, including elevation. Scenery surface attachment uses collision hits and measured occupied volumes; the grid/active height supplies free placement. Preview and commit validate the complete group. Direct dragging keeps a stable grab plane and cursor offset, retaining internal height differences.
 

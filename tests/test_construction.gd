@@ -162,14 +162,17 @@ func test_construction() -> void:
 	assert_true(not build.enabled,"Main menu locks world editing")
 	game.workspace.session.sandbox()
 	assert_true(build.enabled and build.pieces.is_empty(),"New sandbox ready for construction")
-	var before=build.snapshot()
-	var placed=build.spawn(straight,Transform3D.IDENTITY)
-	build.record(before,"Place")
+	build.choose(straight)
+	build.proposed = Transform3D.IDENTITY
+	build.valid = true
+	build.apply_preview()
+	build.commit()
+	build.cancel()
 	build.undo()
 	assert_true(build.pieces.is_empty(),"Undo initial placement")
 	build.redo()
 	assert_true(build.pieces.size()==1,"Redo initial placement")
-	placed=build.pieces[0]
+	var placed=build.pieces[0]
 	build.select(placed)
 	build.move_selected()
 	build.proposed=Transform3D(Basis.IDENTITY,Vector3(2,1,0))
