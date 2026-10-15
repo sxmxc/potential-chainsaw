@@ -41,107 +41,122 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"PrimaryButton"
 text = "Resume"
 
-[node name="Restart" type="Button" parent="Surface/Contents" unique_id=971778576]
+
+[node name="ContextActions" type="VBoxContainer" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactVBox"
+[node name="Restart" type="Button" parent="Surface/Contents/ContextActions" unique_id=971778576]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Restart puzzle"
 
-[node name="Levels" type="Button" parent="Surface/Contents" unique_id=905573888]
+[node name="Levels" type="Button" parent="Surface/Contents/ContextActions" unique_id=905573888]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Level select"
 
-[node name="Author" type="Button" parent="Surface/Contents" unique_id=553369340]
+[node name="Author" type="Button" parent="Surface/Contents/ContextActions" unique_id=553369340]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Authoring tools"
 
-[node name="SaveDraft" type="Button" parent="Surface/Contents" unique_id=876304218]
+[node name="SaveDraft" type="Button" parent="Surface/Contents/ContextActions" unique_id=876304218]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Save draft"
 
-[node name="TestPlayer" type="Button" parent="Surface/Contents" unique_id=1147373248]
+[node name="TestPlayer" type="Button" parent="Surface/Contents/ContextActions" unique_id=1147373248]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Test as player"
 
-[node name="ReturnEditor" type="Button" parent="Surface/Contents" unique_id=1303066240]
+[node name="ReturnEditor" type="Button" parent="Surface/Contents/ContextActions" unique_id=1303066240]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Return to editor"
 
-[node name="Preserve" type="Button" parent="Surface/Contents" unique_id=751762462]
+[node name="Preserve" type="Button" parent="Surface/Contents/ContextActions" unique_id=751762462]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Save solution"
 
-[node name="Reference" type="Button" parent="Surface/Contents" unique_id=1272298558]
+[node name="Reference" type="Button" parent="Surface/Contents/ContextActions" unique_id=1272298558]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Load solution"
 
-[node name="New" type="Button" parent="Surface/Contents" unique_id=1474127607]
+[node name="New" type="Button" parent="Surface/Contents/ContextActions" unique_id=1474127607]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "New track"
 
-[node name="Rename" type="Button" parent="Surface/Contents" unique_id=1621951666]
+[node name="Rename" type="Button" parent="Surface/Contents/ContextActions" unique_id=1621951666]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Rename track"
 
-[node name="Load" type="Button" parent="Surface/Contents" unique_id=1255335136]
+[node name="Load" type="Button" parent="Surface/Contents/ContextActions" unique_id=1255335136]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Saved tracks"
 
-[node name="Examples" type="Button" parent="Surface/Contents" unique_id=2008493860]
+[node name="Examples" type="Button" parent="Surface/Contents/ContextActions" unique_id=2008493860]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Example tracks"
 
-[node name="Settings" type="Button" parent="Surface/Contents" unique_id=235832359]
+
+[node name="NavigationDivider" type="HSeparator" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="NavigationActions" type="VBoxContainer" parent="Surface/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactVBox"
+[node name="Settings" type="Button" parent="Surface/Contents/NavigationActions" unique_id=235832359]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Settings"
 
-[node name="Main" type="Button" parent="Surface/Contents" unique_id=485842196]
+[node name="Main" type="Button" parent="Surface/Contents/NavigationActions" unique_id=485842196]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"QuietButton"
 text = "Main menu"
 
-[node name="Quit" type="Button" parent="Surface/Contents" unique_id=704808486]
+[node name="Quit" type="Button" parent="Surface/Contents/NavigationActions" unique_id=704808486]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_type_variation = &"SecondaryButton"
 text = "Quit"
+theme_type_variation = &"DangerButton"

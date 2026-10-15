@@ -16,11 +16,16 @@ func configure(value: CommunityService, puzzle_session: ConstructionSession, win
 	browser = window
 	%Refresh.pressed.connect(func(): offset = 0; refresh())
 	%Search.text_submitted.connect(func(_text): offset = 0; refresh())
+	%Search.text_changed.connect(func(_text): %SearchDelay.start())
+	%SearchDelay.timeout.connect(func():
+		if visible and browser.visible: offset = 0; refresh())
 	%Mine.toggled.connect(func(_value): offset = 0; refresh())
 	%NextPage.pressed.connect(func(): offset = next_offset; refresh())
 	%PreviousPage.pressed.connect(func(): offset = maxi(0, offset - 20); refresh())
 	%OnlineLevels.item_selected.connect(select_puzzle)
 	%Download.pressed.connect(download)
+	%OnlineLevels.item_activated.connect(func(_index): if not busy: download())
+	%ShareToggle.pressed.connect(func(): %Shared.visible = not %Shared.visible; browser.fit_contents.call_deferred())
 	%Unpublish.pressed.connect(unpublish)
 	%CopyShare.pressed.connect(func():
 		if not %ShareCode.text.is_empty(): DisplayServer.clipboard_set(%ShareCode.text); %Feedback.text = "Share code copied.")
@@ -32,13 +37,15 @@ func configure(value: CommunityService, puzzle_session: ConstructionSession, win
 	%SignOut.pressed.connect(sign_out)
 	%PublishOnline.pressed.connect(publish)
 	service.authentication_changed.connect(refresh_account)
-	browser.dismissing.connect(func(): generation += 1; %Password.clear())
+	browser.dismissing.connect(func(): generation += 1; %SearchDelay.stop(); %Password.clear())
 	browser.visibility_changed.connect(func():
 		if not browser.visible:
 			generation += 1
+			%SearchDelay.stop()
 			%Password.clear())
 	visibility_changed.connect(func():
 		generation += 1
+		if not visible: %SearchDelay.stop()
 		if visible: refresh_account())
 	refresh_account()
 
@@ -83,6 +90,7 @@ func finish(ticket: int, result: Dictionary, message: String = "") -> bool:
 	return true
 
 func refresh() -> void:
+	%SearchDelay.stop()
 	var ticket := begin()
 	var filters := {"search": %Search.text, "offset": offset}
 	var result := await service.get_my_puzzles(filters) if %Mine.button_pressed else await service.browse_puzzles(filters)
@@ -90,6 +98,8 @@ func refresh() -> void:
 	publications.clear()
 	%OnlineLevels.clear()
 	next_offset = -1
+	%NextPage.disabled = true
+	select_puzzle(-1)
 	if not result.ok: return
 	var items: Variant = result.data.get("puzzles")
 	if not items is Array:
@@ -100,6 +110,7 @@ func refresh() -> void:
 			%Feedback.text = "The service returned an invalid puzzle list."
 			publications.clear()
 			%OnlineLevels.clear()
+			select_puzzle(-1)
 			return
 		publications.append(item)
 		%OnlineLevels.add_item(item.title)
@@ -116,8 +127,16 @@ func selected_puzzle() -> Dictionary:
 
 func select_puzzle(_index: int) -> void:
 	var item := selected_puzzle()
-	%OnlineDetails.text = "Select a puzzle." if item.is_empty() else "%s\nRevision %d · %s%s" % [item.description, int(item.revision), item.get("difficulty", "Workshop"), " · Unpublished" if not item.get("published", true) else ""]
-	%Download.disabled = busy or item.is_empty() or not item.get("published", true)
+	%OnlineTitle.text = item.get("title", "Discover a new machine")
+	var installed := installed_puzzle(item)
+	var creator: String = str(item.get("creator", installed.get("creator", ""))).strip_edges()
+	%Creator.text = "By " + creator if not creator.is_empty() else ""
+	%Creator.visible = not creator.is_empty()
+	%Installed.text = ("Installed · " if not installed.is_empty() else "") + str(item.get("difficulty", "")) + (" · Unpublished" if not item.get("published", true) else "")
+	%Download.text = "Play puzzle" if not installed.is_empty() else "Download and play"
+	%PageNumber.text = "Page %d" % (offset / 20 + 1)
+	%OnlineDetails.text = "Choose a creation to see its goal." if item.is_empty() else item.description
+	%Download.disabled = busy or item.is_empty() or (installed.is_empty() and not item.get("published", true))
 	if not item.is_empty(): %ShareCode.text = str(item.id) + "@" + str(int(item.revision))
 	%CopyShare.disabled = %ShareCode.text.is_empty()
 	%Unpublish.visible = %Mine.button_pressed
@@ -125,7 +144,10 @@ func select_puzzle(_index: int) -> void:
 
 func download() -> void:
 	var item := selected_puzzle()
-	if not item.is_empty(): download_revision(item.id, int(item.revision))
+	if busy or item.is_empty(): return
+	var installed := installed_puzzle(item)
+	if not installed.is_empty(): browser.dismiss(func(): session.player(installed))
+	else: download_revision(item.id, int(item.revision))
 
 func download_revision(id: String, revision: int) -> void:
 	var ticket := begin()
@@ -158,6 +180,7 @@ func publish() -> void:
 	var ticket := begin()
 	var result := await service.publish_puzzle(publishing)
 	if finish(ticket, result, "Published online.") and result.ok:
+		%Shared.show()
 		%ShareCode.text = result.data.get("share_code", "")
 		%CopyShare.disabled = %ShareCode.text.is_empty()
 		%Feedback.text = "Published online. Copy the share code to share this revision."
@@ -168,3 +191,9 @@ func unpublish() -> void:
 	var ticket := begin()
 	var result := await service.unpublish_puzzle(item.id)
 	if finish(ticket, result, "Unpublished. Installed copies remain playable.") and result.ok: refresh()
+
+func installed_puzzle(item: Dictionary) -> Dictionary:
+	if item.is_empty(): return {}
+	for puzzle in session.store.list_community():
+		if puzzle.id == item.id and int(puzzle.revision) == int(item.revision): return puzzle
+	return {}

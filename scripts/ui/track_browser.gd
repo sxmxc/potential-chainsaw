@@ -17,6 +17,7 @@ func _ready() -> void:
 			%Rename.select_all()
 			%RenameButton.text="Apply name"
 		else: rename_selected())
+	%Rename.text_submitted.connect(func(_text): rename_selected())
 	%Rename.text_changed.connect(func(text): %RenameButton.disabled=text.strip_edges().is_empty())
 	%List.item_selected.connect(func(_index): refresh_actions())
 	%Delete.pressed.connect(delete_selected)
@@ -42,11 +43,12 @@ func open(show_examples: bool = false) -> void:
 func refresh() -> void:
 	%List.clear()
 	rows=[{"id":"first-roll","name":"First Roll · slopes and a sweeping curve","count":7},{"id":"spiral-crossing","name":"Spiral Crossing · two levels and a full helix","count":14},{"id":"bucket-elevator-demo","name":"Bucket Elevator · carry a marble to an upper track","count":4},{"id":"menu-machine","name":"Spiral Works · the looping showcase machine","count":122}] if examples else serializer.list_tracks()
-	for row in rows: %List.add_item("%s · %d %s" % [row.name,row.count,"piece" if row.count==1 else "pieces"])
+	for row in rows: %List.add_item(row.name.split(" · ")[0] if examples else row.name)
+	if not rows.is_empty(): %List.select(0)
 	%Info.text="" if examples else ("No saved tracks yet." if rows.is_empty() else "Saved on this device")
 	%Rename.clear()
 	refresh_actions()
-	size=Vector2i(660,300 if rows.is_empty() else 460)
+	size=Vector2i(860,300 if rows.is_empty() else 460)
 
 func refresh_actions() -> void:
 	var selected: bool=selected_index()>=0
@@ -55,6 +57,13 @@ func refresh_actions() -> void:
 	%Delete.disabled=not selected
 	%Rename.hide()
 	%RenameButton.text="Rename"
+	%Selected.visible = selected
+	if selected:
+		var row: Dictionary = rows[selected_index()]
+		%TrackTitle.text = row.name.split(" · ")[0] if examples else row.name
+		%TrackDetails.text = "%d pieces" % row.count + (" · " + row.name.split(" · ")[1] if examples and " · " in row.name else "")
+		var data: Dictionary = serializer.decode(FileAccess.get_file_as_string(("res://resources/menu_machine.json" if row.id == "menu-machine" else "res://resources/examples/" + row.id + ".json"))) if examples else serializer.load_track(row.id)
+		%Preview.display(data, serializer.catalog)
 
 func selected_index() -> int:
 	var indices=%List.get_selected_items()

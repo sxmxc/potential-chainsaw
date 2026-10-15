@@ -14,6 +14,9 @@ func set_name_text(value: String) -> void:
 	%Save.disabled=value.strip_edges().is_empty()
 func open() -> void:
 	present()
+
+func focus_first() -> void:
+	if not visible or closing: return
 	%Name.grab_focus()
 	%Name.select_all()
 func get_name_text() -> String:

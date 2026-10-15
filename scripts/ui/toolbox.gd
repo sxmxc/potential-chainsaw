@@ -2,6 +2,7 @@ extends PanelContainer
 signal piece_chosen(definition: PieceDefinition)
 signal collapsed
 const CARD=preload("res://scenes/ui/widgets/piece_card.tscn")
+var inventory_editing: bool = false
 var build: BuildManager
 var catalog: PieceCatalog
 var selected_id: StringName
@@ -25,6 +26,7 @@ func configure(data: PieceCatalog, manager: BuildManager = null) -> void:
 		refresh())
 	refresh()
 func refresh() -> void:
+	%Title.text = "Add to player toolbox" if inventory_editing else "Pieces"
 	if not filter_key.is_empty(): scroll_positions[filter_key]=%Scroll.scroll_vertical
 	var inventory_ids: Array=[]
 	if build and build.rules:
@@ -41,7 +43,7 @@ func refresh() -> void:
 		criteria[&"category"] = %Category.get_item_text(%Category.selected)
 	for definition in catalog.query(criteria):
 		if not definition.library_visible: continue
-		if definition.authoring_only and (not build or not build.authoring): continue
+		if definition.authoring_only and (inventory_editing or not build or not build.authoring): continue
 		if build and build.rules and not build.rules.puzzle.inventory.has(String(definition.id)): continue
 		if not build or not build.rules:
 			if not %Search.text.is_empty() and not (definition.display_name+" "+definition.category).to_lower().contains(%Search.text.to_lower()): continue

@@ -2,16 +2,16 @@
 
 ## Create a puzzle
 
-Run `scenes/main.tscn` and choose **Puzzle Editor** for community authoring. In a project run, **Ctrl+Shift+P** enters official authoring. The project-only **Publish to** selector in the authoring Setup page changes destination without recreating the draft. Exported builds offer community publication only.
+Run `scenes/main.tscn` and choose **Puzzle Editor** for community authoring. In a project run, **Ctrl+Shift+P** enters official authoring. The project-only **Publish to** selector in the Publish page changes destination without recreating the draft. Exported builds offer community publication only.
 
 The editor uses the shared construction workspace, toolbox, snapping, selection, configuration, and undo/redo. Open **Authoring tools** for definition-wide settings; use the selection inspector for object settings and player permissions.
 
 1. Build the incomplete starting machine. Place a marble release and targets for its objectives. Releases configure quantity, spacing, delay, initial speed, and an optional display label.
 2. In **Setup**, enter the title, objective description, creator, difficulty, hints, and time limit. Capture the intended camera. Optional time/piece awards do not affect the mandatory outcome. Official authoring also exposes chapter metadata, level order, and prerequisites.
 3. Select starting pieces and set **Player permissions** in the inspector. Permissions cover moving, rotation, removal, and configuration. You can restrict a configuration key and its numeric range. The form currently exposes one restricted key per starting piece; inventory-wide limits can cover several keys. Authoring-only environment pieces are fixed during play; ordinary decorative props follow normal piece permissions.
-4. In **Inventory**, choose catalog types and quantities. Only added pieces consume inventory; starting pieces do not. Zero removes a type. Configuration limits can restrict added instances, including adjustable geometry.
-5. In **Boundaries**, draw the build region with two corners and lower/upper elevations. Draw forbidden regions similarly; select a region to redraw/remove it. Escape cancels drawing.
-6. In **Objectives**, choose a collector for delivery or a mechanism output for activation. Delivery supports a quantity and optional source release; **All marbles** fills the quantity from configured releases. All objectives must succeed. Activation checks whether the event occurred, not how many times it occurred.
+4. In **Inventory**, click thumbnails in the shared Pieces browser to add types, then edit their quantities inline. Only added pieces consume inventory; starting pieces do not. Zero removes a type. Configuration limits can restrict added instances, including adjustable geometry.
+5. In **Boundaries**, draw the build region with two corners and lower/upper elevations. Draw forbidden regions similarly; select a region in the viewport or region list to redraw/remove it. Drag a region to move it; Escape cancels a drag or drawing. Elevation controls edit the selected region. **Exact dimensions** exposes its X/Z origin, width, and depth. Opening a dialog cancels an unfinished region gesture.
+6. In **Objectives**, select a collector or mechanism in the viewport (or target menu) for delivery or activation. Select an existing goal to edit it, or choose **New goal**. Delivery supports a quantity and optional source release; **All marbles** fills the quantity from configured releases. All objectives must succeed. Activation checks whether the event occurred, not how many times it occurred.
 7. Use the shared **Connect** tool for mechanism wiring; see [Piece authoring](PIECE_AUTHORING.md#wire-a-machine).
 8. **Save Draft**. The folder button beside Save opens the draft/published library; **New puzzle** is in Authoring tools. Opening another context saves dirty authoring work first and stays put if saving fails.
 
@@ -23,7 +23,7 @@ Construction, settings, permissions, and wiring follow shared editing rules. Met
 2. Solve with normal tools, then **Test Track** in the real simulation. Reset retains your player construction; **Restart puzzle** reloads its starting layout.
 3. After success, choose **Save solution**. This stores the construction from that successful run separately from the starting layout, together with a validation fingerprint, engine version, elapsed seconds, and test timestamp.
 4. **Return to Editor** restores the baseline. The test-only **Load reference** action can load a saved solution, but it still must obey current rules and complete the simulation. Ordinary players cannot use it.
-5. In **Publish**, choose **Validate**, then **Publish locally** or **Add to Campaign**. A current successful test and preserved solution are required. Content edits invalidate proof; test and save a new solution before publishing again.
+5. In **Publish**, review readiness and choose **Validate**. The primary action becomes **Publish locally** or **Add to Campaign** when the draft is ready. A current successful test and preserved solution are required. Content edits invalidate proof; test and save a new solution before publishing again.
 
 Opening a published puzzle for editing retains its ID. Gameplay content changes advance its revision and leave the previous published copy playable while the new draft is tested. Merely changing the publication destination does not invalidate proof. Selecting objects does not change content.
 

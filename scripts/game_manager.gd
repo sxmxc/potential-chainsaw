@@ -27,7 +27,7 @@ func _ready() -> void:
 	workspace.message_requested.connect(show_message)
 	workspace.modal_opened.connect(open_modal)
 	workspace.modal_closed.connect(modal_closed)
-	%MainMenu.action_requested.connect(handle_action)
+	%MainMenu.action_requested.connect(func(action): handle_action(action); modal_closed())
 	%TrackBrowser.serializer = workspace.session.serializer
 	%TrackBrowser.track_requested.connect(func(id, example): guard(func(): workspace.session.load_track(id, example)))
 	%TrackBrowser.closed.connect(modal_closed)
@@ -159,8 +159,13 @@ func change_screen(to_menu: bool) -> void:
 	%MainMenu.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
 	var focus := get_viewport().gui_get_focus_owner()
 	if focus: focus.release_focus()
+	var action_exit_time: float = 0.0
+	if not to_menu and %MainMenu.visible: action_exit_time = %MainMenu.hide_actions()
+	elif to_menu and %MainMenu.visible: %MainMenu.show_actions()
 	%NavigationFade.show()
+	if action_exit_time > 0.0: %NavigationFade.modulate.a = 0.0
 	navigation_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if action_exit_time > 0.0: navigation_tween.tween_interval(action_exit_time)
 	navigation_tween.tween_property(%NavigationFade, "modulate:a", 1.0, UIMotion.SCREEN_TIME * 0.45)
 	navigation_tween.tween_callback(func(): apply_screen(to_menu))
 	navigation_tween.tween_property(%NavigationFade, "modulate:a", 0.0, UIMotion.SCREEN_TIME * 0.55)
@@ -172,12 +177,13 @@ func change_screen(to_menu: bool) -> void:
 		%MainMenu.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED
 		%MainMenu.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED
 		modal_closed()
-		if to_menu: %MainMenu.get_node("%Campaign").grab_focus())
+		if to_menu: %MainMenu.focus_actions())
 
 func apply_screen(to_menu: bool) -> void:
 	if to_menu: workspace.deactivate()
 	%MainMenu.visible = to_menu
 	%MainMenu.showcase.set_active(to_menu)
+	if to_menu and navigation_ready: %MainMenu.show_actions()
 
 func guard(action: Callable) -> void:
 	if workspace.session.is_playing:
@@ -199,9 +205,7 @@ func prompt_save(as_copy: bool) -> void:
 	save_as=as_copy
 	name_field.text=workspace.session.track_name+" copy" if as_copy else workspace.session.track_name
 	open_modal()
-	name_dialog.present()
-	name_field.grab_focus()
-	name_field.select_all()
+	name_dialog.open()
 
 func finish_save() -> void:
 	if name_field.text.strip_edges().is_empty(): show_message("Please enter a track name"); after_save=Callable(); return
@@ -219,6 +223,7 @@ func run_after_save() -> void:
 
 func open_modal() -> void:
 	workspace.suspend_input()
+	if %MainMenu.visible: %MainMenu.hide_actions()
 
 func modal_closed() -> void:
 	if navigating: return
@@ -232,6 +237,7 @@ func modal_closed() -> void:
 		if workspace.session.is_playing and workspace.world.simulation.state == SimulationManager.State.SUCCESS:
 			%PuzzleCompletion.present(minimum)
 			return
+	if %MainMenu.visible and menu_target: %MainMenu.show_actions()
 	workspace.resume_input()
 
 func show_message(text: String) -> void:

@@ -47,7 +47,7 @@ func refresh() -> void:
 	%Pause.icon=get_theme_icon("play" if state==SimulationManager.State.PAUSED else "pause","SandboxIcons")
 	%Reset.visible=state!=SimulationManager.State.BUILD
 	%Test.tooltip_text="Test as player" if session and session.is_authoring else ("Test track · Space" if state==SimulationManager.State.BUILD else "Try again · Space")
-	%Test.text="Test as player" if session and session.is_authoring else ""
+	%Test.text="Test as player" if session and session.is_authoring else ("Run" if state == SimulationManager.State.BUILD else "Try again")
 	%Test.visible=state not in [SimulationManager.State.RUNNING,SimulationManager.State.PAUSED]
 	%Undo.visible=state==SimulationManager.State.BUILD
 	%Redo.visible=%Undo.visible

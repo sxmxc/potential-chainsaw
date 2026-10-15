@@ -187,7 +187,7 @@ func _process(_delta: float) -> void:
 	var hint := ""
 	if not hovered_handle.is_empty():
 		var piece := build.find_piece(hovered_handle.source)
-		hint = "Output ▶ · " + ", ".join(piece.output_ports.keys().map(func(event): return readable(event))) if hovered_handle.output else "Input ◇ · " + ", ".join(piece.input_ports.keys().map(func(action): return readable(action)))
+		hint = "Send ▶ · " + ", ".join(piece.output_ports.keys().map(func(event): return readable(event))) if hovered_handle.output else "Receive ◇ · " + ", ".join(piece.input_ports.keys().map(func(action): return readable(action)))
 		if hovered_handle.output and not hovered_handle.allowed: hint += " · Locked"
 		elif not dragging.is_empty() and hovered_handle.output: hint = "Drop onto a highlighted piece"
 	elif not hovered_wire.is_empty():
@@ -237,7 +237,7 @@ func choices(control: OptionButton, values: Array, selected: String) -> void:
 	for value: String in values:
 		var piece := build.find_piece(context_source if control == %Events else context_target)
 		var state_port: bool = piece.output_ports[value].state_outputs.has(value) if control == %Events else piece.input_ports[value].state_inputs.has(value)
-		control.add_item(value.replace("_", " ").capitalize())
+		control.add_item(readable(value))
 		control.set_item_metadata(control.item_count - 1, value)
 		control.get_popup().set_item_tooltip(control.item_count - 1, "Persistent state" if state_port else "Event pulse")
 		if value == selected: control.select(control.item_count - 1)

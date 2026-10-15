@@ -28,7 +28,17 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	%BuildToolbar.library_toggled.connect(func():library_open=not library_open; refresh())
 	%EditToolbar.configure(build)
 	%Toolbox.configure(build.catalog,build)
-	%Toolbox.piece_chosen.connect(build.choose)
+	%Toolbox.piece_chosen.connect(func(definition):
+		if %PuzzleAuthoring.accepts_inventory(): %PuzzleAuthoring.add_inventory(definition)
+		else: build.choose(definition))
+	%PuzzleAuthoring.inventory_mode_changed.connect(func(active):
+		if %Toolbox.inventory_editing == active: return
+		%Toolbox.inventory_editing = active
+		if active:
+			library_open = true
+			build.cancel()
+		%Toolbox.refresh()
+		refresh())
 	%Toolbox.collapsed.connect(func():library_open=false; refresh())
 	%DismissGuidance.pressed.connect(func():
 		if session: guidance_done[session.puzzle.get("id","")]=true

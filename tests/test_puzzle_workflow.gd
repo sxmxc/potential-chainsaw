@@ -87,7 +87,7 @@ func test_boundary_authoring_and_mode_lifecycle() -> void:
 		input.mouse_left_button_up(screen)
 	assert_eq(session.puzzle.restricted_zones.size(), 1)
 	assert_eq(boundary.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size(), 48, "Restricted regions share the boundary display")
-	authoring.get_node("%RestrictedList").select(0)
+	authoring.get_node("%RestrictedList").select(1)
 	authoring.get_node("%ModifyZone").pressed.emit()
 	for point in [Vector3(-2, 0, -1), Vector3(1, 0, 2)]:
 		var screen: Vector2 = game.workspace.world.camera.unproject_position(point)
@@ -125,12 +125,14 @@ func test_shared_workspace_workflow() -> void:
 	var session: ConstructionSession = game.workspace.session
 	var build: BuildManager = game.workspace.world.build
 	game.handle_action("sandbox")
+	await wait_seconds(UIMotion.SCREEN_TIME + UIMotion.ENTER_TIME)
 	place(build, "straight", Vector3.ZERO)
 	game.workspace.hud.get_node("%FileToolbar").get_node("%Save").pressed.emit()
 	assert_true(game.name_dialog.visible, "Sandbox Save opens the personal track dialog")
 	game.name_field.text = "Workspace transition fixture"
 	game.name_dialog.confirmed.emit()
 	game.name_dialog.close()
+	await wait_seconds(UIMotion.EXIT_TIME)
 	var personal_track_id := session.track_id
 	assert_false(personal_track_id.is_empty())
 	assert_eq(session.serializer.load_track(personal_track_id).pieces, build.snapshot(), "Personal tracks retain their own save format")
@@ -164,11 +166,11 @@ func test_shared_workspace_workflow() -> void:
 	assert_true(authoring.visible, "Complete native visual authoring panel opens")
 	authoring.get_node("%PuzzleName").text = "Shared construction workflow"
 	assert_true(build.dirty, "Metadata edits participate in draft saving")
-	var inventory: OptionButton = authoring.get_node("%InventoryPiece")
-	for index in inventory.item_count:
-		if inventory.get_item_metadata(index) == "straight": inventory.select(index)
-	authoring.get_node("%Quantity").value = 1
-	authoring.get_node("%SetQuantity").pressed.emit()
+	authoring.get_node("%Tabs").current_tab = 1
+	hud.get_node("%Toolbox").piece_chosen.emit(session.catalog.get_piece("straight"))
+	assert_eq(session.puzzle.inventory.straight, 1, "Catalog selection adds inventory without placing a piece")
+	authoring.get_node("%Tabs").current_tab = 3
+	build.select(build.find_piece("finish"))
 	authoring.get_node("%AddObjective").pressed.emit()
 	assert_eq(session.puzzle.objectives[0].target, "finish", "Objectives use placed construction objects")
 	authoring.hide()

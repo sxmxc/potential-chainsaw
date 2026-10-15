@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="ChapterButton" type="Button" unique_id=301094400]
-custom_minimum_size = Vector2(224, 68)
+custom_minimum_size = Vector2(224, 78)
 theme = ExtResource("Theme")
 theme_type_variation = &"SecondaryButton"
 toggle_mode = true
@@ -30,3 +30,10 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
+
+[node name="Progress" type="ProgressBar" parent="Margin/Contents"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+show_percentage = false

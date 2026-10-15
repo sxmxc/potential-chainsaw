@@ -98,6 +98,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0
+offset_transform_position = Vector2(-2.28, 0)
 mouse_default_cursor_shape = 2
 theme_type_variation = &"MenuNavigation"
 text = "Campaign"
@@ -125,6 +126,7 @@ alignment = 0
 
 [node name="Examples" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=663403546]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0

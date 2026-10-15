@@ -39,8 +39,8 @@ func refresh(piece: BuildingPiece) -> void:
 	%EditConnections.visible = %Capabilities.visible
 	if %Capabilities.visible:
 		var roles: PackedStringArray = []
-		if not piece.output_ports.is_empty(): roles.append("Can send signals")
-		if not piece.input_ports.is_empty(): roles.append("Can receive signals")
+		if not piece.output_ports.is_empty(): roles.append("Sends machine signals")
+		if not piece.input_ports.is_empty(): roles.append("Responds to machine signals")
 		%Capabilities.text = "\n".join(roles)
 		var incoming := 0
 		for source in build.pieces:
@@ -53,14 +53,14 @@ func refresh(piece: BuildingPiece) -> void:
 
 func fit_content() -> void:
 	if not is_inside_tree(): return
-	%Scroll.custom_minimum_size.y=minf(%Scroll.get_child(0).get_combined_minimum_size().y,get_viewport().get_visible_rect().size.y*0.65)
+	%Scroll.custom_minimum_size.y=minf(%Scroll.get_child(0).get_combined_minimum_size().y,minf(get_parent().size.y, 620.0))
 
 func refresh_permissions(selection_changed: bool) -> void:
 	var tracks := build.selection.filter(func(object): return not object.definition.authoring_only)
 	%PermissionsToggle.visible = session != null and session.is_authoring and not tracks.is_empty()
 	if not %PermissionsToggle.visible or selection_changed: %Permissions.hide()
 	if not %PermissionsToggle.visible: return
-	%SelectionSummary.text = "Player permissions · %d track %s" % [tracks.size(), "piece" if tracks.size() == 1 else "pieces"]
+	%SelectionSummary.text = "Player permissions · %d %s" % [tracks.size(), "piece" if tracks.size() == 1 else "pieces"]
 	var permission: Dictionary = session.puzzle.permissions.get(tracks[0].instance_id, {})
 	for action in PERMISSIONS: get_node("%Permit" + action.capitalize()).set_pressed_no_signal(permission.get(action, false))
 	%RestrictSetting.set_pressed_no_signal(permission.has("config_keys"))

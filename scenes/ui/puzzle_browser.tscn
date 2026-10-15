@@ -5,6 +5,8 @@
 
 [ext_resource type="PackedScene" path="res://scenes/ui/community_online.tscn" id="Online"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/widgets/construction_preview.tscn" id="Preview"]
+
 [node name="PuzzleBrowser" type="Window" unique_id=335018945]
 transparent_bg = true
 title = "Campaign"
@@ -18,8 +20,8 @@ theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 [node name="Surface" type="PanelContainer" parent="." unique_id=497165524]
-custom_minimum_size = Vector2(800, 0)
 theme_type_variation = &"SurfacePanel"
+custom_minimum_size = Vector2(960, 0)
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1569012700]
 layout_mode = 2
@@ -51,12 +53,18 @@ text = "Play Introduction"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "Skip Introduction"
+text = "Start campaign"
 
 [node name="Browse" type="VBoxContainer" parent="Surface/Contents" unique_id=2055071129]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="LibrarySearch" type="LineEdit" parent="Surface/Contents/Browse"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Find a puzzle or creator…"
+clear_button_enabled = true
 
 [node name="ChapterScroll" type="ScrollContainer" parent="Surface/Contents/Browse" unique_id=982691246]
 custom_minimum_size = Vector2(0, 72)
@@ -67,26 +75,31 @@ vertical_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="LevelColumn" type="VBoxContainer" parent="Surface/Contents/Browse" unique_id=1137941793]
+[node name="LevelColumn" type="HBoxContainer" parent="Surface/Contents/Browse" unique_id=1137941793]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ChapterName" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=658361185]
+
+[node name="Route" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChapterName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Route"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PanelTitle"
-text = "Introduction"
-
-[node name="Levels" type="ItemList" parent="Surface/Contents/Browse/LevelColumn" unique_id=1912233115]
+[node name="Levels" type="ItemList" parent="Surface/Contents/Browse/LevelColumn/Route" unique_id=1912233115]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_vertical = 3
-max_columns = 2
 same_column_width = true
 fixed_icon_size = Vector2i(20, 32)
+custom_minimum_size = Vector2(320, 300)
+max_columns = 1
+size_flags_horizontal = 3
+theme_type_variation = &"RouteList"
 
-[node name="Empty" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=1676400485]
+[node name="Empty" type="Label" parent="Surface/Contents/Browse/LevelColumn/Route" unique_id=1676400485]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -94,13 +107,35 @@ size_flags_vertical = 6
 theme_type_variation = &"MutedLabel"
 text = "No levels available yet."
 
-[node name="Details" type="Label" parent="Surface/Contents/Browse/LevelColumn" unique_id=1308003168]
+
+[node name="Selection" type="VBoxContainer" parent="Surface/Contents/Browse/LevelColumn"]
+layout_mode = 2
+custom_minimum_size = Vector2(380, 0)
+size_flags_horizontal = 3
+
+[node name="Preview" parent="Surface/Contents/Browse/LevelColumn/Selection" instance=ExtResource("Preview")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+
+[node name="LevelName" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InspectorTitle"
+autowrap_mode = 3
+
+[node name="LevelState" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+autowrap_mode = 3
+[node name="Details" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=1308003168]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "Select a level."
 autowrap_mode = 3
+custom_minimum_size = Vector2(0, 70)
 
 [node name="Network" parent="Surface/Contents" instance=ExtResource("Online")]
 unique_name_in_owner = true

@@ -19,6 +19,51 @@ class OfflineBackend extends Node:
 		if wait_for_response: await get_tree().create_timer(0.1).timeout
 		return CommunityService.failure("network", "Offline. Installed puzzles are still available.")
 
+class DiscoveryBackend extends Node:
+	signal authentication_changed
+	var puzzle: Dictionary
+	var downloads: int = 0
+	func uses_automatic_auth() -> bool: return true
+	func is_signed_in() -> bool: return false
+	func browse_puzzles(_filters: Dictionary, _compatibility: String) -> Dictionary:
+		return CommunityService.success({"puzzles": [{"id": puzzle.id, "title": puzzle.name, "description": puzzle.description, "creator": "Workshop maker", "difficulty": "Workshop", "revision": puzzle.revision}], "next_offset": -1})
+	func get_puzzle(_id: String, _revision: int, _compatibility: String) -> Dictionary:
+		downloads += 1
+		return CommunityService.success({"puzzle": puzzle})
+
+func test_discovery_download_install_play_and_replay() -> void:
+	var game: GameManager = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	game.qa_resolution(1920, 1080)
+	await wait_seconds(UIMotion.SCREEN_TIME)
+	var service := game.community_service
+	service.backend.queue_free()
+	var adapter := DiscoveryBackend.new()
+	adapter.puzzle = game.workspace.session.store.load_campaign().levels.filter(func(level): return level.id == "campaign-01")[0].duplicate(true)
+	service.add_child(adapter)
+	service.backend = adapter
+	var browser := game.get_node("%PuzzleBrowser")
+	browser.open_online()
+	var online := browser.get_node("%Network")
+	assert_eq(online.get_node("%Creator").text, "By Workshop maker")
+	assert_eq(online.get_node("%Download").text, "Download and play")
+	assert_false(online.get_node("%Shared").visible, "Technical codes stay behind an explicit interaction")
+	assert_false("Revision" in online.get_node("%OnlineDetails").text)
+	if DisplayServer.get_name() != "headless" and OS.get_environment("MARBLE_ENGINEER_UI_CAPTURE") == "1":
+		await wait_seconds(UIMotion.ENTER_TIME)
+		await RenderingServer.frame_post_draw
+		assert_eq(get_viewport().get_texture().get_image().save_png("res://.godot/overhaul-community.png"), OK)
+	online.get_node("%Download").pressed.emit()
+	await wait_seconds(UIMotion.EXIT_TIME + UIMotion.SCREEN_TIME)
+	assert_eq(adapter.downloads, 1)
+	assert_true(game.workspace.session.is_playing)
+	assert_false(PuzzleStore.is_official(game.workspace.session.puzzle), "Downloads use community provenance")
+	browser.open_online()
+	assert_eq(online.get_node("%Download").text, "Play puzzle")
+	online.get_node("%Download").pressed.emit()
+	await wait_seconds(UIMotion.EXIT_TIME + UIMotion.SCREEN_TIME)
+	assert_eq(adapter.downloads, 1, "Installed revisions play without another download")
+
 func test_online_navigation_offline_feedback_and_safe_close() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()
 	add_child_autoqfree(game)

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[node name="InventoryRow" type="HBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="Piece" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"QuietButton"
+alignment = 0
+expand_icon = true
+theme_override_constants/icon_max_width = 48
+clip_text = true
+
+[node name="Quantity" type="SpinBox" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+max_value = 999
+tooltip_text = "Available to the player. Zero removes this piece."

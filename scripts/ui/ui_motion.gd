@@ -9,12 +9,21 @@ const SECTION_TIME: float = 0.09
 const SCREEN_TIME: float = 0.20
 const PANEL_SHIFT: float = 0.06
 const SURFACE_SCALE: float = 0.985
+const MENU_ACTION_TIME: float = 0.6
+const MENU_ACTION_DELAY: float = 0.085
+const MENU_ACTION_SHIFT: float = 1.25
 
 var control: Control
 var wanted: bool
 var shift: Vector2
 var closed_scale: float = 1.0
 var entrance_time: float = ENTER_TIME
+var entrance_delay: float = 0.0
+var entrance_transition: Tween.TransitionType = Tween.TRANS_QUAD
+var exit_time: float = EXIT_TIME
+var exit_delay: float = 0.0
+var exit_transition: Tween.TransitionType = Tween.TRANS_QUAD
+var exit_ease: Tween.EaseType = Tween.EASE_OUT
 var tween: Tween
 var input_states: Dictionary = {}
 var saved_focus: Control.FocusBehaviorRecursive
@@ -52,11 +61,15 @@ func set_open(value: bool, immediate: bool = false) -> void:
 		control.visible = value
 		return
 	_block_contents()
-	tween = control.create_tween().set_parallel().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	var duration: float = entrance_time if value else EXIT_TIME
-	tween.tween_property(control, "modulate:a", 1.0 if value else 0.0, duration)
-	tween.tween_property(control, "offset_transform_position_ratio", Vector2.ZERO if value else shift, duration)
-	tween.tween_property(control, "offset_transform_scale", Vector2.ONE if value else Vector2.ONE * closed_scale, duration)
+	var transition: Tween.TransitionType = entrance_transition if value else exit_transition
+	tween = control.create_tween().set_parallel().set_trans(transition).set_ease(Tween.EASE_OUT if value else exit_ease)
+	var duration: float = entrance_time if value else exit_time
+	var delay: float = entrance_delay if value else exit_delay
+	var fade_duration: float = minf(duration, ENTER_TIME) if transition == Tween.TRANS_ELASTIC else duration
+	var fade_delay: float = delay if value else delay + duration - fade_duration
+	tween.tween_property(control, "modulate:a", 1.0 if value else 0.0, fade_duration).set_trans(Tween.TRANS_QUAD).set_delay(fade_delay)
+	tween.tween_property(control, "offset_transform_position_ratio", Vector2.ZERO if value else shift, duration).set_delay(delay)
+	tween.tween_property(control, "offset_transform_scale", Vector2.ONE if value else Vector2.ONE * closed_scale, duration).set_delay(delay)
 	tween.chain().tween_callback(_complete)
 
 func enter() -> void:
@@ -86,7 +99,7 @@ func _block_contents() -> void:
 	saved_focus = control.focus_behavior_recursive
 	saved_filter = control.mouse_filter
 	control.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
-	control.mouse_filter = Control.MOUSE_FILTER_STOP
+	control.mouse_filter = Control.MOUSE_FILTER_IGNORE if control is BaseButton else Control.MOUSE_FILTER_STOP
 	var focus := control.get_viewport().gui_get_focus_owner()
 	if focus and (focus == control or control.is_ancestor_of(focus)): focus.release_focus()
 	for child in control.get_children():

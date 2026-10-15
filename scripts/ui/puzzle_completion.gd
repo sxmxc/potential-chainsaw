@@ -10,7 +10,10 @@ func configure(value: ConstructionSession) -> void:
 	%Title.text="Player test complete" if session.is_testing else "Puzzle complete"
 	%KeepBuilding.pressed.connect(func():dismiss(session.world.simulation.reset))
 	%Preserve.pressed.connect(func():
-		if session.preserve_solution(): %Result.text = "Solution saved.")
+		if session.preserve_solution():
+			%Result.text = "Solution saved. Your starting layout is preserved."
+			%Preserve.hide()
+			%ReturnEditor.theme_type_variation = &"PrimaryButton")
 	%ReturnEditor.pressed.connect(func(): dismiss(session.return_editor))
 	%LevelSelection.pressed.connect(func(): dismiss(levels_requested.emit))
 	%Next.pressed.connect(func(): dismiss(_next_level))
@@ -24,6 +27,8 @@ func _next_level() -> void:
 
 func result(state: int, _message: String) -> void:
 	if state != SimulationManager.State.SUCCESS or not session.is_playing: hide(); return
+	%ReturnEditor.theme_type_variation = &"SecondaryButton"
+	%LevelSelection.theme_type_variation = &"SecondaryButton"
 	%Name.text = session.puzzle.name
 	%Title.text="Player test complete" if session.is_testing else "Puzzle complete"
 	%Result.text = "Completed in %.1f seconds." % session.world.simulation.elapsed
@@ -32,8 +37,18 @@ func result(state: int, _message: String) -> void:
 	%Next.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY and PuzzleStore.is_official(session.puzzle)
 	%LevelSelection.visible = session.context == ConstructionSession.Context.PUZZLE_PLAY
 	%LevelSelection.text = "Campaign levels" if PuzzleStore.is_official(session.puzzle) else "Community puzzles"
+	%NextDestination.text = ""
+	if %Next.visible:
+		var step: Dictionary = session.store.load_campaign().next_step(session.puzzle, session.progress.records)
+		var next: Dictionary = step.level
+		%Next.text = "Next puzzle" if not next.is_empty() else "Choose a puzzle"
+		%NextDestination.text = "Up next · " + str(next.name) if not next.is_empty() else "Choose your next challenge from the campaign."
+	elif session.is_testing: %NextDestination.text = "Save this solution to verify your puzzle for publishing."
+	else: %LevelSelection.theme_type_variation = &"PrimaryButton"
 	var records: Dictionary = session.progress.records if PuzzleStore.is_official(session.puzzle) else session.progress.community_records
 	var awards: Array = records.get(session.puzzle.id, {}).get("awards", [])
-	%Awards.text = "Awards: " + ", ".join(awards)
+	var captions: Array[String] = []
+	for award: String in awards: captions.append({"time": "Time award", "pieces": "Piece budget award"}.get(award, award.capitalize()))
+	%Awards.text = " · ".join(captions)
 	%Awards.visible = not awards.is_empty()
 	presentation_requested.emit(Vector2i(480,int(%Surface.get_combined_minimum_size().y)))

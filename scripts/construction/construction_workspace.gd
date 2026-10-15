@@ -52,13 +52,14 @@ func deactivate() -> void:
 	hide()
 
 func suspend_input() -> void:
+	world.boundary.cancel()
 	world.build.enabled = false
 	world.camera.enabled = false
 	if world.build.ghost: world.build.ghost.hide()
 	world.build.refresh_grid()
 
 func resume_input() -> void:
-	world.build.enabled = is_visible_in_tree() and world.simulation.state == SimulationManager.State.BUILD and world.boundary.tool.is_empty()
+	world.build.enabled = is_visible_in_tree() and world.simulation.state == SimulationManager.State.BUILD and world.boundary.tool.is_empty() and not world.boundary.selecting
 	world.camera.enabled = is_visible_in_tree()
 	world.build.refresh_grid()
 	hud.refresh()

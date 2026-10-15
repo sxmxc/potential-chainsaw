@@ -16,7 +16,8 @@
 
 [sub_resource type="StandardMaterial3D" id="BoundaryMaterial"]
 shading_mode = 0
-albedo_color = Color(0.34901962, 0.8980392, 0.69411767, 1)
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_m1kxf"]
 stream_count = 1
