@@ -23,8 +23,7 @@ func display(data: Dictionary, pieces_catalog: PieceCatalog) -> void:
 		var piece := BuildingPiece.new()
 		%Models.add_child(piece)
 		piece.setup(definition, true, item.get("config", {}))
-		piece.position = Vector3(item.position[0], item.position[1], item.position[2])
-		piece.rotation.y = int(item.rotation) * PI / 2.0
+		piece.transform = PieceAttachment.record_transform(item)
 		for model: MeshInstance3D in piece.find_children("*", "MeshInstance3D", true, false):
 			var box: AABB = model.global_transform * model.get_aabb()
 			bounds = box if first else bounds.merge(box)

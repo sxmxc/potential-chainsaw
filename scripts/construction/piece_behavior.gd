@@ -14,6 +14,7 @@ var enabled: bool = true
 var config: Dictionary = {}
 var inputs: Dictionary = {}
 var outputs: Array[String] = []
+var initializing_signals: bool = false
 
 func configure(settings: Dictionary) -> void:
 	config = settings.duplicate(true)
@@ -22,8 +23,13 @@ func configure(settings: Dictionary) -> void:
 func start_run() -> void:
 	active = not preview_only
 
+## Called after simulation has settled the initial persistent-state wires.
+func signals_ready() -> void:
+	initializing_signals = false
+
 func reset() -> void:
 	active = false
+	initializing_signals = false
 	enabled = bool(config.get("enabled", true))
 	input_values = state_inputs.duplicate()
 	output_values = state_outputs.duplicate()

@@ -54,6 +54,13 @@ kind = 2
 friction = 0.18
 bounce = 0.02
 
+[sub_resource type="Resource" id="Setting_signal_controlled"]
+script = ExtResource("Setting")
+key = &"signal_controlled"
+label = "Signal-controlled release"
+description = "Wait for Release pulses. Early or cooldown pulses are ignored; quantity remains the total supply."
+kind = 1
+
 [sub_resource type="StandardMaterial3D" id="MarkerMaterial"]
 albedo_color = Color(0.3490196, 0.8980392, 0.6941177, 1)
 emission_enabled = true
@@ -66,7 +73,7 @@ outer_radius = 0.29
 [node name="Release" type="Node3D" unique_id=55945394 node_paths=PackedStringArray("display_label")]
 script = ExtResource("Behavior")
 display_label = NodePath("Track/Model/BillboardLabel3D")
-configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_release_speed"), SubResource("Setting_quantity"), SubResource("Setting_interval"), SubResource("Setting_start_delay"), SubResource("Resource_har4k")])
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_release_speed"), SubResource("Setting_quantity"), SubResource("Setting_interval"), SubResource("Setting_start_delay"), SubResource("Resource_har4k"), SubResource("Setting_signal_controlled")])
 
 [node name="Track" type="StaticBody3D" parent="." unique_id=986480807]
 collision_mask = 2

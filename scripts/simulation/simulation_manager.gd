@@ -58,7 +58,9 @@ func start() -> bool:
 	# Queue initial emissions until every receiver has entered its run lifecycle.
 	draining_signals = true
 	for piece in build.pieces:
-		for behavior_node in piece.behaviors: behavior_node.start_run()
+		for behavior_node in piece.behaviors:
+			behavior_node.initializing_signals = true
+			behavior_node.start_run()
 	# Seed persistent wires from configured initial output states after every reset.
 	for piece in build.pieces:
 		for behavior_node in piece.behaviors:
@@ -66,6 +68,14 @@ func start() -> bool:
 				_behavior_output(port, behavior_node.output_values[port], piece)
 	draining_signals = false
 	_flush_signals()
+	# Gates expose an initial rising event only after seeded states settle.
+	# Keep those events queued until every component leaves initialization.
+	if state == State.RUNNING:
+		draining_signals = true
+		for piece in build.pieces:
+			for behavior_node in piece.behaviors: behavior_node.signals_ready()
+		draining_signals = false
+		_flush_signals()
 	return state == State.RUNNING
 
 func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:

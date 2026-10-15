@@ -111,4 +111,4 @@ func tint(color: Color, enabled: bool = true) -> void:
 		mesh.material_overlay = tint_material
 
 func serialize() -> Dictionary:
-	return {"uid": instance_id, "piece": String(definition.id), "position": [position.x,position.y,position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4), "config": configuration.duplicate(true)}
+	return {"uid": instance_id, "piece": String(definition.id), "position": [position.x,position.y,position.z], "rotation": posmod(roundi(rotation.y / (PI / 2.0)), 4), "config": PieceAttachment.transformed_config(configuration, basis)}

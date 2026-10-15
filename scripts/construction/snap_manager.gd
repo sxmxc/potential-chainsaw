@@ -124,13 +124,31 @@ func screen_candidates(items: Array, ports: Array, targets: Array, camera: Camer
 # camera projection never decides the attachment transform or its elevation.
 func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ignored: Array, camera: Camera3D, cursor: Vector2, sticky: String, grab_offset: Variant = null) -> Array[Dictionary]:
 	var hit := surface_hit(camera, cursor, ignored)
+	if items.size() == 1 and items[0].definition.surface_mounted:
+		if hit.is_empty() or hit.piece not in pieces: return []
+		if not hit.collider is StaticBody3D: return []
+		return mounted_candidates(items[0], preferred, hit.piece, hit.position, hit.normal)
 	if hit.is_empty() or hit.piece not in pieces or not hit.piece.definition.authoring_only: return []
 	return face_candidates(items, preferred, hit.piece, hit.position, hit.normal, sticky, grab_offset)
+
+func mounted_candidates(item: Dictionary, preferred: Transform3D, target: BuildingPiece, point: Vector3, normal: Vector3) -> Array[Dictionary]:
+	if target.definition.surface_mounted or target.definition.authoring_only: return []
+	var up := normal.normalized()
+	# Project a stable world heading onto the surface; R twists about its normal.
+	var heading := Vector3.FORWARD if absf(up.z) < 0.95 else Vector3.UP
+	var forward := (heading - up * heading.dot(up)).normalized()
+	var aligned := Basis(forward.cross(up), up, -forward)
+	var quarter := roundi(preferred.basis.get_euler().y / (PI / 2))
+	aligned = aligned * Basis(Vector3.UP, quarter * PI / 2)
+	var local: Transform3D = item.local
+	var placement := Transform3D(aligned, point) * local.affine_inverse()
+	var key := target.instance_id + "/mount"
+	return [{"transform": placement, "point": point, "target": {"piece": target, "point": point, "key": key, "surface": true}, "key": key, "error": "", "score": -100.0}]
 
 func surface_hit(camera: Camera3D, cursor: Vector2, ignored: Array = [], collision_mask: int = 1) -> Dictionary:
 	var excluded: Array[RID] = []
 	for piece in ignored:
-		for body: StaticBody3D in piece.find_children("*", "StaticBody3D", true, false): excluded.append(body.get_rid())
+		for body: CollisionObject3D in piece.find_children("*", "CollisionObject3D", true, false): excluded.append(body.get_rid())
 	# Exact silhouette edges can fall between collision triangles. A two-pixel
 	# pick tolerance resolves those misses without searching projected anchors.
 	for offset in [Vector2.ZERO, Vector2(0,-2), Vector2(2,0), Vector2(-2,0), Vector2(0,2)]:
@@ -223,7 +241,7 @@ func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -
 	var query := PhysicsRayQueryParameters3D.create(origin,target.point,1)
 	var excluded: Array[RID] = []
 	for piece in ignored:
-		for body: StaticBody3D in piece.find_children("*", "StaticBody3D", true, false): excluded.append(body.get_rid())
+		for body: CollisionObject3D in piece.find_children("*", "CollisionObject3D", true, false): excluded.append(body.get_rid())
 	query.exclude=excluded
 	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return true

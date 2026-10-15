@@ -3,6 +3,7 @@ import manifest from "./catalog.json" with { type: "json" };
 type ObjectValue = Record<string, unknown>;
 type Asset = {
   scenery: boolean;
+  surface_mounted: boolean;
   release: boolean;
   collector: boolean;
   settings: Record<string, { kind: number; minimum: number; maximum: number }>;
@@ -73,6 +74,20 @@ function records(value: unknown): Map<string, ObjectValue> {
     require(object(config), "Invalid configuration");
     for (const [key, value] of Object.entries(config)) {
       if (key === "links") continue;
+      if (key === "mount_target") {
+        require(
+          asset.surface_mounted && safeId(value),
+          "Invalid mounting target",
+        );
+        continue;
+      }
+      if (key === "mount_basis") {
+        require(
+          asset.surface_mounted && mountingBasis(value),
+          "Invalid mounting orientation",
+        );
+        continue;
+      }
       const setting = Object.hasOwn(asset.settings, key)
         ? asset.settings[key]
         : undefined;
@@ -103,6 +118,18 @@ function records(value: unknown): Map<string, ObjectValue> {
       "Too many mechanism links",
     );
     const sender = assets[item.piece as string];
+    if (sender.surface_mounted) {
+      require(
+        safeId(config.mount_target) && mountingBasis(config.mount_basis),
+        "Missing mounting metadata",
+      );
+      const support = result.get(config.mount_target);
+      require(
+        support && support !== item &&
+          !assets[support.piece as string].surface_mounted,
+        "Missing or invalid mounting surface",
+      );
+    }
     for (const link of links) {
       require(object(link), "Invalid link");
       keys(link, ["event", "target", "action"]);
@@ -123,6 +150,23 @@ function records(value: unknown): Map<string, ObjectValue> {
     }
   }
   return result;
+}
+
+function mountingBasis(value: unknown): value is number[] {
+  if (!vector(value, 9)) return false;
+  const dot = (a: number, b: number) =>
+    value[a] * value[b] + value[a + 1] * value[b + 1] +
+    value[a + 2] * value[b + 2];
+  for (const a of [0, 3, 6]) {
+    if (Math.abs(dot(a, a) - 1) > 0.00001) return false;
+    for (const b of [0, 3, 6]) {
+      if (a !== b && Math.abs(dot(a, b)) > 0.00001) return false;
+    }
+  }
+  const determinant = value[0] * (value[4] * value[8] - value[5] * value[7]) -
+    value[3] * (value[1] * value[8] - value[2] * value[7]) +
+    value[6] * (value[1] * value[5] - value[2] * value[4]);
+  return Math.abs(determinant - 1) < 0.00001;
 }
 
 export function validatePuzzle(value: unknown, catalog: unknown): ObjectValue {

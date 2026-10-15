@@ -88,7 +88,7 @@ func restore(data: Array) -> void:
 	for item in data:
 		var definition=catalog.get_piece(item.piece)
 		if not definition or (definition.authoring_only and not authoring): continue
-		spawn(definition,Transform3D(Basis(Vector3.UP,int(item.rotation)*PI/2),Vector3(item.position[0],item.position[1],item.position[2])),item.uid,item.get("config",{}))
+		spawn(definition,PieceAttachment.record_transform(item),item.uid,item.get("config",{}))
 	refresh_targets()
 	changed.emit()
 
@@ -291,6 +291,14 @@ func update_preview() -> void:
 		if point==null:
 			preview.hide()
 			return
+	if items.size() == 1 and chosen.surface_mounted:
+		var accessory := preview.get_child(0) as BuildingPiece
+		if is_snapped:
+			accessory.configuration.mount_target = candidates[candidate_index()].target.piece.instance_id
+		else:
+			accessory.configuration.erase("mount_target")
+		accessory.configuration.mount_basis = PieceAttachment.basis_values(preview.basis * accessory.basis)
+		items = placement_items()
 	validation_message = validate_edit(items, preview.transform, moving_group)
 	valid=validation_message.is_empty()
 	apply_preview()
@@ -329,14 +337,17 @@ func commit() -> void:
 		var placement: Transform3D=preview.transform*item.local
 		if mode=="move":
 			moving_group[index].transform=placement
+			moving_group[index].configuration = PieceAttachment.transformed_config(item.config, placement.basis)
 			edited.append(moving_group[index])
 		else:
-			var piece=spawn(item.definition,placement,"",item.config)
+			var piece=spawn(item.definition,placement,"",PieceAttachment.transformed_config(item.config, placement.basis))
 			edited.append(piece)
 	if mode == "duplicate":
 		var duplicated_ids: Dictionary = {}
 		for index in edited.size(): duplicated_ids[items[index].uid] = edited[index].instance_id
 		for piece in edited:
+			if duplicated_ids.has(piece.configuration.get("mount_target", "")):
+				piece.configuration.mount_target = duplicated_ids[piece.configuration.mount_target]
 			for link in piece.configuration.get("links", []):
 				if duplicated_ids.has(link.target): link.target = duplicated_ids[link.target]
 	if mode!="place":
@@ -438,11 +449,11 @@ func edit_link(source_id: String, index: int, link: Dictionary = {}) -> bool:
 
 func delete_selected() -> void:
 	if not enabled or selection.is_empty() or not selection_permitted("remove"): return
-	var problem := validate_edit([], Transform3D.IDENTITY, selection, true)
+	var removing := attached_selection()
+	var problem := validate_edit([], Transform3D.IDENTITY, removing, true)
 	if not problem.is_empty(): show_status(problem); return
 	cancel()
 	var before=snapshot(true)
-	var removing=selection.duplicate()
 	select(null)
 	for piece in removing:
 		pieces.erase(piece)
@@ -470,7 +481,7 @@ func move_selected(duplicate_piece: bool = false) -> void:
 	movement_height=pivot.y
 	preview.transform=frame
 	operation="duplicate" if duplicate_piece else "move"
-	for piece in selection:
+	for piece in attached_selection():
 		add_preview_piece(piece.base_definition, frame.affine_inverse()*piece.transform, piece.configuration, piece.instance_id)
 		if not duplicate_piece:
 			moving_group.append(piece)
@@ -491,7 +502,8 @@ func rotate_piece() -> void:
 	elif selected:
 		if not selection_permitted("rotate"): return
 		var pivot := selection_pivot()
-		var rotation_basis := Basis(Vector3.UP, PI / 2)
+		var axis := selected.basis.y if selection.size() == 1 and selected.definition.surface_mounted else Vector3.UP
+		var rotation_basis := Basis(axis, PI / 2)
 		_transform_selection(Transform3D(rotation_basis, pivot - rotation_basis * pivot), "Rotate assembly")
 
 func elevate_selected(delta: float) -> void:
@@ -505,15 +517,18 @@ func elevate_selected(delta: float) -> void:
 	_transform_selection(Transform3D(Basis.IDENTITY, Vector3(0, delta, 0)), "Raise/lower assembly")
 
 func _transform_selection(placement: Transform3D, label: String) -> void:
+	var group := attached_selection()
 	var items: Array[Dictionary] = []
-	for piece in selection:
+	for piece in group:
 		items.append({"uid": piece.instance_id, "definition": piece.definition, "local": piece.transform, "config": piece.configuration})
-	var problem := validate_edit(items, placement, selection)
+	var problem := validate_edit(items, placement, group)
 	if not problem.is_empty(): show_status("✕  " + problem); return
 	var before := snapshot(true)
-	for index in selection.size(): selection[index].transform = placement * items[index].local
+	for index in group.size():
+		group[index].transform = placement * items[index].local
+		group[index].configuration = PieceAttachment.transformed_config(group[index].configuration, group[index].basis)
+	set_selection(group)
 	_record_edit(before, label)
-	selection_changed.emit(selected)
 
 func undo() -> void:
 	if not enabled: return
@@ -673,11 +688,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("build_frame",false,true): frame_pieces(selection)
 		elif event.is_action_pressed("build_frame_all",false,true): frame_all()
 
+func attached_selection() -> Array[BuildingPiece]:
+	var expanded: Array[BuildingPiece] = selection.duplicate()
+	for piece in pieces:
+		if piece in expanded: continue
+		for support in selection:
+			if piece.configuration.get("mount_target", "") == support.instance_id:
+				expanded.append(piece)
+				break
+	return expanded
+
 func selection_permitted(action: String) -> bool:
-	for piece in selection:
+	var affected := attached_selection() if action in ["move", "rotate", "duplicate", "remove"] else selection
+	for piece in affected:
 		if piece.definition.authoring_only and not authoring: return false
 	if not rules: return true
-	for piece in selection:
+	for piece in affected:
 		if not rules.permits(piece.instance_id, action):
 			show_status("This assembly contains a piece with locked " + action)
 			return false
@@ -689,7 +715,6 @@ func validate_edit(items: Array, placement: Transform3D, replaced: Array, prune_
 	if check_geometry:
 		var problem := snap.validate_group(items, placement, pieces, replaced)
 		if not problem.is_empty(): return problem
-	if not rules: return ""
 	var result: Array = []
 	for piece in pieces:
 		if piece not in replaced and not piece.definition.authoring_only: result.append(piece.serialize())
@@ -699,9 +724,20 @@ func validate_edit(items: Array, placement: Transform3D, replaced: Array, prune_
 		var transform_value: Transform3D = placement * item.local
 		var original := find_piece(item.get("uid", ""))
 		var uid: String = original.instance_id if original and original in replaced else "preview-new-%d" % index
-		result.append({"uid": uid, "piece": String(item.definition.id), "position": [transform_value.origin.x, transform_value.origin.y, transform_value.origin.z], "rotation": posmod(roundi(transform_value.basis.get_euler().y / (PI / 2)), 4), "config": item.config.duplicate(true)})
+		result.append({"uid": uid, "piece": String(item.definition.id), "position": [transform_value.origin.x, transform_value.origin.y, transform_value.origin.z], "rotation": posmod(roundi(transform_value.basis.get_euler().y / (PI / 2)), 4), "config": PieceAttachment.transformed_config(item.config, transform_value.basis)})
+	var proposed_ids: Dictionary = {}
+	for index in items.size():
+		if items[index].get("uid", "").is_empty(): continue
+		var original := find_piece(items[index].get("uid", ""))
+		proposed_ids[items[index].get("uid", "")] = original.instance_id if original and original in replaced else "preview-new-%d" % index
+	for record in result:
+		if record.uid not in proposed_ids.values(): continue
+		if proposed_ids.has(record.config.get("mount_target", "")):
+			record.config.mount_target = proposed_ids[record.config.mount_target]
 	if prune_links:
 		var present: Array = result.map(func(item): return item.uid)
 		for item in result:
 			if item.config.has("links"): item.config.links = item.config.links.filter(func(link): return link.get("target", "") in present)
-	return rules.validate(result)
+	var attachment_error := PieceAttachment.validate(result, catalog)
+	if not attachment_error.is_empty(): return attachment_error
+	return rules.validate(result) if rules else ""

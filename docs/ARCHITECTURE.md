@@ -35,6 +35,8 @@ Movement hides the originals while the preview is active. Cancellation restores 
 
 `SnapManager` finds cursor-directed attachment candidates and checks placement geometry. An exposed compatible track connector aligns the whole transform, including elevation and orientation. It takes precedence over the free-placement grid plane. Surface attachment instead uses collision hits and measured occupied volumes; without a suitable attachment, the active grid height supplies placement.
 
+Surface-mounted definitions align local +Y to a stationary construction collision normal. Their contact and full world orientation persist through shared attachment metadata in configuration. Supporting-piece edits include accessories atomically; standalone accessories can be remounted. Fixed environment pieces and moving mechanism bodies are excluded as mounting targets. See [mounted control authoring](PIECE_AUTHORING.md#author-a-mounted-control) for the persistence and geometry contract.
+
 A group remains a rigid assembly during a drag, including differences in height. Its own pieces are excluded from snap targets. Maintaining that relationship matters more than independently snapping every member, which would deform the machine.
 
 Placement geometry and physics collision serve different purposes. Bounds and occupied volumes help reject overlapping constructions and find surfaces. Mesh collision or authored shapes determine how a marble actually contacts a piece. Passing placement checks does not prove the route will work in a run.
@@ -63,7 +65,7 @@ Ordinary Sandbox testing requires exactly one release and has no deadline. A cat
 
 Links are saved on the source instance in `config.links` as `{event, target, action}`. The target is a UID and the other fields are port names, so reorganizing a model's internal nodes need not break saved wiring. `BuildManager.edit_link()` applies the normal permission, validation, and history rules.
 
-Pulse ports describe events; state ports latch a value. Simulation delivers signals in FIFO order, preserving emission and saved-link order. Receiver outputs join the queue rather than recurse. State ports suppress unchanged values, allowing feedback to settle. A transaction exceeding the scene's delivery limit fails the run with a wiring error. This protects a run from an endless signal loop without silently dropping actions.
+Pulse ports describe events; state ports latch a value. Simulation delivers signals in FIFO order, preserving emission and saved-link order. Receiver outputs join the queue rather than recurse. State ports suppress unchanged values, allowing feedback to settle. A transaction exceeding the scene's delivery limit fails the run with a wiring error. This protects a run from an endless signal loop without silently dropping actions. Initial persistent states settle before the shared `signals_ready()` behavior hook exposes initial gate activation events; pause/resume reseeding does not repeat that hook.
 
 ## Persistence and distribution
 

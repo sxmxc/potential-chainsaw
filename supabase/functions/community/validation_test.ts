@@ -65,3 +65,52 @@ Deno.test("unknown assets, settings, types, link ports and excessive configurati
     rejected(p);
   }
 });
+
+Deno.test("mounted controls accept compatible state wiring and reject unsafe mount metadata", () => {
+  const p = structuredClone(fixture);
+  const support = p.pieces[0];
+  const memory = {
+    uid: "memory",
+    piece: "logic-memory",
+    position: [...support.position],
+    rotation: 0,
+    config: {
+      initial_state: true,
+      mount_target: support.uid,
+      mount_basis: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+      links: [{ event: "state", target: "inverse", action: "a" }],
+    },
+  };
+  const inverse = {
+    uid: "inverse",
+    piece: "logic-not",
+    position: [...support.position],
+    rotation: 0,
+    config: {
+      mount_target: support.uid,
+      mount_basis: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+      links: [{ event: "rising", target: support.uid, action: "release" }],
+    },
+  };
+  p.pieces.push(memory, inverse);
+  p.solution.push(structuredClone(memory), structuredClone(inverse));
+  validatePuzzle(p, compatibility);
+  for (
+    const change of [
+      (v: typeof p) => v.pieces.at(-1).config.mount_target = "missing",
+      (v: typeof p) => v.pieces.at(-1).config.mount_target = "inverse",
+      (v: typeof p) => v.pieces.at(-1).config.mount_target = "memory",
+      (v: typeof p) =>
+        v.pieces.at(-1).config.mount_basis = [2, 0, 0, 0, 1, 0, 0, 0, 1],
+      (v: typeof p) =>
+        v.pieces.at(-1).config.mount_basis = [-1, 0, 0, 0, 1, 0, 0, 0, 1],
+      (v: typeof p) => delete v.pieces.at(-1).config.mount_basis,
+      (v: typeof p) => v.pieces.at(-2).config.links[0].event = "changed",
+      (v: typeof p) => v.pieces[0].config.mount_target = "memory",
+    ]
+  ) {
+    const invalid = structuredClone(p);
+    change(invalid);
+    rejected(invalid);
+  }
+});

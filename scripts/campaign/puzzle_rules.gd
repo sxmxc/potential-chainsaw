@@ -37,16 +37,20 @@ func validate(construction: Array) -> String:
 			var limits: Array = puzzle.configuration_limits[item.piece][key]
 			var value = item.get("config", {}).get(key)
 			if value != null and (not (value is float or value is int) or float(value) < float(limits[0]) or float(value) > float(limits[1])): return "Mechanism setting exceeds puzzle limits: " + key
-		var placement := Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), Vector3(item.position[0], item.position[1], item.position[2]))
+		var placement := PieceAttachment.record_transform(item)
 		if SnapManager.intersects_solids(definition, placement, environment_solids): return "Blocked by the environment"
 		if initial.has(item.uid):
 			var original: Dictionary = initial[item.uid]
 			if item.piece != original.piece: return "Authored pieces cannot be replaced"
 			if placement.origin != Vector3(original.position[0], original.position[1], original.position[2]) and not permits(item.uid, "move"): return "This piece is fixed in place"
-			if posmod(int(item.rotation), 4) != posmod(int(original.rotation), 4) and not permits(item.uid, "rotate"): return "Rotation is locked"
-			var settings: Dictionary = item.get("config", {})
+			if not placement.basis.is_equal_approx(PieceAttachment.record_transform(original).basis) and not permits(item.uid, "rotate"): return "Rotation is locked"
+			var settings: Dictionary = item.get("config", {}).duplicate(true)
 			var old: Dictionary = original.get("config", {}).duplicate(true)
 			if old.has("links"): old.links = old.links.filter(func(link): return link.get("target", "") in present)
+			if settings.get("mount_target") != old.get("mount_target") and not permits(item.uid, "move"): return "Mounting is locked"
+			for key in ["mount_target", "mount_basis"]:
+				settings.erase(key)
+				old.erase(key)
 			if settings != old:
 				if not permits(item.uid, "configure"): return "Configuration is locked"
 				var permission: Dictionary = puzzle.get("permissions", {}).get(item.uid, {})
@@ -57,9 +61,9 @@ func validate(construction: Array) -> String:
 						var limits: Array = permission.limits[key]
 						if not (settings.get(key) is float or settings.get(key) is int): return "Invalid setting"
 						if float(settings[key]) < float(limits[0]) or float(settings[key]) > float(limits[1]): return "Setting exceeds puzzle limits: " + key
-		if not initial.has(item.uid) or placement.origin != Vector3(initial[item.uid].position[0], initial[item.uid].position[1], initial[item.uid].position[2]) or item.rotation != initial[item.uid].rotation or bounds_changed:
+		if not initial.has(item.uid) or placement.origin != Vector3(initial[item.uid].position[0], initial[item.uid].position[1], initial[item.uid].position[2]) or not placement.basis.is_equal_approx(PieceAttachment.record_transform(initial[item.uid]).basis) or bounds_changed:
 			var position = Vector3(item.position[0], item.position[1], item.position[2])
-			var volume = Transform3D(Basis(Vector3.UP, int(item.rotation) * PI / 2), position) * definition.bounds
+			var volume = placement * definition.bounds
 			var bounds = puzzle.get("bounds", [-12, -12, 12, 12, 0, 12])
 			if volume.position.x < bounds[0] - 0.001 or volume.position.z < bounds[1] - 0.001 or volume.end.x > bounds[2] + 0.001 or volume.end.z > bounds[3] + 0.001 or position.y < bounds[4] - 0.001 or volume.end.y > bounds[5] + 0.001: return "Outside the visible build region"
 			for zone in puzzle.get("restricted_zones", []):
@@ -68,7 +72,7 @@ func validate(construction: Array) -> String:
 		if not seen.has(uid) and not permits(uid, "remove"): return "An authored piece cannot be removed"
 	for item in construction:
 		if not initial.has(item.uid) and remaining(item.piece, construction) < 0: return "No inventory remaining for " + catalog.get_piece(item.piece).display_name
-	return ""
+	return PieceAttachment.validate(construction, catalog)
 
 # Definition checks run before resource use; construction checks above enforce player edits.
 static func definition_errors(data: Dictionary, definitions: PieceCatalog, check_solution: bool = false) -> Array[String]:
@@ -89,6 +93,9 @@ static func definition_errors(data: Dictionary, definitions: PieceCatalog, check
 	for id in data.get("required_assets", []):
 		if not PieceCatalog.REGISTRY.has_string_id(StringName(id)): errors.append("Missing required asset: " + id)
 	if not errors.is_empty(): return errors
+	for records in [data.get("pieces", []), data.get("solution", [])]:
+		var attachment_error := PieceAttachment.validate(records, definitions)
+		if not attachment_error.is_empty(): errors.append(attachment_error)
 	var environment = PuzzleEnvironment.inspect_definition(data)
 	for error in environment.errors: errors.append(str(error))
 	if not SaveStorage.valid_id(data.id): errors.append("Invalid puzzle ID")
@@ -103,7 +110,7 @@ static func definition_errors(data: Dictionary, definitions: PieceCatalog, check
 		elif definition.has_behavior(MarbleRelease): starts += 1
 		if definition:
 			definition = definition.configured(piece.get("config", {}))
-			if SnapManager.intersects_solids(definition, Transform3D(Basis(Vector3.UP, int(piece.rotation) * PI / 2), Vector3(piece.position[0], piece.position[1], piece.position[2])), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
+			if SnapManager.intersects_solids(definition, PieceAttachment.record_transform(piece), environment.solids): errors.append("Starting piece intersects environment: " + piece.uid)
 	if starts == 0: errors.append("Place a marble release")
 	if data.get("objectives", []).is_empty(): errors.append("Add a completion objective")
 	for objective in data.get("objectives", []):

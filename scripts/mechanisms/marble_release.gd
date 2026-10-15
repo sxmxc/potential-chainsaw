@@ -10,10 +10,13 @@ signal marble_spawned(body: Marble, ordinal: int)
 
 var pending_releases: Array[Dictionary] = []
 var elapsed: float = 0.0
+var released_count: int = 0
+var next_release_time: float = 0.0
 
 
 func _init() -> void:
 	outputs = ["released"]
+	inputs = {"release": _request_release}
 
 func configure(settings: Dictionary) -> void:
 	super.configure(settings)
@@ -24,12 +27,24 @@ func reset() -> void:
 	super.reset()
 	elapsed = 0.0
 	pending_releases.clear()
+	released_count = 0
+	next_release_time = float(config.get("start_delay", 0))
 
 func start_run() -> void:
 	super.start_run()
+	if bool(config.get("signal_controlled", false)): return
 	for index in int(config.get("quantity", 1)):
 		pending_releases.append({"index": index, "time": float(config.get("start_delay", 0)) + index * float(config.get("interval", 1))})
 
+	_release_due()
+
+func _request_release(_value: Variant) -> void:
+	if not bool(config.get("signal_controlled", false)) or not enabled: return
+	if elapsed < next_release_time or released_count >= int(config.get("quantity", 1)): return
+	pending_releases.append({"index": released_count, "time": elapsed})
+	# Reserve supply and cooldown before outputs can feed back into this input.
+	released_count += 1
+	next_release_time = elapsed + float(config.get("interval", 1))
 	_release_due()
 
 func _physics_process(delta: float) -> void:

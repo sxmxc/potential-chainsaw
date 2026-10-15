@@ -58,6 +58,8 @@ func decode(text: String) -> Dictionary:
 			config.release_speed = clampf(float(config.release_speed),0,6)
 		config = catalog.get_piece(item.piece).normalized_configuration(config)
 		clean.append({"uid":uid,"piece":item.piece,"position":p.duplicate(),"rotation":posmod(int(item.rotation),4),"config":config})
+	var attachment_error := PieceAttachment.validate(clean, catalog)
+	if not attachment_error.is_empty(): last_error = attachment_error; return {}
 	data.pieces = clean
 	data.name = data.name.left(80)
 	return data

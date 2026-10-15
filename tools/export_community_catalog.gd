@@ -22,7 +22,7 @@ func export_catalog() -> void:
 			if component is PieceBehavior:
 				for port in component.inputs: inputs[port] = component.state_inputs.has(port)
 				for port in component.output_ports(): outputs[port] = component.state_outputs.has(port)
-		assets[String(definition.id)] = {"scenery": definition.authoring_only, "release": definition.has_behavior(MarbleRelease), "collector": definition.has_behavior(MarbleCollector), "settings": settings, "inputs": inputs, "outputs": outputs}
+		assets[String(definition.id)] = {"scenery": definition.authoring_only, "surface_mounted": definition.surface_mounted, "release": definition.has_behavior(MarbleRelease), "collector": definition.has_behavior(MarbleCollector), "settings": settings, "inputs": inputs, "outputs": outputs}
 		model.free()
 	var manifest := {"format": 1, "assets": assets, "game_version": str(ProjectSettings.get_setting("application/config/version", "0.0.1"))}
 	manifest.compatibility = JSON.stringify({"assets": assets, "game_version": manifest.game_version}, "", true, true).sha256_text()

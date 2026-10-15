@@ -64,7 +64,7 @@ Downloads receive local IDs of `community-<server UUID>-r<revision>`. This gives
 
 ### Keep the catalog contract in step
 
-The compatibility digest covers the release version and catalog metadata exported from the saved registry, scene settings, and actual port declarations. It is not a hash of every physics or model dependency. After relevant release/catalog changes, first ensure YARD's saved index is current, then run:
+The compatibility digest covers the release version and catalog metadata exported from the saved registry, scene settings, surface-mount capability, and actual port declarations. Mounted pieces use only registered construction UIDs and validated orthonormal orientation metadata; the server rejects missing targets, accessory cycles, and mount fields on ordinary pieces. It is not a hash of every physics or model dependency. After relevant release/catalog changes, first ensure YARD's saved index is current, then run:
 
 ```powershell
 godot --headless --path . --script tools/export_community_catalog.gd

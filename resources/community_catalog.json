@@ -6,7 +6,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-double": {
 			"collector": false,
@@ -14,7 +15,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-double-high": {
 			"collector": false,
@@ -22,7 +24,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-hanging": {
 			"collector": false,
@@ -30,7 +33,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-hanging-double": {
 			"collector": false,
@@ -38,7 +42,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-hanging-double-high": {
 			"collector": false,
@@ -46,7 +51,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-hanging-high": {
 			"collector": false,
@@ -54,7 +60,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"banner-high": {
 			"collector": false,
@@ -62,7 +69,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bend": {
 			"collector": false,
@@ -70,7 +78,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bend-large": {
 			"collector": false,
@@ -78,7 +87,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bend-medium": {
 			"collector": false,
@@ -86,7 +96,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bend-solid-large": {
 			"collector": false,
@@ -94,7 +105,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bend-solid-medium": {
 			"collector": false,
@@ -102,7 +114,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bucket-elevator": {
 			"collector": false,
@@ -129,7 +142,8 @@
 					"maximum": 2.0,
 					"minimum": 0.25
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"bump-a": {
 			"collector": false,
@@ -137,7 +151,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-b": {
 			"collector": false,
@@ -145,7 +160,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-c": {
 			"collector": false,
@@ -153,7 +169,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-d": {
 			"collector": false,
@@ -161,7 +178,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-solid-a": {
 			"collector": false,
@@ -169,7 +187,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-solid-b": {
 			"collector": false,
@@ -177,7 +196,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-solid-c": {
 			"collector": false,
@@ -185,7 +205,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"bump-solid-d": {
 			"collector": false,
@@ -193,7 +214,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"corner": {
 			"collector": false,
@@ -201,7 +223,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"corner-solid": {
 			"collector": false,
@@ -209,7 +232,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"cross": {
 			"collector": false,
@@ -217,7 +241,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve": {
 			"collector": false,
@@ -225,7 +250,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-large": {
 			"collector": false,
@@ -233,7 +259,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-solid": {
 			"collector": false,
@@ -241,7 +268,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-solid-large": {
 			"collector": false,
@@ -249,7 +277,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-wide": {
 			"collector": false,
@@ -257,7 +286,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-wide-large": {
 			"collector": false,
@@ -265,7 +295,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-wide-medium": {
 			"collector": false,
@@ -273,7 +304,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-wide-solid-large": {
 			"collector": false,
@@ -281,7 +313,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"curve-wide-solid-medium": {
 			"collector": false,
@@ -289,7 +322,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"diverter": {
 			"collector": false,
@@ -316,7 +350,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"end-hole-rounded": {
 			"collector": false,
@@ -324,7 +359,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"end-hole-square": {
 			"collector": false,
@@ -332,7 +368,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"end-rounded": {
 			"collector": false,
@@ -340,7 +377,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"end-square": {
 			"collector": false,
@@ -348,7 +386,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-border": {
 			"collector": false,
@@ -356,7 +395,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-border-high": {
 			"collector": false,
@@ -364,7 +404,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-column-thin": {
 			"collector": false,
@@ -372,7 +413,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-column-wide": {
 			"collector": false,
@@ -380,7 +422,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-floor-half": {
 			"collector": false,
@@ -388,7 +431,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-floor-quarter": {
 			"collector": false,
@@ -396,7 +440,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-roof-flat-square": {
 			"collector": false,
@@ -404,7 +449,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-stairs-closed-short": {
 			"collector": false,
@@ -412,7 +458,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-corner": {
 			"collector": false,
@@ -420,7 +467,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-doorway-square": {
 			"collector": false,
@@ -428,7 +476,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-doorway-wide-square": {
 			"collector": false,
@@ -436,7 +485,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-half": {
 			"collector": false,
@@ -444,7 +494,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-low": {
 			"collector": false,
@@ -452,7 +503,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:building-wall-window-square": {
 			"collector": false,
@@ -460,7 +512,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:column": {
 			"collector": false,
@@ -468,7 +521,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:deck": {
 			"collector": false,
@@ -476,7 +530,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-box-large": {
 			"collector": false,
@@ -484,7 +539,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-box-long": {
 			"collector": false,
@@ -492,7 +548,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-box-small": {
 			"collector": false,
@@ -500,7 +557,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-box-wide": {
 			"collector": false,
@@ -508,7 +566,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-catwalk-corner": {
 			"collector": false,
@@ -516,7 +575,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-catwalk-stairs": {
 			"collector": false,
@@ -524,7 +584,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-catwalk-straight": {
 			"collector": false,
@@ -532,7 +593,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-cone": {
 			"collector": false,
@@ -540,7 +602,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-machine-bed": {
 			"collector": false,
@@ -548,7 +611,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-machine-fortified": {
 			"collector": false,
@@ -556,7 +620,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-pipe-large": {
 			"collector": false,
@@ -564,7 +629,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-pipe-large-curve": {
 			"collector": false,
@@ -572,7 +638,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-pipe-large-junction": {
 			"collector": false,
@@ -580,7 +647,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-pipe-large-long": {
 			"collector": false,
@@ -588,7 +656,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-screen-panel-small": {
 			"collector": false,
@@ -596,7 +665,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-structure-doorway": {
 			"collector": false,
@@ -604,7 +674,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-structure-doorway-wide": {
 			"collector": false,
@@ -612,7 +683,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-structure-medium": {
 			"collector": false,
@@ -620,7 +692,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-structure-short": {
 			"collector": false,
@@ -628,7 +701,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:factory-structure-tall": {
 			"collector": false,
@@ -636,7 +710,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:machine": {
 			"collector": false,
@@ -644,7 +719,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"environment:partition": {
 			"collector": false,
@@ -652,7 +728,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": true,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"fan-four": {
 			"collector": false,
@@ -688,7 +765,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"fan-simple-four": {
 			"collector": false,
@@ -713,7 +791,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"fan-simple-two": {
 			"collector": false,
@@ -738,7 +817,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"fan-standing-four": {
 			"collector": false,
@@ -774,7 +854,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"fan-standing-two": {
 			"collector": false,
@@ -810,7 +891,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"fan-two": {
 			"collector": false,
@@ -846,7 +928,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"funnel": {
 			"collector": false,
@@ -854,7 +937,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"funnel-long": {
 			"collector": false,
@@ -862,7 +946,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"gate": {
 			"collector": false,
@@ -895,7 +980,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"helix-half-left": {
 			"collector": false,
@@ -903,7 +989,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-half-right": {
 			"collector": false,
@@ -911,7 +998,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-half-left": {
 			"collector": false,
@@ -919,7 +1007,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-half-right": {
 			"collector": false,
@@ -927,7 +1016,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-left": {
 			"collector": false,
@@ -935,7 +1025,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-quarter-left": {
 			"collector": false,
@@ -943,7 +1034,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-quarter-right": {
 			"collector": false,
@@ -951,7 +1043,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-large-right": {
 			"collector": false,
@@ -959,7 +1052,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-left": {
 			"collector": false,
@@ -967,7 +1061,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-quarter-left": {
 			"collector": false,
@@ -975,7 +1070,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-quarter-right": {
 			"collector": false,
@@ -983,7 +1079,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"helix-right": {
 			"collector": false,
@@ -991,7 +1088,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"launcher": {
 			"collector": false,
@@ -1032,7 +1130,110 @@
 					"maximum": 8.0,
 					"minimum": 0.5
 				}
-			}
+			},
+			"surface_mounted": false
+		},
+		"logic-and": {
+			"collector": false,
+			"inputs": {
+				"a": true,
+				"b": true
+			},
+			"outputs": {
+				"result": true,
+				"rising": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {},
+			"surface_mounted": true
+		},
+		"logic-counter": {
+			"collector": false,
+			"inputs": {
+				"increment": false,
+				"reset": false
+			},
+			"outputs": {
+				"reached": false,
+				"threshold_reached": true
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"3d_label": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"infinite_count": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"initial_count": {
+					"kind": 0,
+					"maximum": 10000.0,
+					"minimum": 0.0
+				},
+				"threshold": {
+					"kind": 0,
+					"maximum": 10000.0,
+					"minimum": 1.0
+				}
+			},
+			"surface_mounted": true
+		},
+		"logic-memory": {
+			"collector": false,
+			"inputs": {
+				"reset": false,
+				"set": false,
+				"toggle": false
+			},
+			"outputs": {
+				"changed": false,
+				"state": true
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"initial_state": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			},
+			"surface_mounted": true
+		},
+		"logic-not": {
+			"collector": false,
+			"inputs": {
+				"a": true
+			},
+			"outputs": {
+				"result": true,
+				"rising": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {},
+			"surface_mounted": true
+		},
+		"logic-or": {
+			"collector": false,
+			"inputs": {
+				"a": true,
+				"b": true
+			},
+			"outputs": {
+				"result": true,
+				"rising": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {},
+			"surface_mounted": true
 		},
 		"ramp-end-a": {
 			"collector": false,
@@ -1040,7 +1241,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-b": {
 			"collector": false,
@@ -1048,7 +1250,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-c": {
 			"collector": false,
@@ -1056,7 +1259,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-d": {
 			"collector": false,
@@ -1064,7 +1268,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-solid-a": {
 			"collector": false,
@@ -1072,7 +1277,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-solid-b": {
 			"collector": false,
@@ -1080,7 +1286,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-solid-c": {
 			"collector": false,
@@ -1088,7 +1295,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-end-solid-d": {
 			"collector": false,
@@ -1096,7 +1304,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-a": {
 			"collector": false,
@@ -1104,7 +1313,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-b": {
 			"collector": false,
@@ -1112,7 +1322,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-c": {
 			"collector": false,
@@ -1120,7 +1331,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-d": {
 			"collector": false,
@@ -1128,7 +1340,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-solid-a": {
 			"collector": false,
@@ -1136,7 +1349,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-solid-b": {
 			"collector": false,
@@ -1144,7 +1358,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-solid-c": {
 			"collector": false,
@@ -1152,7 +1367,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-long-solid-d": {
 			"collector": false,
@@ -1160,7 +1376,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-a": {
 			"collector": false,
@@ -1168,7 +1385,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-b": {
 			"collector": false,
@@ -1176,7 +1394,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-c": {
 			"collector": false,
@@ -1184,7 +1403,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-d": {
 			"collector": false,
@@ -1192,7 +1412,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-solid-a": {
 			"collector": false,
@@ -1200,7 +1421,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-solid-b": {
 			"collector": false,
@@ -1208,7 +1430,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-solid-c": {
 			"collector": false,
@@ -1216,7 +1439,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"ramp-start-solid-d": {
 			"collector": false,
@@ -1224,7 +1448,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-left": {
 			"collector": false,
@@ -1232,7 +1457,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-left-large": {
 			"collector": false,
@@ -1240,7 +1466,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-right": {
 			"collector": false,
@@ -1248,7 +1475,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-right-large": {
 			"collector": false,
@@ -1256,7 +1484,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-short-left-a": {
 			"collector": false,
@@ -1264,7 +1493,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-short-left-b": {
 			"collector": false,
@@ -1272,7 +1502,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"s-curve-short-left-c": {
 			"collector": false,
@@ -1280,7 +1511,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"sandbox-finish": {
 			"collector": true,
@@ -1296,11 +1528,14 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"sandbox-start": {
 			"collector": false,
-			"inputs": {},
+			"inputs": {
+				"release": false
+			},
 			"outputs": {
 				"released": false
 			},
@@ -1327,12 +1562,18 @@
 					"maximum": 6.0,
 					"minimum": 0.0
 				},
+				"signal_controlled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
 				"start_delay": {
 					"kind": 0,
 					"maximum": 60.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"sensor": {
 			"collector": false,
@@ -1350,7 +1591,8 @@
 					"maximum": 1.0,
 					"minimum": 0.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"slant-a": {
 			"collector": false,
@@ -1358,7 +1600,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-b": {
 			"collector": false,
@@ -1366,7 +1609,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-c": {
 			"collector": false,
@@ -1374,7 +1618,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-d": {
 			"collector": false,
@@ -1382,7 +1627,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-long-a": {
 			"collector": false,
@@ -1390,7 +1636,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-long-b": {
 			"collector": false,
@@ -1398,7 +1645,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-long-c": {
 			"collector": false,
@@ -1406,7 +1654,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-long-d": {
 			"collector": false,
@@ -1414,7 +1663,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-a": {
 			"collector": false,
@@ -1422,7 +1672,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-b": {
 			"collector": false,
@@ -1430,7 +1681,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-c": {
 			"collector": false,
@@ -1438,7 +1690,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-d": {
 			"collector": false,
@@ -1446,7 +1699,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-long-a": {
 			"collector": false,
@@ -1454,7 +1708,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-long-b": {
 			"collector": false,
@@ -1462,7 +1717,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-long-c": {
 			"collector": false,
@@ -1470,7 +1726,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"slant-solid-long-d": {
 			"collector": false,
@@ -1478,7 +1735,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split": {
 			"collector": false,
@@ -1486,7 +1744,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-double": {
 			"collector": false,
@@ -1494,7 +1753,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-double-sides": {
 			"collector": false,
@@ -1502,7 +1762,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-double-sides-solid": {
 			"collector": false,
@@ -1510,7 +1771,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-double-solid": {
 			"collector": false,
@@ -1518,7 +1780,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-large-left": {
 			"collector": false,
@@ -1526,7 +1789,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-large-right": {
 			"collector": false,
@@ -1534,7 +1798,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-large-solid-left": {
 			"collector": false,
@@ -1542,7 +1807,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-large-solid-right": {
 			"collector": false,
@@ -1550,7 +1816,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-left": {
 			"collector": false,
@@ -1558,7 +1825,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-right": {
 			"collector": false,
@@ -1566,7 +1834,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-solid-left": {
 			"collector": false,
@@ -1574,7 +1843,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"split-solid-right": {
 			"collector": false,
@@ -1582,7 +1852,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"straight": {
 			"collector": false,
@@ -1590,7 +1861,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"straight-hole": {
 			"collector": false,
@@ -1598,7 +1870,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"straight-wide": {
 			"collector": false,
@@ -1606,7 +1879,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"straight-wide-hole": {
 			"collector": false,
@@ -1614,7 +1888,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-four": {
 			"collector": false,
@@ -1633,7 +1908,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-color-four-bottom": {
 			"collector": false,
@@ -1641,7 +1917,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-four-middle": {
 			"collector": false,
@@ -1649,7 +1926,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-four-top": {
 			"collector": false,
@@ -1657,7 +1935,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-four-top-double": {
 			"collector": false,
@@ -1665,7 +1944,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-single": {
 			"collector": false,
@@ -1684,7 +1964,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-color-single-bottom": {
 			"collector": false,
@@ -1692,7 +1973,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-single-middle": {
 			"collector": false,
@@ -1700,7 +1982,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-single-top": {
 			"collector": false,
@@ -1708,7 +1991,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-single-top-double": {
 			"collector": false,
@@ -1716,7 +2000,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-two": {
 			"collector": false,
@@ -1735,7 +2020,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-color-two-bottom": {
 			"collector": false,
@@ -1743,7 +2029,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-two-middle": {
 			"collector": false,
@@ -1751,7 +2038,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-two-top": {
 			"collector": false,
@@ -1759,7 +2047,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-color-two-top-double": {
 			"collector": false,
@@ -1767,7 +2056,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-four": {
 			"collector": false,
@@ -1786,7 +2076,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-four-bottom": {
 			"collector": false,
@@ -1794,7 +2085,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-four-middle": {
 			"collector": false,
@@ -1802,7 +2094,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-four-top": {
 			"collector": false,
@@ -1810,7 +2103,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-four-top-double": {
 			"collector": false,
@@ -1818,7 +2112,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-single": {
 			"collector": false,
@@ -1837,7 +2132,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-single-bottom": {
 			"collector": false,
@@ -1845,7 +2141,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-single-middle": {
 			"collector": false,
@@ -1853,7 +2150,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-single-top": {
 			"collector": false,
@@ -1861,7 +2159,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-single-top-double": {
 			"collector": false,
@@ -1869,7 +2168,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-two": {
 			"collector": false,
@@ -1888,7 +2188,8 @@
 					"maximum": 30.0,
 					"minimum": 1.0
 				}
-			}
+			},
+			"surface_mounted": false
 		},
 		"support-two-bottom": {
 			"collector": false,
@@ -1896,7 +2197,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-two-middle": {
 			"collector": false,
@@ -1904,7 +2206,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-two-top": {
 			"collector": false,
@@ -1912,7 +2215,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"support-two-top-double": {
 			"collector": false,
@@ -1920,7 +2224,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"tree": {
 			"collector": false,
@@ -1928,7 +2233,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"tree-large": {
 			"collector": false,
@@ -1936,7 +2242,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"tree-tall": {
 			"collector": false,
@@ -1944,7 +2251,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"tree-tall-large": {
 			"collector": false,
@@ -1952,7 +2260,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"tunnel": {
 			"collector": false,
@@ -1960,7 +2269,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-a": {
 			"collector": false,
@@ -1968,7 +2278,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-b": {
 			"collector": false,
@@ -1976,7 +2287,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-c": {
 			"collector": false,
@@ -1984,7 +2296,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-solid-a": {
 			"collector": false,
@@ -1992,7 +2305,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-solid-b": {
 			"collector": false,
@@ -2000,7 +2314,8 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		},
 		"wave-solid-c": {
 			"collector": false,
@@ -2008,10 +2323,11 @@
 			"outputs": {},
 			"release": false,
 			"scenery": false,
-			"settings": {}
+			"settings": {},
+			"surface_mounted": false
 		}
 	},
-	"compatibility": "8048606c2eb0ae7c42f2b91ec5bf8b850df088b9e7d793c76dd648d893c07438",
+	"compatibility": "82fe8141e27c0b258f678269fa3c2f66fb1592f6fc40185016de3eadb214d810",
 	"format": 1,
 	"game_version": "0.0.1"
 }

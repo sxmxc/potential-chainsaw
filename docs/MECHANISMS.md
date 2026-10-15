@@ -4,7 +4,7 @@ Mechanisms turn a track into a machine: they can release a sequence of marbles, 
 
 ## Release, catch, and route
 
-A **marble release** schedules its quantity, interval, initial delay, and initial speed. Its optional display label helps identify a route, but puzzle rules refer to the instance's stable ID. A **finish catcher** reports deliveries. In a puzzle, an objective can require several deliveries or accept only marbles from one release; in ordinary Sandbox testing, reaching a catcher ends the run.
+A **marble release** schedules its quantity, interval, initial delay, and initial speed. Enable **Signal-controlled release** to wait for `release` pulses instead of releasing automatically. Each accepted pulse uses one marble from the configured quantity; pulses before the initial delay, during the interval cooldown, or after the supply is exhausted are ignored rather than queued. The `released` event still reports each actual marble. Pause stops the delay and cooldown clock; reset restores the supply. Its optional display label helps identify a route, but puzzle rules refer to the instance's stable ID. A **finish catcher** reports deliveries. In a puzzle, an objective can require several deliveries or accept only marbles from one release; in ordinary Sandbox testing, reaching a catcher ends the run.
 
 A **gate** starts open or closed and can use delayed opening, automatic closing, or linked actions. It waits for the opening to clear before closing, and opening can nudge a stalled marble through. A **diverter** chooses left or right and can alternate after a marble clears, or change direction through a link.
 
@@ -37,3 +37,23 @@ The base stays on the ground. Placing beneath level track adopts that track's el
 The wrappers live at `scenes/mechanisms/support-*.tscn`, and their definitions resolve components through the shared registry. Loose support parts from older saves remain readable.
 
 For implementation work, follow [Piece authoring](PIECE_AUTHORING.md). For restricting settings or inventory in a challenge, use [Puzzle authoring](PUZZLE_AUTHORING.md). Physical routes need simulation testing, especially at moving contacts and elevator handoffs.
+
+## Logic modules
+
+Find **Memory**, **Counter**, **AND Gate**, **OR Gate**, and **NOT Gate** under **Logic**. Hover over a stationary construction surface, rotate with R, and click to mount. Side and underside mounting keeps the control off the marble route. They are selectable accessories with pick collision, so their housing does not block marbles. Their placement volume still prevents overlapping other construction.
+
+Use **Connect** and the normal inspector to configure and wire them. State outputs connect only to state inputs; events connect to actions.
+
+| Module | Inputs | Outputs | Configuration |
+| --- | --- | --- | --- |
+| Memory | `set`, `reset`, `toggle` actions | `state` boolean; `changed` event | Initially on |
+| Counter | `increment`, `reset` actions | `threshold_reached` boolean; `reached` event | Initial count, positive threshold |
+| AND | `a`, `b` boolean states | `result` boolean; `rising` event | None |
+| OR | `a`, `b` boolean states | `result` boolean; `rising` event | None |
+| NOT | `a` boolean state | `result` boolean; `rising` event | None |
+
+Memory retains its last command after the source pulse has ended. Commands follow saved wire order, so set then reset leaves it off. The counter continues counting after its threshold but emits `reached` only once until reset. Its readout shows current count / threshold; an initial count at or above the threshold starts reached without a new crossing event. Reset restores the configured count, rather than always zero.
+
+Unconnected gate inputs start false. Initial state wires settle before a gate emits its initial `rising` event, so an unconnected NOT can trigger a signal-controlled release, while a NOT connected to an initially-on memory does not fire accidentally. Later false-to-true results emit `rising`; unchanged results emit nothing. Resume does not retrigger initial activation. Reset restores all configured defaults.
+
+Moving, rotating, duplicating, or deleting a supporting piece includes its mounted controls in the same history operation. All affected pieces must permit that edit in Puzzle Play and Player Test. Move a control alone to remount it; rotate a selected control to twist it about its mounting normal. Controls require a construction surface; fixed puzzle scenery, moving mechanism bodies, and other mounted controls are not mounting targets. Changing support geometry must leave the accessory on occupied geometry or the edit is rejected.

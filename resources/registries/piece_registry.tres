@@ -56,6 +56,9 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
 &"uid://bmeenvfloor1": &"environment:deck",
 &"uid://bmeenvmach01": &"environment:machine",
 &"uid://bmeenvwall01": &"environment:partition",
+&"uid://bmelogicand01": &"logic-and",
+&"uid://bmelogicnot01": &"logic-not",
+&"uid://bmelogicor01": &"logic-or",
 &"uid://bot8trdumf4q4": &"support-four-bottom",
 &"uid://bqkahk0xi8whk": &"slant-solid-a",
 &"uid://brvnvjccvspgg": &"tunnel",
@@ -126,6 +129,7 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
 &"uid://cw7rxv3f65i7e": &"banner-double",
 &"uid://cwgjelvqtyofk": &"support-color-two",
 &"uid://cy74vvsbhkpdi": &"slant-d",
+&"uid://cydx4vhc32cl5": &"logic-memory",
 &"uid://cynybj7v0a5lk": &"helix-large-quarter-right",
 &"uid://d07rxhmdue74v": &"slant-solid-long-c",
 &"uid://d07swb8j1fd5u": &"helix-left",
@@ -142,6 +146,7 @@ _uids_to_string_ids = Dictionary[StringName, StringName]({
 &"uid://dh4dxm6fx1vvo": &"banner-double-high",
 &"uid://dh80gh7l41p1r": &"helix-large-half-right",
 &"uid://dhgp7o1nbhkjv": &"split-left",
+&"uid://dhk31hga328pg": &"logic-counter",
 &"uid://dhu1jc2h2kbli": &"s-curve-short-left-a",
 &"uid://difl7wbmf8sy8": &"support-color-single",
 &"uid://diwevwapexff8": &"fan-simple-two",
@@ -322,6 +327,11 @@ _string_ids_to_uids = Dictionary[StringName, StringName]({
 &"helix-quarter-right": &"uid://buvuhlqrf3ino",
 &"helix-right": &"uid://dceorb2frx7ur",
 &"launcher": &"uid://cq1so7evmy8no",
+&"logic-and": &"uid://bmelogicand01",
+&"logic-counter": &"uid://dhk31hga328pg",
+&"logic-memory": &"uid://cydx4vhc32cl5",
+&"logic-not": &"uid://bmelogicnot01",
+&"logic-or": &"uid://bmelogicor01",
 &"ramp-end-a": &"uid://pxs8w6hcmrh1",
 &"ramp-end-b": &"uid://bxmdj2eyhawmc",
 &"ramp-end-c": &"uid://bb0hl6q6ciwe8",
@@ -506,6 +516,13 @@ _property_index = Dictionary[StringName, Dictionary]({
 },
 "launcher": {
 &"launcher": true
+},
+"logic": {
+&"logic-and": true,
+&"logic-counter": true,
+&"logic-memory": true,
+&"logic-not": true,
+&"logic-or": true
 },
 "resizable_support": {
 &"support-color-four": true,
@@ -800,6 +817,13 @@ _property_index = Dictionary[StringName, Dictionary]({
 &"split-right": true,
 &"split-solid-left": true,
 &"split-solid-right": true
+},
+"Logic": {
+&"logic-and": true,
+&"logic-counter": true,
+&"logic-memory": true,
+&"logic-not": true,
+&"logic-or": true
 },
 "Mechanisms": {
 &"bucket-elevator": true,

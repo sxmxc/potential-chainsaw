@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://8u3ghsqp8n8i"]
+
+[ext_resource type="Script" uid="uid://8wbxjwx2j5ci" path="res://scripts/mechanisms/memory_module.gd" id="Behavior"]
+[ext_resource type="PackedScene" path="res://scenes/mechanisms/logic/module_housing.tscn" id="Housing"]
+[ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
+
+[sub_resource type="Resource" id="Initial"]
+script = ExtResource("Setting")
+key = &"initial_state"
+label = "Initially on"
+kind = 1
+
+[sub_resource type="StandardMaterial3D" id="Cover"]
+albedo_color = Color(0.32, 0.66, 0.72, 1)
+roughness = 0.65
+
+[node name="Memory" type="Node3D" unique_id=403243955 node_paths=PackedStringArray("indicator")]
+script = ExtResource("Behavior")
+indicator = NodePath("Housing/Indicator")
+configuration_fields = Array[ExtResource("Setting")]([SubResource("Initial")])
+
+[node name="Housing" parent="." unique_id=1191534875 instance=ExtResource("Housing")]
+
+[node name="Plate" parent="Housing" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0165, 0)
+
+[node name="Cover" parent="Housing" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.079, 0)
+material_override = SubResource("Cover")
+
+[node name="Panel" parent="Housing" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.133, 0)
+
+[node name="Indicator" parent="Housing" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.143, 0.085)
+
+[node name="IndicatorWell" parent="Housing" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.138, 0.085)
+
+[node name="Shape" parent="Housing/PickBody" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.074, 0)
+
+[node name="Fastener0" parent="Housing" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.034, -0.19)
+
+[node name="Fastener1" parent="Housing" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.034, -0.19)
+
+[node name="Fastener2" parent="Housing" index="8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.034, 0.19)
+
+[node name="Fastener3" parent="Housing" index="9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.034, 0.19)
+
+[node name="Terminal0" parent="Housing" index="10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, -0.1)
+
+[node name="Terminal1" parent="Housing" index="11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, 0)
+
+[node name="Terminal2" parent="Housing" index="12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205, 0.137, 0.1)
+
+[node name="Terminal3" parent="Housing" index="13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.205, 0.137, 0)
+
+[node name="Function" type="Label3D" parent="." unique_id=152931388]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 0, 0.147, -0.04)
+pixel_size = 0.003
+text = "MEM"
+font_size = 38
+outline_size = 2
+
+[node name="InputLabel0" type="Label3D" parent="." unique_id=186297798]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, -0.205, 0.15, -0.1)
+pixel_size = 0.002
+text = "SET"
+font_size = 12
+outline_size = 2
+
+[node name="InputLabel1" type="Label3D" parent="." unique_id=860356039]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, -0.205, 0.15, 0)
+pixel_size = 0.002
+text = "RST"
+font_size = 12
+outline_size = 2
+
+[node name="InputLabel2" type="Label3D" parent="." unique_id=515397126]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, -0.205, 0.15, 0.1)
+pixel_size = 0.002
+text = "TGL"
+font_size = 12
+outline_size = 2
+
+[node name="OutputLabel" type="Label3D" parent="." unique_id=1579484147]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 0, 0.147, 0.167)
+pixel_size = 0.003
+text = "OUT"
+font_size = 16
+outline_size = 2
+
+[editable path="Housing"]

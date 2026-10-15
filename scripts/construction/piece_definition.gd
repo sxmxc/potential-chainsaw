@@ -30,6 +30,8 @@ extends Resource
 @export var reserve_bounds: bool = false
 @export var editable_in_simulation: bool = false
 @export var surface_cells: PackedVector3Array
+## Local +Y points away from the surface; model origin is the mounting contact.
+@export var surface_mounted: bool = false
 
 var settings: Array[PieceSetting]:
 	get:
