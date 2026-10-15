@@ -11,11 +11,8 @@ func _ready() -> void:
 func is_signed_in() -> bool:
 	return client.is_signed_in()
 
-func sign_in(email: String) -> Dictionary:
-	return await client.sign_in(email)
-
-func verify_sign_in(email: String, code: String) -> Dictionary:
-	return await client.verify_sign_in(email, code)
+func sign_in(email: String, password: String) -> Dictionary:
+	return await client.sign_in_with_password(email, password)
 
 func sign_out() -> Dictionary:
 	return await client.sign_out()

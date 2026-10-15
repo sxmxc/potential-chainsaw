@@ -2,6 +2,18 @@ extends "res://tests/support/game_test.gd"
 
 const Client = preload("res://addons/supabase_client/supabase_client.gd")
 
+func test_hosted_public_browse_when_requested() -> void:
+	if OS.get_environment("MARBLE_ENGINEER_LIVE_COMMUNITY_TEST") != "1":
+		pending("Set MARBLE_ENGINEER_LIVE_COMMUNITY_TEST=1 to check the deployed service")
+		return
+	var service := service_with(SupabaseCommunityBackend.new())
+	var result := await service.browse_puzzles()
+	assert_true(result.ok, str(result.error))
+	if not result.ok: return
+	assert_true(result.data.get("puzzles") is Array)
+	assert_lte(result.data.puzzles.size(), 20)
+	assert_false(service.is_signed_in(), "Public browse needs no account")
+
 class FakeBackend extends Node:
 	signal authentication_changed
 	var result: Dictionary = CommunityService.success()
@@ -14,8 +26,7 @@ class FakeBackend extends Node:
 	func publish_puzzle(data: Dictionary, _compatibility: String) -> Dictionary: published = data; return result
 	func unpublish_puzzle(_id: String) -> Dictionary: return result
 	func get_my_puzzles(_filters: Dictionary) -> Dictionary: return result
-	func sign_in(_email: String) -> Dictionary: return result
-	func verify_sign_in(_email: String, _code: String) -> Dictionary:
+	func sign_in(_email: String, _password: String) -> Dictionary:
 		authenticated = true
 		authentication_changed.emit()
 		return result
@@ -29,7 +40,9 @@ class LocalHttpServer extends Node:
 	var peers: Array[StreamPeerTCP] = []
 	var buffers: Dictionary = {}
 	var paths: Array[String] = []
+	var bodies: Array[Dictionary] = []
 	var invalid_refresh: bool = false
+	var invalid_password: bool = false
 
 	func _process(_delta: float) -> void:
 		while server.is_connection_available():
@@ -41,13 +54,23 @@ class LocalHttpServer extends Node:
 			if peer.get_available_bytes() == 0: continue
 			buffers[peer] += peer.get_utf8_string(peer.get_available_bytes())
 			if "\r\n\r\n" not in buffers[peer]: continue
+			var header_end: int = buffers[peer].find("\r\n\r\n")
+			var content_length := 0
+			for header in buffers[peer].left(header_end).split("\r\n"):
+				if header.to_lower().begins_with("content-length:"): content_length = int(header.get_slice(":", 1))
+			var payload: String = buffers[peer].substr(header_end + 4)
+			if payload.to_utf8_buffer().size() < content_length: continue
+			var parsed: Variant = JSON.parse_string(payload) if not payload.is_empty() else {}
+			bodies.append(parsed if parsed is Dictionary else {})
 			var path: String = buffers[peer].get_slice(" ", 1)
 			paths.append(path)
 			var body := "invalid-json" if path == "/malformed" else JSON.stringify({"api_version":1,"ok":true,"data":{"path":path}})
 			var status := "200 OK"
 			if path.begins_with("/auth/v1/token"):
 				body = JSON.stringify({"access_token":"refreshed-token", "refresh_token":"refreshed-refresh", "expires_in":3600})
-				if invalid_refresh: status = "400 Bad Request"; body = '{"error":"invalid_grant"}'
+				if invalid_refresh or (invalid_password and path.ends_with("grant_type=password")):
+					status = "400 Bad Request"
+					body = '{"error":"invalid_grant","error_description":"PRIVATE_PROVIDER_DETAIL"}'
 			var bytes := body.to_utf8_buffer()
 			peer.put_data(("HTTP/1.1 %s\r\nContent-Type: application/json\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status,bytes.size()]).to_utf8_buffer())
 			peer.put_data(bytes)
@@ -90,7 +113,7 @@ func test_contract_publish_gate_and_provider_independence() -> void:
 	puzzle.validation = {}
 	assert_false((await service.publish_puzzle(puzzle)).ok)
 	assert_true(adapter.published.is_empty(), "Unverified drafts never reach the provider")
-	assert_true((await service.verify_sign_in("author@example.test", "123456")).ok)
+	assert_true((await service.sign_in("author@example.test", "test-password")).ok)
 	assert_true(service.is_signed_in())
 	assert_true((await service.sign_out()).ok)
 	assert_false(service.is_signed_in())
@@ -145,6 +168,29 @@ func test_session_response_validation_and_local_sign_out() -> void:
 	assert_eq(adapter.client.access_token, "")
 	assert_eq(adapter.client.refresh_token, "")
 	assert_false((await adapter.get_my_puzzles({})).ok)
+
+func test_password_sign_in_uses_password_grant_and_sanitizes_results() -> void:
+	var server := LocalHttpServer.new()
+	add_child_autoqfree(server)
+	assert_eq(server.server.listen(0, "127.0.0.1"), OK)
+	var client := Client.new()
+	add_child_autoqfree(client)
+	client.configure("http://127.0.0.1:%d" % server.server.get_local_port(), "sb_publishable_test")
+	assert_false((await client.sign_in_with_password("author@example.test", "")).ok)
+	assert_true(server.paths.is_empty(), "Missing credentials do not send a request")
+	var result := await client.sign_in_with_password(" author@example.test ", " password with spaces ")
+	assert_true(result.ok)
+	assert_true(result.data.is_empty(), "Sign-in never returns session tokens")
+	assert_true(client.is_signed_in())
+	assert_eq(server.paths[0], "/auth/v1/token?grant_type=password")
+	assert_eq(server.bodies[0], {"email":"author@example.test", "password":" password with spaces "})
+	client.clear_session()
+	server.invalid_password = true
+	result = await client.sign_in_with_password("author@example.test", "wrong-password")
+	assert_eq(result.error.code, "authentication_failed")
+	assert_true(result.data.is_empty())
+	assert_false("PRIVATE_PROVIDER_DETAIL" in result.error.message)
+	assert_false(client.is_signed_in())
 
 func test_real_http_concurrency_and_malformed_responses() -> void:
 	var server := LocalHttpServer.new()

@@ -3,7 +3,14 @@ extends "res://tests/support/scene_test.gd"
 class OfflineBackend extends Node:
 	signal authentication_changed
 	var wait_for_response: bool = false
-	func is_signed_in() -> bool: return false
+	var authenticated: bool = false
+	var credentials: Array[String] = []
+	func is_signed_in() -> bool: return authenticated
+	func sign_in(email: String, password: String) -> Dictionary:
+		credentials = [email, password]
+		authenticated = true
+		authentication_changed.emit()
+		return CommunityService.success()
 	func browse_puzzles(_filters: Dictionary, _compatibility: String) -> Dictionary:
 		if wait_for_response: await get_tree().create_timer(0.1).timeout
 		return CommunityService.failure("network", "Offline. Installed puzzles are still available.")
@@ -45,6 +52,33 @@ func test_online_navigation_offline_feedback_and_safe_close() -> void:
 	assert_false(browser.get_node("%OnlineBrowse").visible)
 	assert_false(online.visible)
 	assert_false(browser.get_node("%Import").visible)
+
+func test_password_form_signs_in_and_clears_credentials() -> void:
+	var game = load("res://scenes/main.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	var service: CommunityService = game.community_service
+	service.backend.queue_free()
+	var adapter := OfflineBackend.new()
+	service.add_child(adapter)
+	service.backend = adapter
+	var browser: Window = game.get_node("%PuzzleBrowser")
+	var online: VBoxContainer = browser.get_node("%Network")
+	browser.open(false, true)
+	browser.get_node("%OnlineBrowse").pressed.emit()
+	online.get_node("%Account").pressed.emit()
+	assert_true(online.get_node("%Password").secret)
+	online.get_node("%Email").text = "author@example.test"
+	online.get_node("%Password").text = "test-password"
+	online.get_node("%SignInButton").pressed.emit()
+	assert_eq(adapter.credentials, ["author@example.test", "test-password"])
+	assert_true(service.is_signed_in())
+	assert_eq(online.get_node("%Password").text, "")
+	assert_false(online.get_node("%SignIn").visible)
+	assert_eq(online.get_node("%Feedback").text, "Signed in.")
+	online.get_node("%Password").text = "unsent-password"
+	browser.close()
+	assert_eq(online.get_node("%Password").text, "")
 
 func test_online_publication_uses_existing_local_revision_lifecycle() -> void:
 	var game = load("res://scenes/main.tscn").instantiate()

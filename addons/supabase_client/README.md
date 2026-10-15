@@ -15,16 +15,15 @@ func _ready() -> void:
 
 Use `await request(path, method, json_body, authenticated)` for project-relative JSON endpoints. Methods are `HTTPClient.METHOD_*`; omit the body for GET. JSON objects, arrays and scalar values are supported, including Data API results. Results are `{ok, data, error, status}`; status is zero for local/transport failures. HTTP errors preserve parsed JSON in `data` for application-specific handling; the generic `error.message` contains no raw server data. Do not log response bodies or credentials. This is a small JSON client, rather than a complete Storage, Realtime or query-builder SDK.
 
-Email-code Auth:
+Email/password Auth:
 
 ```gdscript
-await supabase.sign_in("player@example.com")
-var result := await supabase.verify_sign_in("player@example.com", code)
+var result := await supabase.sign_in_with_password("player@example.com", password)
 var private_result := await supabase.request("/functions/v1/private-function", HTTPClient.METHOD_POST, {"value": 1}, true)
 await supabase.sign_out()
 ```
 
-Auth operations sanitize provider responses and return no tokens. Tokens remain in memory until sign-out or node destruction. Authenticated requests share session refresh and retry once on HTTP 401. `authentication_changed` signals sign-in/sign-out; `is_signed_in()` reports whether a renewable session is present. Configure email templates to show `{{ .Token }}` and set up SMTP for production. Browser redirects, password/social sign-in and OS credential storage are outside this addon.
+Auth operations sanitize provider responses and return no tokens. Tokens remain in memory until sign-out or node destruction. Authenticated requests share session refresh and retry once on HTTP 401. `authentication_changed` signals sign-in/sign-out; `is_signed_in()` reports whether a renewable session is present. Use an existing account with a password. Signup, password recovery, browser redirects, social sign-in and OS credential storage are outside this addon.
 
 The client loads `supabase.cfg` beside its own script on startup. Set the project URL and publishable key there, or use the public `configure(url, key)` method when an explicit override is needed. Include this `.cfg` in your export preset. Environment overrides belong to the consuming project. The client accepts publishable keys, uses HTTPS, disables redirects, and permits localhost HTTP only in editor builds. Default limits are eight concurrent requests, 20 seconds per request and a 5 MB body/response; exported properties let projects adjust them. The autoload remains available for the application lifetime. A closing UI should discard stale results without destroying the client.
 

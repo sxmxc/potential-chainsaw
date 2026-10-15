@@ -52,29 +52,24 @@ layout_mode = 2
 placeholder_text = "Email address"
 max_length = 254
 
-[node name="CodeRow" type="HBoxContainer" parent="SignIn"]
+[node name="Credentials" type="HBoxContainer" parent="SignIn"]
 layout_mode = 2
 
-[node name="Code" type="LineEdit" parent="SignIn/CodeRow"]
+[node name="Password" type="LineEdit" parent="SignIn/Credentials"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Email code"
-max_length = 16
+placeholder_text = "Password"
+secret = true
+max_length = 1024
 
-[node name="SendCode" type="Button" parent="SignIn/CodeRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Send code"
-theme_type_variation = &"SecondaryButton"
-
-[node name="VerifyCode" type="Button" parent="SignIn/CodeRow"]
+[node name="SignInButton" type="Button" parent="SignIn/Credentials"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Sign in"
 theme_type_variation = &"PrimaryButton"
 
-[node name="SignOut" type="Button" parent="SignIn/CodeRow"]
+[node name="SignOut" type="Button" parent="SignIn/Credentials"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Sign out"

@@ -54,12 +54,8 @@ func unpublish_puzzle(puzzle_id: String) -> Dictionary:
 func get_my_puzzles(filters: Dictionary = {}) -> Dictionary:
 	return await backend.get_my_puzzles(filters)
 
-func sign_in(email: String) -> Dictionary:
-	var result: Dictionary = await backend.sign_in(email.strip_edges())
-	return success() if result.ok else failure(result.error.code, result.error.message)
-
-func verify_sign_in(email: String, code: String) -> Dictionary:
-	var result: Dictionary = await backend.verify_sign_in(email.strip_edges(), code.strip_edges())
+func sign_in(email: String, password: String) -> Dictionary:
+	var result: Dictionary = await backend.sign_in(email.strip_edges(), password)
 	return success() if result.ok else failure(result.error.code, result.error.message)
 
 func sign_out() -> Dictionary:

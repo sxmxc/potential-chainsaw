@@ -8,7 +8,6 @@ var publishing: Dictionary = {}
 var offset: int = 0
 var next_offset: int = -1
 var generation: int = 0
-var login_email: String = ""
 var busy: bool = false
 
 func configure(value: CommunityService, puzzle_session: ConstructionSession, window: Window) -> void:
@@ -28,13 +27,15 @@ func configure(value: CommunityService, puzzle_session: ConstructionSession, win
 	%ShareCode.text_changed.connect(func(text): %CopyShare.disabled = text.is_empty())
 	%OpenShare.pressed.connect(open_share)
 	%Account.pressed.connect(func(): %SignIn.visible = not %SignIn.visible)
-	%SendCode.pressed.connect(send_code)
-	%VerifyCode.pressed.connect(verify_code)
+	%SignInButton.pressed.connect(sign_in)
+	%Password.text_submitted.connect(func(_text): if not busy: sign_in())
 	%SignOut.pressed.connect(sign_out)
 	%PublishOnline.pressed.connect(publish)
 	service.authentication_changed.connect(refresh_account)
 	browser.visibility_changed.connect(func():
-		if not browser.visible: generation += 1)
+		if not browser.visible:
+			generation += 1
+			%Password.clear())
 	visibility_changed.connect(func():
 		generation += 1
 		if visible: refresh_account())
@@ -52,23 +53,22 @@ func open(puzzle: Dictionary = {}) -> void:
 func refresh_account() -> void:
 	%Account.text = "Account" if service.is_signed_in() else "Sign in"
 	%SignOut.visible = service.is_signed_in()
-	%SendCode.visible = not service.is_signed_in()
-	%VerifyCode.visible = not service.is_signed_in()
+	%SignInButton.visible = not service.is_signed_in()
 	%Email.visible = not service.is_signed_in()
-	%Code.visible = not service.is_signed_in()
-	%SessionNote.text = "Signed in for this session." if service.is_signed_in() else "Use the code sent to your email. Sign-in lasts until you close the game."
+	%Password.visible = not service.is_signed_in()
+	%SessionNote.text = "Signed in for this session." if service.is_signed_in() else "Sign in with your email and password."
 
 func begin() -> int:
 	busy = true
 	generation += 1
 	%Feedback.text = "Loading…"
-	for button in [%Refresh, %Download, %Unpublish, %OpenShare, %SendCode, %VerifyCode, %SignOut, %PublishOnline, %PreviousPage, %NextPage]: button.disabled = true
+	for button in [%Refresh, %Download, %Unpublish, %OpenShare, %SignInButton, %SignOut, %PublishOnline, %PreviousPage, %NextPage]: button.disabled = true
 	return generation
 
 func finish(ticket: int, result: Dictionary, message: String = "") -> bool:
 	if ticket != generation or not visible or not browser.visible: return false
 	busy = false
-	for button in [%Refresh, %OpenShare, %SendCode, %VerifyCode, %SignOut, %PublishOnline]: button.disabled = false
+	for button in [%Refresh, %OpenShare, %SignInButton, %SignOut, %PublishOnline]: button.disabled = false
 	%PreviousPage.disabled = offset == 0
 	%NextPage.disabled = next_offset < 0
 	select_puzzle(-1)
@@ -132,17 +132,12 @@ func open_share() -> void:
 	if parts.size() != 2 or not parts[1].is_valid_int(): %Feedback.text = "Enter a share code in the form puzzle-id@revision."; return
 	download_revision(parts[0], int(parts[1]))
 
-func send_code() -> void:
+func sign_in() -> void:
 	var ticket := begin()
-	login_email = %Email.text.strip_edges()
-	var result := await service.sign_in(login_email)
-	finish(ticket, result, "Check your email for the sign-in code.")
-
-func verify_code() -> void:
-	var ticket := begin()
-	var result := await service.verify_sign_in(login_email if not login_email.is_empty() else %Email.text.strip_edges(), %Code.text)
+	var password: String = %Password.text
+	%Password.clear()
+	var result := await service.sign_in(%Email.text, password)
 	if finish(ticket, result, "Signed in.") and result.ok:
-		%Code.clear()
 		%SignIn.hide()
 		if %Mine.button_pressed: refresh()
 

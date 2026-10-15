@@ -1,5 +1,5 @@
 extends Node
-## Portable native Godot JSON/HTTPS client with memory-only Supabase email OTP Auth.
+## Portable native Godot JSON/HTTPS client with memory-only Supabase password authentication.
 signal authentication_changed
 signal refresh_finished(result: Dictionary)
 
@@ -36,15 +36,11 @@ func configure(url: String, key: String) -> void:
 func is_signed_in() -> bool:
 	return not refresh_token.is_empty()
 
-func sign_in(email: String) -> Dictionary:
+func sign_in_with_password(email: String, password: String) -> Dictionary:
 	if email.strip_edges().is_empty() or "@" not in email: return failure("invalid_email", "Enter an email address.")
-	var result := await request_http("/auth/v1/otp", HTTPClient.METHOD_POST, {"email": email.strip_edges(), "create_user": true})
-	return success() if result.ok else auth_error(result)
-
-func verify_sign_in(email: String, code: String) -> Dictionary:
-	if code.strip_edges().is_empty(): return failure("invalid_code", "Enter the code from your email.")
+	if password.is_empty(): return failure("invalid_password", "Enter your password.")
 	var generation := session_generation
-	var result := await request_http("/auth/v1/verify", HTTPClient.METHOD_POST, {"email": email.strip_edges(), "token": code.strip_edges(), "type": "email"})
+	var result := await request_http("/auth/v1/token?grant_type=password", HTTPClient.METHOD_POST, {"email": email.strip_edges(), "password": password})
 	if generation != session_generation: return failure("cancelled", "Sign-in was cancelled.")
 	if result.ok and result.data is Dictionary: return accept_session(result.data, true)
 	return auth_error(result)
@@ -65,7 +61,7 @@ static func auth_error(result: Dictionary) -> Dictionary:
 	# Raw provider Auth errors never escape sign-in/refresh operations.
 	if result.ok: return failure("invalid_response", "The sign-in response was invalid.")
 	if result.status >= 400 and result.status < 500 and result.status != 429:
-		return failure("authentication_failed", "Could not sign in. Check your email and code, then try again.", result.status)
+		return failure("authentication_failed", "Could not sign in. Check your email and password, then try again.", result.status)
 	return failure(result.error.code, result.error.message, result.status)
 
 func refresh_session() -> Dictionary:
