@@ -1,0 +1,3 @@
+[supabase]
+url="https://something.supabase.co"
+publishable_key="sb_publishable_somekey"
