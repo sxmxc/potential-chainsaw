@@ -130,7 +130,7 @@ func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ign
 func surface_hit(camera: Camera3D, cursor: Vector2, ignored: Array = [], collision_mask: int = 1) -> Dictionary:
 	var excluded: Array[RID] = []
 	for piece in ignored:
-		for body in piece.bodies: excluded.append(body.get_rid())
+		for body: StaticBody3D in piece.find_children("*", "StaticBody3D", true, false): excluded.append(body.get_rid())
 	# Exact silhouette edges can fall between collision triangles. A two-pixel
 	# pick tolerance resolves those misses without searching projected anchors.
 	for offset in [Vector2.ZERO, Vector2(0,-2), Vector2(2,0), Vector2(-2,0), Vector2(0,2)]:
@@ -223,7 +223,7 @@ func target_visible(target: Dictionary, camera: Camera3D, ignored: Array = []) -
 	var query := PhysicsRayQueryParameters3D.create(origin,target.point,1)
 	var excluded: Array[RID] = []
 	for piece in ignored:
-		for body in piece.bodies: excluded.append(body.get_rid())
+		for body: StaticBody3D in piece.find_children("*", "StaticBody3D", true, false): excluded.append(body.get_rid())
 	query.exclude=excluded
 	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return true

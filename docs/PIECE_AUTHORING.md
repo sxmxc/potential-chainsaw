@@ -14,6 +14,8 @@ Inspect the actual mesh, pivot, orientation, and hierarchy before defining conne
 
 Ordinary meshes receive generated triangle collision. Set **Native collision** when the wrapper owns its collision shapes, as the mechanical scenes do. Existing mesh-matched shapes live under `scenes/mechanisms/collision/`. A decoration that should remain selectable without blocking marbles can disable physical collision and use the common pick bounds.
 
+The live scene hierarchy is the authority for meshes and collision bodies. Tinting, preview bounds, and drag ray exclusions query its current descendants rather than retain geometry lists. After behaviors rebuild configurable geometry, `BuildingPiece` generates collision only for meshes without an authored physics owner; preview instances instead disable all collision objects. Keep dynamic geometry under the piece so these operations include it automatically.
+
 ## Give the instance settings
 
 Author editable fields on the behavior's **Configuration fields** array using `PieceSetting` resources. Each field declares a key, label, description, kind, default, and, for numbers, range, step, and unit. For example, the sensor scene declares the flag `detect_exit`, shown in the inspector as “Emit exit event.” The script reads that key from its configuration when a marble leaves.

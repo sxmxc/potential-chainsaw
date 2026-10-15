@@ -1,5 +1,57 @@
 extends GutTest
 
+class TestPieceGeometry:
+	extends GutTest
+
+	func test_reconfigured_decoration_remains_pickable_and_excluded_from_drag_rays() -> void:
+		var piece := BuildingPiece.new()
+		add_child_autoqfree(piece)
+		piece.setup(PieceCatalog.new().get_piece("environment:factory-screen-panel-small"))
+		var camera := Camera3D.new()
+		add_child_autoqfree(camera)
+		var center := piece.definition.bounds.get_center()
+		camera.position = center + Vector3.UP * 5
+		camera.look_at(center, Vector3.FORWARD)
+		var snap := SnapManager.new()
+		for iteration in 2:
+			if iteration == 1: piece.apply_configuration({})
+			await get_tree().physics_frame
+			await get_tree().physics_frame
+			var screen := camera.unproject_position(center)
+			assert_eq(snap.surface_hit(camera, screen, [], 4).get("piece"), piece, "Pick bounds survive configuration")
+			assert_true(snap.surface_hit(camera, screen, [piece], 4).is_empty(), "A moving decoration cannot hit its own pick bounds")
+
+	func test_rebuilt_support_geometry_receives_collision_and_selection_tint() -> void:
+		var piece := BuildingPiece.new()
+		add_child_autoqfree(piece)
+		piece.setup(PieceCatalog.new().get_piece("support-single"))
+		var original_count := piece.find_children("*", "StaticBody3D", true, false).size()
+		piece.apply_configuration({"support_height": 6.0})
+		var resized_bodies := piece.find_children("*", "StaticBody3D", true, false)
+		assert_gt(resized_bodies.size(), original_count, "New support sections receive collision")
+		piece.apply_configuration({"support_height": 6.0})
+		assert_eq(piece.find_children("*", "StaticBody3D", true, false).size(), resized_bodies.size(), "Reconfiguration does not duplicate collision")
+		piece.tint(Color.CYAN)
+		for mesh: MeshInstance3D in piece.find_children("*", "MeshInstance3D", true, false):
+			assert_eq(mesh.material_overlay, piece.tint_material, "Tint includes every rebuilt mesh")
+		for body: StaticBody3D in piece.find_children("*", "StaticBody3D", true, false):
+			assert_eq(body.collision_layer, 1)
+			assert_eq(body.collision_mask, 2)
+
+	func test_native_and_generated_preview_geometry_never_participates_in_physics() -> void:
+		var catalog := PieceCatalog.new()
+		for id in ["straight", "support-single", "bucket-elevator"]:
+			var definition := catalog.get_piece(id)
+			var piece := BuildingPiece.new()
+			add_child_autoqfree(piece)
+			piece.setup(definition, true)
+			var config: Dictionary = {}
+			if not definition.height_setting.is_empty(): config[String(definition.height_setting)] = 6.0
+			piece.apply_configuration(config)
+			for body: CollisionObject3D in piece.find_children("*", "CollisionObject3D", true, false):
+				assert_eq(body.collision_layer, 0, id + " preview has no collision layer")
+				assert_eq(body.collision_mask, 0, id + " preview has no collision mask")
+
 class TestPlacementPrecision:
 	extends GutTest
 

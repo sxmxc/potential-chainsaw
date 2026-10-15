@@ -6,8 +6,6 @@ var base_definition: PieceDefinition
 var instance_id: String
 var configuration: Dictionary = {}
 var model_node: Node3D
-var meshes: Array[MeshInstance3D] = []
-var bodies: Array[StaticBody3D] = []
 var preview: bool = false
 var behaviors: Array[PieceBehavior] = []
 var tint_material: StandardMaterial3D
@@ -53,7 +51,7 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 		if ghost: behavior_node.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(model_node)
 	apply_configuration(config)
-	if not ghost and not data.collision_enabled and bodies.is_empty():
+	if not ghost and not data.collision_enabled and find_children("*", "StaticBody3D", true, false).is_empty():
 		# Decorative objects remain selectable without blocking marble travel.
 		var pick_body := StaticBody3D.new()
 		pick_body.collision_layer = 4
@@ -65,41 +63,40 @@ func setup(data: PieceDefinition, ghost: bool = false, config: Dictionary = {}) 
 		pick_shape.position = data.bounds.get_center()
 		pick_body.add_child(pick_shape)
 		add_child(pick_body)
-		bodies.append(pick_body)
 
-func _collect(node: Node, collision_owned: bool = false) -> void:
-	if node is CollisionObject3D:
-		collision_owned = true
-		if node is StaticBody3D and node not in bodies: bodies.append(node)
-		if preview:
-			node.collision_layer = 0
-			node.collision_mask = 0
-	if node is MeshInstance3D:
-		if not meshes.has(node): meshes.append(node)
-		if definition.collision_enabled and not preview and not collision_owned and not node.get_children().any(func(child): return child is StaticBody3D):
-			var body = StaticBody3D.new()
-			body.collision_layer = 1
-			body.collision_mask = 2
-			var collision = CollisionShape3D.new()
-			collision.shape = node.mesh.create_trimesh_shape()
-			var material = PhysicsMaterial.new()
-			material.friction = 0.18
-			material.bounce = 0.02
-			body.physics_material_override = material
-			node.add_child(body)
-			body.add_child(collision)
-			bodies.append(body)
-	for child in node.get_children():
-		if child is Node3D: _collect(child, collision_owned)
+# The hierarchy owns geometry, including children rebuilt by a configuration edit.
+# Only unowned meshes need generated collision; authored physics stays intact.
+func _prepare_collision() -> void:
+	if preview:
+		for body: CollisionObject3D in find_children("*", "CollisionObject3D", true, false):
+			body.collision_layer = 0
+			body.collision_mask = 0
+		return
+	if not definition.collision_enabled or base_definition.native_collision: return
+	for mesh: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
+		if mesh.get_children().any(func(child): return child is StaticBody3D): continue
+		var ancestor := mesh.get_parent()
+		while ancestor != self and not ancestor is CollisionObject3D:
+			ancestor = ancestor.get_parent()
+		if ancestor is CollisionObject3D: continue
+		var body := StaticBody3D.new()
+		body.collision_layer = 1
+		body.collision_mask = 2
+		var collision := CollisionShape3D.new()
+		collision.shape = mesh.mesh.create_trimesh_shape()
+		var material := PhysicsMaterial.new()
+		material.friction = 0.18
+		material.bounce = 0.02
+		body.physics_material_override = material
+		mesh.add_child(body)
+		body.add_child(collision)
 
 func apply_configuration(config: Dictionary) -> void:
 	configuration = base_definition.normalized_configuration(config)
 	definition = base_definition.configured(configuration)
 	for behavior_node in behaviors:
 		behavior_node.configure(base_definition.resolved_configuration(configuration))
-	meshes.clear()
-	bodies.clear()
-	_collect(model_node, base_definition.native_collision)
+	_prepare_collision()
 
 func tint(color: Color, enabled: bool = true) -> void:
 	if not tint_material:
@@ -107,7 +104,7 @@ func tint(color: Color, enabled: bool = true) -> void:
 		tint_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		tint_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	tint_material.albedo_color = color
-	for mesh in meshes:
+	for mesh: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
 		if not enabled:
 			mesh.material_overlay = null
 			continue
