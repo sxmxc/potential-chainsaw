@@ -53,7 +53,10 @@ func load_puzzle(path: String, source: String) -> Dictionary:
 	if not parsed is Dictionary:
 		last_error = "Invalid puzzle JSON"
 		return {}
-	var data: Dictionary = parsed
+	return decode_puzzle(parsed, source)
+
+func decode_puzzle(value: Dictionary, source: String) -> Dictionary:
+	var data := value.duplicate(true)
 	var shape := PuzzleRules.shape_errors(data)
 	if not shape.is_empty(): last_error = "\n".join(shape); return {}
 	data.erase("_source")
@@ -208,6 +211,15 @@ func export_puzzle(data: Dictionary, path: String) -> bool:
 
 func import_puzzle(path: String) -> Dictionary:
 	var data := load_puzzle(path, "community")
+	if data.is_empty(): return {}
+	return install_community(data)
+
+# JSON imports and network downloads share validation, conflict checks and storage.
+func install_community(value: Dictionary) -> Dictionary:
+	if JSON.stringify(value).to_utf8_buffer().size() > 5000000:
+		last_error = "Puzzle is too large"
+		return {}
+	var data := decode_puzzle(value, "community")
 	if data.is_empty(): return {}
 	# Imported proof records the author's run. Resource hashes differ between a
 	# project and its compiled export; safety and solution rules are checked above.

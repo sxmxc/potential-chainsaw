@@ -1,0 +1,2017 @@
+{
+	"assets": {
+		"banner": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-double-high": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-hanging": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-hanging-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-hanging-double-high": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-hanging-high": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"banner-high": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bend": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bend-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bend-medium": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bend-solid-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bend-solid-medium": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bucket-elevator": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false,
+				"loaded": false,
+				"unloaded": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"elevator_height": {
+					"kind": 0,
+					"maximum": 12.0,
+					"minimum": 2.0
+				},
+				"elevator_speed": {
+					"kind": 0,
+					"maximum": 2.0,
+					"minimum": 0.25
+				}
+			}
+		},
+		"bump-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"bump-solid-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"corner": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"corner-solid": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"cross": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-solid": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-solid-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-wide": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-wide-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-wide-medium": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-wide-solid-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"curve-wide-solid-medium": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"diverter": {
+			"collector": false,
+			"inputs": {
+				"left": false,
+				"right": false,
+				"switch_direction": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false,
+				"routed": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"alternating": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"left": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"end-hole-rounded": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"end-hole-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"end-rounded": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"end-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"environment:building-border": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-border-high": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-column-thin": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-column-wide": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-floor-half": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-floor-quarter": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-roof-flat-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-stairs-closed-short": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-corner": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-doorway-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-doorway-wide-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-half": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-low": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:building-wall-window-square": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:column": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:deck": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-box-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-box-long": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-box-small": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-box-wide": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-catwalk-corner": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-catwalk-stairs": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-catwalk-straight": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-cone": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-machine-bed": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-machine-fortified": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-pipe-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-pipe-large-curve": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-pipe-large-junction": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-pipe-large-long": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-screen-panel-small": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-structure-doorway": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-structure-doorway-wide": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-structure-medium": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-structure-short": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:factory-structure-tall": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:machine": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"environment:partition": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": true,
+			"settings": {}
+		},
+		"fan-four": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"switch_direction": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"power": {
+					"kind": 0,
+					"maximum": 5.0,
+					"minimum": 0.0
+				},
+				"range": {
+					"kind": 0,
+					"maximum": 10.0,
+					"minimum": 0.5
+				},
+				"reverse": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"fan-simple-four": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"angular_speed": {
+					"kind": 0,
+					"maximum": 6.0,
+					"minimum": -6.0
+				},
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"fan-simple-two": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"angular_speed": {
+					"kind": 0,
+					"maximum": 6.0,
+					"minimum": -6.0
+				},
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"fan-standing-four": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"switch_direction": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"power": {
+					"kind": 0,
+					"maximum": 5.0,
+					"minimum": 0.0
+				},
+				"range": {
+					"kind": 0,
+					"maximum": 10.0,
+					"minimum": 0.5
+				},
+				"reverse": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"fan-standing-two": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"switch_direction": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"power": {
+					"kind": 0,
+					"maximum": 5.0,
+					"minimum": 0.0
+				},
+				"range": {
+					"kind": 0,
+					"maximum": 10.0,
+					"minimum": 0.5
+				},
+				"reverse": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"fan-two": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"switch_direction": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"power": {
+					"kind": 0,
+					"maximum": 5.0,
+					"minimum": 0.0
+				},
+				"range": {
+					"kind": 0,
+					"maximum": 10.0,
+					"minimum": 0.5
+				},
+				"reverse": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"funnel": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"funnel-long": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"gate": {
+			"collector": false,
+			"inputs": {
+				"close": false,
+				"open": false,
+				"release": false,
+				"toggle": false
+			},
+			"outputs": {
+				"activated": false,
+				"closed": false,
+				"opened": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"auto_close": {
+					"kind": 0,
+					"maximum": 60.0,
+					"minimum": 0.0
+				},
+				"delay": {
+					"kind": 0,
+					"maximum": 60.0,
+					"minimum": 0.0
+				},
+				"open": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"helix-half-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-half-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-half-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-half-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-quarter-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-quarter-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-large-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-quarter-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-quarter-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"helix-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"launcher": {
+			"collector": false,
+			"inputs": {
+				"activate": false,
+				"deactivate": false,
+				"fire": false
+			},
+			"outputs": {
+				"activated": false,
+				"fired": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"angle": {
+					"kind": 0,
+					"maximum": 65.0,
+					"minimum": 0.0
+				},
+				"auto_rearm": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"enabled": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"external": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"strength": {
+					"kind": 0,
+					"maximum": 8.0,
+					"minimum": 0.5
+				}
+			}
+		},
+		"ramp-end-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-end-solid-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-long-solid-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"ramp-start-solid-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-left-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-right-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-short-left-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-short-left-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"s-curve-short-left-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"sandbox-finish": {
+			"collector": true,
+			"inputs": {},
+			"outputs": {
+				"collected": false
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"display_label": {
+					"kind": 2,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"sandbox-start": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {
+				"released": false
+			},
+			"release": true,
+			"scenery": false,
+			"settings": {
+				"display_label": {
+					"kind": 2,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"interval": {
+					"kind": 0,
+					"maximum": 20.0,
+					"minimum": 0.6
+				},
+				"quantity": {
+					"kind": 0,
+					"maximum": 20.0,
+					"minimum": 1.0
+				},
+				"release_speed": {
+					"kind": 0,
+					"maximum": 6.0,
+					"minimum": 0.0
+				},
+				"start_delay": {
+					"kind": 0,
+					"maximum": 60.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"sensor": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {
+				"entered": false,
+				"exited": false,
+				"occupied": true
+			},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"detect_exit": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				}
+			}
+		},
+		"slant-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-long-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-long-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-long-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-long-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-long-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-long-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-long-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"slant-solid-long-d": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-double-sides": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-double-sides-solid": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-double-solid": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-large-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-large-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-large-solid-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-large-solid-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-solid-left": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"split-solid-right": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"straight": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"straight-hole": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"straight-wide": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"straight-wide-hole": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-four": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-color-four-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-four-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-four-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-four-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-single": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-color-single-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-single-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-single-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-single-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-two": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-color-two-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-two-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-two-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-color-two-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-four": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-four-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-four-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-four-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-four-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-single": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-single-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-single-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-single-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-single-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-two": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {
+				"support_double_top": {
+					"kind": 1,
+					"maximum": 1.0,
+					"minimum": 0.0
+				},
+				"support_height": {
+					"kind": 0,
+					"maximum": 30.0,
+					"minimum": 1.0
+				}
+			}
+		},
+		"support-two-bottom": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-two-middle": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-two-top": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"support-two-top-double": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"tree": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"tree-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"tree-tall": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"tree-tall-large": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"tunnel": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-solid-a": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-solid-b": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		},
+		"wave-solid-c": {
+			"collector": false,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {}
+		}
+	},
+	"compatibility": "8048606c2eb0ae7c42f2b91ec5bf8b850df088b9e7d793c76dd648d893c07438",
+	"format": 1,
+	"game_version": "0.0.1"
+}

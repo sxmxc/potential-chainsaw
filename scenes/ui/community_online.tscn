@@ -1,0 +1,158 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/community_online.gd" id="1"]
+[ext_resource type="Theme" path="res://resources/sandbox_theme.tres" id="2"]
+
+[node name="CommunityOnline" type="VBoxContainer"]
+visible = false
+theme = ExtResource("2")
+script = ExtResource("1")
+
+[node name="Filters" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Search" type="LineEdit" parent="Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search online puzzles"
+max_length = 100
+
+[node name="Mine" type="CheckButton" parent="Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "My puzzles"
+
+[node name="Refresh" type="Button" parent="Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Refresh"
+
+[node name="Account" type="Button" parent="Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Sign in"
+
+[node name="SignIn" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SessionNote" type="Label" parent="SignIn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+autowrap_mode = 3
+
+[node name="Email" type="LineEdit" parent="SignIn"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Email address"
+max_length = 254
+
+[node name="CodeRow" type="HBoxContainer" parent="SignIn"]
+layout_mode = 2
+
+[node name="Code" type="LineEdit" parent="SignIn/CodeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Email code"
+max_length = 16
+
+[node name="SendCode" type="Button" parent="SignIn/CodeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Send code"
+theme_type_variation = &"SecondaryButton"
+
+[node name="VerifyCode" type="Button" parent="SignIn/CodeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Sign in"
+theme_type_variation = &"PrimaryButton"
+
+[node name="SignOut" type="Button" parent="SignIn/CodeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Sign out"
+theme_type_variation = &"SecondaryButton"
+
+[node name="OnlineLevels" type="ItemList" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 220)
+size_flags_vertical = 3
+
+[node name="OnlineDetails" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
+text = "Select a puzzle."
+
+[node name="Actions" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PreviousPage" type="Button" parent="Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Previous"
+theme_type_variation = &"SecondaryButton"
+
+[node name="NextPage" type="Button" parent="Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Next"
+theme_type_variation = &"SecondaryButton"
+
+[node name="CopyShare" type="Button" parent="Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Copy share code"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Unpublish" type="Button" parent="Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Unpublish"
+theme_type_variation = &"SecondaryButton"
+
+[node name="Download" type="Button" parent="Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Download and play"
+theme_type_variation = &"PrimaryButton"
+
+[node name="Shared" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ShareCode" type="LineEdit" parent="Shared"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Share code"
+max_length = 150
+
+[node name="OpenShare" type="Button" parent="Shared"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open shared puzzle"
+theme_type_variation = &"SecondaryButton"
+
+[node name="PublishOnline" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "Publish online"
+clip_text = true
+
+[node name="Feedback" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+autowrap_mode = 3

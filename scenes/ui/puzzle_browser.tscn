@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://dx0eii85w1adc" path="res://scripts/ui/puzzle_browser.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/community_online.tscn" id="Online"]
+
 [node name="PuzzleBrowser" type="Window" unique_id=335018945]
 transparent_bg = true
 title = "Campaign"
@@ -52,6 +54,7 @@ theme_type_variation = &"SecondaryButton"
 text = "Skip Introduction"
 
 [node name="Browse" type="VBoxContainer" parent="Surface/Contents" unique_id=2055071129]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -99,6 +102,10 @@ theme_type_variation = &"MutedLabel"
 text = "Select a level."
 autowrap_mode = 3
 
+[node name="Network" parent="Surface/Contents" instance=ExtResource("Online")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=815224222]
 layout_mode = 2
 
@@ -136,6 +143,12 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
 text = "Create puzzle"
+
+[node name="OnlineBrowse" type="Button" parent="Surface/Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Browse online"
 
 [node name="ImportDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true

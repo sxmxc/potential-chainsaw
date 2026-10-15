@@ -10,6 +10,24 @@ var campaign_definition: CampaignDefinition
 const Copy = preload("res://scripts/ui/puzzle_copy.gd")
 const CHAPTER_BUTTON = preload("res://scenes/ui/widgets/chapter_button.tscn")
 
+func configure_online(service: CommunityService) -> void:
+	%Network.configure(service, session, self)
+	%OnlineBrowse.pressed.connect(func():
+		if %Network.visible:
+			open(false, true)
+		else:
+			open_online())
+
+func open_online(puzzle: Dictionary = {}) -> void:
+	open(false, true)
+	%Browse.hide()
+	for control in [%Open, %Import, %NewPuzzle]: control.hide()
+	%OnlineBrowse.text = "Installed puzzles"
+	%Network.show()
+	fit_contents()
+	%Network.open(puzzle)
+	fit_contents.call_deferred()
+
 func configure(value: ConstructionSession) -> void:
 	session = value
 	$Surface.minimum_size_changed.connect(func():
@@ -50,7 +68,11 @@ func resume_campaign() -> void:
 
 func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	editing = editor_mode
+	%Network.hide()
+	%Browse.show()
+	%OnlineBrowse.text = "Browse online"
 	community = community_mode or (editing and not session.official_authoring)
+	%OnlineBrowse.visible = community and not editing
 	modal_opened.emit()
 	title = "Puzzle library" if editing else ("Community puzzles" if community else "Campaign")
 	%Heading.text = title

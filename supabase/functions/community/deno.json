@@ -1,0 +1,8 @@
+{
+  "imports": { "@supabase/supabase-js": "npm:@supabase/supabase-js@2.95.3" },
+  "compilerOptions": { "strict": true },
+  "tasks": {
+    "check": "deno check index.ts",
+    "test": "deno test --allow-read --allow-env validation_test.ts api_test.ts"
+  }
+}

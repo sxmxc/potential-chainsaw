@@ -13,6 +13,7 @@ var pending_action: Callable
 var after_save: Callable
 var music_context: String = ""
 var settings = preload("res://scripts/game_settings.gd").new()
+var community_service: CommunityService
 
 func _ready() -> void:
 	get_tree().auto_accept_quit=false
@@ -26,7 +27,11 @@ func _ready() -> void:
 	%TrackBrowser.track_requested.connect(func(id, example): guard(func(): workspace.session.load_track(id, example)))
 	%TrackBrowser.closed.connect(modal_closed)
 	create_dialogs()
+	community_service = CommunityService.new()
+	add_child(community_service)
+	community_service.configure(workspace.session.store, SupabaseCommunityBackend.new())
 	%PuzzleBrowser.configure(workspace.session)
+	%PuzzleBrowser.configure_online(community_service)
 	%PuzzleBrowser.modal_opened.connect(open_modal)
 	%PuzzleBrowser.closed.connect(modal_closed)
 	%PuzzleCompletion.configure(workspace.session)
@@ -70,6 +75,13 @@ func handle_action(action: String) -> void:
 		"campaign": guard(func(): %PuzzleBrowser.open_campaign())
 		"puzzle_editor": guard(func(): workspace.session.editor())
 		"community": guard(func(): %PuzzleBrowser.open(false, true))
+		"publish_online":
+			if not workspace.session.is_authoring or workspace.session.official_authoring: return
+			var errors := workspace.session.validate()
+			if not errors.is_empty(): show_message("\n".join(errors)); return
+			if not workspace.session.publish(): return
+			workspace.authoring.hide()
+			%PuzzleBrowser.open_online(workspace.session.capture())
 		"sandbox":
 			if not workspace.session.is_sandbox: guard(workspace.session.sandbox)
 			else: workspace.activate()

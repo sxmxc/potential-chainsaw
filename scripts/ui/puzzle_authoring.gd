@@ -91,6 +91,7 @@ func configure(puzzle_session: ConstructionSession) -> void:
 	%TestPlayer.pressed.connect(func(): hide(); session.test_player())
 	%Validate.pressed.connect(validate_puzzle)
 	%Publish.pressed.connect(func(): if session.publish(): %Validation.text = "Added to Campaign" if session.official_authoring else "Published locally")
+	%PublishOnline.pressed.connect(func(): action_requested.emit("publish_online"))
 	%Export.pressed.connect(func(): modal_opened.emit(); %ExportDialog.popup_centered(Vector2i(700, 500)))
 	%ExportDialog.canceled.connect(modal_closed.emit)
 	%ExportDialog.file_selected.connect(func(path: String):
@@ -127,6 +128,7 @@ func open() -> void:
 		field.visible = session.official_authoring
 	%Publish.text = "Add to Campaign" if session.official_authoring else "Publish locally"
 	%Export.visible = not session.official_authoring
+	%PublishOnline.visible = not session.official_authoring
 	%Creator.text = data.get("creator", "")
 	show_chapter(CampaignDefinition.new(session.store.base_chapters(), []).chapter_for(data))
 	%Order.value = CampaignDefinition.level_order(data)
@@ -173,6 +175,7 @@ func refresh_publish() -> void:
 	%SolutionStatus.text=("✓" if solved else "○")+" Solution saved"
 	%RevisionStatus.text=("✓" if current else "○")+" Current draft verified"
 	%Publish.disabled=not session.validate().is_empty()
+	%PublishOnline.disabled = %Publish.disabled
 	%Export.disabled = not FileAccess.file_exists(session.store.published_directory.path_join(data.id + ".json"))
 	%Publish.tooltip_text="Complete a player test and validate this draft to publish." if %Publish.disabled else "Publish this verified puzzle"
 
