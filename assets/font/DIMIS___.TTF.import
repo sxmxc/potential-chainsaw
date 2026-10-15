@@ -3,11 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://cv873sa0d6hle"
-valid=false
+path="res://.godot/imported/DIMIS___.TTF-21cbaa917154632889f3173994e018da.fontdata"
 
 [deps]
 
 source_file="res://assets/font/DIMIS___.TTF"
+dest_files=["res://.godot/imported/DIMIS___.TTF-21cbaa917154632889f3173994e018da.fontdata"]
 
 [params]
 

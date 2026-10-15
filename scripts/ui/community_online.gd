@@ -134,6 +134,7 @@ func select_puzzle(_index: int) -> void:
 	%Creator.visible = not creator.is_empty()
 	%Installed.text = ("Installed · " if not installed.is_empty() else "") + str(item.get("difficulty", "")) + (" · Unpublished" if not item.get("published", true) else "")
 	%Download.text = "Play puzzle" if not installed.is_empty() else "Download and play"
+	@warning_ignore("integer_division")
 	%PageNumber.text = "Page %d" % (offset / 20 + 1)
 	%OnlineDetails.text = "Choose a creation to see its goal." if item.is_empty() else item.description
 	%Download.disabled = busy or item.is_empty() or (installed.is_empty() and not item.get("published", true))

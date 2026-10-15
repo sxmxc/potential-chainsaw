@@ -3,11 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://b8ujm8c8jhh0m"
-valid=false
+path="res://.godot/imported/Engplot.TTF-bab7a3ce56d8797469a3eee98a5253bb.fontdata"
 
 [deps]
 
 source_file="res://assets/font/Engplot.TTF"
+dest_files=["res://.godot/imported/Engplot.TTF-bab7a3ce56d8797469a3eee98a5253bb.fontdata"]
 
 [params]
 
