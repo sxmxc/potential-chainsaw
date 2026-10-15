@@ -31,7 +31,7 @@ func test_retired_scene_fields_are_rejected_for_every_source() -> void:
 		var data := draft()
 		data[key] = "res://scenes/main.tscn"
 		var path := test_directory.path_join("retired.json")
-		assert_true(store.write(path, data))
+		assert_eq(SaveStorage.write_json(path, data), "")
 		for source in ["draft", "local", "campaign", "community"]:
 			assert_true(store.load_puzzle(path, source).is_empty())
 			assert_true(store.last_error.contains("no longer supported"))

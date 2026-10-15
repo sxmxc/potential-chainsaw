@@ -143,7 +143,7 @@ func test_shared_workspace_workflow() -> void:
 	session.store.manifest_path = test_directory.path_join("resources/campaign_manifest.json")
 	session.store.chapters_path = test_directory.path_join("resources/campaign_chapters.json")
 	DirAccess.make_dir_recursive_absolute(session.store.campaign_directory)
-	assert_true(session.store.write(session.store.chapters_path, {"version": 1, "chapters": [{"id": "chapter-1", "name": "Chapter 1", "order": 1, "prerequisites": []}]}))
+	assert_eq(SaveStorage.write_json(session.store.chapters_path, {"version": 1, "chapters": [{"id": "chapter-1", "name": "Chapter 1", "order": 1, "prerequisites": []}]}), "")
 	assert_true(session.is_authoring and build.rules == null, "Editor uses unrestricted existing construction")
 	var hud := game.get_node("Workspace/Interface/HUD")
 	var inspector := hud.get_node("%Inspector")

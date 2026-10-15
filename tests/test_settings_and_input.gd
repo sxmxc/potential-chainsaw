@@ -62,7 +62,7 @@ func test_legacy_sensitivity_and_invalid_values() -> void:
 	config.set_value("display", "msaa", 1000)
 	config.set_value("display", "mode", "invalid")
 	config.set_value("audio", "Music", -5.0)
-	assert_eq(config.save(SavePaths.resolve(Settings.PATH)), OK)
+	assert_eq(config.save(SaveStorage.resolve(Settings.PATH)), OK)
 	var restored = Settings.new()
 	restored.load_saved()
 	assert_eq(restored.values.camera.sensitivity, 2.0, "Old sensitivity-only settings still load")
@@ -86,7 +86,7 @@ func test_restore_defaults_restores_bindings_and_audio() -> void:
 	restored.load_saved()
 	assert_eq(restored.values, Settings.DEFAULTS)
 	var config = ConfigFile.new()
-	assert_eq(config.load(SavePaths.resolve(Settings.PATH)), OK)
+	assert_eq(config.load(SaveStorage.resolve(Settings.PATH)), OK)
 	assert_false(config.has_section("bindings"), "Defaults need no saved binding overrides")
 
 func test_key_rebinding_conflicts_and_escape() -> void:

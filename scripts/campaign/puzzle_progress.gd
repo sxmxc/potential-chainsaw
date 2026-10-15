@@ -2,9 +2,9 @@ class_name PuzzleProgress
 extends RefCounted
 
 # Player state is independent of the puzzle library and publication lifecycle.
-var progress_path: String = SavePaths.resolve("user://campaign_progress.json")
-var campaign_state_path: String = SavePaths.resolve("user://campaign_state.json")
-var community_progress_path: String = SavePaths.resolve("user://community_progress.json")
+var progress_path: String = SaveStorage.resolve("user://campaign_progress.json")
+var campaign_state_path: String = SaveStorage.resolve("user://campaign_state.json")
+var community_progress_path: String = SaveStorage.resolve("user://community_progress.json")
 var records: Dictionary = {}
 var community_records: Dictionary = {}
 var route: Dictionary = {}
@@ -33,7 +33,7 @@ func start_campaign(definition: CampaignDefinition, play_introduction: bool) -> 
 	route = {"version": 1, "started": true, "introduction_skipped": not play_introduction, "current_chapter": chapter.get("id", ""), "current_level": ""}
 	var target := definition.resume_level(route, records)
 	if not target.is_empty(): route.current_level = target.id
-	_write(campaign_state_path, route)
+	last_error = SaveStorage.write_json(campaign_state_path, route)
 	return target
 
 func remember_level(data: Dictionary) -> void:
@@ -44,7 +44,7 @@ func remember_level(data: Dictionary) -> void:
 	route.current_level = data.id
 	route.current_chapter = chapter.id
 	route["introduction_level" if chapter.get("introduction", false) else "main_level"] = data.id
-	_write(campaign_state_path, route)
+	last_error = SaveStorage.write_json(campaign_state_path, route)
 
 func complete(data: Dictionary, seconds: float, count: int, definition: CampaignDefinition) -> void:
 	var results := records if PuzzleStore.is_official(data) else community_records
@@ -56,18 +56,10 @@ func complete(data: Dictionary, seconds: float, count: int, definition: Campaign
 	if float(goals.get("time", 0)) > 0 and seconds <= float(goals.time) and "time" not in awards: awards.append("time")
 	if int(goals.get("pieces", 0)) > 0 and count <= int(goals.pieces) and "pieces" not in awards: awards.append("pieces")
 	results[data.id].awards = awards
-	_write(progress_path if PuzzleStore.is_official(data) else community_progress_path, results)
+	last_error = SaveStorage.write_json(progress_path if PuzzleStore.is_official(data) else community_progress_path, results)
 	if not PuzzleStore.is_official(data): return
 	var step := definition.next_step(data, results)
 	route.current_level = step.level.get("id", "")
 	route.current_chapter = step.chapter.get("id", route.get("current_chapter", ""))
-	_write(campaign_state_path, route)
-
-func _write(path: String, data: Dictionary) -> bool:
-	var file = FileAccess.open(path + ".tmp", FileAccess.WRITE)
-	if not file: last_error = "Could not write " + path; return false
-	file.store_string(JSON.stringify(data, "\t"))
-	file.flush()
-	file.close()
-	if DirAccess.rename_absolute(path + ".tmp", path) != OK: last_error = "Could not finish saving"; return false
-	return true
+	var route_error := SaveStorage.write_json(campaign_state_path, route)
+	if last_error.is_empty(): last_error = route_error

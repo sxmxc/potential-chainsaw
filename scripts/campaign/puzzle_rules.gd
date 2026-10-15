@@ -91,7 +91,7 @@ static func definition_errors(data: Dictionary, definitions: PieceCatalog, check
 	if not errors.is_empty(): return errors
 	var environment = PuzzleEnvironment.inspect_definition(data)
 	for error in environment.errors: errors.append(str(error))
-	if not SavePaths.valid_id(data.id): errors.append("Invalid puzzle ID")
+	if not SaveStorage.valid_id(data.id): errors.append("Invalid puzzle ID")
 	if str(data.get("name", "")).strip_edges().is_empty(): errors.append("A puzzle needs a name")
 	var by_id: Dictionary = {}
 	var starts = 0

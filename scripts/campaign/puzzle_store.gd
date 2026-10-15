@@ -1,9 +1,9 @@
 class_name PuzzleStore
 extends RefCounted
 
-var drafts_directory: String = SavePaths.resolve("user://puzzles/drafts")
-var published_directory: String = SavePaths.resolve("user://puzzles/published")
-var community_directory: String = SavePaths.resolve("user://puzzles/community")
+var drafts_directory: String = SaveStorage.resolve("user://puzzles/drafts")
+var published_directory: String = SaveStorage.resolve("user://puzzles/published")
+var community_directory: String = SaveStorage.resolve("user://puzzles/community")
 var manifest_path: String = "res://resources/campaign_manifest.json"
 var chapters_path: String = CHAPTERS
 var campaign_directory: String = "res://resources/campaign"
@@ -28,20 +28,12 @@ func fingerprint(data: Dictionary) -> String:
 	# Canonicalize the numeric types and precision produced by JSON persistence.
 	return JSON.stringify(JSON.parse_string(JSON.stringify(content)), "", true, true).sha256_text()
 
-func write(path: String, data: Dictionary) -> bool:
-	var file = FileAccess.open(path + ".tmp", FileAccess.WRITE)
-	if not file: last_error = "Could not write " + path; return false
-	file.store_string(JSON.stringify(data, "\t"))
-	file.flush()
-	file.close()
-	if DirAccess.rename_absolute(path + ".tmp", path) != OK: last_error = "Could not finish saving"; return false
-	return true
-
 func save_draft(data: Dictionary) -> bool:
-	if not SavePaths.valid_id(str(data.get("id", ""))): return false
+	if not SaveStorage.valid_id(str(data.get("id", ""))): return false
 	var draft := data.duplicate(true)
 	draft.erase("_source")
-	return write(drafts_directory + "/" + data.id + ".json", draft)
+	last_error = SaveStorage.write_json(drafts_directory + "/" + data.id + ".json", draft)
+	return last_error.is_empty()
 
 # Only this loader assigns provenance. File properties never select a distribution.
 func load_puzzle(path: String, source: String) -> Dictionary:
@@ -95,7 +87,8 @@ func publish(data: Dictionary) -> bool:
 	var published := playable_content(data)
 	published.status = "published"
 	published.required_assets = required_assets(published)
-	return write(published_directory.path_join(data.id + ".json"), published)
+	last_error = SaveStorage.write_json(published_directory.path_join(data.id + ".json"), published)
+	return last_error.is_empty()
 
 func can_add_to_campaign() -> bool:
 	return OS.has_feature("editor") and FileAccess.file_exists("res://project.godot")
@@ -106,7 +99,7 @@ func add_to_campaign(data: Dictionary) -> bool:
 	var errors := publication_errors(data)
 	var registration: Dictionary = data.get("campaign", {})
 	var chapter: Dictionary = registration.get("chapter", {})
-	if not SavePaths.valid_id(str(chapter.get("id", ""))) or str(chapter.get("name", "")).strip_edges().is_empty(): errors.append("Choose a campaign chapter")
+	if not SaveStorage.valid_id(str(chapter.get("id", ""))) or str(chapter.get("name", "")).strip_edges().is_empty(): errors.append("Choose a campaign chapter")
 	if int(registration.get("order", 0)) < 1: errors.append("Level order must be positive")
 	if not registration.get("prerequisites", []) is Array or not chapter.get("prerequisites", []) is Array: errors.append("Unlock requirements must be lists")
 	if chapter.get("introduction", false) and not chapter.get("optional", false): errors.append("Introduction must be optional")
@@ -151,7 +144,11 @@ func add_to_campaign(data: Dictionary) -> bool:
 		backups[path] = null
 		if FileAccess.file_exists(path):
 			backups[path] = FileAccess.get_file_as_bytes(path)
-	if not write(target, published) or not write(chapters_path, {"version": 1, "chapters": chapters}) or not write(manifest_path, manifest):
+	var publications := {target: published, chapters_path: {"version": 1, "chapters": chapters}, manifest_path: manifest}
+	for path in publications:
+		last_error = SaveStorage.write_json(path, publications[path])
+		if not last_error.is_empty(): break
+	if not last_error.is_empty():
 		for path in backups:
 			if backups[path] == null: DirAccess.remove_absolute(path)
 			else:
@@ -204,10 +201,11 @@ static func is_official(data: Dictionary) -> bool:
 
 func export_puzzle(data: Dictionary, path: String) -> bool:
 	var published_path := published_directory.path_join(str(data.get("id", "")) + ".json")
-	if not SavePaths.valid_id(str(data.get("id", ""))) or not FileAccess.file_exists(published_path): last_error = "Publish locally before exporting"; return false
+	if not SaveStorage.valid_id(str(data.get("id", ""))) or not FileAccess.file_exists(published_path): last_error = "Publish locally before exporting"; return false
 	var published := load_puzzle(published_path, "community")
 	if published.is_empty(): return false
-	return write(path, playable_content(published))
+	last_error = SaveStorage.write_json(path, playable_content(published))
+	return last_error.is_empty()
 
 func import_puzzle(path: String) -> Dictionary:
 	var data := load_puzzle(path, "community")
@@ -236,7 +234,8 @@ func install_community(value: Dictionary) -> Dictionary:
 			return {}
 	var installed := playable_content(data)
 	installed.erase("campaign")
-	if not write(community_directory.path_join(data.id + ".json"), installed): return {}
+	last_error = SaveStorage.write_json(community_directory.path_join(data.id + ".json"), installed)
+	if not last_error.is_empty(): return {}
 	return load_puzzle(community_directory.path_join(data.id + ".json"), "community")
 
 func required_assets(data: Dictionary) -> Array[String]:

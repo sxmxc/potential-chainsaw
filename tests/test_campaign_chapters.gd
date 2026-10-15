@@ -70,7 +70,7 @@ func test_campaign_chapters() -> void:
 	assert_true(progress.route.current_chapter == "chapter-1", "Completing Introduction enters Chapter 1")
 	assert_true(definition.chapter_progress("introduction", progress.records).completed == 10 and definition.chapter_progress("chapter-1", progress.records).completed == 0, "Tutorial and main progress counted separately")
 	var legacy = {"campaign-01": {"completed": true, "revision": 1, "best_time": 3.5, "fewest_pieces": 4, "awards": ["time"], "custom_record": "preserve"}}
-	store.write(progress.progress_path, legacy)
+	assert_eq(SaveStorage.write_json(progress.progress_path, legacy), "")
 	DirAccess.remove_absolute(progress.campaign_state_path)
 	reopened = PuzzleProgress.new(definition)
 	assert_true(JSON.stringify(reopened.records) == JSON.stringify(JSON.parse_string(JSON.stringify(legacy))), "Legacy save migration preserves every record field")

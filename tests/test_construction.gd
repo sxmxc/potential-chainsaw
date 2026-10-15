@@ -79,6 +79,30 @@ class TestRegistry:
 class TestPersistence:
 	extends "res://tests/support/game_test.gd"
 
+	func test_json_save_replaces_complete_content() -> void:
+		var path := test_directory.path_join("save.json")
+		assert_eq(SaveStorage.write_json(path, {"name": "Original", "pieces": [1, 2, 3]}), "")
+		var replacement := {"name": "Replacement", "pieces": []}
+		assert_eq(SaveStorage.write_json(path, replacement), "")
+		assert_eq(JSON.parse_string(FileAccess.get_file_as_string(path)), replacement)
+		assert_false(FileAccess.file_exists(path + ".tmp"))
+
+	func test_failed_json_save_preserves_existing_bytes() -> void:
+		var path := test_directory.path_join("save.json")
+		assert_eq(SaveStorage.write_json(path, {"name": "Keep this save"}), "")
+		var original := FileAccess.get_file_as_bytes(path)
+		# An unwritable temporary destination must never truncate the saved file.
+		assert_eq(DirAccess.make_dir_absolute(path + ".tmp"), OK)
+		assert_false(SaveStorage.write_json(path, {"name": "Rejected"}).is_empty())
+		assert_eq(FileAccess.get_file_as_bytes(path), original)
+
+	func test_failed_json_replacement_removes_temporary_file() -> void:
+		var path := test_directory.path_join("directory")
+		assert_eq(DirAccess.make_dir_absolute(path), OK)
+		assert_false(SaveStorage.write_json(path, {"name": "Cannot replace a directory"}).is_empty())
+		assert_true(DirAccess.dir_exists_absolute(path))
+		assert_false(FileAccess.file_exists(path + ".tmp"))
+
 	func test_save_paths_are_owned_by_each_instance() -> void:
 		var definitions := PieceCatalog.new()
 		var first_tracks := TrackSerializer.new(definitions)

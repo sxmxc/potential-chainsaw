@@ -2,7 +2,7 @@ class_name TrackSerializer
 extends RefCounted
 
 const FORMAT_VERSION = 1
-var save_directory: String = SavePaths.resolve("user://tracks")
+var save_directory: String = SaveStorage.resolve("user://tracks")
 var catalog: PieceCatalog
 var last_error: String = ""
 var warnings: Array[String] = []
@@ -14,21 +14,15 @@ func _init(piece_catalog: PieceCatalog) -> void:
 func save_track(name: String, pieces: Array, existing_id: String = "") -> String:
 	last_error = ""
 	if name.strip_edges().is_empty(): last_error="Please give your track a name"; return ""
-	var id = existing_id if SavePaths.valid_id(existing_id) else "%d-%s" % [Time.get_unix_time_from_system(),Crypto.new().generate_random_bytes(6).hex_encode()]
+	var id = existing_id if SaveStorage.valid_id(existing_id) else "%d-%s" % [Time.get_unix_time_from_system(),Crypto.new().generate_random_bytes(6).hex_encode()]
 	var data = {"version":FORMAT_VERSION,"id":id,"name":name.strip_edges().left(80),"modified":Time.get_datetime_string_from_system(true),"pieces":pieces}
 	var path = save_directory+"/"+id+".json"
-	var temp = path+".tmp"
-	var file = FileAccess.open(temp,FileAccess.WRITE)
-	if not file: last_error="Could not write track: "+error_string(FileAccess.get_open_error()); return ""
-	file.store_string(JSON.stringify(data,"\t"))
-	file.flush()
-	file.close()
-	var error = DirAccess.rename_absolute(temp,path)
-	if error != OK: last_error="Could not finish saving: "+error_string(error); return ""
+	last_error = SaveStorage.write_json(path, data)
+	if not last_error.is_empty(): return ""
 	return id
 
 func load_track(id: String) -> Dictionary:
-	if not SavePaths.valid_id(id): last_error="Invalid track identifier"; return {}
+	if not SaveStorage.valid_id(id): last_error="Invalid track identifier"; return {}
 	return decode(FileAccess.get_file_as_string(save_directory+"/"+id+".json"))
 
 func decode(text: String) -> Dictionary:
@@ -78,5 +72,5 @@ func list_tracks() -> Array[Dictionary]:
 	return result
 
 func delete_track(id: String) -> Error:
-	if not SavePaths.valid_id(id): return ERR_INVALID_PARAMETER
+	if not SaveStorage.valid_id(id): return ERR_INVALID_PARAMETER
 	return DirAccess.remove_absolute(save_directory+"/"+id+".json")

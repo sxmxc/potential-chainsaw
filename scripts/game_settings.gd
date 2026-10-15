@@ -12,7 +12,7 @@ var values: Dictionary = DEFAULTS.duplicate(true)
 
 func load_saved() -> void:
 	var config = ConfigFile.new()
-	if config.load(SavePaths.resolve(PATH)) != OK: return
+	if config.load(SaveStorage.resolve(PATH)) != OK: return
 	for section in DEFAULTS:
 		for key in DEFAULTS[section]:
 			var value: Variant = config.get_value(section, key, DEFAULTS[section][key])
@@ -34,7 +34,7 @@ func save() -> Error:
 	for section in values:
 		for key in values[section]: config.set_value(section, key, values[section][key])
 	ConstructionInput.save_bindings(config)
-	return config.save(SavePaths.resolve(PATH))
+	return config.save(SaveStorage.resolve(PATH))
 
 func reset_defaults() -> void:
 	values = DEFAULTS.duplicate(true)

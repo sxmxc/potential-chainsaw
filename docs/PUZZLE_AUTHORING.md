@@ -72,7 +72,7 @@ Paths below use Godot's resource/user roots:
 | `user://campaign_state.json` | Official route/resume and Introduction choice |
 | `user://community_progress.json` | Separate community completion by stable puzzle ID |
 
-PuzzleStore writes through temporary files and renames. Imports and online downloads both use `install_community`: size/type/asset/definition/solution-rule checks precede installation. Conflicting IDs in drafts, local publications, or imports fail without overwriting; identical reimports retain identity. Imported author proof records a prior run, not a trusted physics guarantee. Resource hashes are not compared across packaged builds; editing/republishing requires a new local test.
+PuzzleStore saves through the shared `SaveStorage` JSON writer, which checks a flushed temporary file before replacing the destination. Imports and online downloads both use `install_community`: size/type/asset/definition/solution-rule checks precede installation. Conflicting IDs in drafts, local publications, or imports fail without overwriting; identical reimports retain identity. Imported author proof records a prior run, not a trusted physics guarantee. Resource hashes are not compared across packaged builds; editing/republishing requires a new local test.
 
 ## Official campaign and progression
 
