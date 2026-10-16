@@ -126,7 +126,6 @@ alignment = 0
 
 [node name="Examples" type="Button" parent="Margin/Composition/Left/Card/Contents/Actions" unique_id=663403546]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(236, 44)
 layout_mode = 2
 size_flags_horizontal = 0

@@ -5,11 +5,12 @@ extends Node3D
 @export_range(8.0, 30.0) var chase_duration: float = 18.0
 @onready var world: WorldManager = $"../Track"
 @onready var detail: PhantomCamera3D = $Detail
+@onready var detail_shots: Array[Node] = $Shots.get_children()
 var active: bool = false
 var remaining: float = 0.0
 var shot: int = 0
 var last_marble_id: int = 0
-var clock: float = 0.0
+var detail_index: int = 0
 var random = RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -33,16 +34,16 @@ func _simulation_changed(state: SimulationManager.State, _message: String) -> vo
 
 func _process(delta: float) -> void:
 	if not active: return
-	clock += delta
-	_update_detail()
 	remaining -= delta
 	if remaining > 0.0: return
 	match shot:
 		0:
+			_update_detail()
+			detail_index = (detail_index + 1) % detail_shots.size()
 			detail.priority = 20
 			shot = 1
 			remaining = detail_duration
-		1, 3:
+		1:
 			if _choose_marble():
 				shot = 2
 				remaining = random.randf_range(maxf(8.0, chase_duration-2.0), minf(30.0, chase_duration+2.0))
@@ -50,7 +51,7 @@ func _process(delta: float) -> void:
 		2:
 			world.simulation_camera.chase.stop()
 			detail.priority = 0
-			shot = 3
+			shot = 0
 			remaining = wide_duration
 
 func _choose_marble() -> bool:
@@ -66,8 +67,5 @@ func _choose_marble() -> bool:
 	return world.simulation_camera.follow(chosen)
 
 func _update_detail() -> void:
-	# A tighter view of the existing central mechanism bank, with restrained pan.
-	var center = Vector3(2.5, 3.0, -0.5)
-	var angle = 0.48 + sin(clock*0.08)*0.06
-	var offset = Vector3(sin(angle)*cos(0.48), sin(0.48), cos(angle)*cos(0.48))*23.0
-	detail.look_at_from_position(center+offset, center, Vector3.UP)
+	# Authored scene poses; the existing host still owns blending and interruption.
+	detail.global_transform = detail_shots[detail_index].global_transform

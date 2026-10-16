@@ -1,12 +1,12 @@
 {
 	"id": "1791823899-94521b9607b3",
-	"modified": "2026-10-12T16:51:39",
-	"name": "Spiral works",
+	"modified": "2026-10-15T00:00:00",
+	"name": "Cascade Foundry",
 	"pieces": [
 		{
 			"config": {
-				"elevator_height": 6.5,
-				"elevator_speed": 1.3
+				"elevator_height": 8.5,
+				"elevator_speed": 1.5
 			},
 			"piece": "bucket-elevator",
 			"position": [
@@ -22,7 +22,7 @@
 			"piece": "slant-b",
 			"position": [
 				-0.0000000149011611938477,
-				6.00000381469727,
+				8.00000381469727,
 				-2.0
 			],
 			"rotation": 0,
@@ -31,6 +31,11 @@
 		{
 			"config": {
 				"links": [
+					{
+						"action": "increment",
+						"event": "entered",
+						"target": "hero-counter"
+					},
 					{
 						"action": "open",
 						"event": "entered",
@@ -41,7 +46,7 @@
 			"piece": "sensor",
 			"position": [
 				-0.0000000149011611938477,
-				5.99999618530273,
+				7.99999618530273,
 				-3.0
 			],
 			"rotation": 0,
@@ -49,13 +54,13 @@
 		},
 		{
 			"config": {
-				"alternating": true,
+				"alternating": false,
 				"left": true
 			},
 			"piece": "diverter",
 			"position": [
 				-0.0000000278181317980852,
-				5.99999618530273,
+				7.99999618530273,
 				-4.5
 			],
 			"rotation": 2,
@@ -63,24 +68,32 @@
 		},
 		{
 			"config": {
-				"auto_close": 6.0,
+				"auto_close": 3.0,
 				"open": false
 			},
 			"piece": "gate",
 			"position": [
 				2.0,
-				5.99999618530273,
+				7.99999618530273,
 				-4.99999237060547
 			],
 			"rotation": 1,
 			"uid": "hero-04"
 		},
 		{
-			"config": {},
-			"piece": "straight",
+			"config": {
+				"links": [
+					{
+						"action": "release",
+						"event": "entered",
+						"target": "hero-bay-source"
+					}
+				]
+			},
+			"piece": "sensor",
 			"position": [
 				3.0,
-				5.99999618530273,
+				7.99999618530273,
 				-4.99999237060547
 			],
 			"rotation": 1,
@@ -91,7 +104,7 @@
 			"piece": "helix-right",
 			"position": [
 				3.5,
-				3.99999237060547,
+				5.99999237060547,
 				-6.49999237060547
 			],
 			"rotation": 0,
@@ -102,7 +115,7 @@
 			"piece": "split-right",
 			"position": [
 				4.5,
-				3.99999618530273,
+				5.99999618530273,
 				-5.50001525878906
 			],
 			"rotation": 2,
@@ -110,21 +123,10 @@
 		},
 		{
 			"config": {},
-			"piece": "straight",
-			"position": [
-				6.0,
-				3.99999618530273,
-				-4.99999237060547
-			],
-			"rotation": 1,
-			"uid": "hero-08"
-		},
-		{
-			"config": {},
 			"piece": "curve",
 			"position": [
 				7.5,
-				3.99999618530273,
+				5.99999618530273,
 				-4.5
 			],
 			"rotation": 1,
@@ -135,7 +137,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				7.99999237060547,
-				3.74999237060547,
+				5.74999237060547,
 				-2.5
 			],
 			"rotation": 2,
@@ -146,7 +148,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				7.99999237060547,
-				3.49999237060547,
+				5.49999237060547,
 				-0.5
 			],
 			"rotation": 2,
@@ -157,7 +159,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				7.99999237060547,
-				3.24999237060547,
+				5.24999237060547,
 				1.5
 			],
 			"rotation": 2,
@@ -168,7 +170,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				7.99999237060547,
-				2.99999237060547,
+				4.99999237060547,
 				3.5
 			],
 			"rotation": 2,
@@ -179,7 +181,7 @@
 			"piece": "curve",
 			"position": [
 				7.5,
-				2.99999618530273,
+				4.99999618530273,
 				5.5
 			],
 			"rotation": 0,
@@ -190,7 +192,7 @@
 			"piece": "straight",
 			"position": [
 				6.0,
-				2.99999618530273,
+				4.99999618530273,
 				5.99999237060547
 			],
 			"rotation": 3,
@@ -201,7 +203,7 @@
 			"piece": "straight",
 			"position": [
 				5.0,
-				2.99999618530273,
+				4.99999618530273,
 				5.99999237060547
 			],
 			"rotation": 3,
@@ -212,7 +214,7 @@
 			"piece": "straight",
 			"position": [
 				4.0,
-				2.99999618530273,
+				4.99999618530273,
 				5.99999237060547
 			],
 			"rotation": 3,
@@ -223,7 +225,7 @@
 			"piece": "helix-left",
 			"position": [
 				3.5,
-				0.999992370605469,
+				2.99999237060547,
 				4.49999237060547
 			],
 			"rotation": 0,
@@ -234,55 +236,27 @@
 			"piece": "straight",
 			"position": [
 				3.0,
-				0.999996185302734,
+				3.0,
 				5.99999237060547
 			],
 			"rotation": 3,
 			"uid": "hero-19"
 		},
 		{
-			"config": {},
-			"piece": "straight",
+			"config": {
+				"angle": 25.0,
+				"auto_rearm": true,
+				"external": false,
+				"strength": 4.0
+			},
+			"piece": "launcher",
 			"position": [
 				2.0,
-				0.999996185302734,
+				3.0,
 				5.99999237060547
 			],
-			"rotation": 3,
+			"rotation": 1,
 			"uid": "hero-20"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				1.0,
-				0.999996185302734,
-				5.99999237060547
-			],
-			"rotation": 3,
-			"uid": "hero-21"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				0.0,
-				0.999996185302734,
-				5.99999237060547
-			],
-			"rotation": 3,
-			"uid": "hero-22"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				-1.0,
-				0.999996185302734,
-				5.99999237060547
-			],
-			"rotation": 3,
-			"uid": "hero-23"
 		},
 		{
 			"config": {},
@@ -418,9 +392,10 @@
 		},
 		{
 			"config": {
-				"interval": 5.2,
-				"quantity": 6.0,
-				"release_speed": 1.4
+				"interval": 3.7,
+				"quantity": 8.0,
+				"release_speed": 1.4,
+				"start_delay": 0.0
 			},
 			"piece": "sandbox-start",
 			"position": [
@@ -433,10 +408,10 @@
 		},
 		{
 			"config": {},
-			"piece": "straight",
+			"piece": "sensor",
 			"position": [
 				-2.0,
-				6.00000381469727,
+				8.00000381469727,
 				-5.0
 			],
 			"rotation": 3,
@@ -447,7 +422,7 @@
 			"piece": "straight",
 			"position": [
 				-3.0,
-				6.00000381469727,
+				8.00000381469727,
 				-5.0
 			],
 			"rotation": 3,
@@ -458,7 +433,7 @@
 			"piece": "helix-left",
 			"position": [
 				-3.5,
-				4.0,
+				6.0,
 				-6.5
 			],
 			"rotation": 0,
@@ -469,7 +444,7 @@
 			"piece": "curve",
 			"position": [
 				-4.5,
-				4.00000381469727,
+				6.00000381469727,
 				-5.49999237060547
 			],
 			"rotation": 3,
@@ -480,7 +455,7 @@
 			"piece": "straight",
 			"position": [
 				-4.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-6.99999237060547
 			],
 			"rotation": 0,
@@ -491,7 +466,7 @@
 			"piece": "straight",
 			"position": [
 				-4.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-7.99999237060547
 			],
 			"rotation": 0,
@@ -502,7 +477,7 @@
 			"piece": "straight",
 			"position": [
 				-4.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-8.99999237060547
 			],
 			"rotation": 0,
@@ -513,7 +488,7 @@
 			"piece": "curve",
 			"position": [
 				-4.5,
-				4.00000381469727,
+				6.00000381469727,
 				-10.4999923706055
 			],
 			"rotation": 2,
@@ -524,7 +499,7 @@
 			"piece": "straight",
 			"position": [
 				-3.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -535,7 +510,7 @@
 			"piece": "straight",
 			"position": [
 				-2.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -546,7 +521,7 @@
 			"piece": "straight",
 			"position": [
 				-1.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -557,7 +532,7 @@
 			"piece": "straight",
 			"position": [
 				0.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -568,7 +543,7 @@
 			"piece": "straight",
 			"position": [
 				1.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -579,7 +554,7 @@
 			"piece": "straight",
 			"position": [
 				2.0,
-				4.00000381469727,
+				6.00000381469727,
 				-10.9999847412109
 			],
 			"rotation": 1,
@@ -587,21 +562,10 @@
 		},
 		{
 			"config": {},
-			"piece": "curve",
-			"position": [
-				3.5,
-				4.00000381469727,
-				-10.4999923706055
-			],
-			"rotation": 1,
-			"uid": "hero-51"
-		},
-		{
-			"config": {},
 			"piece": "straight",
 			"position": [
 				3.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-8.99999237060547
 			],
 			"rotation": 0,
@@ -612,7 +576,7 @@
 			"piece": "straight",
 			"position": [
 				3.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-7.99999237060547
 			],
 			"rotation": 0,
@@ -623,7 +587,7 @@
 			"piece": "straight",
 			"position": [
 				3.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				-6.99999237060547
 			],
 			"rotation": 0,
@@ -637,7 +601,7 @@
 			"piece": "fan-standing-two",
 			"position": [
 				-5.0,
-				4.0,
+				6.0,
 				-4.40000009536743
 			],
 			"rotation": 0,
@@ -651,7 +615,7 @@
 			"piece": "fan-standing-four",
 			"position": [
 				-5.69999980926514,
-				4.0,
+				6.0,
 				-11.0
 			],
 			"rotation": 3,
@@ -665,7 +629,7 @@
 			"piece": "fan-standing-two",
 			"position": [
 				8.0,
-				4.0,
+				6.0,
 				-5.69999980926514
 			],
 			"rotation": 2,
@@ -673,8 +637,8 @@
 		},
 		{
 			"config": {
-				"elevator_height": 6.5,
-				"elevator_speed": 1.3
+				"elevator_height": 8.5,
+				"elevator_speed": 1.5
 			},
 			"piece": "bucket-elevator",
 			"position": [
@@ -690,7 +654,7 @@
 			"piece": "slant-b",
 			"position": [
 				5.0,
-				6.00000381469727,
+				8.00000381469727,
 				2.0
 			],
 			"rotation": 2,
@@ -700,16 +664,26 @@
 			"config": {
 				"links": [
 					{
+						"action": "increment",
+						"event": "entered",
+						"target": "return-counter"
+					},
+					{
 						"action": "open",
 						"event": "entered",
 						"target": "return-04"
+					},
+					{
+						"action": "b",
+						"event": "occupied",
+						"target": "return-permit"
 					}
 				]
 			},
 			"piece": "sensor",
 			"position": [
 				5.00000047683716,
-				5.99999618530273,
+				7.99999618530273,
 				3.0
 			],
 			"rotation": 2,
@@ -717,13 +691,13 @@
 		},
 		{
 			"config": {
-				"alternating": true,
+				"alternating": false,
 				"left": true
 			},
 			"piece": "diverter",
 			"position": [
 				5.00000047683716,
-				5.99999618530273,
+				7.99999618530273,
 				4.5
 			],
 			"rotation": 0,
@@ -731,13 +705,13 @@
 		},
 		{
 			"config": {
-				"auto_close": 6.0,
+				"auto_close": 3.0,
 				"open": false
 			},
 			"piece": "gate",
 			"position": [
 				3.00000047683716,
-				5.99999618530273,
+				7.99999618530273,
 				4.99999237060547
 			],
 			"rotation": 3,
@@ -745,10 +719,10 @@
 		},
 		{
 			"config": {},
-			"piece": "straight",
+			"piece": "sensor",
 			"position": [
 				2.00000047683716,
-				5.99999618530273,
+				7.99999618530273,
 				4.99999284744263
 			],
 			"rotation": 3,
@@ -759,7 +733,7 @@
 			"piece": "helix-right",
 			"position": [
 				1.50000047683716,
-				3.99999237060547,
+				5.99999237060547,
 				6.49999284744263
 			],
 			"rotation": 2,
@@ -770,7 +744,7 @@
 			"piece": "split-right",
 			"position": [
 				0.500000476837158,
-				3.99999618530273,
+				5.99999618530273,
 				5.50001573562622
 			],
 			"rotation": 0,
@@ -778,21 +752,10 @@
 		},
 		{
 			"config": {},
-			"piece": "straight",
-			"position": [
-				-0.999999523162842,
-				3.99999618530273,
-				4.99999284744263
-			],
-			"rotation": 3,
-			"uid": "return-08"
-		},
-		{
-			"config": {},
 			"piece": "curve",
 			"position": [
 				-2.49999952316284,
-				3.99999618530273,
+				5.99999618530273,
 				4.50000047683716
 			],
 			"rotation": 3,
@@ -803,7 +766,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				-2.99999237060547,
-				3.74999237060547,
+				5.74999237060547,
 				2.50000071525574
 			],
 			"rotation": 0,
@@ -814,7 +777,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				-2.99999237060547,
-				3.49999237060547,
+				5.49999237060547,
 				0.500000715255737
 			],
 			"rotation": 0,
@@ -825,7 +788,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				-2.99999237060547,
-				3.24999237060547,
+				5.24999237060547,
 				-1.49999928474426
 			],
 			"rotation": 0,
@@ -836,7 +799,7 @@
 			"piece": "slant-long-a",
 			"position": [
 				-2.99999284744263,
-				2.99999237060547,
+				4.99999237060547,
 				-3.49999928474426
 			],
 			"rotation": 0,
@@ -847,7 +810,7 @@
 			"piece": "curve",
 			"position": [
 				-2.50000047683716,
-				2.99999618530273,
+				4.99999618530273,
 				-5.49999952316284
 			],
 			"rotation": 2,
@@ -858,7 +821,7 @@
 			"piece": "straight",
 			"position": [
 				-1.00000047683716,
-				2.99999618530273,
+				4.99999618530273,
 				-5.99999189376831
 			],
 			"rotation": 1,
@@ -869,7 +832,7 @@
 			"piece": "straight",
 			"position": [
 				-0.000000476837158203125,
-				2.99999618530273,
+				4.99999618530273,
 				-5.99999189376831
 			],
 			"rotation": 1,
@@ -880,7 +843,7 @@
 			"piece": "straight",
 			"position": [
 				0.999999523162842,
-				2.99999618530273,
+				4.99999618530273,
 				-5.99999189376831
 			],
 			"rotation": 1,
@@ -891,7 +854,7 @@
 			"piece": "helix-left",
 			"position": [
 				1.49999952316284,
-				0.999992370605469,
+				2.99999237060547,
 				-4.49999189376831
 			],
 			"rotation": 2,
@@ -902,55 +865,27 @@
 			"piece": "straight",
 			"position": [
 				1.99999952316284,
-				0.999996185302734,
+				3.0,
 				-5.99999189376831
 			],
 			"rotation": 1,
 			"uid": "return-19"
 		},
 		{
-			"config": {},
-			"piece": "straight",
+			"config": {
+				"angle": 25.0,
+				"auto_rearm": true,
+				"external": false,
+				"strength": 4.0
+			},
+			"piece": "launcher",
 			"position": [
 				2.99999952316284,
-				0.999996185302734,
+				3.0,
 				-5.99999237060547
 			],
-			"rotation": 1,
+			"rotation": 3,
 			"uid": "return-20"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				3.99999952316284,
-				0.999996185302734,
-				-5.99999237060547
-			],
-			"rotation": 1,
-			"uid": "return-21"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				4.99999952316284,
-				0.999996185302734,
-				-5.99999237060547
-			],
-			"rotation": 1,
-			"uid": "return-22"
-		},
-		{
-			"config": {},
-			"piece": "straight",
-			"position": [
-				5.99999952316284,
-				0.999996185302734,
-				-5.99999237060547
-			],
-			"rotation": 1,
-			"uid": "return-23"
 		},
 		{
 			"config": {},
@@ -1086,10 +1021,10 @@
 		},
 		{
 			"config": {
-				"interval": 5.2,
-				"quantity": 6.0,
+				"interval": 3.7,
+				"quantity": 8.0,
 				"release_speed": 1.4,
-				"start_delay": 2.6
+				"start_delay": 1.85
 			},
 			"piece": "sandbox-start",
 			"position": [
@@ -1102,10 +1037,10 @@
 		},
 		{
 			"config": {},
-			"piece": "straight",
+			"piece": "sensor",
 			"position": [
 				7.00000047683716,
-				6.00000381469727,
+				8.00000381469727,
 				5.0
 			],
 			"rotation": 1,
@@ -1116,7 +1051,7 @@
 			"piece": "straight",
 			"position": [
 				8.0,
-				6.00000381469727,
+				8.00000381469727,
 				4.99999952316284
 			],
 			"rotation": 1,
@@ -1127,7 +1062,7 @@
 			"piece": "helix-left",
 			"position": [
 				8.5,
-				4.0,
+				6.0,
 				6.49999952316284
 			],
 			"rotation": 2,
@@ -1138,7 +1073,7 @@
 			"piece": "curve",
 			"position": [
 				9.5,
-				4.00000381469727,
+				6.00000381469727,
 				5.49999189376831
 			],
 			"rotation": 1,
@@ -1149,7 +1084,7 @@
 			"piece": "straight",
 			"position": [
 				9.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				6.99999189376831
 			],
 			"rotation": 2,
@@ -1160,7 +1095,7 @@
 			"piece": "straight",
 			"position": [
 				9.99999237060547,
-				4.00000381469727,
+				6.00000381469727,
 				7.99999189376831
 			],
 			"rotation": 2,
@@ -1171,7 +1106,7 @@
 			"piece": "straight",
 			"position": [
 				9.99999332427979,
-				4.00000381469727,
+				6.00000381469727,
 				8.99999237060547
 			],
 			"rotation": 2,
@@ -1182,7 +1117,7 @@
 			"piece": "curve",
 			"position": [
 				9.50000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.4999923706055
 			],
 			"rotation": 0,
@@ -1193,7 +1128,7 @@
 			"piece": "straight",
 			"position": [
 				8.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1204,7 +1139,7 @@
 			"piece": "straight",
 			"position": [
 				7.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1215,7 +1150,7 @@
 			"piece": "straight",
 			"position": [
 				6.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1226,7 +1161,7 @@
 			"piece": "straight",
 			"position": [
 				5.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1237,7 +1172,7 @@
 			"piece": "straight",
 			"position": [
 				4.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1248,7 +1183,7 @@
 			"piece": "straight",
 			"position": [
 				3.00000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.9999847412109
 			],
 			"rotation": 3,
@@ -1259,7 +1194,7 @@
 			"piece": "curve",
 			"position": [
 				1.50000095367432,
-				4.00000381469727,
+				6.00000381469727,
 				10.4999923706055
 			],
 			"rotation": 3,
@@ -1270,7 +1205,7 @@
 			"piece": "straight",
 			"position": [
 				1.00000834465027,
-				4.00000381469727,
+				6.00000381469727,
 				8.99999237060547
 			],
 			"rotation": 2,
@@ -1281,7 +1216,7 @@
 			"piece": "straight",
 			"position": [
 				1.00000834465027,
-				4.00000381469727,
+				6.00000381469727,
 				7.99999284744263
 			],
 			"rotation": 2,
@@ -1292,7 +1227,7 @@
 			"piece": "straight",
 			"position": [
 				1.00000834465027,
-				4.00000381469727,
+				6.00000381469727,
 				6.99999284744263
 			],
 			"rotation": 2,
@@ -1306,7 +1241,7 @@
 			"piece": "fan-standing-two",
 			"position": [
 				10.0,
-				4.0,
+				6.0,
 				4.39999961853027
 			],
 			"rotation": 2,
@@ -1320,7 +1255,7 @@
 			"piece": "fan-standing-four",
 			"position": [
 				10.7000007629395,
-				4.0,
+				6.0,
 				10.9999990463257
 			],
 			"rotation": 1,
@@ -1334,7 +1269,7 @@
 			"piece": "fan-standing-two",
 			"position": [
 				-2.99999952316284,
-				4.0,
+				6.0,
 				5.70000028610229
 			],
 			"rotation": 0,
@@ -1342,8 +1277,367 @@
 		},
 		{
 			"config": {
+				"reverse": false
+			},
+			"piece": "fan-standing-four",
+			"position": [
+				4.0,
+				6.0,
+				-11.5
+			],
+			"rotation": 2,
+			"uid": "piece-90757432-123"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				3.0,
+				6.0
+			],
+			"rotation": 3,
+			"uid": "hero-terrace-2"
+		},
+		{
+			"config": {},
+			"piece": "helix-left",
+			"position": [
+				-0.5,
+				1.0,
+				4.5
+			],
+			"rotation": 0,
+			"uid": "hero-spiral-low"
+		},
+		{
+			"config": {},
+			"piece": "sensor",
+			"position": [
+				-1.0,
+				1.0,
+				6.0
+			],
+			"rotation": 1,
+			"uid": "hero-low-exit"
+		},
+		{
+			"config": {},
+			"piece": "helix-left",
+			"position": [
+				5.5,
+				1.0,
+				-4.5
+			],
+			"rotation": 2,
+			"uid": "return-spiral-low"
+		},
+		{
+			"config": {},
+			"piece": "sensor",
+			"position": [
+				6.0,
+				1.0,
+				-6.0
+			],
+			"rotation": 3,
+			"uid": "return-low-exit"
+		},
+		{
+			"config": {},
+			"piece": "structure-factory-floor",
+			"position": [
+				1.5,
+				2.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "hero-control-deck"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "toggle",
+						"event": "reached",
+						"target": "hero-memory"
+					},
+					{
+						"action": "reset",
+						"event": "reached",
+						"target": "hero-counter"
+					},
+					{
+						"action": "b",
+						"event": "threshold_reached",
+						"target": "hero-permit"
+					}
+				],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "hero-control-deck",
+				"threshold": 2.0
+			},
+			"piece": "logic-counter",
+			"position": [
+				0.949999988079071,
+				2.09999990463257,
+				-1.54999995231628
+			],
+			"rotation": 0,
+			"uid": "hero-counter"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "a",
+						"event": "state",
+						"target": "hero-permit"
+					},
+					{
+						"action": "toggle",
+						"event": "changed",
+						"target": "return-03"
+					}
+				],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "hero-control-deck"
+			},
+			"piece": "logic-memory",
+			"position": [
+				2.04999995231628,
+				2.09999990463257,
+				-1.54999995231628
+			],
+			"rotation": 0,
+			"uid": "hero-memory"
+		},
+		{
+			"config": {
+				"links": [],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "hero-control-deck"
+			},
+			"piece": "logic-and",
+			"position": [
+				2.04999995231628,
+				2.09999990463257,
+				-0.449999988079071
+			],
+			"rotation": 0,
+			"uid": "hero-permit"
+		},
+		{
+			"config": {
+				"auto_start": true,
+				"frequency": 3.1,
+				"links": [],
+				"loop": true,
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "hero-control-deck"
+			},
+			"piece": "logic-timer",
+			"position": [
+				0.949999988079071,
+				2.09999990463257,
+				-0.449999988079071
+			],
+			"rotation": 0,
+			"uid": "hero-timer"
+		},
+		{
+			"config": {},
+			"piece": "structure-factory-floor",
+			"position": [
+				3.5,
+				2.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "return-control-deck"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "toggle",
+						"event": "reached",
+						"target": "return-memory"
+					},
+					{
+						"action": "reset",
+						"event": "reached",
+						"target": "return-counter"
+					}
+				],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "return-control-deck",
+				"threshold": 2.0
+			},
+			"piece": "logic-counter",
+			"position": [
+				2.95000004768372,
+				2.09999990463257,
+				0.449999988079071
+			],
+			"rotation": 0,
+			"uid": "return-counter"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "a",
+						"event": "state",
+						"target": "return-permit"
+					},
+					{
+						"action": "toggle",
+						"event": "changed",
+						"target": "hero-03"
+					}
+				],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "return-control-deck"
+			},
+			"piece": "logic-memory",
+			"position": [
+				4.05000019073486,
+				2.09999990463257,
+				0.449999988079071
+			],
+			"rotation": 0,
+			"uid": "return-memory"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "release",
+						"event": "rising",
+						"target": "return-bay-source"
+					}
+				],
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "return-control-deck"
+			},
+			"piece": "logic-and",
+			"position": [
+				4.05000019073486,
+				2.09999990463257,
+				1.54999995231628
+			],
+			"rotation": 0,
+			"uid": "return-permit"
+		},
+		{
+			"config": {
+				"auto_start": true,
+				"frequency": 3.7,
+				"links": [
+					{
+						"action": "fire",
+						"event": "tick",
+						"target": "return-bay-launcher"
+					}
+				],
+				"loop": true,
+				"mount_basis": [
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"mount_target": "return-control-deck"
+			},
+			"piece": "logic-timer",
+			"position": [
+				2.95000004768372,
+				2.09999990463257,
+				1.54999995231628
+			],
+			"rotation": 0,
+			"uid": "return-timer"
+		},
+		{
+			"config": {
 				"support_double_top": false,
-				"support_height": 4.0
+				"support_height": 6.0
 			},
 			"piece": "support-color-single",
 			"position": [
@@ -1352,12 +1646,54 @@
 				-11.0
 			],
 			"rotation": 1,
-			"uid": "hero-116"
+			"uid": "hero-pier-0"
 		},
 		{
 			"config": {
 				"support_double_top": false,
-				"support_height": 4.0
+				"support_height": 6.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				0.0,
+				0.0,
+				-11.0
+			],
+			"rotation": 1,
+			"uid": "hero-pier-1"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 6.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				4.0,
+				0.0,
+				-8.5
+			],
+			"rotation": 2,
+			"uid": "hero-pier-2"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				-3.0,
+				0.0,
+				5.0
+			],
+			"rotation": 1,
+			"uid": "hero-pier-3"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 6.0
 			},
 			"piece": "support-color-single",
 			"position": [
@@ -1365,27 +1701,13 @@
 				0.0,
 				11.0
 			],
-			"rotation": 3,
-			"uid": "hero-117"
-		},
-		{
-			"config": {
-				"support_double_top": false,
-				"support_height": 4.0
-			},
-			"piece": "support-color-single",
-			"position": [
-				0.0,
-				0.0,
-				-11.0
-			],
 			"rotation": 1,
-			"uid": "hero-118"
+			"uid": "return-pier-0"
 		},
 		{
 			"config": {
 				"support_double_top": false,
-				"support_height": 4.0
+				"support_height": 6.0
 			},
 			"piece": "support-color-single",
 			"position": [
@@ -1393,27 +1715,13 @@
 				0.0,
 				11.0
 			],
-			"rotation": 3,
-			"uid": "hero-119"
-		},
-		{
-			"config": {
-				"support_double_top": false,
-				"support_height": 4.0
-			},
-			"piece": "support-color-single",
-			"position": [
-				3.0,
-				0.0,
-				-11.0
-			],
 			"rotation": 1,
-			"uid": "hero-120"
+			"uid": "return-pier-1"
 		},
 		{
 			"config": {
 				"support_double_top": false,
-				"support_height": 4.0
+				"support_height": 6.0
 			},
 			"piece": "support-color-single",
 			"position": [
@@ -1421,19 +1729,1129 @@
 				0.0,
 				11.0
 			],
-			"rotation": 3,
-			"uid": "hero-121"
+			"rotation": 1,
+			"uid": "return-pier-2"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				8.0,
+				0.0,
+				-5.0
+			],
+			"rotation": 1,
+			"uid": "return-pier-3"
+		},
+		{
+			"config": {
+				"elevator_height": 4.5,
+				"elevator_speed": 1.1
+			},
+			"piece": "bucket-elevator",
+			"position": [
+				-10.0,
+				0.0,
+				0.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-lift"
 		},
 		{
 			"config": {},
-			"piece": "fan-standing-four",
+			"piece": "slant-b",
 			"position": [
+				-12.0,
 				4.0,
+				0.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-1"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "fire",
+						"event": "entered",
+						"target": "return-bay-launcher"
+					},
+					{
+						"action": "toggle",
+						"event": "entered",
+						"target": "piece-992928738-224"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				-13.0,
 				4.0,
-				-11.5
+				0.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-crown"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-14.5,
+				4.0,
+				-0.5
+			],
+			"rotation": 3,
+			"uid": "hero-bay-3"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-15.0,
+				4.0,
+				-2.0
+			],
+			"rotation": 0,
+			"uid": "hero-bay-4"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-15.0,
+				4.0,
+				-3.0
+			],
+			"rotation": 0,
+			"uid": "hero-bay-5"
+		},
+		{
+			"config": {},
+			"piece": "helix-right",
+			"position": [
+				-16.5,
+				2.0,
+				-3.5
+			],
+			"rotation": 1,
+			"uid": "hero-bay-6"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-15.0,
+				2.0,
+				-4.0
+			],
+			"rotation": 0,
+			"uid": "hero-bay-7"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-15.0,
+				2.0,
+				-5.0
+			],
+			"rotation": 0,
+			"uid": "hero-bay-8"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-14.5,
+				2.0,
+				-6.5
 			],
 			"rotation": 2,
-			"uid": "piece-90757432-123"
+			"uid": "hero-bay-9"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-12.5,
+				1.75,
+				-7.0
+			],
+			"rotation": 3,
+			"uid": "hero-bay-10"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-10.5,
+				1.5,
+				-7.0
+			],
+			"rotation": 3,
+			"uid": "hero-bay-11"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.0,
+				1.0,
+				-5.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-15"
+		},
+		{
+			"config": {},
+			"piece": "sensor",
+			"position": [
+				-4.0,
+				1.0,
+				-4.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-approach"
+		},
+		{
+			"config": {
+				"angle": 25.0,
+				"auto_rearm": true,
+				"external": false,
+				"strength": 4.0
+			},
+			"piece": "launcher",
+			"position": [
+				-4.0,
+				1.0,
+				-3.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-launcher"
+		},
+		{
+			"config": {
+				"links": []
+			},
+			"piece": "sensor",
+			"position": [
+				-4.0,
+				1.0,
+				0.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-landed"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.0,
+				1.0,
+				1.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-20"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-4.5,
+				1.0,
+				2.5
+			],
+			"rotation": 0,
+			"uid": "hero-bay-21"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-6.5,
+				0.75,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-22"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-8.5,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-23"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-10.0,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-24"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-11.0,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-25"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-12.0,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-26"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-13.0,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-27"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-14.0,
+				0.5,
+				3.0
+			],
+			"rotation": 1,
+			"uid": "hero-bay-28"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-15.5,
+				0.5,
+				2.5
+			],
+			"rotation": 3,
+			"uid": "hero-bay-29"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-15.5,
+				0.5,
+				0.5
+			],
+			"rotation": 2,
+			"uid": "hero-bay-30"
+		},
+		{
+			"config": {},
+			"piece": "slant-b",
+			"position": [
+				-14.0,
+				0.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "hero-bay-31"
+		},
+		{
+			"config": {},
+			"piece": "split-left",
+			"position": [
+				-12.5,
+				0.0,
+				0.5
+			],
+			"rotation": 2,
+			"uid": "hero-bay-32"
+		},
+		{
+			"config": {
+				"interval": 1.5,
+				"quantity": 20.0,
+				"release_speed": 1.4,
+				"signal_controlled": true
+			},
+			"piece": "sandbox-start",
+			"position": [
+				-13.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "hero-bay-source"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 4.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				-15.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-pier-0"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 2.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				-15.0,
+				0.0,
+				-5.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-pier-1"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.5
+			},
+			"piece": "support-color-single",
+			"position": [
+				-10.0,
+				0.0,
+				-7.0
+			],
+			"rotation": 3,
+			"uid": "hero-bay-pier-2"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				-4.0,
+				0.0,
+				-3.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-pier-3"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				-5.0,
+				0.0,
+				3.0
+			],
+			"rotation": 2,
+			"uid": "hero-bay-pier-4"
+		},
+		{
+			"config": {
+				"elevator_height": 4.5,
+				"elevator_speed": 1.25
+			},
+			"piece": "bucket-elevator",
+			"position": [
+				15.0,
+				0.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-lift"
+		},
+		{
+			"config": {},
+			"piece": "slant-b",
+			"position": [
+				17.0,
+				4.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-1"
+		},
+		{
+			"config": {
+				"links": []
+			},
+			"piece": "sensor",
+			"position": [
+				18.0,
+				4.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-crown"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				19.5,
+				4.0,
+				0.5
+			],
+			"rotation": 1,
+			"uid": "return-bay-3"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				20.0,
+				4.0,
+				2.0
+			],
+			"rotation": 2,
+			"uid": "return-bay-4"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				20.0,
+				4.0,
+				3.0
+			],
+			"rotation": 2,
+			"uid": "return-bay-5"
+		},
+		{
+			"config": {},
+			"piece": "helix-right",
+			"position": [
+				21.5,
+				2.0,
+				3.5
+			],
+			"rotation": 3,
+			"uid": "return-bay-6"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				20.0,
+				2.0,
+				4.0
+			],
+			"rotation": 2,
+			"uid": "return-bay-7"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				20.0,
+				2.0,
+				5.0
+			],
+			"rotation": 2,
+			"uid": "return-bay-8"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				19.5,
+				2.0,
+				6.5
+			],
+			"rotation": 0,
+			"uid": "return-bay-9"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				17.5,
+				1.75,
+				7.0
+			],
+			"rotation": 1,
+			"uid": "return-bay-10"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				15.5,
+				1.5,
+				7.0
+			],
+			"rotation": 1,
+			"uid": "return-bay-11"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				13.5,
+				1.25,
+				7.0
+			],
+			"rotation": 1,
+			"uid": "return-bay-12"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				11.5,
+				1.0,
+				7.0
+			],
+			"rotation": 1,
+			"uid": "return-bay-13"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				9.5,
+				1.0,
+				6.5
+			],
+			"rotation": 3,
+			"uid": "return-bay-14"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				9.0,
+				1.0,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-15"
+		},
+		{
+			"config": {},
+			"piece": "sensor",
+			"position": [
+				9.0,
+				1.0,
+				4.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-approach"
+		},
+		{
+			"config": {
+				"angle": 25.0,
+				"auto_rearm": true,
+				"external": false,
+				"strength": 4.0
+			},
+			"piece": "launcher",
+			"position": [
+				9.0,
+				1.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-launcher"
+		},
+		{
+			"config": {
+				"links": [
+					{
+						"action": "open",
+						"event": "entered",
+						"target": "return-04"
+					}
+				]
+			},
+			"piece": "sensor",
+			"position": [
+				9.0,
+				1.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-landed"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				9.0,
+				1.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-20"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				9.5,
+				1.0,
+				-2.5
+			],
+			"rotation": 2,
+			"uid": "return-bay-21"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				11.5,
+				0.75,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-22"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				13.5,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-23"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				15.0,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-24"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				16.0,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-25"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				17.0,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-26"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				18.0,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-27"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				19.0,
+				0.5,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "return-bay-28"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				20.5,
+				0.5,
+				-2.5
+			],
+			"rotation": 1,
+			"uid": "return-bay-29"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				20.5,
+				0.5,
+				-0.5
+			],
+			"rotation": 0,
+			"uid": "return-bay-30"
+		},
+		{
+			"config": {},
+			"piece": "slant-b",
+			"position": [
+				19.0,
+				0.0,
+				0.0
+			],
+			"rotation": 1,
+			"uid": "return-bay-31"
+		},
+		{
+			"config": {},
+			"piece": "split-left",
+			"position": [
+				17.5,
+				0.0,
+				-0.5
+			],
+			"rotation": 0,
+			"uid": "return-bay-32"
+		},
+		{
+			"config": {
+				"interval": 1.5,
+				"quantity": 4.0,
+				"release_speed": 1.4,
+				"signal_controlled": true
+			},
+			"piece": "sandbox-start",
+			"position": [
+				18.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "return-bay-source"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 4.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				20.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-pier-0"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 2.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				20.0,
+				0.0,
+				5.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-pier-1"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.5
+			},
+			"piece": "support-color-single",
+			"position": [
+				15.0,
+				0.0,
+				7.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-pier-2"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				9.0,
+				0.0,
+				3.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-pier-3"
+		},
+		{
+			"config": {
+				"support_double_top": false,
+				"support_height": 1.0
+			},
+			"piece": "support-color-single",
+			"position": [
+				10.0,
+				0.0,
+				-3.0
+			],
+			"rotation": 0,
+			"uid": "return-bay-pier-4"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				9.0,
+				1.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "piece-195891629-218"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.0,
+				1.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "piece-220778885-219"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				6.0,
+				5.99999618530273,
+				-4.99999237060547
+			],
+			"rotation": 1,
+			"uid": "piece-668441609-220"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-0.999999523162842,
+				5.99999618530273,
+				4.99999284744263
+			],
+			"rotation": 1,
+			"uid": "piece-699321171-222"
+		},
+		{
+			"config": {},
+			"piece": "funnel",
+			"position": [
+				5.0,
+				3.00000381469727,
+				-5.99998712539673
+			],
+			"rotation": 3,
+			"uid": "piece-895437476-223"
+		},
+		{
+			"config": {},
+			"piece": "diverter",
+			"position": [
+				-4.49999284744263,
+				1.0,
+				-7.0
+			],
+			"rotation": 1,
+			"uid": "piece-992928738-224"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-6.49999284744263,
+				0.999996185302734,
+				-7.0
+			],
+			"rotation": 3,
+			"uid": "piece-1240281780-227"
+		},
+		{
+			"config": {},
+			"piece": "slant-long-a",
+			"position": [
+				-8.49999237060547,
+				1.24999618530273,
+				-7.0
+			],
+			"rotation": 3,
+			"uid": "piece-1258653544-228"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.00000095367432,
+				1.0,
+				-9.0
+			],
+			"rotation": 0,
+			"uid": "piece-1314814951-229"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.00000095367432,
+				1.0,
+				-10.0
+			],
+			"rotation": 0,
+			"uid": "piece-1315803302-230"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				-4.00000095367432,
+				1.0,
+				-11.0
+			],
+			"rotation": 0,
+			"uid": "piece-1317746127-231"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-3.50000858306885,
+				1.0,
+				-12.5
+			],
+			"rotation": 2,
+			"uid": "piece-1333569475-232"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-1.50000858306885,
+				1.0,
+				-12.5
+			],
+			"rotation": 1,
+			"uid": "piece-1336125393-233"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				-0.50002384185791,
+				1.0,
+				-10.5
+			],
+			"rotation": 3,
+			"uid": "piece-1338456937-234"
+		},
+		{
+			"config": {},
+			"piece": "split-double-sides",
+			"position": [
+				4.0,
+				6.00000381469727,
+				-10.4999923706055
+			],
+			"rotation": 2,
+			"uid": "piece-1422001375-237"
+		},
+		{
+			"config": {
+				"elevator_height": 6.0,
+				"elevator_speed": 0.8
+			},
+			"piece": "bucket-elevator",
+			"position": [
+				7.0,
+				0.0,
+				-10.9999847412109
+			],
+			"rotation": 1,
+			"uid": "piece-1513643841-238"
+		},
+		{
+			"config": {},
+			"piece": "helix-quarter-right",
+			"position": [
+				1.5013439655304,
+				0.499996185302734,
+				-10.4978094100952
+			],
+			"rotation": 1,
+			"uid": "piece-1590086042-239"
+		},
+		{
+			"config": {},
+			"piece": "helix-quarter-left",
+			"position": [
+				2.49777841567993,
+				-0.000003814697265625,
+				-12.5013751983643
+			],
+			"rotation": 2,
+			"uid": "piece-1600417086-240"
+		},
+		{
+			"config": {},
+			"piece": "curve",
+			"position": [
+				4.49997615814209,
+				0.0,
+				-12.5000152587891
+			],
+			"rotation": 1,
+			"uid": "piece-1674000716-243"
+		},
+		{
+			"config": {},
+			"piece": "corner",
+			"position": [
+				4.99996852874756,
+				0.0,
+				-11.0000152587891
+			],
+			"rotation": 3,
+			"uid": "piece-1678625403-244"
 		}
 	],
 	"version": 1
