@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="Inspector" type="PanelContainer" unique_id=462449109]
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(340, 0)
 theme = ExtResource("Theme")
 theme_type_variation = &"ContextPanel"
 script = ExtResource("Script")
@@ -17,6 +17,7 @@ layout_mode = 2
 horizontal_scroll_mode = 0
 
 [node name="Contents" type="VBoxContainer" parent="Scroll" unique_id=341407]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -25,7 +26,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_type_variation = &"AccentSmallLabel"
-text = "YOUR SELECTION"
+text = "Selection"
 
 [node name="PieceName" type="Label" parent="Scroll/Contents" unique_id=1027218377]
 unique_name_in_owner = true
@@ -44,10 +45,11 @@ autowrap_mode = 3
 [node name="ConfigurationHeading" type="Label" parent="Scroll/Contents" unique_id=401813816]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"AccentSmallLabel"
+theme_type_variation = &"FormHeading"
 text = "Settings"
 
 [node name="MechanismSettings" type="VBoxContainer" parent="Scroll/Contents" unique_id=1377873254]
+theme_type_variation = &"FormFields"
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("MechanismSettings")
@@ -55,7 +57,7 @@ script = ExtResource("MechanismSettings")
 [node name="ConnectionsHeading" type="Label" parent="Scroll/Contents" unique_id=787509444]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"AccentSmallLabel"
+theme_type_variation = &"FormHeading"
 text = "Connections"
 
 [node name="Capabilities" type="Label" parent="Scroll/Contents" unique_id=1027604345]
@@ -83,6 +85,7 @@ theme_type_variation = &"QuietButton"
 text = "Player permissions ▾"
 
 [node name="Permissions" type="VBoxContainer" parent="Scroll/Contents" unique_id=1894095581]
+theme_type_variation = &"FormFields"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -113,27 +116,32 @@ popup/item_3/id = 3
 popup/item_4/text = "Fully Editable"
 popup/item_4/id = 4
 
-[node name="PermitMove" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1727848063]
+[node name="AllowedActions" type="GridContainer" parent="Scroll/Contents/Permissions"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 16
+
+[node name="PermitMove" type="CheckBox" parent="Scroll/Contents/Permissions/AllowedActions" unique_id=1727848063]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Move"
 
-[node name="PermitRotate" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=536535483]
+[node name="PermitRotate" type="CheckBox" parent="Scroll/Contents/Permissions/AllowedActions" unique_id=536535483]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Rotate"
 
-[node name="PermitConfigure" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1812365343]
+[node name="PermitConfigure" type="CheckBox" parent="Scroll/Contents/Permissions/AllowedActions" unique_id=1812365343]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Configure"
 
-[node name="PermitRemove" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=1900433264]
+[node name="PermitRemove" type="CheckBox" parent="Scroll/Contents/Permissions/AllowedActions" unique_id=1900433264]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Remove"
 
-[node name="PermitDuplicate" type="CheckBox" parent="Scroll/Contents/Permissions" unique_id=413555304]
+[node name="PermitDuplicate" type="CheckBox" parent="Scroll/Contents/Permissions/AllowedActions" unique_id=413555304]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Duplicate"

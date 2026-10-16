@@ -19,8 +19,10 @@ var navigation_ready: bool = false
 var navigating: bool = false
 var menu_target: bool = true
 var completion_pending: Vector2i = Vector2i.ZERO
+var modal_motion: UIMotion
 
 func _ready() -> void:
+	modal_motion = UIMotion.attach(%ModalBackdrop, Vector2.ZERO)
 	get_tree().auto_accept_quit=false
 	workspace.action_requested.connect(handle_action)
 	workspace.activated.connect(show_workspace)
@@ -223,6 +225,7 @@ func run_after_save() -> void:
 
 func open_modal() -> void:
 	workspace.suspend_input()
+	modal_motion.set_open(true)
 	if %MainMenu.visible: %MainMenu.hide_actions()
 
 func modal_closed() -> void:
@@ -238,6 +241,7 @@ func modal_closed() -> void:
 			%PuzzleCompletion.present(minimum)
 			return
 	if %MainMenu.visible and menu_target: %MainMenu.show_actions()
+	modal_motion.set_open(false)
 	workspace.resume_input()
 
 func show_message(text: String) -> void:

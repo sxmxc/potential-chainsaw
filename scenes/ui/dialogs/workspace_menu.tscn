@@ -27,6 +27,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1291689542]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Heading" type="Label" parent="Surface/Contents" unique_id=1062002240]
 unique_name_in_owner = true

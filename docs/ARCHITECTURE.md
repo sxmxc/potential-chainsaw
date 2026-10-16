@@ -99,7 +99,9 @@ Use the GUT panel or the [README command](../README.md#development). `.gutconfig
 
 The default suite checks owners and contracts: editing, connector geometry, puzzle rules, distribution, save replacement, camera math, settings, and service behavior. It does not launch the full application, play campaign solutions, or call hosted services. Use interactive checks for the workflow a change affects, and actual simulation for physical routes. Backend checks are described in [Community service](COMMUNITY_SERVICE.md#verification).
 
-For a scene or script change, a headless editor import is also a useful parsing/resource check:
+For scene or script changes, let the open Godot editor discover resources and generate UIDs. Do not hand-author UID files or launch a second editor import against the same project: native addons can lock their hot-reload DLLs while the first editor is open. Runtime GUT commands can run alongside the editor.
+
+When no editor is open, a headless editor import is also a useful parsing/resource check:
 
 ```powershell
 godot --headless --editor --path . --quit

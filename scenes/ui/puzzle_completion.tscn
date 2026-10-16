@@ -8,6 +8,7 @@ transparent_bg = true
 title = "Puzzle complete"
 size = Vector2i(480, 360)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 borderless = true

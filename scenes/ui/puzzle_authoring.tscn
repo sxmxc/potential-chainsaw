@@ -43,13 +43,14 @@ text = "×"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Navigation" type="HFlowContainer" parent="Surface/Contents/Body" unique_id=1244611106]
+[node name="Navigation" type="HBoxContainer" parent="Surface/Contents/Body" unique_id=1244611106]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="Setup" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1991393340]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
+theme_type_variation = &"AuthoringTab"
 toggle_mode = true
 button_pressed = true
 text = "Setup"
@@ -57,28 +58,28 @@ metadata/page = 0
 
 [node name="InventoryPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1854865023]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
+theme_type_variation = &"AuthoringTab"
 toggle_mode = true
 text = "Inventory"
 metadata/page = 1
 
 [node name="BoundsPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=559027482]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
+theme_type_variation = &"AuthoringTab"
 toggle_mode = true
 text = "Boundaries"
 metadata/page = 2
 
 [node name="ObjectivesPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=1047432166]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
+theme_type_variation = &"AuthoringTab"
 toggle_mode = true
 text = "Objectives"
 metadata/page = 3
 
 [node name="PublishPage" type="Button" parent="Surface/Contents/Body/Navigation" unique_id=372124276]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
+theme_type_variation = &"AuthoringTab"
 toggle_mode = true
 text = "Publish"
 metadata/page = 4
@@ -98,187 +99,69 @@ horizontal_scroll_mode = 0
 metadata/_tab_index = 0
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings" unique_id=29071606]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NameLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=730021121]
+[node name="DetailsHeading" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Puzzle details"
+
+
+[node name="PuzzleNameField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="NameLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/PuzzleNameField" unique_id=730021121]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Puzzle name"
 autowrap_mode = 3
 
-[node name="PuzzleName" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=114837070]
+[node name="PuzzleName" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/PuzzleNameField" unique_id=114837070]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DescriptionLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=499543416]
+[node name="DescriptionField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="DescriptionLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/DescriptionField" unique_id=499543416]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Player objective"
 autowrap_mode = 3
 
-[node name="Description" type="TextEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=360013938]
+[node name="Description" type="TextEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/DescriptionField" unique_id=360013938]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 wrap_mode = 1
 
-[node name="CreatorLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1047315129]
+[node name="CreatorField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="CreatorLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/CreatorField" unique_id=1047315129]
 layout_mode = 2
 text = "Creator"
 
-[node name="Creator" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=995527379]
+[node name="Creator" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/CreatorField" unique_id=995527379]
 unique_name_in_owner = true
 layout_mode = 2
 max_length = 80
 
-[node name="Advanced" type="Button" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=850354016]
-unique_name_in_owner = true
+[node name="ViewHeading" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields"]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
-text = "Rules and campaign settings"
+theme_type_variation = &"FormHeading"
+text = "Starting view"
 
-[node name="AdvancedFields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1840275938]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="ChapterIdLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1146824171]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Chapter ID"
-autowrap_mode = 3
-
-[node name="ChapterId" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=265783353]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ChapterOrderLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=408014562]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Chapter navigation order"
-autowrap_mode = 3
-
-[node name="ChapterOrder" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1289669909]
-unique_name_in_owner = true
-layout_mode = 2
-max_value = 999.0
-
-[node name="ChapterOptional" type="CheckBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=279758824]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Optional chapter"
-
-[node name="ChapterIntroduction" type="CheckBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=304639106]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Introduction / tutorial chapter"
-
-[node name="ChapterRequirementsLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1781893259]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Chapter prerequisites (IDs)"
-autowrap_mode = 3
-
-[node name="ChapterRequirements" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1265074054]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="OrderLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1771759475]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Level order within chapter"
-autowrap_mode = 3
-
-[node name="Order" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=865590472]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = 1.0
-max_value = 999.0
-value = 1.0
-
-[node name="Difficulty" type="OptionButton" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1735917422]
-unique_name_in_owner = true
-layout_mode = 2
-clip_text = true
-selected = 0
-fit_to_longest_item = false
-item_count = 3
-popup/item_0/text = "Introduction"
-popup/item_0/id = 0
-popup/item_1/text = "Workshop"
-popup/item_1/id = 1
-popup/item_2/text = "Machine"
-popup/item_2/id = 2
-
-[node name="TimeLimitLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=532423166]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Time available (seconds)"
-autowrap_mode = 3
-
-[node name="TimeLimit" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1633161861]
-unique_name_in_owner = true
-layout_mode = 2
-min_value = 5.0
-max_value = 300.0
-value = 5.0
-
-[node name="AwardTimeLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1584571164]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Optional time award (0 = none)"
-autowrap_mode = 3
-
-[node name="AwardTime" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=685066608]
-unique_name_in_owner = true
-layout_mode = 2
-max_value = 300.0
-step = 0.5
-
-[node name="AwardPiecesLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1703913713]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Optional piece budget award (0 = none)"
-autowrap_mode = 3
-
-[node name="AwardPieces" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=462418633]
-unique_name_in_owner = true
-layout_mode = 2
-max_value = 999.0
-
-[node name="PrerequisiteLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=957307808]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Prerequisites (select completed puzzles required to unlock)"
-autowrap_mode = 3
-
-[node name="Prerequisites" type="ItemList" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1294607599]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 120)
-layout_mode = 2
-select_mode = 1
-
-[node name="ChapterNameLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1983620346]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SmallMutedLabel"
-text = "Chapter name"
-autowrap_mode = 3
-
-[node name="ChapterName" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=2110507404]
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="CaptureCamera" type="Button" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1421320143]
 unique_name_in_owner = true
@@ -294,6 +177,222 @@ theme_type_variation = &"SmallMutedLabel"
 text = "Camera will frame construction by default"
 autowrap_mode = 3
 
+[node name="Advanced" type="Button" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=850354016]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Rules and campaign settings"
+
+[node name="AdvancedFields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields" unique_id=1840275938]
+theme_type_variation = &"FormFields"
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="RulesHeading" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Run rules"
+
+
+[node name="Difficulty" type="OptionButton" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields" unique_id=1735917422]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+selected = 0
+fit_to_longest_item = false
+item_count = 3
+popup/item_0/text = "Introduction"
+popup/item_0/id = 0
+popup/item_1/text = "Workshop"
+popup/item_1/id = 1
+popup/item_2/text = "Machine"
+popup/item_2/id = 2
+
+[node name="TimeLimitField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="TimeLimitLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/TimeLimitField" unique_id=532423166]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Time available (seconds)"
+autowrap_mode = 3
+
+[node name="TimeLimit" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/TimeLimitField" unique_id=1633161861]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 5.0
+max_value = 300.0
+value = 5.0
+
+[node name="AwardsHeading" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Optional awards"
+
+
+[node name="AwardTimeField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="AwardTimeLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/AwardTimeField" unique_id=1584571164]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Optional time award (0 = none)"
+autowrap_mode = 3
+
+[node name="AwardTime" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/AwardTimeField" unique_id=685066608]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 300.0
+step = 0.5
+
+[node name="AwardPiecesField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="AwardPiecesLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/AwardPiecesField" unique_id=1703913713]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Optional piece budget award (0 = none)"
+autowrap_mode = 3
+
+[node name="AwardPieces" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/AwardPiecesField" unique_id=462418633]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 999.0
+
+[node name="CampaignFields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"FormFields"
+
+
+[node name="CampaignHeading" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Campaign placement"
+
+
+[node name="ChapterIdField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="ChapterIdLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterIdField" unique_id=1146824171]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter ID"
+autowrap_mode = 3
+
+[node name="ChapterId" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterIdField" unique_id=265783353]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChapterNameField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="ChapterNameLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterNameField" unique_id=1983620346]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter name"
+autowrap_mode = 3
+
+[node name="ChapterName" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterNameField" unique_id=2110507404]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChapterOrderField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="ChapterOrderLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterOrderField" unique_id=408014562]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter navigation order"
+autowrap_mode = 3
+
+[node name="ChapterOrder" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterOrderField" unique_id=1289669909]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 999.0
+
+[node name="ChapterOptional" type="CheckBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields" unique_id=279758824]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Optional chapter"
+
+[node name="ChapterIntroduction" type="CheckBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields" unique_id=304639106]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Introduction / tutorial chapter"
+
+[node name="ChapterRequirementsField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="ChapterRequirementsLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterRequirementsField" unique_id=1781893259]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Chapter prerequisites (IDs)"
+autowrap_mode = 3
+
+[node name="ChapterRequirements" type="LineEdit" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/ChapterRequirementsField" unique_id=1265074054]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OrderField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="OrderLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/OrderField" unique_id=1771759475]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Level order within chapter"
+autowrap_mode = 3
+
+[node name="Order" type="SpinBox" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/OrderField" unique_id=865590472]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 999.0
+value = 1.0
+
+[node name="PrerequisitesField" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="PrerequisiteLabel" type="Label" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/PrerequisitesField" unique_id=957307808]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Prerequisites (select completed puzzles required to unlock)"
+autowrap_mode = 3
+
+[node name="Prerequisites" type="ItemList" parent="Surface/Contents/Body/Tabs/Settings/Fields/AdvancedFields/CampaignFields/PrerequisitesField" unique_id=1294607599]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+select_mode = 1
+
 [node name="Inventory" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=590665169]
 visible = false
 layout_mode = 2
@@ -301,8 +400,15 @@ horizontal_scroll_mode = 0
 metadata/_tab_index = 1
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Inventory" unique_id=589676644]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="InventoryHeading" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Player inventory"
+
 
 [node name="InventoryHelp" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields" unique_id=1505045245]
 unique_name_in_owner = true
@@ -331,6 +437,12 @@ text = "Mechanism restrictions"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+
+[node name="RestrictionHeading" type="Label" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Allowed values"
+
 
 [node name="InventorySetting" type="OptionButton" parent="Surface/Contents/Body/Tabs/Inventory/Fields/InventoryRules" unique_id=3068067]
 unique_name_in_owner = true
@@ -383,8 +495,15 @@ horizontal_scroll_mode = 0
 metadata/_tab_index = 2
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Boundaries" unique_id=291626821]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="BoundaryHeading" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Build space"
+
 
 [node name="BoundaryHelp" type="Label" parent="Surface/Contents/Body/Tabs/Boundaries/Fields" unique_id=1496063231]
 unique_name_in_owner = true
@@ -539,8 +658,15 @@ horizontal_scroll_mode = 0
 metadata/_tab_index = 3
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Objectives" unique_id=514147123]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="GoalsHeading" type="Label" parent="Surface/Contents/Body/Tabs/Objectives/Fields"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Goals"
+
 
 [node name="ObjectivesHelp" type="Label" parent="Surface/Contents/Body/Tabs/Objectives/Fields" unique_id=1847745242]
 unique_name_in_owner = true
@@ -661,6 +787,7 @@ horizontal_scroll_mode = 0
 metadata/_tab_index = 4
 
 [node name="Fields" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Publish" unique_id=2059793005]
+theme_type_variation = &"FormFields"
 layout_mode = 2
 size_flags_horizontal = 3
 

@@ -15,6 +15,9 @@ mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
+[node name="Network" type="Node3D" parent="."]
+physics_interpolation_mode = 2
+
 [node name="Hint" type="PanelContainer" parent="." unique_id=329830983]
 unique_name_in_owner = true
 visible = false

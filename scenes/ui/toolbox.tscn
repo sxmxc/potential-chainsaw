@@ -6,9 +6,9 @@
 
 [node name="Toolbox" type="PanelContainer" unique_id=166850842]
 custom_minimum_size = Vector2(312, 0)
-custom_maximum_size = Vector2(-1, 560)
+custom_maximum_size = Vector2(-1, 750)
 offset_right = 312.0
-offset_bottom = 332.0
+offset_bottom = 800.0
 theme = ExtResource("Theme")
 theme_type_variation = &"SurfacePanel"
 script = ExtResource("Script")

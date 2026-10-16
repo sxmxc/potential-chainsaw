@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://shaders/wiring_terminal.gdshader" id="Glow"]
+
+[sub_resource type="StandardMaterial3D" id="Housing"]
+albedo_color = Color(0.045, 0.105, 0.14, 1)
+metallic = 0.65
+roughness = 0.26
+
+[sub_resource type="ShaderMaterial" id="Glow"]
+shader = ExtResource("Glow")
+
+[sub_resource type="CylinderMesh" id="Housing"]
+material = SubResource("Housing")
+top_radius = 0.14
+bottom_radius = 0.12
+height = 0.13
+radial_segments = 32
+
+[sub_resource type="TorusMesh" id="Rim"]
+material = SubResource("Glow")
+inner_radius = 0.08
+outer_radius = 0.105
+rings = 32
+ring_segments = 12
+
+[sub_resource type="CylinderMesh" id="Emitter"]
+material = SubResource("Glow")
+top_radius = 0.024
+bottom_radius = 0.06
+height = 0.14
+radial_segments = 32
+
+[sub_resource type="CylinderMesh" id="Well"]
+material = SubResource("Housing")
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.025
+radial_segments = 32
+
+[node name="Terminal" type="Node3D"]
+physics_interpolation_mode = 2
+
+[node name="Sender" type="Node3D" parent="."]
+
+[node name="Housing" type="MeshInstance3D" parent="Sender"]
+position = Vector3(0, -0.16, 0)
+mesh = SubResource("Housing")
+cast_shadow = 0
+
+[node name="Rim" type="MeshInstance3D" parent="Sender"]
+position = Vector3(0, -0.075, 0)
+mesh = SubResource("Rim")
+cast_shadow = 0
+
+[node name="Emitter" type="MeshInstance3D" parent="Sender"]
+position = Vector3(0, -0.07, 0)
+mesh = SubResource("Emitter")
+cast_shadow = 0
+
+[node name="Receiver" type="Node3D" parent="."]
+
+[node name="Housing" type="MeshInstance3D" parent="Receiver"]
+position = Vector3(0, -0.085, 0)
+mesh = SubResource("Housing")
+cast_shadow = 0
+
+[node name="Rim" type="MeshInstance3D" parent="Receiver"]
+mesh = SubResource("Rim")
+cast_shadow = 0
+
+[node name="Socket" type="MeshInstance3D" parent="Receiver"]
+position = Vector3(0, -0.025, 0)
+mesh = SubResource("Well")
+cast_shadow = 0

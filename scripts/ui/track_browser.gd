@@ -24,6 +24,7 @@ func _ready() -> void:
 	%Close.pressed.connect(close)
 	%List.item_activated.connect(func(_index):load_selected())
 	confirmation=%DeleteConfirmation
+	confirmation.get_ok_button().theme_type_variation = &"DangerButton"
 	confirmation.confirmed.connect(func():
 		var index=selected_index()
 		if index<0: return
@@ -45,13 +46,17 @@ func refresh() -> void:
 	rows=[{"id":"first-roll","name":"First Roll · slopes and a sweeping curve","count":7},{"id":"spiral-crossing","name":"Spiral Crossing · two levels and a full helix","count":14},{"id":"bucket-elevator-demo","name":"Bucket Elevator · carry a marble to an upper track","count":4},{"id":"menu-machine","name":"Spiral Works · the looping showcase machine","count":122}] if examples else serializer.list_tracks()
 	for row in rows: %List.add_item(row.name.split(" · ")[0] if examples else row.name)
 	if not rows.is_empty(): %List.select(0)
-	%Info.text="" if examples else ("No saved tracks yet." if rows.is_empty() else "Saved on this device")
+	%Info.text="" if examples else ("No saved tracks yet. Save a machine in Sandbox to find it here." if rows.is_empty() else "Saved on this device")
+	%Browse.visible = not rows.is_empty()
 	%Rename.clear()
 	refresh_actions()
-	size=Vector2i(860,300 if rows.is_empty() else 460)
+	size=Vector2i(960,320 if rows.is_empty() else 560)
 
 func refresh_actions() -> void:
 	var selected: bool=selected_index()>=0
+	%Load.visible = not rows.is_empty()
+	%RenameButton.visible = not examples and not rows.is_empty()
+	%Delete.visible = not examples and not rows.is_empty()
 	%Load.disabled=not selected
 	%RenameButton.disabled=not selected
 	%Delete.disabled=not selected

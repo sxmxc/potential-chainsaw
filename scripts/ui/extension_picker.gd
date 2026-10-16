@@ -41,7 +41,8 @@ func refresh() -> void:
 		var compatible:=false
 		for port in definition.connectors:
 			if port.compatible(target.connector): compatible=true
-		if not compatible or not definition.display_name.to_lower().contains(%Search.text.to_lower()): continue
+		if not compatible: continue
+		if not %Search.text.is_empty() and not definition.display_name.to_lower().contains(%Search.text.to_lower()): continue
 		var card=CARD.instantiate()
 		%Pieces.add_child(card)
 		card.bind(definition,false)

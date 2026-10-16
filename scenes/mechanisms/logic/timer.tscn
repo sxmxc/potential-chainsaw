@@ -7,8 +7,8 @@
 [sub_resource type="Resource" id="Frequency"]
 script = ExtResource("Setting")
 key = &"frequency"
-label = "Frequency"
-description = "Timer duration"
+label = "Duration"
+description = "Countdown duration in seconds."
 default_number = 1.0
 minimum = 0.5
 maximum = 60.0
@@ -19,7 +19,7 @@ unit = "s"
 script = ExtResource("Setting")
 key = &"loop"
 label = "Loop"
-description = "Repeat at the configured frequency. Turn off to send just one signal."
+description = "Repeat the countdown. Turn off to send just one signal."
 kind = 1
 default_flag = true
 

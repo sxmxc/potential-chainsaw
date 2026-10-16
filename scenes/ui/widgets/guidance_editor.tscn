@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://ioeb4ck3bhuj" path="res://scripts/ui/guidance_editor.gd" id="Script"]
 
 [node name="GuidanceEditor" type="VBoxContainer" unique_id=1577565089]
+theme_type_variation = &"FormFields"
 script = ExtResource("Script")
 
 [node name="Heading" type="Label" parent="." unique_id=656117539]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"DialogTitle"
+theme_type_variation = &"FormHeading"
 text = "Player hints"
 
 [node name="Help" type="Label" parent="." unique_id=856828929]
@@ -39,13 +40,18 @@ layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Remove"
 
-[node name="StepTargetLabel" type="Label" parent="." unique_id=212981283]
+[node name="StepTargetField" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="StepTargetLabel" type="Label" parent="StepTargetField" unique_id=212981283]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Point to"
 
-[node name="StepTarget" type="OptionButton" parent="." unique_id=754408407]
+[node name="StepTarget" type="OptionButton" parent="StepTargetField" unique_id=754408407]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true
@@ -57,25 +63,35 @@ layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Use selected piece"
 
-[node name="StepTextLabel" type="Label" parent="." unique_id=1680518712]
+[node name="StepTextField" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="StepTextLabel" type="Label" parent="StepTextField" unique_id=1680518712]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Hint"
 
-[node name="StepText" type="LineEdit" parent="." unique_id=908816933]
+[node name="StepText" type="LineEdit" parent="StepTextField" unique_id=908816933]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "What should the player do?"
 max_length = 200
 
-[node name="StepCompleteLabel" type="Label" parent="." unique_id=343192625]
+[node name="StepCompleteField" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="StepCompleteLabel" type="Label" parent="StepCompleteField" unique_id=343192625]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Next hint when"
 
-[node name="StepComplete" type="OptionButton" parent="." unique_id=1743918818]
+[node name="StepComplete" type="OptionButton" parent="StepCompleteField" unique_id=1743918818]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true
@@ -86,44 +102,64 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"QuietButton"
 toggle_mode = true
-text = "Advanced"
+text = "Marker and timing"
 
 [node name="Advanced" type="VBoxContainer" parent="." unique_id=1607191707]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="MarkerKindLabel" type="Label" parent="Advanced" unique_id=884834207]
+[node name="MarkerHeading" type="Label" parent="Advanced"]
+layout_mode = 2
+theme_type_variation = &"FormHeading"
+text = "Marker and timing"
+
+[node name="MarkerKindField" type="VBoxContainer" parent="Advanced"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="MarkerKindLabel" type="Label" parent="Advanced/MarkerKindField" unique_id=884834207]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Indicator"
 
-[node name="MarkerKind" type="OptionButton" parent="Advanced" unique_id=420841832]
+[node name="MarkerKind" type="OptionButton" parent="Advanced/MarkerKindField" unique_id=420841832]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true
 fit_to_longest_item = false
 
-[node name="StepConnectorLabel" type="Label" parent="Advanced" unique_id=438277514]
+[node name="StepConnectorField" type="VBoxContainer" parent="Advanced"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="StepConnectorLabel" type="Label" parent="Advanced/StepConnectorField" unique_id=438277514]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Point at"
 
-[node name="StepConnector" type="OptionButton" parent="Advanced" unique_id=1430864582]
+[node name="StepConnector" type="OptionButton" parent="Advanced/StepConnectorField" unique_id=1430864582]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true
 fit_to_longest_item = false
 
-[node name="StepAppearLabel" type="Label" parent="Advanced" unique_id=732240915]
+[node name="StepAppearField" type="VBoxContainer" parent="Advanced"]
+layout_mode = 2
+theme_type_variation = &"FieldPair"
+
+
+[node name="StepAppearLabel" type="Label" parent="Advanced/StepAppearField" unique_id=732240915]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Show"
 
-[node name="StepAppear" type="OptionButton" parent="Advanced" unique_id=1614871775]
+[node name="StepAppear" type="OptionButton" parent="Advanced/StepAppearField" unique_id=1614871775]
 unique_name_in_owner = true
 layout_mode = 2
 clip_text = true

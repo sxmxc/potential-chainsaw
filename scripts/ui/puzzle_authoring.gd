@@ -147,6 +147,7 @@ func open() -> void:
 	%Destination.select(1 if session.official_authoring else 0)
 	%PuzzleName.text = data.name
 	%Description.text = data.description
+	%CampaignFields.visible = session.official_authoring
 	for field in [%ChapterId, %ChapterIdLabel, %ChapterName, %ChapterNameLabel, %ChapterOrder, %ChapterOrderLabel, %ChapterOptional, %ChapterIntroduction, %ChapterRequirements, %ChapterRequirementsLabel, %Order, %OrderLabel, %Prerequisites, %PrerequisiteLabel]:
 		field.visible = session.official_authoring
 	%Export.visible = not session.official_authoring

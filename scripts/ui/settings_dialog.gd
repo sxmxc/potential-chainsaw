@@ -16,6 +16,14 @@ var pending_action: String = ""
 
 func _ready() -> void:
 	super()
+	var categories: Array[Button] = [%CameraCategory, %AudioCategory, %DisplayCategory, %ControlsCategory]
+	for index in categories.size():
+		var button := categories[index]
+		button.pressed.connect(func():
+			%Tabs.current_tab = index
+			button.set_pressed_no_signal(true))
+	%Tabs.tab_changed.connect(func(index):
+		for category in categories.size(): categories[category].set_pressed_no_signal(category == index))
 	%Close.pressed.connect(close)
 	%ResetCamera.pressed.connect(func(): reset_camera.emit())
 	%Tabs.tab_changed.connect(func(index): cancel_binding(); UIMotion.section(%Tabs.get_tab_control(index)); fit_content.call_deferred())
@@ -112,5 +120,5 @@ func _input(event: InputEvent) -> void:
 func fit_content() -> void:
 	if not visible or closing: return
 	var available: Vector2 = get_parent().get_viewport().get_visible_rect().size
-	size = Vector2i(mini(720, int(available.x) - 32), mini(int(get_node("Surface").get_combined_minimum_size().y), int(available.y) - 32))
+	size = Vector2i(mini(900, int(available.x) - 32), mini(int(get_node("Surface").get_combined_minimum_size().y), int(available.y) - 32))
 	popup_centered(size)

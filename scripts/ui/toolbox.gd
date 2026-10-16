@@ -19,7 +19,6 @@ func configure(data: PieceCatalog, manager: BuildManager = null) -> void:
 	%Category.get_popup().transparent=true
 	%Collapse.pressed.connect(func():collapsed.emit())
 	get_viewport().size_changed.connect(fit_content)
-	if get_parent() is Control: get_parent().resized.connect(fit_content)
 	%Category.item_selected.connect(func(_index):refresh())
 	%Search.text_changed.connect(func(text):
 		if not text.is_empty(): %Category.select(0)
@@ -80,13 +79,17 @@ func restore_scroll(generation: int) -> void:
 
 func fit_content() -> void:
 	if not is_inside_tree(): return
-	var row_height: float=160
+	# Ordinary catalogs fill their column and scroll. Do not feed a previous
+	# column height back into its minimum size when the window becomes smaller.
+	var small_inventory: bool = build != null and build.rules != null and build.rules.puzzle.inventory.size() <= 6
+	if not small_inventory:
+		%Scroll.custom_minimum_size.y = 56.0
+		return
+	var row_height: float=180
 	for card in buttons.values(): row_height=maxf(row_height,card.get_combined_minimum_size().y)
 	var rows: int=ceili(float(buttons.size())/%Pieces.columns)
 	var content_height: float=rows*row_height+maxi(0,rows-1)*%Pieces.get_theme_constant("v_separation")
-	var overhead: float=get_combined_minimum_size().y-%Scroll.custom_minimum_size.y
-	var available: float = maxf(0.0, minf(get_parent().size.y, custom_maximum_size.y) - overhead)
-	%Scroll.custom_minimum_size.y=minf(content_height,available) if rows>0 else 0.0
+	%Scroll.custom_minimum_size.y = minf(content_height, 360.0) if rows > 0 else 0.0
 func clear_choice() -> void:
 	selected_id=&""
 	for button in buttons.values(): button.button_pressed=false

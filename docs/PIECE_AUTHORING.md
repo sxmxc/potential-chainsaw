@@ -46,7 +46,7 @@ Use `SupportDefinition` or `ElevatorDefinition` as references when a setting cha
 
 Extend `PieceBehavior`. `configure(settings)` stores resolved configuration and calls `reset()`. Call the base implementation when overriding it. Reset must restore configured initial state and clear timers, captures, and other run work. `start_run()` begins activity; `active` changes on pause, resume, and run end and emits `activity_changed`. `enabled` is the behavior's own setting, distinct from whether the simulation is running.
 
-Preview instances set `preview_only`, disable processing, and remove collision participation. Initialization must still work when the scene is created as a preview. Do not begin a run in `_ready()` or require an application menu to exist.
+Preview instances set `preview_only`, disable processing, and remove collision participation. Initialization must still work when the scene is created as a preview. Do not begin a run in `_ready()` or require an application menu to exist. Native Timer nodes must also stop advancing when activity is suspended: the timer module starts automatic timing in `start_run()`, disables its child clock processing while inactive, and stops the clock on reset. Keep a wired Stop command separate from simulation pause so resume does not undo it. The timer uses its configured value directly as seconds; the legacy `frequency` save key is retained for compatibility, while the inspector calls it Duration.
 
 Behaviors can return world-space points from `build_trajectory(excluded)` for the shared `SelectionOverlay` to draw when selected or previewed. The default returns no path. The overlay's depth-tested 3D mesh updates during physics processing; its excluded body RIDs omit hidden moving originals. The launcher uses the same velocity calculation for its shot and its gravity arc, sweeping the shared `scenes/marble_shape.tres` collision shape until first contact. Its loading stop is excluded because it retracts before firing. No separate physics simulation or piece-specific overlay is needed.
 
@@ -85,7 +85,7 @@ Check placement and rejection previews, settings, duplication, undo/redo, save/r
 
 ## Wire a machine
 
-In the game, choose **Connect**, drag a send handle onto a compatible receiving piece, and choose the ports/actions in the relationship card if needed. For example, connect a sensor's `entered` output to a gate's `open` action. Escape cancels the drag or card, then leaves Connect mode.
+In the game, choose **Connect**, drag an output terminal onto a compatible input terminal, and choose the ports/actions in the relationship card if needed. For example, connect a sensor's `entered` output to a gate's `open` action. Escape cancels the drag or card, then leaves Connect mode. Snapping follows the visible input handle, not the entire piece. The pending wire stays visible while the relationship card is open; Apply commits it and Cancel discards it.
 
 **Wires** independently displays directional relationships during ordinary building. Click a wire to inspect, change, or remove it; selecting a mechanism emphasizes related links. Simulation hides this editing presentation and reset restores the previous Connect mode.
 

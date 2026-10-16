@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
 [node name="PieceCard" type="Button" unique_id=1331294216]
-custom_minimum_size = Vector2(132, 160)
+custom_minimum_size = Vector2(132, 180)
 offset_right = 105.0
 offset_bottom = 122.0
 size_flags_horizontal = 0
@@ -39,14 +39,14 @@ stretch_mode = 5
 
 [node name="PieceName" type="Label" parent="Margin/Contents" unique_id=261569428]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(112, 44)
+custom_minimum_size = Vector2(112, 60)
 layout_mode = 2
-theme_type_variation = &"CardLabel"
+theme_type_variation = &"CardCaption"
 text = "Track piece"
-horizontal_alignment = 1
+horizontal_alignment = 0
 autowrap_mode = 3
 text_overrun_behavior = 3
-max_lines_visible = 2
+max_lines_visible = 3
 
 [node name="SelectedMark" type="TextureRect" parent="." unique_id=255669556]
 unique_name_in_owner = true

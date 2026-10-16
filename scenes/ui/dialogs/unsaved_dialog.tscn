@@ -8,6 +8,7 @@ transparent_bg = true
 title = "Keep your construction?"
 size = Vector2i(490, 180)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 unresizable = true
@@ -26,6 +27,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1811068670]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Heading" type="Label" parent="Surface/Contents" unique_id=1340122798]
 unique_name_in_owner = true
@@ -34,6 +36,7 @@ theme_type_variation = &"DialogTitle"
 text = "Keep your construction?"
 
 [node name="Message" type="Label" parent="Surface/Contents" unique_id=472636761]
+custom_minimum_size = Vector2(434, 0)
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
@@ -41,6 +44,7 @@ text = "Save your changes before continuing?"
 autowrap_mode = 3
 
 [node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=2065050542]
+theme_type_variation = &"DialogFooter"
 layout_mode = 2
 
 [node name="Cancel" type="Button" parent="Surface/Contents/Actions" unique_id=1006601776]

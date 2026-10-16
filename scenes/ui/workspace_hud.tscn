@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://bkbctm7rkv414" path="res://scripts/ui/workspace_hud.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 [ext_resource type="PackedScene" uid="uid://b716oxnxeu0j5" path="res://scenes/ui/toolbox.tscn" id="Toolbox"]
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
+[ext_resource type="PackedScene" uid="uid://cd3ebxsveh6mr" path="res://scenes/ui/widgets/mechanism_wiring.tscn" id="Wiring"]
 
 [node name="WorkspaceHUD" type="Control" unique_id=1255080825]
 layout_mode = 3
@@ -78,59 +78,6 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="Guidance" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=433491361]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-theme_type_variation = &"ContextPanel"
-
-[node name="Contents" type="HBoxContainer" parent="Margin/Layout/Body/Workspace/Guidance" unique_id=1629256354]
-layout_mode = 2
-
-[node name="GuidanceProgress" type="Label" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=15755412]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"AccentSmallLabel"
-
-[node name="GuidanceText" type="Label" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=286286119]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(320, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"CardLabel"
-autowrap_mode = 3
-
-[node name="DismissGuidance" type="Button" parent="Margin/Layout/Body/Workspace/Guidance/Contents" unique_id=343362771]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 0
-tooltip_text = "Dismiss hint"
-theme_type_variation = &"QuietButton"
-text = "×"
-
-[node name="BuildToolbar" parent="Margin/Layout/Body/Workspace" unique_id=2006775888 instance=ExtResource("Build")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="EditToolbar" parent="Margin/Layout/Body/Workspace" unique_id=646885837 instance=ExtResource("Edit")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Bottom" type="PanelContainer" parent="Margin/Layout/Body/Workspace" unique_id=2007693626]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-theme_type_variation = &"ContextPanel"
-
-[node name="Status" type="Label" parent="Margin/Layout/Body/Workspace/Bottom" unique_id=1990605440]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 0)
-layout_mode = 2
-theme_type_variation = &"MutedLabel"
-autowrap_mode = 3
-
 [node name="Inspector" parent="Margin/Layout/Body" unique_id=615013630 instance=ExtResource("Inspector")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -146,6 +93,67 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="Dock" type="VBoxContainer" parent="Margin/Layout" unique_id=345522986]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"DockRows"
+
+[node name="Guidance" type="PanelContainer" parent="Margin/Layout/Dock" unique_id=433491361]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"ContextPanel"
+
+[node name="Contents" type="HBoxContainer" parent="Margin/Layout/Dock/Guidance" unique_id=1629256354]
+layout_mode = 2
+
+[node name="GuidanceProgress" type="Label" parent="Margin/Layout/Dock/Guidance/Contents" unique_id=15755412]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"AccentSmallLabel"
+
+[node name="GuidanceText" type="Label" parent="Margin/Layout/Dock/Guidance/Contents" unique_id=286286119]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CardLabel"
+autowrap_mode = 3
+
+[node name="DismissGuidance" type="Button" parent="Margin/Layout/Dock/Guidance/Contents" unique_id=343362771]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+tooltip_text = "Dismiss hint"
+theme_type_variation = &"QuietButton"
+text = "×"
+
+[node name="BuildToolbar" parent="Margin/Layout/Dock" unique_id=2006775888 instance=ExtResource("Build")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EditToolbar" parent="Margin/Layout/Dock" unique_id=646885837 instance=ExtResource("Edit")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Bottom" type="PanelContainer" parent="Margin/Layout/Dock" unique_id=2007693626]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"ContextPanel"
+
+[node name="Status" type="Label" parent="Margin/Layout/Dock/Bottom" unique_id=1990605440]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
+
 [node name="SelectionOverlay" parent="." unique_id=676437620 instance=ExtResource("Overlay")]
 unique_name_in_owner = true
 layout_mode = 0
@@ -157,7 +165,6 @@ grow_vertical = 1
 
 [node name="ExtensionPicker" parent="." unique_id=787953607 instance=ExtResource("Extension")]
 unique_name_in_owner = true
-visible = false
 
 [node name="NotificationTimer" type="Timer" parent="." unique_id=477223121]
 unique_name_in_owner = true

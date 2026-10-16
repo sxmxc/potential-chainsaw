@@ -1,7 +1,9 @@
 extends Control
 
 ## Presentation only: relationships are read from BuildingPiece.configuration.
-## Projected, fixed-size handles remain usable as the construction camera orbits.
+## World-space conduits and terminals share their projection with pointer picking.
+const TERMINAL: PackedScene = preload("res://scenes/ui/widgets/wiring_terminal.tscn")
+const INPUT_SNAP_RADIUS := 16.0
 var build: BuildManager
 var simulation: SimulationManager
 var exclusions: Array[Control] = []
@@ -19,12 +21,19 @@ var context_event: String = ""
 var context_action: String = ""
 var pointer := Vector2.ZERO
 var context_anchor := Vector2.ZERO
-var confirmation: PackedVector2Array = []
+var confirmation_source: String = ""
+var confirmation_target: String = ""
 var confirmation_until: int = 0
 var context_motion: UIMotion
+var conduits: Dictionary[String, WiringConduit] = {}
+var terminals: Dictionary[String, Node3D] = {}
+var preview_conduit: WiringConduit
 
 func _ready() -> void:
 	context_motion = UIMotion.attach(%Context, Vector2.ZERO, UIMotion.SURFACE_SCALE)
+	preview_conduit = WiringConduit.new()
+	$Network.add_child(preview_conduit)
+	preview_conduit.hide()
 
 static func readable(value: String) -> String:
 	match value:
@@ -56,7 +65,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 func set_tool(active: bool) -> void:
 	clear_interaction()
 	build.set_connect_mode(active)
-	if active: build.show_status("Drag a send handle onto a receiving piece · Esc cancels")
+	if active: build.show_status("Drag from an output to an input · Esc cancels")
 
 func toggle_overlay() -> void:
 	overlay_enabled = not overlay_enabled
@@ -74,6 +83,8 @@ func clear_interaction() -> void:
 	hovered_wire.clear()
 	clear_context()
 	%Hint.hide()
+	confirmation_source = ""
+	confirmation_target = ""
 
 func permitted(piece: BuildingPiece) -> bool:
 	return build.enabled and (not build.rules or build.rules.permits(piece.instance_id, "configure"))
@@ -83,51 +94,63 @@ func covered(point: Vector2) -> bool:
 		if control.is_visible_in_tree() and control.get_global_rect().has_point(point): return true
 	return %Context.visible and %Context.get_global_rect().has_point(point)
 
-func anchor(piece: BuildingPiece) -> Vector3:
+func visual_piece(piece: BuildingPiece) -> BuildingPiece:
 	var visual := piece
 	var moving_index := build.moving_group.find(piece)
 	if moving_index >= 0 and moving_index < build.preview.get_child_count(): visual = build.preview.get_child(moving_index) as BuildingPiece
+	return visual
+
+func anchor(piece: BuildingPiece) -> Vector3:
+	var visual := visual_piece(piece)
 	var bounds := visual.definition.bounds
 	return visual.global_transform * (bounds.get_center() + Vector3.UP * bounds.size.y * 0.5)
 
+func port_world(piece: BuildingPiece, output: bool) -> Vector3:
+	# Terminal height matches the authored housing. Paired roles sit one housing apart.
+	var paired := not piece.input_ports.is_empty() and not piece.output_ports.is_empty()
+	var side := visual_piece(piece).global_basis.x.normalized() * (0.23 if output else -0.23) if paired else Vector3.ZERO
+	return anchor(piece) + Vector3.UP * 0.26 + side
+
 func port_position(piece: BuildingPiece, output: bool) -> Vector2:
-	var center := build.camera.unproject_position(anchor(piece))
-	return center + Vector2(30 if output else -30, -18)
+	return build.camera.unproject_position(port_world(piece, output))
 
 func receiver_at(point: Vector2) -> Dictionary:
 	if dragging.is_empty() or covered(point): return {}
-	var picked := build.pick_piece(point)
-	if picked in receivers: return {"source": picked.instance_id, "output": false, "point": port_position(picked, false)}
 	var found: Dictionary = {}
-	var distance := INF
-	for piece in receivers:
-		var bounds := ConstructionSelection.projected_bounds(piece, build.camera).grow(12)
-		if not bounds.has_point(point): continue
-		var pixels := bounds.get_center().distance_to(point)
-		if pixels < distance:
-			distance = pixels
-			found = {"source": piece.instance_id, "output": false, "point": port_position(piece, false)}
-	# The large role handle remains useful on tiny or partly occluded pieces.
-	if found.is_empty():
-		var handle := handle_at(point)
-		if not handle.is_empty() and not handle.output and build.find_piece(handle.source) in receivers: return handle
+	var distance := INPUT_SNAP_RADIUS
+	for handle in handles:
+		if handle.output or covered(handle.point) or build.find_piece(handle.source) not in receivers: continue
+		var pixels: float = point.distance_to(handle.point)
+		if pixels >= distance: continue
+		distance = pixels
+		found = handle
 	return found
 
-func curve(start: Vector2, finish: Vector2, lane: float = 0) -> PackedVector2Array:
-	var points := PackedVector2Array()
-	var bend := clampf(start.distance_to(finish) * 0.22, 28, 100)
-	var c1 := start + Vector2(bend, -18 - lane * 14)
-	var c2 := finish + Vector2(-bend, -18 - lane * 14)
-	for i in 33:
-		var t := i / 32.0
-		var u := 1.0 - t
-		points.append(u*u*u*start + 3*u*u*t*c1 + 3*u*t*t*c2 + t*t*t*finish)
-	return points
+func palette(mesh_instance: MeshInstance3D) -> void:
+	mesh_instance.set_instance_shader_parameter("source_tint", ink("output"))
+	mesh_instance.set_instance_shader_parameter("target_tint", ink("input"))
+	mesh_instance.set_instance_shader_parameter("highlight", ink("selected"))
+
+func terminal_key(piece_id: String, output: bool) -> String:
+	return piece_id + (":out" if output else ":in")
+
+func show_terminal(piece: BuildingPiece, output: bool, used: Array[String]) -> void:
+	var key := terminal_key(piece.instance_id, output)
+	used.append(key)
+	if not terminals.has(key):
+		var terminal := TERMINAL.instantiate() as Node3D
+		$Network.add_child(terminal)
+		terminal.get_node("Sender").visible = output
+		terminal.get_node("Receiver").visible = not output
+		terminals[key] = terminal
+	terminals[key].position = port_world(piece, output)
 
 func refresh_projection() -> void:
 	handles.clear()
 	wires.clear()
 	receivers.clear()
+	var used_conduits: Array[String] = []
+	var used_terminals: Array[String] = []
 	var source := build.find_piece(dragging.get("source", ""))
 	for piece in build.pieces:
 		if build.camera.is_position_behind(anchor(piece)): continue
@@ -135,15 +158,34 @@ func refresh_projection() -> void:
 		if build.connect_mode:
 			if not piece.output_ports.is_empty():
 				handles.append({"source": piece.instance_id, "output": true, "point": port_position(piece, true), "allowed": permitted(piece)})
+				show_terminal(piece, true, used_terminals)
 			if not piece.input_ports.is_empty():
 				handles.append({"source": piece.instance_id, "output": false, "point": port_position(piece, false), "allowed": true})
+				show_terminal(piece, false, used_terminals)
 		var links: Array = piece.configuration.get("links", [])
 		for i in links.size():
 			var link: Dictionary = links[i]
 			var target := build.find_piece(link.get("target", ""))
 			if not target or target.input_ports.is_empty() or build.camera.is_position_behind(anchor(target)): continue
-			var points := curve(port_position(piece, true), port_position(target, false), i)
-			wires.append({"source": piece.instance_id, "target": target.instance_id, "index": i, "link": link, "points": points})
+			var key := piece.instance_id + ":" + str(i)
+			used_conduits.append(key)
+			if not conduits.has(key):
+				conduits[key] = WiringConduit.new()
+				$Network.add_child(conduits[key])
+				palette(conduits[key])
+			var conduit := conduits[key]
+			conduit.route(port_world(piece, true), port_world(target, false), i)
+			wires.append({"source": piece.instance_id, "target": target.instance_id, "index": i, "link": link, "points": conduit.project(build.camera), "visual": conduit})
+			show_terminal(piece, true, used_terminals)
+			show_terminal(target, false, used_terminals)
+	for key in conduits.keys():
+		if key not in used_conduits:
+			conduits[key].free()
+			conduits.erase(key)
+	for key in terminals.keys():
+		if key not in used_terminals:
+			terminals[key].free()
+			terminals.erase(key)
 
 func handle_at(point: Vector2) -> Dictionary:
 	var result: Dictionary = {}
@@ -171,13 +213,16 @@ func wire_at(point: Vector2) -> Dictionary:
 func valid_receiver(handle: Dictionary) -> bool:
 	return not handle.is_empty() and not handle.output and not dragging.is_empty() and build.find_piece(handle.source) in receivers
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not build: return
-	var shown := simulation.state == SimulationManager.State.BUILD and build.enabled and (overlay_enabled or build.connect_mode)
+	var shown := is_visible_in_tree() and simulation.state == SimulationManager.State.BUILD and build.enabled and (overlay_enabled or build.connect_mode)
+	$Network.visible = shown
 	if not shown:
-		if not build.enabled: clear_interaction()
+		if not build.enabled or not is_visible_in_tree(): clear_interaction()
+		clear_network()
 		%Hint.hide()
 		%Context.hide()
+		preview_conduit.hide()
 		queue_redraw()
 		return
 	if not build.connect_mode and not dragging.is_empty(): clear_interaction()
@@ -189,7 +234,7 @@ func _process(_delta: float) -> void:
 		var piece := build.find_piece(hovered_handle.source)
 		hint = "Send ▶ · " + ", ".join(piece.output_ports.keys().map(func(event): return readable(event))) if hovered_handle.output else "Receive ◇ · " + ", ".join(piece.input_ports.keys().map(func(action): return readable(action)))
 		if hovered_handle.output and not hovered_handle.allowed: hint += " · Locked"
-		elif not dragging.is_empty() and hovered_handle.output: hint = "Drop onto a highlighted piece"
+		elif not dragging.is_empty() and hovered_handle.output: hint = "Drop onto an input"
 	elif not hovered_wire.is_empty():
 		hint = describe(hovered_wire.source, hovered_wire.target) + "\n" + readable(hovered_wire.link.event) + " → " + readable(hovered_wire.link.action)
 	%Hint.visible = not hint.is_empty() and not %Context.visible and build.camera.drag_button == 0
@@ -199,7 +244,62 @@ func _process(_delta: float) -> void:
 	if %Context.visible:
 		%Context.reset_size()
 		%Context.position = bounded(context_anchor + Vector2(16, 16), %Context.size)
+	refresh_visuals(delta)
 	queue_redraw()
+
+func clear_network() -> void:
+	handles.clear()
+	wires.clear()
+	receivers.clear()
+	for conduit in conduits.values(): conduit.free()
+	conduits.clear()
+	for terminal in terminals.values(): terminal.free()
+	terminals.clear()
+
+func refresh_visuals(delta: float) -> void:
+	for wire in wires:
+		var focused: bool = wire == hovered_wire or (wire.source == context_source and wire.index == context_index)
+		var related := build.selection.any(func(piece): return piece.instance_id in [wire.source, wire.target])
+		var confirmed: bool = Time.get_ticks_msec() < confirmation_until and wire.source == confirmation_source and wire.target == confirmation_target
+		var conduit: WiringConduit = wire.visual
+		conduit.emphasize(focused or related or confirmed, delta)
+	for key in terminals:
+		var terminal := terminals[key]
+		var output: bool = terminal.get_node("Sender").visible
+		var piece_id := key.trim_suffix(":out" if output else ":in")
+		var piece := build.find_piece(piece_id)
+		var hovered: bool = not hovered_handle.is_empty() and hovered_handle.source == piece_id and hovered_handle.output == output
+		var compatible: bool = not dragging.is_empty() and not output and piece in receivers
+		var focused := hovered or compatible or piece in build.selection or piece_id in [context_source, context_target]
+		var allowed := permitted(piece) if output else true
+		if not dragging.is_empty(): allowed = compatible or (output and piece_id == dragging.source)
+		var branch: Node3D = terminal.get_node("Sender" if output else "Receiver")
+		for part: MeshInstance3D in branch.get_children():
+			part.set_instance_shader_parameter("tint", ink("output" if output else "input"))
+			part.set_instance_shader_parameter("highlight", ink("selected"))
+			part.set_instance_shader_parameter("focus", 1.0 if focused else 0.0)
+			part.set_instance_shader_parameter("available", 1.0 if allowed else 0.0)
+	var pending := context_index == -1 and not context_source.is_empty() and not context_target.is_empty()
+	preview_conduit.visible = not dragging.is_empty() or pending
+	if preview_conduit.visible:
+		var source := build.find_piece(context_source if pending else dragging.source)
+		var target := build.find_piece(context_target) if pending else null
+		if not source or (pending and not target):
+			preview_conduit.hide()
+			return
+		var start := port_world(source, true)
+		var finish: Vector3
+		if pending:
+			finish = port_world(target, false)
+		elif valid_receiver(hovered_handle):
+			finish = port_world(build.find_piece(hovered_handle.source), false)
+		else:
+			# Cursor follows the source depth until a real receiver supplies its elevation.
+			var depth := - (build.camera.get_camera_transform().affine_inverse() * start).z
+			finish = build.camera.project_position(pointer, depth)
+		preview_conduit.route(start, finish)
+		palette(preview_conduit)
+		preview_conduit.emphasize(pending or valid_receiver(hovered_handle), delta)
 
 func bounded(point: Vector2, extent: Vector2) -> Vector2:
 	return point.clamp(Vector2(8, 8), (size - extent - Vector2(8, 8)).max(Vector2(8, 8)))
@@ -277,8 +377,10 @@ func apply_connection() -> void:
 func flash(source_id: String, link: Dictionary) -> void:
 	var source := build.find_piece(source_id)
 	var target := build.find_piece(link.target)
-	confirmation = curve(port_position(source, true), port_position(target, false))
-	confirmation_until = Time.get_ticks_msec() + 250
+	if not source or not target: return
+	confirmation_source = source_id
+	confirmation_target = link.target
+	confirmation_until = Time.get_ticks_msec() + 650
 
 func escape() -> void:
 	if not dragging.is_empty(): dragging.clear()
@@ -332,53 +434,30 @@ func _unhandled_input(event: InputEvent) -> void:
 func ink(token: String) -> Color:
 	return get_theme_color(token, &"MechanismWiring")
 
-func draw_wire(points: PackedVector2Array, color: Color, width: float = 2.5) -> void:
-	draw_polyline(points, ink("backdrop"), width + 2, true)
-	draw_polyline(points, color, width, true)
-	for i in [10, 21, 30]:
-		var direction := (points[i+1] - points[i-1]).normalized()
-		var normal := direction.orthogonal()
-		var tip := points[i] + direction * 7
-		draw_polyline(PackedVector2Array([tip - direction * 10 + normal * 6, tip, tip - direction * 10 - normal * 6]), color, width, true)
-	draw_circle(points[0], 5, color, true, -1, true)
-	draw_circle(points[-1], 6, color, false, 2.0, true)
-
 func _draw() -> void:
-	if not build or not build.enabled or simulation.state != SimulationManager.State.BUILD or not (overlay_enabled or build.connect_mode): return
-	for wire in wires:
-		var focused: bool = wire == hovered_wire or (wire.source == context_source and wire.index == context_index)
-		var related := build.selection.any(func(piece): return piece.instance_id in [wire.source, wire.target])
-		var color := ink("selected" if focused or related else "wire")
-		if not build.selection.is_empty() and not related and not focused: color.a = 0.58
-		draw_wire(wire.points, color, 3.5 if focused or related else 2.5)
-	if Time.get_ticks_msec() < confirmation_until and not confirmation.is_empty(): draw_wire(confirmation, ink("selected"), 2.5)
-	if build.connect_mode:
-		for receiver in receivers:
-			var bounds := ConstructionSelection.projected_bounds(receiver, build.camera).grow(8)
-			var color := ink("selected" if not hovered_handle.is_empty() and hovered_handle.source == receiver.instance_id else "output")
-			var fill := color
-			fill.a = 0.1
-			draw_rect(bounds, fill, true)
-			draw_rect(bounds, color, false, 2.0)
-		for handle in handles:
-			if covered(handle.point): continue
-			var point: Vector2 = handle.point
-			var color := ink("output" if handle.output else "input")
-			var radius := 15.0
-			if handle == hovered_handle: radius = 18
-			if not dragging.is_empty():
-				if handle.output: color = ink("invalid")
-				elif build.find_piece(handle.source) in receivers: radius = 18; color = ink("output")
-				else: color = ink("invalid")
-			elif not handle.allowed: color = ink("invalid")
-			draw_circle(point, radius + 2, ink("backdrop"), true, -1, true)
-			if handle.output:
-				draw_circle(point, radius, color, false, 2.0, true)
-				draw_colored_polygon(PackedVector2Array([point + Vector2(-4,-6), point + Vector2(6,0), point + Vector2(-4,6)]), color)
-			else:
-				draw_polyline(PackedVector2Array([point + Vector2(0,-radius), point + Vector2(radius,0), point + Vector2(0,radius), point + Vector2(-radius,0), point + Vector2(0,-radius)]), color, 1.5, true)
-		if not dragging.is_empty():
-			var source := build.find_piece(dragging.source)
-			if source:
-				var start := port_position(source, true)
-				draw_wire(curve(start, hovered_handle.point if valid_receiver(hovered_handle) else pointer), ink("selected" if valid_receiver(hovered_handle) else "output"), 2)
+	if not build or not build.enabled or simulation.state != SimulationManager.State.BUILD or not build.connect_mode: return
+	var font := get_theme_default_font()
+	for handle in handles:
+		if covered(handle.point): continue
+		var point: Vector2 = handle.point
+		var color := ink("output" if handle.output else "input")
+		var hovered: bool = not hovered_handle.is_empty() and handle.source == hovered_handle.source and handle.output == hovered_handle.output
+		var origin: bool = not dragging.is_empty() and handle.output and handle.source == dragging.source
+		var inspecting: bool = (handle.output and handle.source == context_source) or (not handle.output and handle.source == context_target)
+		var focused: bool = hovered or origin or inspecting
+		var compatible := valid_receiver(handle)
+		if not focused and not compatible: continue
+		if focused: color = ink("selected")
+		var available: bool = handle.allowed
+		if not dragging.is_empty(): available = (not handle.output and build.find_piece(handle.source) in receivers) or (handle.output and handle.source == dragging.source)
+		if not available: color = ink("invalid")
+		if focused:
+			var caption := "Output" if handle.output else "Input"
+			if not handle.allowed: caption += " · Locked"
+			var text_size := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14)
+			var baseline := point + Vector2(-text_size.x * 0.5, 27)
+			draw_string_outline(font, baseline, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, ink("backdrop"))
+			draw_string(font, baseline, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, color)
+		if focused or compatible:
+			draw_arc(point, 20, PI * 0.12, PI * 0.88, 24, color, 2, true)
+			draw_arc(point, 20, PI * 1.12, PI * 1.88, 24, color, 2, true)

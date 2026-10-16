@@ -12,7 +12,7 @@ Build the incomplete starting machine using the normal toolbox, snapping, select
 
 ### Define the challenge
 
-In **Setup**, enter a name, an outcome-focused description, creator, difficulty, and the available time. Author hints under **Objectives → Player hints**. Capture a camera view that makes the initial problem legible. Time and piece-budget awards are optional goals; they do not change mandatory completion. Official authoring also exposes chapter metadata, level order, and prerequisites.
+In **Setup**, enter a name, an outcome-focused description, creator, difficulty, and the available time. Author hints under **Objectives → Player hints**. Capture a camera view that makes the initial problem legible. Time and piece-budget awards are optional goals; they do not change mandatory completion. Setup groups these controls under Puzzle details, Starting view, Run rules, and Optional awards. Official authoring also exposes Campaign placement with chapter metadata, level order, and prerequisites.
 
 Starting pieces are fixed unless you grant permissions. Select them and expand **Player permissions** in the inspector to allow moving, rotating, configuring, removing, or duplicating. You can limit configuration to a selected key and a numeric range. The form edits one restricted key per starting piece; the data format can retain existing restrictions on several keys.
 

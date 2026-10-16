@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dqnjb4hgc7aum"]
+
+[ext_resource type="Shader" uid="uid://cxgwn3rf1wnsf" path="res://shaders/wiring_conduit.gdshader" id="Conduit"]
+[ext_resource type="Shader" uid="uid://c38h716mg5bon" path="res://shaders/wiring_halo.gdshader" id="Halo"]
+[ext_resource type="Shader" uid="uid://da7uc6hhe6f6r" path="res://shaders/wiring_occluded.gdshader" id="Occluded"]
+
+[sub_resource type="ShaderMaterial" id="Occluded"]
+render_priority = 0
+shader = ExtResource("Occluded")
+
+[sub_resource type="ShaderMaterial" id="Halo"]
+render_priority = 0
+next_pass = SubResource("Occluded")
+shader = ExtResource("Halo")
+
+[resource]
+render_priority = 0
+next_pass = SubResource("Halo")
+shader = ExtResource("Conduit")

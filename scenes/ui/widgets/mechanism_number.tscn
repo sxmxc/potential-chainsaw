@@ -2,10 +2,12 @@
 
 [ext_resource type="PackedScene" path="res://scenes/ui/widgets/setting_slider.tscn" id="Slider"]
 
-[node name="MechanismNumber" type="HBoxContainer" unique_id=294910398]
+[node name="MechanismNumber" type="VBoxContainer" unique_id=294910398]
+theme_type_variation = &"FieldPair"
 custom_minimum_size = Vector2(0, 44)
 
 [node name="Caption" type="Label" parent="." unique_id=410152058]
+theme_type_variation = &"SmallMutedLabel"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 16)
 layout_mode = 2

@@ -23,6 +23,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1569012700]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Heading" type="Label" parent="Surface/Contents" unique_id=305143330]
 unique_name_in_owner = true
@@ -85,6 +86,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="LevelColumn" type="HBoxContainer" parent="Surface/Contents/Browse" unique_id=1137941793]
+theme_type_variation = &"DialogColumns"
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -130,17 +132,23 @@ layout_mode = 2
 theme_type_variation = &"InspectorTitle"
 autowrap_mode = 3
 
+text_overrun_behavior = 3
+max_lines_visible = 3
+
 [node name="LevelState" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=277291191]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"AccentSmallLabel"
 autowrap_mode = 3
 
-[node name="Details" type="Label" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=1308003168]
+[node name="Details" type="RichTextLabel" parent="Surface/Contents/Browse/LevelColumn/Selection" unique_id=1308003168]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(380, 70)
+custom_maximum_size = Vector2(440, 140)
+fit_content = true
+selection_enabled = true
 layout_mode = 2
-theme_type_variation = &"MutedLabel"
+theme_type_variation = &"RichMutedLabel"
 text = "Select a level."
 autowrap_mode = 3
 
@@ -149,6 +157,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=815224222]
+theme_type_variation = &"DialogFooter"
 layout_mode = 2
 
 [node name="Back" type="Button" parent="Surface/Contents/Actions" unique_id=82387416]

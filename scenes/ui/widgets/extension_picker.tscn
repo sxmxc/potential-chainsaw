@@ -5,8 +5,8 @@
 
 [node name="ExtensionPicker" type="PopupPanel" unique_id=1533679963]
 oversampling_override = 1.0
-size = Vector2i(390, 1772)
-visible = true
+size = Vector2i(480, 520)
+visible = false
 theme = ExtResource("Theme")
 script = ExtResource("Script")
 
@@ -14,10 +14,6 @@ script = ExtResource("Script")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 21.0
-offset_top = 18.0
-offset_right = -21.0
-offset_bottom = -24.0
 theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1938164431]
@@ -44,6 +40,7 @@ layout_mode = 2
 placeholder_text = "Find a compatible piece…"
 
 [node name="Hint" type="Label" parent="Surface/Contents" unique_id=1075084823]
+custom_minimum_size = Vector2(424, 0)
 layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 text = "Choose a piece, then click to attach. Tab for alternatives."

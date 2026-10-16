@@ -53,7 +53,7 @@ func refresh(piece: BuildingPiece) -> void:
 
 func fit_content() -> void:
 	if not is_inside_tree(): return
-	%Scroll.custom_minimum_size.y=minf(%Scroll.get_child(0).get_combined_minimum_size().y,minf(get_parent().size.y, 620.0))
+	%Scroll.custom_minimum_size.y = minf(%Scroll.get_child(0).get_combined_minimum_size().y, 420.0)
 
 func refresh_permissions(selection_changed: bool) -> void:
 	var tracks := build.selection.filter(func(object): return not object.definition.authoring_only)

@@ -39,7 +39,7 @@ script = ExtResource("Script")
 [node name="Placement" type="VBoxContainer" parent="." unique_id=547327049]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 mouse_filter = 2
 
 [node name="Identity" type="HBoxContainer" parent="Placement" unique_id=1526319328]
@@ -52,6 +52,7 @@ custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 theme_type_variation = &"CardLabel"
 theme_override_styles/normal = SubResource("StyleBoxFlat_jjtym")
+text = "Active Piece"
 vertical_alignment = 1
 text_overrun_behavior = 3
 
@@ -83,9 +84,10 @@ layout_mode = 2
 theme_type_variation = &"SmallMutedLabel"
 autowrap_mode = 3
 
-[node name="Common" type="HFlowContainer" parent="." unique_id=1162364347]
+[node name="Common" type="HBoxContainer" parent="." unique_id=1162364347]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 4
 mouse_filter = 2
 
 [node name="Library" type="Button" parent="Common" unique_id=114523809]
@@ -183,7 +185,7 @@ icon_name = &"frame"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(124, 40)
 layout_mode = 2
-tooltip_text = "Edit connections · drag a send handle onto a piece"
+tooltip_text = "Edit connections · drag an output onto an input"
 theme_type_variation = &"SecondaryButton"
 toggle_mode = true
 text = "Connect"

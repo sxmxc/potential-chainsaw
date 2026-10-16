@@ -8,6 +8,7 @@ transparent_bg = true
 title = "Name your track"
 size = Vector2i(440, 188)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 unresizable = true
@@ -26,6 +27,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=274130932]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Heading" type="Label" parent="Surface/Contents" unique_id=2082510253]
 unique_name_in_owner = true
@@ -40,6 +42,7 @@ placeholder_text = "Track name"
 max_length = 80
 
 [node name="Actions" type="HBoxContainer" parent="Surface/Contents" unique_id=892949449]
+theme_type_variation = &"DialogFooter"
 layout_mode = 2
 
 [node name="Cancel" type="Button" parent="Surface/Contents/Actions" unique_id=739290541]

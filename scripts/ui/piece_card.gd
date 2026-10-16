@@ -11,22 +11,9 @@ func bind(piece: PieceDefinition, selected: bool) -> void:
 	button_pressed=selected
 	%SelectedMark.visible=selected
 	tooltip_text=piece.display_name+"\n"+piece.player_description()
-	%PieceName.text=card_name(piece)
+	%PieceName.text=piece.display_name
 	%Thumbnail.texture=piece.thumbnail
 	%Quantity.hide()
-
-func card_name(piece: PieceDefinition) -> String:
-	if piece.id in [&"fan-simple-two",&"fan-simple-four",&"fan-standing-two",&"fan-standing-four",&"fan-two",&"fan-four"]:
-		return piece.display_name.replace(" (","\n").replace(")","")
-	var names: Dictionary={
-		&"banner-hanging-double-high":"Tall hanging\nbanner",
-		&"banner-double-high":"Tall double\nbanner",
-		&"banner-hanging-double":"Double hanging\nbanner",
-		&"support-color-single":"Single support\n(color)",
-		&"support-color-two":"Two supports\n(color)",
-		&"support-color-four":"Four supports\n(color)",
-	}
-	return names.get(piece.id,piece.display_name)
 
 func _make_custom_tooltip(for_text: String) -> Object:
 	var label=TOOLTIP.instantiate()

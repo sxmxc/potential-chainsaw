@@ -1,4 +1,4 @@
-extends HFlowContainer
+extends HBoxContainer
 var build: BuildManager
 func configure(manager: BuildManager) -> void:
 	build=manager

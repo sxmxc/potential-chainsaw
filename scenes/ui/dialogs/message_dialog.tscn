@@ -8,6 +8,7 @@ transparent_bg = true
 title = "Marble Engineer"
 size = Vector2i(500, 220)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 unresizable = true
@@ -26,6 +27,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1860196305]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Heading" type="Label" parent="Surface/Contents" unique_id=1870519829]
 unique_name_in_owner = true
@@ -33,11 +35,14 @@ layout_mode = 2
 theme_type_variation = &"DialogTitle"
 text = "Marble Engineer"
 
-[node name="Message" type="Label" parent="Surface/Contents" unique_id=1372830457]
+[node name="Message" type="RichTextLabel" parent="Surface/Contents" unique_id=1372830457]
+custom_minimum_size = Vector2(444, 40)
+custom_maximum_size = Vector2(444, 300)
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_type_variation = &"Label"
+fit_content = true
+selection_enabled = true
 text = "Message"
 autowrap_mode = 3
 

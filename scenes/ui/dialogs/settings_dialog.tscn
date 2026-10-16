@@ -6,8 +6,9 @@
 [node name="SettingsDialog" type="Window" unique_id=179672604]
 transparent_bg = true
 title = "Settings"
-size = Vector2i(720, 480)
+size = Vector2i(900, 560)
 visible = false
+wrap_controls = true
 transient = true
 exclusive = true
 borderless = true
@@ -26,6 +27,7 @@ theme_type_variation = &"SurfacePanel"
 
 [node name="Contents" type="VBoxContainer" parent="Surface" unique_id=1618062492]
 layout_mode = 2
+theme_type_variation = &"DialogContents"
 
 [node name="Header" type="HBoxContainer" parent="Surface/Contents" unique_id=1119463401]
 layout_mode = 2
@@ -43,43 +45,94 @@ tooltip_text = "Close settings · Esc"
 theme_type_variation = &"QuietButton"
 text = "×"
 
-[node name="Tabs" type="TabContainer" parent="Surface/Contents" unique_id=251353688]
+[node name="Body" type="HBoxContainer" parent="Surface/Contents"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"DialogColumns"
+
+[node name="Categories" type="VBoxContainer" parent="Surface/Contents/Body"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="CameraCategory" type="Button" parent="Surface/Contents/Body/Categories"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"DialogCategory"
+toggle_mode = true
+button_pressed = true
+text = "Camera"
+alignment = 0
+
+[node name="AudioCategory" type="Button" parent="Surface/Contents/Body/Categories"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"DialogCategory"
+toggle_mode = true
+button_pressed = false
+text = "Audio"
+alignment = 0
+
+[node name="DisplayCategory" type="Button" parent="Surface/Contents/Body/Categories"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"DialogCategory"
+toggle_mode = true
+button_pressed = false
+text = "Display"
+alignment = 0
+
+[node name="ControlsCategory" type="Button" parent="Surface/Contents/Body/Categories"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"DialogCategory"
+toggle_mode = true
+button_pressed = false
+text = "Controls"
+alignment = 0
+
+[node name="Tabs" type="TabContainer" parent="Surface/Contents/Body" unique_id=251353688]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"SettingsTabs"
+size_flags_horizontal = 3
 current_tab = 0
+tabs_visible = false
 
-[node name="Camera" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=570446478]
+[node name="Camera" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=570446478]
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 0
 
-[node name="CameraContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Camera" unique_id=381391824]
+[node name="CameraContents" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Camera" unique_id=381391824]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"MenuVBox"
 
-[node name="SensitivityRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=1681877541]
+[node name="SensitivityRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=1681877541]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SensitivityLabel" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/SensitivityRow" unique_id=1811598776]
+[node name="SensitivityLabel" type="Label" parent="Surface/Contents/Body/Tabs/Camera/CameraContents/SensitivityRow" unique_id=1811598776]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Orbit and pan sensitivity"
 
-[node name="SensitivityValue" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/SensitivityRow" unique_id=1908655563]
+[node name="SensitivityValue" type="Label" parent="Surface/Contents/Body/Tabs/Camera/CameraContents/SensitivityRow" unique_id=1908655563]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1.0×"
 horizontal_alignment = 2
 
-[node name="Sensitivity" type="HSlider" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=987420724]
+[node name="Sensitivity" type="HSlider" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=987420724]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -88,24 +141,24 @@ max_value = 2.5
 step = 0.1
 value = 1.0
 
-[node name="ZoomSensitivityRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=1146831016]
+[node name="ZoomSensitivityRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=1146831016]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ZoomSensitivityLabel" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/ZoomSensitivityRow" unique_id=1830599059]
+[node name="ZoomSensitivityLabel" type="Label" parent="Surface/Contents/Body/Tabs/Camera/CameraContents/ZoomSensitivityRow" unique_id=1830599059]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Zoom sensitivity"
 
-[node name="ZoomSensitivityValue" type="Label" parent="Surface/Contents/Tabs/Camera/CameraContents/ZoomSensitivityRow" unique_id=1435700968]
+[node name="ZoomSensitivityValue" type="Label" parent="Surface/Contents/Body/Tabs/Camera/CameraContents/ZoomSensitivityRow" unique_id=1435700968]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1.0×"
 horizontal_alignment = 2
 
-[node name="ZoomSensitivity" type="HSlider" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=739238083]
+[node name="ZoomSensitivity" type="HSlider" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=739238083]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -114,54 +167,54 @@ max_value = 2.5
 step = 0.1
 value = 1.0
 
-[node name="InvertX" type="CheckBox" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=1141692536]
+[node name="InvertX" type="CheckBox" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=1141692536]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Invert horizontal orbit"
 
-[node name="InvertY" type="CheckBox" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=220030852]
+[node name="InvertY" type="CheckBox" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=220030852]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Invert vertical orbit"
 
-[node name="ResetCamera" type="Button" parent="Surface/Contents/Tabs/Camera/CameraContents" unique_id=1534755265]
+[node name="ResetCamera" type="Button" parent="Surface/Contents/Body/Tabs/Camera/CameraContents" unique_id=1534755265]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_type_variation = &"ToolbarButton"
 text = "Reset camera view"
 
-[node name="Audio" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=1345339658]
+[node name="Audio" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=1345339658]
 visible = false
 custom_minimum_size = Vector2(0, 340)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 1
 
-[node name="AudioContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Audio" unique_id=406467481]
+[node name="AudioContents" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Audio" unique_id=406467481]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"MenuVBox"
 
-[node name="MasterRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=1051336653]
+[node name="MasterRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=1051336653]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MasterLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MasterRow" unique_id=325878580]
+[node name="MasterLabel" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/MasterRow" unique_id=325878580]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Master volume"
 
-[node name="MasterValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MasterRow" unique_id=920300177]
+[node name="MasterValue" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/MasterRow" unique_id=920300177]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="Master" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=1063066538]
+[node name="Master" type="HSlider" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=1063066538]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -169,24 +222,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="MusicRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=67911349]
+[node name="MusicRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=67911349]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MusicLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MusicRow" unique_id=1549579347]
+[node name="MusicLabel" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/MusicRow" unique_id=1549579347]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Music"
 
-[node name="MusicValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/MusicRow" unique_id=1780697581]
+[node name="MusicValue" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/MusicRow" unique_id=1780697581]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="Music" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=1327947523]
+[node name="Music" type="HSlider" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=1327947523]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -194,24 +247,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="SFXRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=18703146]
+[node name="SFXRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=18703146]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SFXLabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/SFXRow" unique_id=2099229132]
+[node name="SFXLabel" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/SFXRow" unique_id=2099229132]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sound effects"
 
-[node name="SFXValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/SFXRow" unique_id=1245355221]
+[node name="SFXValue" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/SFXRow" unique_id=1245355221]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="SFX" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=727298847]
+[node name="SFX" type="HSlider" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=727298847]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -219,24 +272,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="UIRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=1747614325]
+[node name="UIRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=1747614325]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="UILabel" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/UIRow" unique_id=391624189]
+[node name="UILabel" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/UIRow" unique_id=391624189]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Interface sounds"
 
-[node name="UIValue" type="Label" parent="Surface/Contents/Tabs/Audio/AudioContents/UIRow" unique_id=87243099]
+[node name="UIValue" type="Label" parent="Surface/Contents/Body/Tabs/Audio/AudioContents/UIRow" unique_id=87243099]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="UI" type="HSlider" parent="Surface/Contents/Tabs/Audio/AudioContents" unique_id=419252914]
+[node name="UI" type="HSlider" parent="Surface/Contents/Body/Tabs/Audio/AudioContents" unique_id=419252914]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -244,30 +297,30 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="Display" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=314967618]
+[node name="Display" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=314967618]
 visible = false
 custom_minimum_size = Vector2(0, 340)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 2
 
-[node name="DisplayContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Display" unique_id=1469244776]
+[node name="DisplayContents" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Display" unique_id=1469244776]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"MenuVBox"
 
-[node name="WindowModeRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=1579295355]
+[node name="WindowModeRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=1579295355]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="WindowModeLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/WindowModeRow" unique_id=660106782]
+[node name="WindowModeLabel" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/WindowModeRow" unique_id=660106782]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Window mode"
 
-[node name="WindowMode" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/WindowModeRow" unique_id=2073864140]
+[node name="WindowMode" type="OptionButton" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/WindowModeRow" unique_id=2073864140]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 40)
 layout_mode = 2
@@ -280,17 +333,17 @@ popup/item_1/id = 1
 popup/item_2/text = "Exclusive fullscreen"
 popup/item_2/id = 2
 
-[node name="ResolutionRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=140480016]
+[node name="ResolutionRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=140480016]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ResolutionLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/ResolutionRow" unique_id=1886775781]
+[node name="ResolutionLabel" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/ResolutionRow" unique_id=1886775781]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Window size"
 
-[node name="Resolution" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/ResolutionRow" unique_id=645060528]
+[node name="Resolution" type="OptionButton" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/ResolutionRow" unique_id=645060528]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 40)
 layout_mode = 2
@@ -305,23 +358,23 @@ popup/item_2/id = 2
 popup/item_3/text = "2560 × 1440"
 popup/item_3/id = 3
 
-[node name="VSync" type="CheckBox" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=2138615123]
+[node name="VSync" type="CheckBox" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=2138615123]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 text = "VSync"
 
-[node name="FrameLimitRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=239557572]
+[node name="FrameLimitRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=239557572]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FrameLimitLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/FrameLimitRow" unique_id=1673569430]
+[node name="FrameLimitLabel" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/FrameLimitRow" unique_id=1673569430]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Frame rate limit"
 
-[node name="FrameLimit" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/FrameLimitRow" unique_id=719317700]
+[node name="FrameLimit" type="OptionButton" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/FrameLimitRow" unique_id=719317700]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 40)
 layout_mode = 2
@@ -340,17 +393,17 @@ popup/item_4/id = 4
 popup/item_5/text = "240 FPS"
 popup/item_5/id = 5
 
-[node name="AntiAliasingRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=191164902]
+[node name="AntiAliasingRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=191164902]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AntiAliasingLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/AntiAliasingRow" unique_id=1967323939]
+[node name="AntiAliasingLabel" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/AntiAliasingRow" unique_id=1967323939]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Anti-aliasing"
 
-[node name="AntiAliasing" type="OptionButton" parent="Surface/Contents/Tabs/Display/DisplayContents/AntiAliasingRow" unique_id=1662489572]
+[node name="AntiAliasing" type="OptionButton" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/AntiAliasingRow" unique_id=1662489572]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 40)
 layout_mode = 2
@@ -365,24 +418,24 @@ popup/item_2/id = 2
 popup/item_3/text = "MSAA 8×"
 popup/item_3/id = 3
 
-[node name="RenderScaleRow" type="HBoxContainer" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=1259896212]
+[node name="RenderScaleRow" type="HBoxContainer" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=1259896212]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RenderScaleLabel" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/RenderScaleRow" unique_id=1632946898]
+[node name="RenderScaleLabel" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/RenderScaleRow" unique_id=1632946898]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "3D render resolution"
 
-[node name="RenderScaleValue" type="Label" parent="Surface/Contents/Tabs/Display/DisplayContents/RenderScaleRow" unique_id=1790753538]
+[node name="RenderScaleValue" type="Label" parent="Surface/Contents/Body/Tabs/Display/DisplayContents/RenderScaleRow" unique_id=1790753538]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
 
-[node name="RenderScale" type="HSlider" parent="Surface/Contents/Tabs/Display/DisplayContents" unique_id=1813369260]
+[node name="RenderScale" type="HSlider" parent="Surface/Contents/Body/Tabs/Display/DisplayContents" unique_id=1813369260]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -391,20 +444,20 @@ max_value = 1.0
 step = 0.05
 value = 1.0
 
-[node name="Controls" type="ScrollContainer" parent="Surface/Contents/Tabs" unique_id=107487535]
+[node name="Controls" type="ScrollContainer" parent="Surface/Contents/Body/Tabs" unique_id=107487535]
 visible = false
 custom_minimum_size = Vector2(0, 390)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 3
 
-[node name="ControlsContents" type="VBoxContainer" parent="Surface/Contents/Tabs/Controls" unique_id=1582959729]
+[node name="ControlsContents" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Controls" unique_id=1582959729]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"MenuVBox"
 
-[node name="MouseControls" type="Label" parent="Surface/Contents/Tabs/Controls/ControlsContents" unique_id=1686362736]
+[node name="MouseControls" type="Label" parent="Surface/Contents/Body/Tabs/Controls/ControlsContents" unique_id=1686362736]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Click / drag to select and move · Shift-click to add
@@ -412,14 +465,14 @@ Right drag to orbit · Middle drag to pan · Wheel to zoom
 Shift + middle drag to pan vertically · Double-click for connected tracks"
 autowrap_mode = 3
 
-[node name="BindingStatus" type="Label" parent="Surface/Contents/Tabs/Controls/ControlsContents" unique_id=929908874]
+[node name="BindingStatus" type="Label" parent="Surface/Contents/Body/Tabs/Controls/ControlsContents" unique_id=929908874]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "Click a shortcut to change it. Escape always cancels."
 autowrap_mode = 3
 
-[node name="Bindings" type="VBoxContainer" parent="Surface/Contents/Tabs/Controls/ControlsContents" unique_id=155015549]
+[node name="Bindings" type="VBoxContainer" parent="Surface/Contents/Body/Tabs/Controls/ControlsContents" unique_id=155015549]
 unique_name_in_owner = true
 layout_mode = 2
 

@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://bfeabh60a4uqs" path="res://assets/ui/icons/undo.svg" id="9_qgxrt"]
 [ext_resource type="FontVariation" uid="uid://cjn1xwbbi552l" path="res://assets/font/nunito-sans/regular.tres" id="11_cqjf2"]
 [ext_resource type="FontVariation" uid="uid://d36eupm0ycdkj" path="res://assets/font/nunito-sans/bold.tres" id="Bold"]
+[ext_resource type="Texture2D" uid="uid://q16eor38uptg" path="res://assets/ui/icons/checkbox.svg" id="Checkbox"]
+[ext_resource type="Texture2D" uid="uid://d2kfoyikygge7" path="res://assets/ui/icons/checkbox_checked.svg" id="CheckboxChecked"]
 [ext_resource type="Texture2D" uid="uid://b05gflfkgdaxw" path="res://assets/ui/icons/cancel.svg" id="Icon_cancel"]
 [ext_resource type="Texture2D" uid="uid://vpqn7wneiebj" path="res://assets/ui/icons/collapse.svg" id="Icon_collapse"]
 [ext_resource type="Texture2D" uid="uid://8gayhn8crogy" path="res://assets/ui/icons/duplicate.svg" id="Icon_duplicate"]
@@ -26,19 +28,41 @@
 [ext_resource type="Texture2D" uid="uid://chmbtvye6c8wg" path="res://assets/ui/icons/stop.svg" id="Icon_stop"]
 [ext_resource type="FontVariation" uid="uid://di626pcgos8u2" path="res://assets/font/nunito-sans/semibold.tres" id="Semibold"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cqjf2"]
-content_margin_left = 16.0
-content_margin_top = 16.0
-content_margin_right = 16.0
-content_margin_bottom = 16.0
-bg_color = Color(0.07058824, 0.14901961, 0.18039216, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-shadow_color = Color(0, 0, 0, 0.18)
-shadow_size = 5
-shadow_offset = Vector2(0, 3)
+[sub_resource type="StyleBoxFlat" id="DialogSurface"]
+content_margin_left = 28.0
+content_margin_top = 24.0
+content_margin_right = 28.0
+content_margin_bottom = 24.0
+bg_color = Color(0.045, 0.094, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.29, 0.32, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="AuthoringTabSelected"]
+content_margin_left = 8.0
+content_margin_top = 10.0
+content_margin_right = 8.0
+content_margin_bottom = 10.0
+bg_color = Color(0.1, 0.22, 0.24, 1)
+border_width_bottom = 2
+border_color = Color(0.33, 0.85, 0.69, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+
+[sub_resource type="StyleBoxFlat" id="AuthoringTab"]
+content_margin_left = 8.0
+content_margin_top = 10.0
+content_margin_right = 8.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ga0a"]
 content_margin_left = 12.0
@@ -111,6 +135,13 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="FormCheck"]
+content_margin_left = 4.0
+content_margin_top = 8.0
+content_margin_right = 4.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgxrt"]
 content_margin_left = 12.0
 content_margin_top = 12.0
@@ -157,6 +188,24 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="CategorySelected"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.1, 0.22, 0.24, 1)
+border_width_left = 3
+border_color = Color(0.33, 0.85, 0.69, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="FormHeading"]
+content_margin_top = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 1
+border_color = Color(0.24, 0.38, 0.4, 0.6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sckdx"]
 content_margin_left = 4.0
@@ -636,7 +685,12 @@ AccentLabel/font_sizes/font_size = 16
 AccentSmallLabel/base_type = &"Label"
 AccentSmallLabel/colors/font_color = Color(0.4745098, 0.9098039, 0.7372549, 1)
 AccentSmallLabel/font_sizes/font_size = 14
-AcceptDialog/styles/panel = SubResource("StyleBoxFlat_cqjf2")
+AcceptDialog/styles/panel = SubResource("DialogSurface")
+AuthoringTab/base_type = &"QuietButton"
+AuthoringTab/font_sizes/font_size = 14
+AuthoringTab/styles/hover = SubResource("AuthoringTabSelected")
+AuthoringTab/styles/normal = SubResource("AuthoringTab")
+AuthoringTab/styles/pressed = SubResource("AuthoringTabSelected")
 BrandMenuVBox/base_type = &"VBoxContainer"
 BrandMenuVBox/constants/separation = 32
 BrandTitle/base_type = &"Label"
@@ -653,6 +707,9 @@ Button/styles/focus = SubResource("StyleBoxFlat_r5doh")
 Button/styles/hover = SubResource("StyleBoxFlat_puc0v")
 Button/styles/normal = SubResource("StyleBoxFlat_pqwce")
 Button/styles/pressed = SubResource("StyleBoxFlat_yh70q")
+CardCaption/base_type = &"Label"
+CardCaption/font_sizes/font_size = 14
+CardCaption/fonts/font = ExtResource("Semibold")
 CardLabel/base_type = &"Label"
 CardLabel/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 CardLabel/font_sizes/font_size = 16
@@ -671,6 +728,14 @@ CatalogSearch/styles/normal = SubResource("InventoryCard")
 CelebrationTitle/base_type = &"DialogTitle"
 CelebrationTitle/colors/font_color = Color(0.973, 0.855, 0.439, 1)
 CelebrationTitle/font_sizes/font_size = 34
+CheckBox/colors/font_disabled_color = Color(0.48, 0.6, 0.62, 1)
+CheckBox/icons/checked = ExtResource("CheckboxChecked")
+CheckBox/icons/checked_disabled = ExtResource("CheckboxChecked")
+CheckBox/icons/unchecked = ExtResource("Checkbox")
+CheckBox/icons/unchecked_disabled = ExtResource("Checkbox")
+CheckBox/styles/disabled = SubResource("FormCheck")
+CheckBox/styles/normal = SubResource("FormCheck")
+CheckBox/styles/pressed = SubResource("FormCheck")
 CheckButton/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 CheckButton/colors/font_disabled_color = Color(0.65, 0.72, 0.72, 1)
 CompactVBox/base_type = &"VBoxContainer"
@@ -690,13 +755,34 @@ DangerButton/base_type = &"Button"
 DangerButton/styles/hover = SubResource("StyleBoxFlat_lr47i")
 DangerButton/styles/normal = SubResource("StyleBoxFlat_fvjs3")
 DangerButton/styles/pressed = SubResource("StyleBoxFlat_vf6no")
+DialogCategory/base_type = &"QuietButton"
+DialogCategory/font_sizes/font_size = 17
+DialogCategory/fonts/font = ExtResource("Semibold")
+DialogCategory/styles/pressed = SubResource("CategorySelected")
+DialogColumns/base_type = &"HBoxContainer"
+DialogColumns/constants/separation = 24
+DialogContents/base_type = &"VBoxContainer"
+DialogContents/constants/separation = 20
+DialogFooter/base_type = &"HBoxContainer"
+DialogFooter/constants/separation = 12
 DialogTitle/base_type = &"Label"
 DialogTitle/colors/font_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 DialogTitle/font_sizes/font_size = 28
 DialogTitle/fonts/font = ExtResource("Bold")
+DockRows/base_type = &"VBoxContainer"
+DockRows/constants/separation = 6
 ErrorLabel/base_type = &"Label"
 ErrorLabel/colors/font_color = Color(1, 0.5294118, 0.5647059, 1)
 ErrorLabel/font_sizes/font_size = 16
+FieldPair/base_type = &"VBoxContainer"
+FieldPair/constants/separation = 4
+FormFields/base_type = &"VBoxContainer"
+FormFields/constants/separation = 12
+FormHeading/base_type = &"Label"
+FormHeading/colors/font_color = Color(0.62, 0.85, 0.79, 1)
+FormHeading/font_sizes/font_size = 15
+FormHeading/fonts/font = ExtResource("Bold")
+FormHeading/styles/normal = SubResource("FormHeading")
 GridContainer/constants/h_separation = 8
 GridContainer/constants/v_separation = 8
 HBoxContainer/constants/separation = 8
@@ -740,11 +826,10 @@ LineEdit/colors/font_placeholder_color = Color(0.6117647, 0.73333335, 0.7411765,
 LineEdit/styles/focus = SubResource("StyleBoxFlat_qtils")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_aaywg")
 MechanismWiring/colors/backdrop = Color(0.035, 0.12, 0.14, 0.92)
-MechanismWiring/colors/input = Color(0.55, 0.75, 0.94, 1)
-MechanismWiring/colors/invalid = Color(0.96, 0.39, 0.43, 0.55)
-MechanismWiring/colors/output = Color(0.33, 0.89, 0.73, 1)
-MechanismWiring/colors/selected = Color(1, 0.82, 0.48, 1)
-MechanismWiring/colors/wire = Color(0.5, 0.74, 0.71, 0.85)
+MechanismWiring/colors/input = Color(0.57, 0.6, 1, 1)
+MechanismWiring/colors/invalid = Color(0.46, 0.53, 0.57, 1)
+MechanismWiring/colors/output = Color(0.23, 0.95, 0.76, 1)
+MechanismWiring/colors/selected = Color(1, 0.79, 0.35, 1)
 MenuCompositionMargin/base_type = &"MarginContainer"
 MenuCompositionMargin/constants/margin_bottom = 0
 MenuCompositionMargin/constants/margin_left = 0
@@ -818,6 +903,10 @@ QuietButton/base_type = &"Button"
 QuietButton/styles/hover = SubResource("StyleBoxFlat_ckdv7")
 QuietButton/styles/normal = SubResource("StyleBoxFlat_md3ju")
 QuietButton/styles/pressed = SubResource("QuietSelected")
+RichMutedLabel/base_type = &"RichTextLabel"
+RichMutedLabel/colors/default_color = Color(0.612, 0.733, 0.741, 1)
+RichMutedLabel/font_sizes/normal_font_size = 14
+RichTextLabel/colors/default_color = Color(0.902, 0.949, 0.929, 1)
 RouteList/base_type = &"ItemList"
 RouteList/constants/h_separation = 12
 RouteList/constants/v_separation = 16
@@ -859,6 +948,7 @@ SuccessLabel/base_type = &"Label"
 SuccessLabel/colors/font_color = Color(0.4745098, 0.9098039, 0.7372549, 1)
 SuccessLabel/font_sizes/font_size = 17
 SurfacePanel/base_type = &"PanelContainer"
+SurfacePanel/styles/panel = SubResource("DialogSurface")
 TabBar/colors/font_hovered_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 TabBar/colors/font_selected_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 TabBar/colors/font_unselected_color = Color(0.6117647, 0.73333335, 0.7411765, 1)

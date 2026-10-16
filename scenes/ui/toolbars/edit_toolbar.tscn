@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://2dbm0hnss0ga" path="res://scripts/ui/edit_toolbar.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
 
-[node name="EditToolbar" type="HFlowContainer" unique_id=19964803]
+[node name="EditToolbar" type="HBoxContainer" unique_id=19964803]
 mouse_filter = 2
 theme = ExtResource("Theme")
 script = ExtResource("Script")
