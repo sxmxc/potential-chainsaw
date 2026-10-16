@@ -82,4 +82,4 @@ func test_campaign_rules() -> void:
 	var payload = {"version": 1, "name": "Link round trip", "pieces": build.snapshot()}
 	assert_true(serializer.decode(JSON.stringify(payload)).pieces == payload.pieces, "Mechanism links survive existing track serializer")
 	build.pieces[0].configuration.links[0].action = "unsupported"
-	assert_true(not workspace.world.build.validate_wiring().is_empty(), "Unsupported actions are rejected by link validator")
+	assert_true(not PieceWiring.validation_errors(build.pieces).is_empty(), "Unsupported actions are rejected by link validator")

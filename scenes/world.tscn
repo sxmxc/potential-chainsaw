@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="PCam"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="Tween"]
 
+[ext_resource type="Script" uid="uid://3ir4ok1l357d" path="res://scripts/simulation/piece_wiring.gd" id="Wiring"]
+
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_m1kxf"]
 stream_count = 1
 stream_0 = ExtResource("2_71j4m")
@@ -129,3 +131,6 @@ camera_3d_resource = SubResource("FreeLens")
 script = ExtResource("CameraController")
 
 [node name="MarbleChase" parent="SimulationCamera" unique_id=1781605180 instance=ExtResource("Chase")]
+
+[node name="PieceWiring" type="Node" parent="SimulationManager"]
+script = ExtResource("Wiring")

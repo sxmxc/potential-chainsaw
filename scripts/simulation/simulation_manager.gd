@@ -6,9 +6,7 @@ signal state_changed(state: State, message: String)
 signal arrived
 signal objective_progress
 var connect_before_run: bool = false
-@export_range(1, 65536, 1) var signal_delivery_limit: int = 16384
-var signal_queue: Array[Dictionary] = []
-var draining_signals: bool = false
+@onready var wiring: PieceWiring = $PieceWiring
 var state: State = State.BUILD
 var build: BuildManager
 var marble: Marble
@@ -18,6 +16,10 @@ var objectives = PuzzleObjectives.new()
 var puzzle: Dictionary = {}
 var construction_before: Array = []
 var elapsed: float = 0
+
+func _ready() -> void:
+	wiring.output_observed.connect(_observe_output)
+	wiring.failed.connect(func(message): _end(State.FAILED, message))
 
 func start() -> bool:
 	reset()
@@ -33,7 +35,7 @@ func start() -> bool:
 	if finishes.is_empty() and puzzle.get("objectives", []).any(func(objective): return objective.get("type", "deliver") == "deliver"):
 		state_changed.emit(State.BUILD,"Add a finish catcher to test the track.")
 		return false
-	var link_errors := build.validate_wiring()
+	var link_errors := PieceWiring.validation_errors(build.pieces)
 	if not link_errors.is_empty():
 		state_changed.emit(State.BUILD, "\n".join(link_errors))
 		return false
@@ -44,8 +46,6 @@ func start() -> bool:
 	objectives.reset(puzzle.get("objectives", []))
 	for piece in build.pieces:
 		for behavior_node in piece.behaviors:
-			var callback := _behavior_output.bind(piece)
-			if not behavior_node.output_raised.is_connected(callback): behavior_node.output_raised.connect(callback)
 			if behavior_node is MarbleRelease:
 				var released := _track_marble.bind(piece)
 				if not behavior_node.marble_spawned.is_connected(released): behavior_node.marble_spawned.connect(released)
@@ -55,27 +55,7 @@ func start() -> bool:
 	elapsed = 0
 	state = State.RUNNING
 	state_changed.emit(state,"Testing")
-	# Queue initial emissions until every receiver has entered its run lifecycle.
-	draining_signals = true
-	for piece in build.pieces:
-		for behavior_node in piece.behaviors:
-			behavior_node.initializing_signals = true
-			behavior_node.start_run()
-	# Seed persistent wires from configured initial output states after every reset.
-	for piece in build.pieces:
-		for behavior_node in piece.behaviors:
-			for port in behavior_node.state_outputs:
-				_behavior_output(port, behavior_node.output_values[port], piece)
-	draining_signals = false
-	_flush_signals()
-	# Gates expose an initial rising event only after seeded states settle.
-	# Keep those events queued until every component leaves initialization.
-	if state == State.RUNNING:
-		draining_signals = true
-		for piece in build.pieces:
-			for behavior_node in piece.behaviors: behavior_node.signals_ready()
-		draining_signals = false
-		_flush_signals()
+	wiring.start(build.pieces)
 	return state == State.RUNNING
 
 func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:
@@ -86,33 +66,10 @@ func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:
 	marbles.append(body)
 	if not is_instance_valid(marble): marble = body
 
-func _behavior_output(port: String, value: Variant, piece: BuildingPiece) -> void:
-	if state != State.RUNNING: return
+func _observe_output(port: String, value: Variant, piece: BuildingPiece) -> void:
 	var body: RigidBody3D = value if value is RigidBody3D else null
 	objectives.activated(port, body, piece)
 	objective_progress.emit()
-	signal_queue.append({"source": piece, "port": port, "value": value})
-	_flush_signals()
-
-func _flush_signals() -> void:
-	if draining_signals: return
-	draining_signals = true
-	var deliveries := 0
-	# FIFO preserves source emissions and saved link order. An action's outputs
-	# join the queue instead of recursing or being discarded.
-	while not signal_queue.is_empty() and state == State.RUNNING:
-		var emission: Dictionary = signal_queue.pop_front()
-		for link in emission.source.configuration.get("links", []):
-			if link.get("event") != emission.port: continue
-			var target := build.find_piece(link.get("target", ""))
-			if not target or not target.input_ports.has(link.get("action", "")): continue
-			deliveries += 1
-			if deliveries > signal_delivery_limit:
-				signal_queue.clear()
-				_end(State.FAILED, "Signal loop did not settle. Check the wiring.")
-				break
-			target.input_ports[link.action].receive(link.action, emission.value)
-	draining_signals = false
 
 func _physics_process(delta: float) -> void:
 	if state != State.RUNNING: return
@@ -143,8 +100,7 @@ func _on_finish(body: Node3D, collector: String) -> void:
 
 func _end(result: State, message: String) -> void:
 	state = result
-	for piece in build.pieces:
-		for behavior_node in piece.behaviors: behavior_node.active = false
+	wiring.stop()
 	state_changed.emit(state,message)
 
 func toggle_pause() -> void:
@@ -163,12 +119,7 @@ func toggle_pause() -> void:
 				body.angular_velocity = velocities[1]
 		state = State.RUNNING
 	else: return
-	for piece in build.pieces:
-		for behavior_node in piece.behaviors: behavior_node.active = state == State.RUNNING
-	if state == State.RUNNING:
-		for piece in build.pieces:
-			for behavior_node in piece.behaviors:
-				for port in behavior_node.state_outputs: _behavior_output(port, behavior_node.output_values[port], piece)
+	wiring.set_paused(state == State.PAUSED)
 	if state in [State.RUNNING, State.PAUSED]:
 		state_changed.emit(state, "Paused" if state == State.PAUSED else "Testing")
 
@@ -176,10 +127,7 @@ func reset() -> void:
 	var restore_connect := state != State.BUILD and connect_before_run
 	connect_before_run = false
 	state = State.BUILD
-	signal_queue.clear()
-	if build:
-		for piece in build.pieces:
-			for behavior_node in piece.behaviors: behavior_node.reset()
+	if build: wiring.reset(build.pieces)
 	for body in marbles:
 		if is_instance_valid(body):
 			remove_child(body)

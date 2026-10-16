@@ -107,7 +107,7 @@ func test_initial_state_settles_before_gate_pulses_and_repeated_runs_are_clean()
 	var inverse := module("not")
 	link(memory, "state", inverse, "a")
 	link(inverse, "rising", build.find_piece("release"), "release")
-	assert_true(build.validate_wiring().is_empty())
+	assert_true(PieceWiring.validation_errors(build.pieces).is_empty())
 	assert_eq(memory.compatible_actions(inverse, "state"), ["a"])
 	assert_false("a" in memory.compatible_actions(inverse, "changed"))
 	for run in 3:
@@ -132,10 +132,36 @@ func test_fifo_command_order_and_feedback_limit() -> void:
 	assert_true(memory.behaviors[0].output_values.state, "Saved link order is set, reset, toggle")
 	simulation.reset()
 	link(memory, "changed", memory, "toggle")
-	simulation.signal_delivery_limit = 32
+	simulation.wiring.delivery_limit = 32
 	assert_false(simulation.start(), "Non-settling pulse feedback fails the run")
 	assert_eq(simulation.state, SimulationManager.State.FAILED)
-	assert_true(simulation.signal_queue.is_empty())
+	assert_false(memory.behaviors[0].active, "Signal failure stops receiver activity")
+
+func test_reset_rebuilds_wiring_after_link_edits_and_history_restore() -> void:
+	var source := release({"signal_controlled": true})
+	var memory := mount_on(source)
+	link(source, "released", memory, "toggle")
+	for run in 2:
+		assert_true(simulation.start())
+		source.behaviors[0].receive("release")
+		assert_true(memory.behaviors[0].output_values.state, "Each run delivers exactly one toggle")
+		simulation.reset()
+	assert_true(build.edit_link("release", 0, {"event": "released", "target": "memory", "action": "set"}))
+	build.undo()
+	# History replaces the live piece nodes while keeping their saved UIDs.
+	source = build.find_piece("release")
+	memory = build.find_piece("memory")
+	assert_true(simulation.start())
+	source.behaviors[0].receive("release")
+	assert_true(memory.behaviors[0].output_values.state, "Restored wiring resolves the current receiver")
+	simulation.reset()
+	build.redo()
+	source = build.find_piece("release")
+	memory = build.find_piece("memory")
+	assert_true(simulation.start())
+	memory.behaviors[0].receive("set")
+	source.behaviors[0].receive("release")
+	assert_true(memory.behaviors[0].output_values.state, "Redo uses set, with no stale toggle connection")
 
 func mount_on(support: BuildingPiece, id: String = "memory") -> BuildingPiece:
 	var normal := Vector3.RIGHT

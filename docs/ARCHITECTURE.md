@@ -65,7 +65,9 @@ Ordinary Sandbox testing requires at least one release, runs every placed releas
 
 Links are saved on the source instance in `config.links` as `{event, target, action}`. The target is a UID and the other fields are port names, so reorganizing a model's internal nodes need not break saved wiring. `BuildManager.edit_link()` applies the normal permission, validation, and history rules.
 
-Pulse ports describe events; state ports latch a value. Simulation delivers signals in FIFO order, preserving emission and saved-link order. Receiver outputs join the queue rather than recurse. State ports suppress unchanged values, allowing feedback to settle. A transaction exceeding the scene's delivery limit fails the run with a wiring error. This protects a run from an endless signal loop without silently dropping actions. Initial persistent states settle before the shared `signals_ready()` behavior hook exposes initial gate activation events; pause/resume reseeding does not repeat that hook.
+Pulse ports describe events; state ports latch a value. `PieceWiring`, a child of SimulationManager, validates behavior contracts and links, resolves saved UIDs and ports to live receivers once per run, and owns behavior startup, pause/resume, and reset. It disconnects run connections on reset so edits and history restoration cannot retain old receivers. SimulationManager observes outputs for objectives and handles wiring failures as run outcomes. Authoring validation calls the same wiring validator; BuildManager owns only the edits.
+
+PieceWiring delivers signals in FIFO order, preserving emission and saved-link order. Receiver outputs join the queue rather than recurse. State ports suppress unchanged values, allowing feedback to settle. A transaction exceeding the scene's delivery limit fails the run with a wiring error. This protects a run from an endless signal loop without silently dropping actions. Initial persistent states settle before the shared `signals_ready()` behavior hook exposes initial gate activation events; pause/resume reseeding does not repeat that hook.
 
 ## Persistence and distribution
 

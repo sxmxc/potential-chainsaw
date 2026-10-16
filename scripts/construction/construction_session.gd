@@ -244,7 +244,7 @@ func publish() -> bool:
 func validate(require_solution: bool = true) -> Array[String]:
 	var data := capture()
 	var errors := store.publication_errors(data) if require_solution else PuzzleRules.definition_errors(data, catalog)
-	errors.append_array(world.build.validate_wiring())
+	errors.append_array(PieceWiring.validation_errors(world.build.pieces))
 	return errors
 
 func set_permissions(values: Dictionary) -> void:
