@@ -48,4 +48,4 @@ func _update_display() -> void:
 		indicator.visible = not pending.is_empty()
 		if not pending.is_empty():
 			indicator.scale.x = clampf(1.0 - (float(pending[0].due) - elapsed) / delay_seconds, 0.001, 1.0)
-	if readout: readout.text = "%g s" % delay_seconds
+	if readout: readout.text = "%ds" % delay_seconds

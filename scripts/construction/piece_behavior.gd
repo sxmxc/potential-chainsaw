@@ -69,3 +69,18 @@ func output_ports() -> Array:
 
 func is_marble(body: Node3D) -> bool:
 	return body is RigidBody3D and body.collision_layer & 2 != 0
+
+func get_setting(key: StringName) -> PieceSetting:
+	for setting: PieceSetting in configuration_fields:
+		if setting != null and setting.key == key:
+			return setting
+
+	return null
+	
+func get_config_property(key: StringName, property: StringName) -> Variant:
+	var setting := get_setting(key)
+
+	if setting == null:
+		return null
+
+	return setting.get(property)

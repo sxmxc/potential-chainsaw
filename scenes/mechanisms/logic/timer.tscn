@@ -8,11 +8,12 @@
 script = ExtResource("Setting")
 key = &"frequency"
 label = "Frequency"
-description = "Signals per second. 2 sends one signal every half-second."
+description = "Timer duration"
 default_number = 1.0
-minimum = 0.01
+minimum = 0.5
 maximum = 60.0
-unit = "signals/s"
+step = 0.5
+unit = "s"
 
 [sub_resource type="Resource" id="Loop"]
 script = ExtResource("Setting")
@@ -47,11 +48,8 @@ radial_segments = 32
 [sub_resource type="BoxMesh" id="Hand"]
 size = Vector3(0.008, 0.006, 0.043)
 
-[node name="Timer" type="Node3D" unique_id=395286610 node_paths=PackedStringArray("indicator", "readout", "clock_hand")]
+[node name="Timer" type="Node3D" unique_id=395286610]
 script = ExtResource("Behavior")
-indicator = NodePath("Housing/Indicator")
-readout = NodePath("Readout")
-clock_hand = NodePath("ClockHand")
 configuration_fields = Array[ExtResource("Setting")]([SubResource("Frequency"), SubResource("Loop"), SubResource("AutoStart")])
 
 [node name="Housing" parent="." unique_id=337219451 instance=ExtResource("Housing")]
@@ -69,7 +67,7 @@ outline_size = 2
 [node name="Readout" type="Label3D" parent="." unique_id=288364083]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.045, 0.15, 0.017)
 pixel_size = 0.003
-text = "1 /s"
+text = "1s"
 font_size = 20
 outline_size = 2
 
@@ -113,5 +111,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.103, 0.15, -0.025)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.018)
 material_override = SubResource("Cover")
 mesh = SubResource("Hand")
+
+[node name="Timer" type="Timer" parent="." unique_id=2065214927]
 
 [editable path="Housing"]

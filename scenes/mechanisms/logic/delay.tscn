@@ -11,6 +11,7 @@ label = "Delay"
 description = "Wait this many seconds for each input. Zero forwards immediately. Reset clears waiting signals."
 default_number = 1.0
 maximum = 600.0
+step = 0.5
 unit = "s"
 
 [sub_resource type="StandardMaterial3D" id="Cover"]

@@ -938,9 +938,11 @@ _property_index = Dictionary[StringName, Dictionary]({
 "logic": {
 &"logic-and": true,
 &"logic-counter": true,
+&"logic-delay": true,
 &"logic-memory": true,
 &"logic-not": true,
-&"logic-or": true
+&"logic-or": true,
+&"logic-timer": true
 },
 "resizable_support": {
 &"support-color-four": true,
@@ -1309,9 +1311,11 @@ _property_index = Dictionary[StringName, Dictionary]({
 "Logic": {
 &"logic-and": true,
 &"logic-counter": true,
+&"logic-delay": true,
 &"logic-memory": true,
 &"logic-not": true,
-&"logic-or": true
+&"logic-or": true,
+&"logic-timer": true
 },
 "Mechanisms": {
 &"bucket-elevator": true,
