@@ -65,6 +65,8 @@ Ordinary marble motion uses rigid-body physics. The bucket elevator temporarily 
 
 Ordinary Sandbox testing requires at least one release, runs every placed release, and has no deadline. A catcher ends that run on arrival. Puzzle contexts may have several releases and must satisfy every authored objective before the run deadline; an omitted deadline defaults to 90 seconds. Losing a marble fails the run. Delivery objectives count distinct marbles, optionally from one release. Activation objectives record that a named output occurred, not how often. No objective compares the player layout to a reference solution.
 
+`PuzzleObjectives` owns run delivery and activation records, progress queries, and the `changed` signal. Simulation records outcomes and checks `satisfied()`; the toolbar reads `progress()` through the same counting rules. World guidance queries target activity (any delivery or output), preserving its first-activity advance condition rather than requiring an entire goal. Presentation subscribes directly to the objective owner; reset clears its records and notifies subscribers. Consumers do not interpret the internal record dictionaries.
+
 ### Signals between pieces
 
 Links are saved on the source instance in `config.links` as `{event, target, action}`. The target is a UID and the other fields are port names, so reorganizing a model's internal nodes need not break saved wiring. `BuildManager.edit_link()` applies the normal permission, validation, and history rules.

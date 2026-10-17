@@ -22,10 +22,10 @@ func test_collection_outputs_track_deliveries_and_wired_actions_across_runs() ->
 		var catcher := collector.behaviors[0] as MarbleCollector
 		catcher.call("_collect_marble", first)
 		catcher.call("_collect_marble", first)
-		assert_eq(simulation.objectives.deliveries.size(), 1, "Repeated collection cannot count a marble twice")
+		assert_eq(simulation.objectives.delivery_count("collector"), 1, "Repeated collection cannot count a marble twice")
 		assert_false(simulation.objectives.satisfied(simulation.elapsed), "The objective filters the release identity")
 		assert_eq(counter.behaviors[0].get("count"), 1, "Collection reaches a wired receiver exactly once")
-		assert_true(simulation.objectives.activations.has("collector:collected"))
+		assert_true(simulation.objectives.activation_seen("collector", "collected"))
 		catcher.call("_collect_marble", second)
 		assert_true(simulation.objectives.satisfied(simulation.elapsed))
 		assert_eq(counter.behaviors[0].get("count"), 2)
@@ -36,7 +36,8 @@ func test_collection_outputs_track_deliveries_and_wired_actions_across_runs() ->
 		assert_eq(first.collision_layer, 0)
 		simulation.reset()
 		assert_true(simulation.marbles.is_empty())
-		assert_true(simulation.objectives.deliveries.is_empty())
+		assert_eq(simulation.objectives.delivery_count("collector"), 0)
+		assert_false(simulation.objectives.has_activity("collector"))
 		assert_eq(counter.behaviors[0].get("count"), 0)
 
 func test_physics_collection_ends_sandbox_and_restart_uses_current_piece_nodes() -> void:
@@ -57,7 +58,7 @@ func test_physics_collection_ends_sandbox_and_restart_uses_current_piece_nodes()
 			await get_tree().physics_frame
 			if simulation.state == SimulationManager.State.SUCCESS: break
 		assert_eq(simulation.state, SimulationManager.State.SUCCESS, "The real collector Area ends a Sandbox run")
-		assert_eq(simulation.objectives.deliveries.size(), 1)
+		assert_eq(simulation.objectives.delivery_count("collector"), 1)
 		simulation.reset()
 		build.restore(construction)
 		assert_eq(build.snapshot(), construction, "Replacing live nodes retains the build and fresh run connections")

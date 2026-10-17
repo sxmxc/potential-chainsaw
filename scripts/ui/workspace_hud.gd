@@ -63,7 +63,6 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	simulation.state_changed.connect(_state_changed)
 	session.changed.connect(refresh)
 	session.get_parent().guidance.changed.connect(refresh_guidance)
-	simulation.objective_progress.connect(func(): %FileToolbar.refresh())
 	refresh()
 func refresh_context() -> void:
 	guidance_motion.set_open(false, true)

@@ -31,7 +31,7 @@ func configure(value: ConstructionSession) -> void:
 	session.world.build.changed.connect(refresh)
 	session.world.build.selection_changed.connect(func(_piece): refresh())
 	session.world.build.options_changed.connect(refresh)
-	session.world.simulation.objective_progress.connect(refresh)
+	session.world.simulation.objectives.changed.connect(refresh)
 	session.world.simulation.state_changed.connect(func(state, _message):
 		if state == SimulationManager.State.BUILD: restart()
 		else: refresh())
@@ -114,10 +114,7 @@ func completed(step: Dictionary) -> bool:
 		"run_started": return session.world.simulation.state != SimulationManager.State.BUILD
 		"objective":
 			var objectives: PuzzleObjectives = session.world.simulation.objectives
-			for delivery in objectives.deliveries.values():
-				if delivery.collector == step.get("target", ""): return true
-			for key: String in objectives.activations:
-				if key.begins_with(str(step.get("target", "")) + ":"): return true
+			return objectives.has_activity(step.get("target", ""))
 	return false
 
 func resolve(step: Dictionary) -> Dictionary:

@@ -136,6 +136,31 @@ func test_simple_hint_fields_and_new_hint_do_not_inherit_advanced_settings() -> 
 	assert_true(editor.get_node("%Advanced").visible, "Editing a track-end hint reveals its saved settings")
 	assert_eq(editor.fields().connector, 0)
 
+func test_objective_notifications_update_toolbar_and_guidance_and_reset_together() -> void:
+	await setup_workspace()
+	var data := sample()
+	var target: String = data.objectives[0].target
+	data.objectives = [{"target": target, "source": "release", "count": 2}]
+	data.guidance = [{"kind": "target", "target": target, "appear": "always", "complete": "objective", "text": "Watch the catcher."}]
+	workspace.session.player(data, true)
+	workspace.guidance.request()
+	var objectives: PuzzleObjectives = workspace.world.simulation.objectives
+	var label: Label = workspace.hud.get_node("%FileToolbar").get_node("%Progress")
+	assert_eq(label.text, "0 / 2 arrived")
+	objectives.delivered(target, "other:0", "other")
+	assert_eq(label.text, "0 / 2 arrived", "HUD applies the goal's source filter")
+	assert_eq(workspace.guidance.step_index, 1, "Guidance still advances on first target activity")
+	objectives.delivered(target, "release:0", "release")
+	assert_eq(label.text, "1 / 2 arrived")
+	assert_false(objectives.satisfied(0))
+	objectives.delivered(target, "release:1", "release")
+	assert_eq(label.text, "2 / 2 arrived")
+	assert_true(objectives.satisfied(0))
+	workspace.world.simulation.reset()
+	workspace.guidance.request()
+	assert_eq(label.text, "0 / 2 arrived")
+	assert_eq(workspace.guidance.step_index, 0)
+
 func test_older_text_hints_use_the_same_owner_and_next_control() -> void:
 	await setup_workspace()
 	var data := sample()

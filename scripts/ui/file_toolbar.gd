@@ -11,6 +11,7 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	%RequestGuidance.pressed.connect(session.get_parent().guidance.request)
 	build=manager
 	simulation=simulator
+	simulation.objectives.changed.connect(refresh)
 	cameras=simulation.get_parent().simulation_camera
 	%FollowMarble.pressed.connect(cameras.toggle_follow)
 	%NextMarble.pressed.connect(cameras.next_marble)
@@ -62,12 +63,10 @@ func refresh() -> void:
 		%SaveStatus.theme_type_variation="MutedLabel"
 		var counts: Array[String] = []
 		for objective in session.puzzle.get("objectives", []):
+			var count := simulation.objectives.progress(objective)
 			if objective.get("type", "deliver") == "activate":
-				counts.append("Activated" if simulation.objectives.activations.has(objective.target + ":" + objective.get("event", "activated")) else "Waiting")
+				counts.append("Activated" if count > 0 else "Waiting")
 			else:
-				var count = 0
-				for delivery in simulation.objectives.deliveries.values():
-					if delivery.collector == objective.target and (objective.get("source", "").is_empty() or delivery.source == objective.source): count += 1
 				counts.append("%d / %d arrived" % [count, objective.get("count", 1)])
 		%Progress.text = " · ".join(counts)
 		%Progress.visible = not session.is_authoring and not counts.is_empty()

@@ -4,7 +4,6 @@ extends Node3D
 enum State { BUILD, RUNNING, PAUSED, SUCCESS, FAILED }
 signal state_changed(state: State, message: String)
 signal arrived
-signal objective_progress
 var connect_before_run: bool = false
 @onready var wiring: PieceWiring = $PieceWiring
 var state: State = State.BUILD
@@ -64,9 +63,7 @@ func _observe_output(port: String, value: Variant, piece: BuildingPiece) -> void
 		match port:
 			"released": _track_marble(value, piece)
 			"collected": _on_finish(value, piece.instance_id)
-	var body: RigidBody3D = value if value is RigidBody3D else null
-	objectives.activated(port, body, piece)
-	objective_progress.emit()
+	objectives.activated(piece.instance_id, port)
 
 func _physics_process(delta: float) -> void:
 	if state != State.RUNNING: return
@@ -86,7 +83,6 @@ func _on_finish(body: Node3D, collector: String) -> void:
 	if body not in marbles or state != State.RUNNING or body.get_meta("delivered", false): return
 	body.set_meta("delivered", true)
 	objectives.delivered(collector, body.get_meta("marble_id"), body.get_meta("source"))
-	objective_progress.emit()
 	body.set_deferred("freeze", true)
 	body.set_deferred("collision_layer", 0)
 	body.set_deferred("collision_mask", 0)
