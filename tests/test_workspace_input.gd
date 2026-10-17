@@ -1,5 +1,67 @@
 extends "res://tests/support/game_test.gd"
 
+func test_collection_outputs_track_deliveries_and_wired_actions_across_runs() -> void:
+	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
+	add_child_autoqfree(workspace)
+	await get_tree().process_frame
+	var build := workspace.world.build
+	var simulation := workspace.world.simulation
+	for index in 2:
+		build.spawn(workspace.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(index * 3, 3, 0)), "release-%d" % index)
+	var collector := build.spawn(workspace.catalog.get_piece("sandbox-finish"), Transform3D.IDENTITY, "collector", {"links": [{"event": "collected", "target": "counter", "action": "increment"}]})
+	var counter := build.spawn(workspace.catalog.get_piece("logic-counter"), Transform3D(Basis.IDENTITY, Vector3(4, 2, 0)), "counter")
+	simulation.puzzle = {"objectives": [{"type": "deliver", "target": "collector", "source": "release-1", "count": 1}]}
+	for run in 2:
+		assert_true(simulation.start())
+		assert_eq(simulation.marbles.size(), 2)
+		var first := simulation.marbles[0]
+		var second := simulation.marbles[1]
+		assert_eq(first.get_parent(), simulation, "Initial release transfers ownership through its output")
+		assert_eq(first.get_meta("marble_id"), "release-0:0")
+		assert_eq(second.get_meta("marble_id"), "release-1:0")
+		var catcher := collector.behaviors[0] as MarbleCollector
+		catcher.call("_collect_marble", first)
+		catcher.call("_collect_marble", first)
+		assert_eq(simulation.objectives.deliveries.size(), 1, "Repeated collection cannot count a marble twice")
+		assert_false(simulation.objectives.satisfied(simulation.elapsed), "The objective filters the release identity")
+		assert_eq(counter.behaviors[0].get("count"), 1, "Collection reaches a wired receiver exactly once")
+		assert_true(simulation.objectives.activations.has("collector:collected"))
+		catcher.call("_collect_marble", second)
+		assert_true(simulation.objectives.satisfied(simulation.elapsed))
+		assert_eq(counter.behaviors[0].get("count"), 2)
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+		assert_eq(simulation.state, SimulationManager.State.SUCCESS)
+		assert_false(first.visible)
+		assert_eq(first.collision_layer, 0)
+		simulation.reset()
+		assert_true(simulation.marbles.is_empty())
+		assert_true(simulation.objectives.deliveries.is_empty())
+		assert_eq(counter.behaviors[0].get("count"), 0)
+
+func test_physics_collection_ends_sandbox_and_restart_uses_current_piece_nodes() -> void:
+	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
+	add_child_autoqfree(workspace)
+	await get_tree().process_frame
+	var build := workspace.world.build
+	var simulation := workspace.world.simulation
+	build.spawn(workspace.catalog.get_piece("sandbox-start"), Transform3D(Basis.IDENTITY, Vector3(3, 3, 0)), "release", {"release_speed": 0})
+	build.spawn(workspace.catalog.get_piece("sandbox-finish"), Transform3D.IDENTITY, "collector")
+	var construction := build.snapshot()
+	for run in 2:
+		assert_true(simulation.start())
+		var body := simulation.marbles[0]
+		body.global_position = Vector3(0, 0.5, 0)
+		body.reset_physics_interpolation()
+		for frame in 12:
+			await get_tree().physics_frame
+			if simulation.state == SimulationManager.State.SUCCESS: break
+		assert_eq(simulation.state, SimulationManager.State.SUCCESS, "The real collector Area ends a Sandbox run")
+		assert_eq(simulation.objectives.deliveries.size(), 1)
+		simulation.reset()
+		build.restore(construction)
+		assert_eq(build.snapshot(), construction, "Replacing live nodes retains the build and fresh run connections")
+
 func test_sandbox_runs_multiple_releases_and_resets_them_together() -> void:
 	var workspace := load("res://scenes/construction_workspace.tscn").instantiate() as ConstructionWorkspace
 	add_child_autoqfree(workspace)

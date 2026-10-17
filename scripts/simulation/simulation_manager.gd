@@ -44,29 +44,26 @@ func start() -> bool:
 	build.select(null)
 	construction_before = build.snapshot()
 	objectives.reset(puzzle.get("objectives", []))
-	for piece in build.pieces:
-		for behavior_node in piece.behaviors:
-			if behavior_node is MarbleRelease:
-				var released := _track_marble.bind(piece)
-				if not behavior_node.marble_spawned.is_connected(released): behavior_node.marble_spawned.connect(released)
-			if behavior_node is MarbleCollector:
-				var collected := _on_finish.bind(piece.instance_id)
-				if not behavior_node.marble_collected.is_connected(collected): behavior_node.marble_collected.connect(collected)
 	elapsed = 0
 	state = State.RUNNING
 	state_changed.emit(state,"Testing")
 	wiring.start(build.pieces)
 	return state == State.RUNNING
 
-func _track_marble(body: Marble, ordinal: int, piece: BuildingPiece) -> void:
+func _track_marble(body: Marble, piece: BuildingPiece) -> void:
 	body.reparent(self)
 	body.reset_physics_interpolation()
 	body.set_meta("source", piece.instance_id)
-	body.set_meta("marble_id", piece.instance_id + ":" + str(ordinal))
+	body.set_meta("marble_id", piece.instance_id + ":" + str(body.release_ordinal))
 	marbles.append(body)
 	if not is_instance_valid(marble): marble = body
 
 func _observe_output(port: String, value: Variant, piece: BuildingPiece) -> void:
+	# Run bookkeeping precedes objectives and wired receivers on the same output.
+	if value is Marble:
+		match port:
+			"released": _track_marble(value, piece)
+			"collected": _on_finish(value, piece.instance_id)
 	var body: RigidBody3D = value if value is RigidBody3D else null
 	objectives.activated(port, body, piece)
 	objective_progress.emit()

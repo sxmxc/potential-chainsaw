@@ -1,6 +1,9 @@
 class_name Marble
 extends RigidBody3D
 
+# Assigned by the release before its output transfers the body to simulation.
+var release_ordinal: int = 0
+
 const MODELS: Array[PackedScene] = [
 	preload("res://assets/models/build_pieces/GLB format/marble-high.glb"),
 	preload("res://assets/models/build_pieces/GLB format/marble-center-high.glb"),
