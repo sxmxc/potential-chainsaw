@@ -2,13 +2,6 @@
 	"puzzles": [
 		{
 			"chapter": "introduction",
-			"id": "campaign-01",
-			"order": 1.0,
-			"path": "res://resources/campaign/01-first-connection.json",
-			"prerequisites": []
-		},
-		{
-			"chapter": "introduction",
 			"id": "campaign-02",
 			"order": 2.0,
 			"path": "res://resources/campaign/02-around-the-bend.json",
@@ -112,9 +105,30 @@
 		{
 			"chapter": "chapter-1",
 			"id": "chapter1-jwytyk",
-			"order": 4,
+			"order": 4.0,
 			"path": "res://resources/campaign/chapter1-jwytyk.json",
-			"prerequisites": ["chapter1-shared-clearance", "chapter1-loading-loft", "chapter1-service-block", "campaign-10", "campaign-09", "campaign-08", "campaign-07", "campaign-06", "campaign-05", "campaign-04", "campaign-03", "campaign-02", "campaign-01"]
+			"prerequisites": [
+				"chapter1-shared-clearance",
+				"chapter1-loading-loft",
+				"chapter1-service-block",
+				"campaign-10",
+				"campaign-09",
+				"campaign-08",
+				"campaign-07",
+				"campaign-06",
+				"campaign-05",
+				"campaign-04",
+				"campaign-03",
+				"campaign-02",
+				"campaign-01"
+			]
+		},
+		{
+			"chapter": "introduction",
+			"id": "campaign-01",
+			"order": 1.0,
+			"path": "res://resources/campaign/01-first-connection.json",
+			"prerequisites": []
 		}
 	],
 	"version": 1.0

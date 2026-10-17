@@ -44,7 +44,7 @@ For implementation work, follow [Piece authoring](PIECE_AUTHORING.md). For restr
 
 ## Logic modules
 
-Find **Memory**, **Counter**, **AND Gate**, **OR Gate**, and **NOT Gate** under **Logic**. Hover over a stationary construction surface, rotate with R, and click to mount. Side and underside mounting keeps the control off the marble route. They are selectable accessories with pick collision, so their housing does not block marbles. Their placement volume still prevents overlapping other construction.
+Find **Memory**, **Counter**, **AND Gate**, **OR Gate**, and **NOT Gate** under **Logic**. Hover over a stationary construction surface, rotate with R, and click to mount. Placement snaps to a 0.5 m grid centered on the supporting piece, including side and underside faces. The preview and committed position use the same grid contact. Side and underside mounting keeps the control off the marble route. They are selectable accessories with pick collision, so their housing does not block marbles. Their placement volume still prevents overlapping other construction.
 
 Use **Connect** and the normal inspector to configure and wire them. State outputs connect only to state inputs; events connect to actions.
 

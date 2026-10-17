@@ -127,9 +127,35 @@ func surface_candidates(items: Array, preferred: Transform3D, pieces: Array, ign
 	if items.size() == 1 and items[0].definition.surface_mounted:
 		if hit.is_empty() or hit.piece not in pieces: return []
 		if not hit.collider is StaticBody3D: return []
-		return mounted_candidates(items[0], preferred, hit.piece, hit.position, hit.normal)
+		var point := mounted_grid_point(hit.piece, hit.position, hit.normal)
+		# Resolve the snapped location against real collision too. A tangent plane
+		# alone can extend past an edge or float above a curved surface.
+		var reach := horizontal_step * 2.0
+		var query := PhysicsRayQueryParameters3D.create(point + hit.normal * reach, point - hit.normal * reach, 1)
+		var excluded: Array[RID] = []
+		for ignored_piece in ignored:
+			for body: CollisionObject3D in ignored_piece.find_children("*", "CollisionObject3D", true, false): excluded.append(body.get_rid())
+		query.exclude = excluded
+		var snapped_hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		if snapped_hit.is_empty() or snapped_hit.collider != hit.collider: return []
+		if snapped_hit.normal.dot(hit.normal) < 0.5: return []
+		return mounted_candidates(items[0], preferred, hit.piece, snapped_hit.position, snapped_hit.normal)
 	if hit.is_empty() or hit.piece not in pieces or not hit.piece.definition.authoring_only: return []
 	return face_candidates(items, preferred, hit.piece, hit.position, hit.normal, sticky, grab_offset)
+
+func mounted_grid_point(target: BuildingPiece, point: Vector3, normal: Vector3) -> Vector3:
+	var target_basis := target.global_basis.orthonormalized()
+	var up := (target_basis.inverse() * normal).normalized()
+	var heading := Vector3.FORWARD if absf(up.z) < 0.95 else Vector3.UP
+	var forward := (heading - up * heading.dot(up)).normalized()
+	var right := forward.cross(up)
+	var center := target.definition.bounds.get_center()
+	var local := target_basis.inverse() * (point - target.global_position) - center
+	var across := local.dot(right)
+	var along := local.dot(forward)
+	local += right * (snappedf(across, horizontal_step) - across)
+	local += forward * (snappedf(along, horizontal_step) - along)
+	return target.global_position + target_basis * (center + local)
 
 func mounted_candidates(item: Dictionary, preferred: Transform3D, target: BuildingPiece, point: Vector3, normal: Vector3) -> Array[Dictionary]:
 	if target.definition.surface_mounted or target.definition.authoring_only: return []

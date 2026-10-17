@@ -5,7 +5,6 @@
 			"id": "introduction",
 			"introduction": true,
 			"levels": [
-				"campaign-01",
 				"campaign-02",
 				"campaign-03",
 				"campaign-04",
@@ -14,7 +13,8 @@
 				"campaign-07",
 				"campaign-08",
 				"campaign-09",
-				"campaign-10"
+				"campaign-10",
+				"campaign-01"
 			],
 			"name": "Introduction",
 			"optional": true,

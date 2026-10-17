@@ -4,6 +4,43 @@ var workspace: ConstructionWorkspace
 var session: ConstructionSession
 var build: BuildManager
 
+func test_introduction_loads_into_editor_without_changing_content() -> void:
+	var editor_workspace: ConstructionWorkspace = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(editor_workspace)
+	await get_tree().process_frame
+	var editor_session := editor_workspace.session
+	for data: Dictionary in editor_session.store.load_campaign().levels:
+		if not data.campaign.chapter.get("introduction", false): continue
+		editor_session.editor(data, true)
+		var fingerprint := editor_session.store.fingerprint(editor_session.capture())
+		editor_workspace.authoring.open()
+		await get_tree().process_frame
+		assert_eq(editor_session.store.fingerprint(editor_session.capture()), fingerprint)
+		assert_false(editor_workspace.world.build.dirty, "Loading editor controls does not edit the puzzle")
+		editor_workspace.authoring.hide()
+
+func test_puzzle_library_notifies_host_after_opening_an_editor_puzzle() -> void:
+	var editor_workspace: ConstructionWorkspace = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(editor_workspace)
+	editor_workspace.session.editor()
+	var browser = load("res://scenes/ui/puzzle_browser.tscn").instantiate()
+	add_child_autoqfree(browser)
+	browser.configure(editor_workspace.session)
+	browser.modal_opened.connect(editor_workspace.suspend_input)
+	browser.closed.connect(editor_workspace.resume_input)
+	watch_signals(browser)
+	browser.open(true)
+	await get_tree().create_timer(UIMotion.ENTER_TIME + 0.05).timeout
+	assert_false(editor_workspace.world.camera.enabled)
+	var selected: Dictionary = browser.levels[browser.get_node("%Levels").get_selected_items()[0]]
+	browser.open_selected()
+	await get_tree().create_timer(UIMotion.EXIT_TIME + 0.05).timeout
+	assert_false(browser.visible)
+	assert_eq(editor_workspace.session.puzzle.id, selected.id)
+	assert_true(editor_workspace.session.is_authoring)
+	assert_signal_emitted(browser, "closed", "The host must clear its modal backdrop after the puzzle loads")
+	assert_true(editor_workspace.world.camera.enabled)
+
 func record(id: String, uid: String, at: Vector3, config: Dictionary = {}) -> Dictionary:
 	return {"piece": id, "uid": uid, "position": [at.x, at.y, at.z], "rotation": 0, "config": config}
 

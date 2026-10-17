@@ -1,195 +1,971 @@
 {
-  "awards": {},
-  "bounds": [
-    -4.0,
-    -9.0,
-    7.0,
-    6.0,
-    0.0,
-    10.0
-  ],
-  "camera": {},
-  "description": "Bridge the missing track and deliver one marble.",
-  "difficulty": "Introduction",
-  "environment_instances": [],
-  "guidance": [
-    {
-      "appear": "build",
-      "complete": "connected",
-      "connector": 0,
-      "kind": "attention",
-      "position": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "target": "approach",
-      "text": "Add a Straight track at this end to bridge the gap.",
-      "ui_style": "pointer",
-      "ui_targets": [
-        "piece:straight"
-      ]
-    },
-    {
-      "appear": "build",
-      "complete": "run_started",
-      "connector": -1,
-      "kind": "attention",
-      "position": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "show_world": false,
-      "target": "release",
-      "text": "Press Run to release the marble.",
-      "ui_style": "pointer",
-      "ui_targets": [
-        "action:run"
-      ]
-    },
-    {
-      "appear": "run",
-      "complete": "objective",
-      "connector": -1.0,
-      "kind": "target",
-      "target": "goal",
-      "text": "Deliver the marble here."
-    }
-  ],
-  "hints": [
-    "Choose Straight, point at a glowing connector, and click. Test track runs the marble."
-  ],
-  "id": "campaign-01",
-  "inventory": {
-    "straight": 1.0
-  },
-  "name": "First Connection",
-  "objectives": [
-    {
-      "count": 1.0,
-      "target": "goal",
-      "type": "deliver"
-    }
-  ],
-  "permissions": {},
-  "pieces": [
-    {
-      "config": {
-        "release_speed": 1.4
-      },
-      "piece": "sandbox-start",
-      "position": [
-        0.0,
-        0.0,
-        2.0
-      ],
-      "rotation": 0,
-      "uid": "release"
-    },
-    {
-      "config": {},
-      "piece": "straight",
-      "position": [
-        0.0,
-        0.0,
-        1.0
-      ],
-      "rotation": 0,
-      "uid": "approach"
-    },
-    {
-      "config": {},
-      "piece": "straight",
-      "position": [
-        0.0,
-        0.0,
-        -1.0
-      ],
-      "rotation": 0,
-      "uid": "exit"
-    },
-    {
-      "config": {},
-      "piece": "sandbox-finish",
-      "position": [
-        0.0,
-        0.0,
-        -2.0
-      ],
-      "rotation": 2,
-      "uid": "goal"
-    }
-  ],
-  "restricted_zones": [],
-  "revision": 3,
-  "solution": [
-    {
-      "config": {
-        "release_speed": 1.4
-      },
-      "piece": "sandbox-start",
-      "position": [
-        0.0,
-        0.0,
-        2.0
-      ],
-      "rotation": 0.0,
-      "uid": "release"
-    },
-    {
-      "config": {},
-      "piece": "straight",
-      "position": [
-        0.0,
-        0.0,
-        1.0
-      ],
-      "rotation": 0.0,
-      "uid": "approach"
-    },
-    {
-      "config": {},
-      "piece": "straight",
-      "position": [
-        0.0,
-        0.0,
-        -1.0
-      ],
-      "rotation": 0.0,
-      "uid": "exit"
-    },
-    {
-      "config": {},
-      "piece": "sandbox-finish",
-      "position": [
-        0.0,
-        0.0,
-        -2.0
-      ],
-      "rotation": 2.0,
-      "uid": "goal"
-    },
-    {
-      "config": {},
-      "piece": "straight",
-      "position": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": 0.0,
-      "uid": "piece-2861340-5"
-    }
-  ],
-  "status": "published",
-  "time_limit": 45.0,
-  "validation": {
-    "engine": "4.7.2-stable (official)",
-    "fingerprint": "b11477c9826591da40014ab6ea6deecbc49eabe11d1b891d725d5d6978d88046",
-    "physics_success": true,
-    "seconds": 2.94166666666666,
-    "tested_at": "2026-10-17T14:22:45"
-  },
-  "version": 3.0
+	"awards": {},
+	"bounds": [
+		-5.5,
+		-7.5,
+		5.5,
+		7.5,
+		0.0,
+		10.0
+	],
+	"camera": {
+		"distance": 9.2129187150435,
+		"focus": [
+			-0.678486943244934,
+			-0.0584121346473694,
+			-0.771209001541138
+		],
+		"pitch": 0.303999999999999,
+		"yaw": 1.43200000000004
+	},
+	"description": "Bridge the missing track and deliver one marble.",
+	"difficulty": "Introduction",
+	"environment_instances": [
+		{
+			"asset": "factory-screen-panel-small",
+			"position": [
+				1.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-470384567-24"
+		},
+		{
+			"asset": "factory-structure-doorway-wide",
+			"position": [
+				0.0,
+				0.0,
+				2.5
+			],
+			"rotation": 0,
+			"uid": "piece-991888714-119"
+		},
+		{
+			"asset": "factory-structure-doorway-wide",
+			"position": [
+				0.0,
+				0.0,
+				-2.5
+			],
+			"rotation": 2,
+			"uid": "piece-1713540064-183"
+		}
+	],
+	"guidance": [
+		{
+			"appear": "build",
+			"complete": "connected",
+			"connector": 0.0,
+			"kind": "attention",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"target": "approach",
+			"text": "Add a Straight track at this end to bridge the gap.",
+			"ui_style": "pointer",
+			"ui_targets": [
+				"piece:straight"
+			]
+		},
+		{
+			"appear": "build",
+			"complete": "run_started",
+			"connector": -1.0,
+			"kind": "attention",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"show_world": false,
+			"target": "release",
+			"text": "Press Run to release the marble.",
+			"ui_style": "pointer",
+			"ui_targets": [
+				"action:run"
+			]
+		},
+		{
+			"appear": "run",
+			"complete": "objective",
+			"connector": -1.0,
+			"kind": "target",
+			"target": "goal",
+			"text": "Deliver the marble here."
+		}
+	],
+	"hints": [
+		"Choose Straight, point at a glowing connector, and click. Test track runs the marble."
+	],
+	"id": "campaign-01",
+	"inventory": {
+		"straight": 1.0
+	},
+	"name": "First Connection",
+	"objectives": [
+		{
+			"count": 1.0,
+			"target": "goal",
+			"type": "deliver"
+		}
+	],
+	"permissions": {},
+	"pieces": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				2.5,
+				0.0,
+				2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1184657860-128"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				-2.5,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "piece-1194627597-129"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1213072214-131"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				4.0
+			],
+			"rotation": 1,
+			"uid": "piece-1216641216-132"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				2.5,
+				0.0,
+				6.0
+			],
+			"rotation": 3,
+			"uid": "piece-1347786579-141"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				4.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1430340075-148"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				3.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1448652000-150"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1480643964-152"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-2.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1505842245-154"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-3.5,
+				0.0,
+				6.0
+			],
+			"rotation": 3,
+			"uid": "piece-1512374959-155"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				5.0
+			],
+			"rotation": 1,
+			"uid": "piece-1551377794-156"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1553768039-157"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1557876128-158"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				3.0
+			],
+			"rotation": 3,
+			"uid": "piece-1561172182-159"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1561783683-160"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				1.0
+			],
+			"rotation": 3,
+			"uid": "piece-1562368906-161"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "piece-1563376559-162"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 3,
+			"uid": "piece-1564483159-163"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1567766266-164"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "piece-1568714917-165"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1570429337-166"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1571188333-167"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-3.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1584273074-169"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				3.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1609617147-177"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				4.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 1,
+			"uid": "piece-1613725583-179"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				2.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "piece-1737021650-184"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				-2.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 1,
+			"uid": "piece-1745631378-185"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1755941610-186"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 1,
+			"uid": "piece-1761316441-187"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				2.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1788441180-189"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-2.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 1,
+			"uid": "piece-1807284493-191"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1815366522-192"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 1,
+			"uid": "piece-1818802100-193"
+		}
+	],
+	"required_assets": [
+		"environment:factory-screen-panel-small",
+		"environment:factory-structure-doorway-wide",
+		"factory-structure-corner-inner",
+		"factory-structure-corner-outer",
+		"factory-structure-wall",
+		"sandbox-finish",
+		"sandbox-start",
+		"straight"
+	],
+	"restricted_zones": [],
+	"revision": 4,
+	"solution": [
+		{
+			"config": {
+				"release_speed": 1.4
+			},
+			"piece": "sandbox-start",
+			"position": [
+				0.0,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "release"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"rotation": 0,
+			"uid": "approach"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"rotation": 0,
+			"uid": "exit"
+		},
+		{
+			"config": {},
+			"piece": "sandbox-finish",
+			"position": [
+				0.0,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "goal"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				2.5,
+				0.0,
+				2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1184657860-128"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				-2.5,
+				0.0,
+				2.0
+			],
+			"rotation": 0,
+			"uid": "piece-1194627597-129"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1213072214-131"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				4.0
+			],
+			"rotation": 1,
+			"uid": "piece-1216641216-132"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				2.5,
+				0.0,
+				6.0
+			],
+			"rotation": 3,
+			"uid": "piece-1347786579-141"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				4.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1430340075-148"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				3.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1448652000-150"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1480643964-152"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-2.5,
+				0.0,
+				6.0
+			],
+			"rotation": 0,
+			"uid": "piece-1505842245-154"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-3.5,
+				0.0,
+				6.0
+			],
+			"rotation": 3,
+			"uid": "piece-1512374959-155"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				5.0
+			],
+			"rotation": 1,
+			"uid": "piece-1551377794-156"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1553768039-157"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1557876128-158"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				3.0
+			],
+			"rotation": 3,
+			"uid": "piece-1561172182-159"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1561783683-160"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				1.0
+			],
+			"rotation": 3,
+			"uid": "piece-1562368906-161"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				0.0
+			],
+			"rotation": 3,
+			"uid": "piece-1563376559-162"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-1.0
+			],
+			"rotation": 3,
+			"uid": "piece-1564483159-163"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 3,
+			"uid": "piece-1567766266-164"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-3.0
+			],
+			"rotation": 3,
+			"uid": "piece-1568714917-165"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1570429337-166"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-3.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1571188333-167"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-3.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1584273074-169"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				3.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1609617147-177"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				4.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 1,
+			"uid": "piece-1613725583-179"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				2.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 2,
+			"uid": "piece-1737021650-184"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-outer",
+			"position": [
+				-2.5,
+				0.0,
+				-2.0
+			],
+			"rotation": 1,
+			"uid": "piece-1745631378-185"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 3,
+			"uid": "piece-1755941610-186"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				-4.0
+			],
+			"rotation": 1,
+			"uid": "piece-1761316441-187"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				2.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 2,
+			"uid": "piece-1788441180-189"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-corner-inner",
+			"position": [
+				-2.5,
+				0.0,
+				-6.0
+			],
+			"rotation": 1,
+			"uid": "piece-1807284493-191"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				2.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 3,
+			"uid": "piece-1815366522-192"
+		},
+		{
+			"config": {},
+			"piece": "factory-structure-wall",
+			"position": [
+				-2.5,
+				0.0,
+				-5.0
+			],
+			"rotation": 1,
+			"uid": "piece-1818802100-193"
+		},
+		{
+			"config": {},
+			"piece": "straight",
+			"position": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"rotation": 0,
+			"uid": "piece-1874591133-194"
+		}
+	],
+	"status": "published",
+	"time_limit": 45.0,
+	"validation": {
+		"engine": "4.7.2-stable (official)",
+		"fingerprint": "c503f57cb834e65246c553fec95282c3a6941459357ab48ce63e95d769966e31",
+		"physics_success": true,
+		"seconds": 2.95833333333333,
+		"tested_at": "2026-10-17T17:32:40"
+	},
+	"version": 3
 }

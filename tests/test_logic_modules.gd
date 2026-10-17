@@ -182,7 +182,7 @@ func test_surface_alignment_on_multiple_normals_and_geometry_validation() -> voi
 	var support := build.spawn(build.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 2, 0)), "support")
 	var definition := build.catalog.get_piece("logic-memory")
 	var item := {"definition": definition, "local": Transform3D.IDENTITY}
-	for normal in [Vector3.UP, Vector3.DOWN, Vector3.RIGHT, Vector3.FORWARD, Vector3(1, 1, 0).normalized()]:
+	for normal: Vector3 in [Vector3.UP, Vector3.DOWN, Vector3.RIGHT, Vector3.FORWARD, Vector3(1, 1, 0).normalized()]:
 		var point := support.position + Vector3(0.5, 0.25, 0)
 		var placement: Transform3D = build.snap.mounted_candidates(item, Transform3D.IDENTITY, support, point, normal)[0].transform
 		assert_true(placement.basis.y.is_equal_approx(normal))
@@ -193,6 +193,55 @@ func test_surface_alignment_on_multiple_normals_and_geometry_validation() -> voi
 	assert_eq(build.snap.validate(accessory.definition, accessory.transform, [support]), "", "Side mounting clears track collision")
 	assert_true(accessory.find_children("*", "StaticBody3D", true, false).all(func(body): return body.collision_layer == 4), "Accessories do not obstruct marbles")
 	assert_false(PieceAttachment.valid_basis([0, 0, 0, 0, 0, 0, 0, 0, 0]))
+
+func test_surface_grid_uses_support_axes_and_preserves_contact_plane() -> void:
+	var support := build.spawn(build.catalog.get_piece("factory-top-large-checkerboard"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(3.2, 2, -1.3)), "board")
+	var center := support.definition.bounds.get_center()
+	for normal: Vector3 in [Vector3.UP, Vector3.DOWN, Vector3.RIGHT, Vector3.FORWARD, Vector3(1, 1, 0).normalized()]:
+		var heading := Vector3.FORWARD if absf(normal.z) < 0.95 else Vector3.UP
+		var forward := (heading - normal * heading.dot(normal)).normalized()
+		var right := forward.cross(normal)
+		var local_point: Vector3 = center + normal * 0.05 + right * 0.21 + forward * 0.31
+		var point: Vector3 = support.global_transform * local_point
+		var snapped_point := build.snap.mounted_grid_point(support, point, support.global_basis * normal)
+		var expected: Vector3 = support.global_transform * (center + normal * 0.05 + forward * 0.5)
+		assert_true(snapped_point.is_equal_approx(expected), "Surface grid follows the support's local tangent axes")
+		assert_almost_eq((snapped_point - point).dot(support.global_basis * normal), 0.0, 0.00001, "Snapping retains the surface plane")
+
+func test_surface_grid_preview_commits_the_snapped_platform_contact() -> void:
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1920, 1080)
+	viewport.own_world_3d = true
+	add_child_autoqfree(viewport)
+	workspace.reparent(viewport)
+	workspace.get_node("Interface/HUD").hide()
+	var platform := build.spawn(build.catalog.get_piece("factory-top-large-checkerboard"), Transform3D(Basis(Vector3.UP, PI / 2), Vector3(3.2, 2, -1.3)), "platform")
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var camera := ConstructionCamera.new()
+	camera.automatic_composition = false
+	viewport.add_child(camera)
+	camera.set_process(false)
+	camera.position = platform.position + Vector3(0, 6, 0)
+	camera.look_at(platform.position, Vector3.FORWARD)
+	build.camera = camera
+	build.set_process(false)
+	build.choose(build.catalog.get_piece("logic-delay"))
+	var contact := platform.global_transform * Vector3(0.18, 0.1, 0.36)
+	build.cursor_position = camera.unproject_position(contact)
+	build.update_preview()
+	assert_true(build.is_snapped)
+	assert_true(build.valid, build.validation_message)
+	var shown: Transform3D = build.preview.get_child(0).global_transform
+	assert_true(shown.origin.is_equal_approx(platform.global_transform * Vector3(0, 0.1, 0.5)), "Cursor contact snaps to the platform grid")
+	assert_gt(shown.origin.distance_to(contact), 0.1)
+	build.commit()
+	build.cancel()
+	assert_eq(build.pieces.size(), 2)
+	var accessory := build.find_piece(build.pieces[-1].instance_id)
+	assert_true(accessory.transform.is_equal_approx(shown), "Commit preserves the snapped preview")
+	assert_eq(accessory.configuration.mount_target, "platform")
+	assert_eq(PieceAttachment.validate(build.snapshot(), build.catalog), "")
 
 func test_mount_movement_rotation_duplication_deletion_history_and_save_load() -> void:
 	var support := build.spawn(build.catalog.get_piece("straight"), Transform3D(Basis.IDENTITY, Vector3(0, 2, 0)), "support")

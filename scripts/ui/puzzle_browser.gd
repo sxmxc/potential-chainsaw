@@ -38,7 +38,7 @@ func configure(value: ConstructionSession) -> void:
 		var imported := session.store.import_puzzle(path)
 		if imported.is_empty(): session.message_requested.emit(session.store.last_error)
 		else: open(false, true))
-	%NewPuzzle.pressed.connect(func(): dismiss(session.editor))
+	%NewPuzzle.pressed.connect(func(): dismiss(func(): session.editor(); closed.emit()))
 	%Open.pressed.connect(open_selected)
 	%Levels.item_activated.connect(func(_index): open_selected())
 	%PlayIntroduction.pressed.connect(func(): start_campaign(true))
@@ -59,13 +59,13 @@ func open_campaign() -> void:
 func start_campaign(play_introduction: bool) -> void:
 	var target = session.progress.start_campaign(campaign_definition, play_introduction)
 	if not target.is_empty():
-		dismiss(func(): session.player(target))
+		dismiss(func(): session.player(target); closed.emit())
 	else: open()
 
 func resume_campaign() -> void:
 	var target = campaign_definition.resume_level(session.progress.route, session.progress.records)
 	if target.is_empty(): open(); return
-	dismiss(func(): session.player(target))
+	dismiss(func(): session.player(target); closed.emit())
 
 func open(editor_mode: bool = false, community_mode: bool = false) -> void:
 	editing = editor_mode
@@ -207,7 +207,8 @@ func open_selected() -> void:
 	if not editing and not community and not campaign_definition.unlocked(data, session.progress.records): return
 	dismiss(func():
 		if editing: session.editor(data, not community)
-		else: session.player(data))
+		else: session.player(data)
+		closed.emit())
 
 func is_completed(data: Dictionary) -> bool:
 	return session.progress.community_records.get(data.id, {}).get("completed", false) if community else session.progress.records.get(data.id, {}).get("completed", false)

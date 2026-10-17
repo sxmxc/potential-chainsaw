@@ -86,7 +86,7 @@ Main-menu buttons enter from the left with staggered elastic motion in scene ord
 
 Visibility requests stay with the owner: WorkspaceHUD controls the browser and status, the authoring drawer controls itself, and `modal_window.gd` controls dialog surfaces. Repeated requests replace the active tween from its current presentation. Closing content immediately loses focus and descendant input, while the still-visible surface blocks clicks until hidden. Status duration uses the HUD's one-shot Timer.
 
-For a shared modal, call `present()` to open and `dismiss(action)` to close before running an action. Reopening during dismissal cancels that pending action. The Window stays modal throughout the exit, and focus returns after hiding. Direct `hide()` immediately cancels the lifecycle for a context change. GameManager coordinates application fades, workspace input suspension, and deferred completion presentation; avoid adding another competing transition owner.
+For a shared modal, call `present()` to open and `dismiss(action)` to close before running an action. A dismissal action that completes a library selection must emit `closed` after loading the selected content so GameManager clears the modal backdrop and restores input, including when the workspace is already visible. Reopening during dismissal cancels that pending action. The Window stays modal throughout the exit, and focus returns after hiding. Direct `hide()` immediately cancels the lifecycle for a context change. GameManager coordinates application fades, workspace input suspension, and deferred completion presentation; avoid adding another competing transition owner.
 
 ## Write and review in context
 
