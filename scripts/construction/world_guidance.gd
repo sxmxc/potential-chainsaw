@@ -6,6 +6,8 @@ signal changed
 const MARKER = preload("res://scenes/guidance/marker.tscn")
 const KINDS = ["attention", "target", "direction", "interaction", "problem"]
 const CONDITIONS = ["selected", "connected", "run_started", "objective", "dismissed"]
+const UI_ACTIONS = {"action:run": "Run", "action:reset": "Return to build", "action:connect": "Connect", "control:library": "Pieces browser toggle", "control:search": "Piece search", "action:goal": "Locate goal"}
+const UI_STYLES = ["pointer", "halo"]
 var session: ConstructionSession
 var step_index: int = 0
 var requested: bool = false
@@ -14,6 +16,8 @@ var marker: Node3D
 var temporary: Dictionary = {}
 var timer: Timer
 var objective_index: int = 0
+var ui_targets: Array = []
+var ui_style: String = "pointer"
 
 func _ready() -> void:
 	marker = MARKER.instantiate()
@@ -135,16 +139,19 @@ func refresh() -> void:
 	var show_marker := false
 	instruction = ""
 	var step := active_step()
+	ui_targets = step.get("ui_targets", [])
+	ui_style = step.get("ui_style", "pointer")
 	if not step.is_empty():
 		if not step.has("kind"):
 			instruction = step.get("text", "")
 		else:
-			var target := resolve(step)
+			var target := resolve(step) if step.get("show_world", true) else {}
 			if not target.is_empty():
 				instruction = step.get("text", "")
 				# Placement and connector handles already show the cursor's exact target.
 				show_marker = session.world.build.chosen == null
 				if show_marker: marker.present(step.get("kind", "attention"), target.point, target.direction)
+			if not ui_targets.is_empty(): instruction = step.get("text", "")
 	if not show_marker: marker.clear()
 	changed.emit()
 
@@ -156,12 +163,24 @@ static func shape_errors(data: Dictionary) -> Array[String]:
 	for step in steps:
 		if not step is Dictionary: errors.append("Invalid guidance step"); continue
 		for key in step:
-			if key not in ["kind", "target", "connector", "position", "text", "appear", "complete"]: errors.append("Unsupported guidance field: " + str(key))
+			if key not in ["kind", "target", "connector", "position", "text", "appear", "complete", "show_world", "ui_targets", "ui_style"]: errors.append("Unsupported guidance field: " + str(key))
 		if step.get("kind") not in KINDS or step.get("complete") not in CONDITIONS or step.get("appear") not in ["build", "run", "always"]: errors.append("Invalid guidance condition or indicator")
 		if not step.get("text", "") is String or str(step.get("text", "")).length() > 200: errors.append("Guidance text must be at most 200 characters")
 		if not step.get("target", "") is String: errors.append("Invalid guidance target")
 		if not PuzzleRules._is_number(step.get("connector", -1)) or float(step.get("connector", -1)) != int(step.get("connector", -1)) or int(step.get("connector", -1)) < -1: errors.append("Invalid guidance connector")
 		if not PuzzleRules._numeric_array(step.get("position", [0, 0, 0]), 3): errors.append("Invalid guidance point")
+		if not step.get("show_world", true) is bool: errors.append("Invalid world indicator flag")
+		if step.get("ui_style", "pointer") not in UI_STYLES: errors.append("Invalid HUD indicator style")
+		var targets: Variant = step.get("ui_targets", [])
+		if not targets is Array or targets.size() > 4:
+			errors.append("Choose at most four HUD targets")
+		else:
+			var seen: Array = []
+			for target in targets:
+				if not target is String or (target not in UI_ACTIONS and (not target.begins_with("piece:") or target.trim_prefix("piece:").is_empty())):
+					errors.append("Invalid HUD target")
+				if target in seen: errors.append("Duplicate HUD target")
+				seen.append(target)
 	return errors
 
 static func definition_errors(data: Dictionary, catalog: PieceCatalog) -> Array[String]:
@@ -169,6 +188,14 @@ static func definition_errors(data: Dictionary, catalog: PieceCatalog) -> Array[
 	var records: Dictionary = {}
 	for item in data.get("pieces", []): records[item.uid] = item
 	for step in data.get("guidance", []):
+		for target: String in step.get("ui_targets", []):
+			if target.begins_with("piece:"):
+				var piece_id := target.trim_prefix("piece:")
+				var card := catalog.get_piece(piece_id)
+				if not card or not card.library_visible or card.authoring_only:
+					errors.append("HUD piece is unavailable: " + piece_id)
+				elif not data.get("inventory", {}).has(piece_id):
+					errors.append("HUD piece needs player inventory: " + piece_id)
 		var uid: String = step.get("target", "")
 		if uid.is_empty():
 			if step.complete in ["selected", "connected", "objective"] or int(step.get("connector", -1)) >= 0: errors.append("Guidance condition needs a piece target")

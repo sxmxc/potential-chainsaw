@@ -1,0 +1,81 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hud_guidance_indicator.gd" id="Script"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/guidance_pointer.svg" id="Arrow"]
+
+[sub_resource type="Animation" id="Invite"]
+resource_name = "invite"
+length = 1.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Halo:modulate")
+tracks/0/interp = 2
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.7, 1.4), "transitions": PackedFloat32Array(1, 1, 1), "update": 0, "values": [Color(1, 1, 1, 0.45), Color(1, 1, 1, 1), Color(1, 1, 1, 0.45)]}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Pointer:offset_transform_position")
+tracks/1/interp = 2
+tracks/1/keys = {"times": PackedFloat32Array(0, 0.7, 1.4), "transitions": PackedFloat32Array(1, 1, 1), "update": 0, "values": [Vector2(0, 0), Vector2(0, 3), Vector2(0, 0)]}
+tracks/2/type = "value"
+tracks/2/path = NodePath("CardPointer:offset_transform_position")
+tracks/2/interp = 2
+tracks/2/keys = {"times": PackedFloat32Array(0, 0.7, 1.4), "transitions": PackedFloat32Array(1, 1, 1), "update": 0, "values": [Vector2(0, 0), Vector2(0, 3), Vector2(0, 0)]}
+
+[sub_resource type="AnimationLibrary" id="Library"]
+_data = {"invite": SubResource("Invite")}
+
+[node name="HUDGuidance" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+mouse_behavior_recursive = 1
+focus_behavior_recursive = 1
+script = ExtResource("Script")
+
+[node name="Halo" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"GuidanceHalo"
+
+[node name="Pointer" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -12.0
+offset_top = -27.0
+offset_right = 12.0
+offset_bottom = -3.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("Arrow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardPointer" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 28.0
+grow_horizontal = 0
+mouse_filter = 2
+texture = ExtResource("Arrow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Motion" type="AnimationPlayer" parent="."]
+libraries = {&"": SubResource("Library")}

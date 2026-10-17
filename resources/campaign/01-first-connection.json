@@ -16,18 +16,37 @@
     {
       "appear": "build",
       "complete": "connected",
-      "connector": 0.0,
+      "connector": 0,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "approach",
-      "text": "Add a Straight track at this end to bridge the gap."
+      "text": "Add a Straight track at this end to bridge the gap.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:straight"
+      ]
     },
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "show_world": false,
       "target": "release",
-      "text": "Press Run to release the marble."
+      "text": "Press Run to release the marble.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -103,7 +122,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -167,10 +186,10 @@
   "time_limit": 45.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "9e7903b0ab928cab07eae010ebe188b06e165619853aa09ac10202480def134a",
+    "fingerprint": "b11477c9826591da40014ab6ea6deecbc49eabe11d1b891d725d5d6978d88046",
     "physics_success": true,
-    "seconds": 2.94999999999999,
-    "tested_at": "2026-10-15T21:40:34"
+    "seconds": 2.94166666666666,
+    "tested_at": "2026-10-17T14:22:45"
   },
   "version": 3.0
 }

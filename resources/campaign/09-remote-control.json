@@ -24,10 +24,20 @@
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "detector",
-      "text": "Use Connect: sensor Entered to gate Open. Then test."
+      "text": "Use Connect: sensor Entered to gate Open. Then test.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:connect",
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -139,7 +149,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -225,10 +235,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "e588cd1906b401294e4c9cd0ad5983a6ee9a2c39e8af3499a4afa402f7024dc8",
+    "fingerprint": "7340c6d302f092b9fb3a80150164508343bc2397ec92e3406341b449cd54a746",
     "physics_success": true,
     "seconds": 3.23333333333332,
-    "tested_at": "2026-10-15T21:41:14"
+    "tested_at": "2026-10-17T14:23:27"
   },
   "version": 3.0
 }

@@ -55,7 +55,26 @@ func test_intro_reveal_next_and_duplicate_result() -> void:
 	assert_eq(workspace.session.puzzle.id, "campaign-02")
 	assert_false(completion.visible)
 	assert_eq(workspace.world.simulation.state, SimulationManager.State.BUILD)
-	assert_eq(completion.pulses.size(), 0)
+	assert_eq(completion.celebrations.size(), 0)
+
+func test_world_celebration_follows_objective_and_expires_while_ui_remains() -> void:
+	await setup_presentation()
+	var data := official("campaign-01")
+	data.objectives.append(data.objectives[0].duplicate())
+	workspace.session.player(data)
+	var piece_count := workspace.world.build.pieces.size()
+	acknowledge()
+	assert_eq(completion.celebrations.size(), 1, "Several goals at one mechanism share a celebration")
+	var celebration: Node3D = completion.celebrations[0]
+	var goal := workspace.world.build.find_piece(data.objectives[0].target)
+	assert_lt(celebration.global_position.distance_to(goal.global_position), 3.0, "The effect celebrates the actual mechanism")
+	assert_eq(workspace.world.build.pieces.size(), piece_count, "VFX never enter construction")
+	completion.result(SimulationManager.State.SUCCESS, "Again")
+	assert_same(completion.celebrations[0], celebration)
+	await wait_seconds(3.8)
+	assert_true(completion.celebrations.is_empty(), "The authored animation releases the effect")
+	assert_false(is_instance_valid(celebration))
+	assert_true(completion.visible, "Particle completion does not dismiss the victory screen")
 
 func test_chapter_milestone_uses_recorded_progress() -> void:
 	await setup_presentation()
@@ -74,7 +93,7 @@ func test_chapter_milestone_uses_recorded_progress() -> void:
 	workspace.session.sandbox()
 	assert_false(completion.visible)
 	await wait_seconds(1.1)
-	assert_eq(completion.pulses.size(), 0, "Old reveal callbacks stay cancelled")
+	assert_eq(completion.celebrations.size(), 0, "Old reveal callbacks stay cancelled")
 
 func test_community_actions_and_keep_building_retain_layout() -> void:
 	await setup_presentation()
@@ -131,7 +150,7 @@ func test_dismiss_reopen_and_context_change_cancel_navigation() -> void:
 	await wait_seconds(0.2)
 	assert_eq(actions, [], "Changing context abandons pending exit actions")
 	assert_eq(get_viewport().gui_get_focus_owner(), previous_focus, "Dismissal restores focus after the host restores its UI")
-	assert_eq(completion.pulses.size(), 0)
+	assert_eq(completion.celebrations.size(), 0)
 
 func test_escape_and_browser_dispatch_during_reveal() -> void:
 	await setup_presentation()

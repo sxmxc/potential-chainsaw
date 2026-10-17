@@ -540,10 +540,16 @@ func frame_all() -> void:
 	frame_pieces(pieces)
 
 func frame_pieces(values: Array) -> void:
-	if values.is_empty(): camera.reset_view(); return
-	var bounds: AABB=values[0].transform*values[0].definition.bounds
-	for piece in values: bounds=bounds.merge(piece.transform*piece.definition.bounds)
-	camera.frame_point(bounds.get_center(),maxf(2,bounds.size.length()*0.65))
+	if values.is_empty():
+		if pieces.is_empty(): camera.reset_view()
+		else: frame_all()
+		return
+	camera.frame_bounds(navigation_bounds(values))
+
+func navigation_bounds(values: Array) -> AABB:
+	var bounds: AABB = values[0].global_transform * values[0].definition.bounds
+	for piece in values: bounds = bounds.merge(piece.global_transform * piece.definition.bounds)
+	return bounds
 
 func pick_piece(screen: Vector2) -> BuildingPiece:
 	var origin=camera.project_ray_origin(screen)
@@ -665,8 +671,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("build_height_down_fine",false,true): set_height(height-height_step(true))
 		elif event.is_action_pressed("build_height_up",false,true): set_height(height+height_step())
 		elif event.is_action_pressed("build_height_down",false,true): set_height(height-height_step())
-		elif event.is_action_pressed("build_frame",false,true): frame_pieces(selection)
-		elif event.is_action_pressed("build_frame_all",false,true): frame_all()
 
 func attached_selection() -> Array[BuildingPiece]:
 	var expanded: Array[BuildingPiece] = selection.duplicate()

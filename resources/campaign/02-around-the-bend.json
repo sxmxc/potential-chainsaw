@@ -16,18 +16,37 @@
     {
       "appear": "build",
       "complete": "connected",
-      "connector": 0.0,
+      "connector": 0,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "sample-3",
-      "text": "Attach a Curve here. R rotates it; Tab changes the attachment."
+      "text": "Attach a Curve here. R rotates it; Tab changes the attachment.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:curve"
+      ]
     },
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "sample-7",
-      "text": "Extend the track to this finish, then press Run."
+      "text": "Extend the track to this finish, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:straight",
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -102,7 +121,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {},
@@ -186,10 +205,10 @@
   "time_limit": 45.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "dd38c7120542d01767e7696d42e803611123257eb2430b25a875c2aac903f56d",
+    "fingerprint": "e824deb2bf934dff8f771ecc92afd6bc38ef85d2a5eb03c9cfb820e86bb49516",
     "physics_success": true,
     "seconds": 5.11666666666671,
-    "tested_at": "2026-10-15T21:40:39"
+    "tested_at": "2026-10-17T14:22:50"
   },
   "version": 3.0
 }

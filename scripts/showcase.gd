@@ -19,7 +19,6 @@ func _ready() -> void:
 	world_manager.build.refresh_grid()
 	animation.play("showcase")
 	animation.advance(0)
-	world_manager.camera._update(1)
 
 func set_active(value: bool) -> void:
 	if active == value: return

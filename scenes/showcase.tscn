@@ -10,7 +10,7 @@
 [sub_resource type="Resource" id="Resource_xq7gy"]
 resource_local_to_scene = true
 script = ExtResource("Tween")
-duration = 0.85
+duration = 1.4
 transition = 1
 
 [sub_resource type="Resource" id="Resource_ttlna"]
@@ -22,7 +22,7 @@ far = 300.0
 [sub_resource type="Resource" id="Resource_dxudb"]
 resource_local_to_scene = true
 script = ExtResource("Tween")
-duration = 0.65
+duration = 1.4
 transition = 1
 
 [sub_resource type="Resource" id="Resource_lgn12"]
@@ -36,69 +36,27 @@ far = 300.0
 [sub_resource type="Animation" id="Reset"]
 length = 0.001
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Track/Camera:target_focus")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
+tracks/0/path = NodePath("Orbit:rotation:y")
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(2.5, 3.5, 0)]
+"values": [0.48]
 }
 
 [sub_resource type="Animation" id="Cinematic"]
 resource_name = "showcase"
-length = 36.0
+length = 72.0
 loop_mode = 1
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Track/Camera:target_focus")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
+tracks/0/path = NodePath("Orbit:rotation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 9, 18, 27, 36),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 72),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(2.5, 3.5, 0), Vector3(2.5, 3.5, 0), Vector3(2.5, 3.5, 0), Vector3(2.5, 3.5, 0), Vector3(2.5, 3.5, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Track/Camera:target_yaw")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 9, 18, 27, 36),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.48, 0.56, 0.48, 0.4, 0.48]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Track/Camera:target_pitch")
-tracks/2/interp = 2
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 9, 18, 27, 36),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.65, 0.65, 0.65, 0.65, 0.65]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Track/Camera:target_distance")
-tracks/3/interp = 2
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 9, 18, 27, 36),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [44.0, 44.0, 44.0, 44.0, 44.0]
+"values": [0.48, 6.7631853]
 }
 
 [sub_resource type="AnimationLibrary" id="Library"]
@@ -146,17 +104,14 @@ automatic_composition = false
 host_layers = 2
 
 [node name="FreeView" parent="World/Track" index="8" unique_id=1419629802]
-tween_resource = SubResource("Resource_xq7gy")
+priority = 0
 host_layers = 2
-camera_3d_resource = SubResource("Resource_ttlna")
 
 [node name="SimulationCamera" parent="World/Track" index="9" unique_id=655534682]
 player_selection = false
 
 [node name="MarbleChase" parent="World/Track/SimulationCamera" index="0"]
-transition_duration = 0.0
-height = 0.1
-look_ahead = 0.0
+transition_duration = 1.4
 
 [node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2" unique_id=1700862802]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
@@ -169,6 +124,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
 tween_resource = SubResource("Resource_dxudb")
 host_layers = 2
 camera_3d_resource = SubResource("Resource_lgn12")
+
+[node name="Orbit" type="Node3D" parent="World"]
+position = Vector3(2.5, 3.5, 0)
+rotation = Vector3(0, 0.48, 0)
+
+[node name="Wide" type="Node3D" parent="World/Orbit"]
+position = Vector3(0, 26.628202, 35.027687)
+rotation = Vector3(-0.65, 0, 0)
+script = ExtResource("PCam")
+priority = 10
+tween_resource = SubResource("Resource_xq7gy")
+tween_on_load = false
+host_layers = 2
+camera_3d_resource = SubResource("Resource_ttlna")
 
 [node name="CameraMotion" type="AnimationPlayer" parent="World" unique_id=800896303]
 libraries/ = SubResource("Library")

@@ -16,18 +16,36 @@
     {
       "appear": "build",
       "complete": "connected",
-      "connector": 0.0,
+      "connector": 0,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "release",
-      "text": "Attach the high end of Ramp Long A here. Snapping sets its height."
+      "text": "Attach the high end of Ramp Long A here. Snapping sets its height.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:ramp-long-a"
+      ]
     },
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "goal",
-      "text": "Join the lower track, then press Run."
+      "text": "Join the lower track, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -92,7 +110,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -145,10 +163,10 @@
   "time_limit": 45.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "a685ce0eb266188a694a93a024cc72ab95ba3344bdcbbb2cff22af9f91729c3e",
+    "fingerprint": "18787cac62077bc26ae88db45bec80d6aaf347123ff4299be527c42d8770053d",
     "physics_success": true,
     "seconds": 2.88333333333333,
-    "tested_at": "2026-10-15T21:40:42"
+    "tested_at": "2026-10-17T14:22:54"
   },
   "version": 3.0
 }

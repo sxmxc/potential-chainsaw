@@ -16,26 +16,54 @@
     {
       "appear": "build",
       "complete": "connected",
-      "connector": 0.0,
+      "connector": 0,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "release",
-      "text": "Attach a 4 m Bucket Elevator here to reach the sensor."
+      "text": "Attach a 4 m Bucket Elevator here to reach the sensor.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:bucket-elevator"
+      ]
     },
     {
       "appear": "build",
       "complete": "dismissed",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "detector",
-      "text": "Use Connect to link Entered to gate Open and launcher Fire."
+      "text": "Use Connect to link Entered to gate Open and launcher Fire.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:connect"
+      ]
     },
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "jump",
-      "text": "Add a landing track beyond the jump gap. Select the launcher to preview its arc, then press Run."
+      "text": "Add a landing track beyond the jump gap. Select the launcher to preview its arc, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:straight",
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -159,7 +187,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {},
@@ -263,10 +291,10 @@
   "time_limit": 75.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "15dbb3d7a8e6675f8df6bccce757d1fe0f26e8a5b0f8502751bd1c8038e00b1c",
+    "fingerprint": "a07bf2dc6317f79196f56039586346d40a080c01c105d576d972c2174b3ea51e",
     "physics_success": true,
-    "seconds": 12.5083333333333,
-    "tested_at": "2026-10-15T21:41:27"
+    "seconds": 12.1999999999999,
+    "tested_at": "2026-10-17T14:23:40"
   },
   "version": 3.0
 }

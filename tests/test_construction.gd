@@ -69,6 +69,42 @@ class TestPlacementPrecision:
 class TestPersistence:
 	extends "res://tests/support/game_test.gd"
 
+	func test_menu_machine_preserves_every_piece_through_track_save() -> void:
+		var source := FileAccess.get_file_as_string("res://resources/menu_machine.json")
+		var original: Dictionary = JSON.parse_string(source)
+		var serializer := TrackSerializer.new(PieceCatalog.new())
+		var decoded := serializer.decode(source)
+		assert_false(decoded.is_empty(), serializer.last_error)
+		assert_eq(serializer.warnings, [] as Array[String], "The bundled example resolves every construction ID")
+		assert_eq(decoded.get("pieces", []).size(), original.pieces.size())
+		for index in original.pieces.size():
+			var expected: Dictionary = original.pieces[index]
+			var actual: Dictionary = decoded.pieces[index]
+			assert_eq(actual.uid, expected.uid)
+			assert_eq(actual.piece, expected.piece)
+			assert_eq(actual.position, expected.position)
+			assert_eq(actual.rotation, int(expected.rotation))
+		var saved_id := serializer.save_track(decoded.name, decoded.pieces)
+		assert_false(saved_id.is_empty(), serializer.last_error)
+		var reloaded := serializer.load_track(saved_id)
+		assert_eq(reloaded.get("pieces", []).size(), decoded.pieces.size())
+		for index in decoded.pieces.size():
+			var expected: Dictionary = decoded.pieces[index]
+			var actual: Dictionary = reloaded.pieces[index]
+			assert_eq(actual.uid, expected.uid)
+			assert_eq(actual.piece, expected.piece)
+			assert_eq(actual.rotation, expected.rotation)
+			assert_eq(JSON.stringify(actual.config), JSON.stringify(expected.config))
+			for axis in 3:
+				assert_almost_eq(float(actual.position[axis]), float(expected.position[axis]), 0.000001)
+		assert_eq(serializer.warnings, [] as Array[String])
+		for size in ["short", "tall"]:
+			var scenery_id: String = "environment:factory-structure-" + size
+			var scenery: Dictionary = original.duplicate(true)
+			scenery.pieces = [{"uid": "scenery", "piece": scenery_id, "position": [0, 0, 0], "rotation": 0}]
+			assert_eq(serializer.decode(JSON.stringify(scenery)).pieces.size(), 0, "Authoring scenery remains excluded from personal tracks")
+			assert_eq(serializer.warnings.size(), 1)
+
 	func test_json_save_replaces_complete_content() -> void:
 		var path := test_directory.path_join("save.json")
 		assert_eq(SaveStorage.write_json(path, {"name": "Original", "pieces": [1, 2, 3]}), "")

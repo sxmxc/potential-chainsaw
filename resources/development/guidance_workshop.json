@@ -184,6 +184,8 @@
       "target": "approach",
       "connector": 0,
       "text": "Attach a straight track to this connector.",
+      "ui_targets": ["piece:straight"],
+      "ui_style": "pointer",
       "appear": "build",
       "complete": "connected"
     },
@@ -192,6 +194,8 @@
       "target": "release",
       "connector": 0,
       "text": "Run the machine.",
+      "ui_targets": ["action:run"],
+      "show_world": false,
       "appear": "build",
       "complete": "run_started"
     },

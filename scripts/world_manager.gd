@@ -33,6 +33,7 @@ func play_music() -> void:
 func configure(catalog: PieceCatalog) -> void:
 	build.catalog=catalog
 	build.camera=camera
+	camera.build=build
 	simulation.build=build
 
 func load_construction(pieces: Array) -> void:

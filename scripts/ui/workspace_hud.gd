@@ -10,6 +10,8 @@ var toolbox_motion: UIMotion
 var status_motion: UIMotion
 var guidance_motion: UIMotion
 var displayed_instruction: String = ""
+const HUD_INDICATOR = preload("res://scenes/guidance/hud_indicator.tscn")
+var hud_indicators: Dictionary = {}
 
 func _ready() -> void:
 	toolbox_motion = UIMotion.attach(%Toolbox, Vector2(-UIMotion.PANEL_SHIFT, 0.0))
@@ -63,6 +65,7 @@ func configure(manager: BuildManager, simulator: SimulationManager, value: Const
 	simulation.state_changed.connect(_state_changed)
 	session.changed.connect(refresh)
 	session.get_parent().guidance.changed.connect(refresh_guidance)
+	%Toolbox.cards_rebuilt.connect(refresh_guidance)
 	refresh()
 func refresh_context() -> void:
 	guidance_motion.set_open(false, true)
@@ -103,6 +106,7 @@ func refresh_guidance() -> void:
 		guidance_motion.set_open(false, true)
 		return
 	var guidance: WorldGuidance = session.get_parent().guidance
+	refresh_hud_indicators(guidance.ui_targets, guidance.ui_style)
 	var instruction := guidance.instruction
 	if not instruction.is_empty():
 		var temporary := not guidance.temporary.is_empty()
@@ -118,6 +122,38 @@ func refresh_guidance() -> void:
 		if instruction != displayed_instruction and guidance_motion.wanted: UIMotion.section(%GuidanceText)
 	guidance_motion.set_open(not instruction.is_empty())
 	displayed_instruction = instruction
+
+func guidance_control(target: String) -> Control:
+	if target.begins_with("piece:"):
+		return %Toolbox.buttons.get(StringName(target.trim_prefix("piece:")))
+	match target:
+		"action:run": return %FileToolbar.get_node("%Test")
+		"action:reset": return %FileToolbar.get_node("%Reset")
+		"action:goal": return %FileToolbar.get_node("%LocateGoal")
+		"action:connect": return %BuildToolbar.get_node("%Connect")
+		"control:library": return %BuildToolbar.get_node("%Library")
+		"control:search": return %Toolbox.get_node("%Search")
+	return null
+
+func refresh_hud_indicators(targets: Array, style: String) -> void:
+	for key: String in hud_indicators.keys():
+		var overlay: Variant = hud_indicators[key]
+		if not is_instance_valid(overlay):
+			hud_indicators.erase(key)
+		elif key not in targets or overlay.get_parent() != guidance_control(key) or overlay.style != style:
+			overlay.hide()
+			overlay.queue_free()
+			hud_indicators.erase(key)
+	for key: String in targets:
+		var target := guidance_control(key)
+		if not is_instance_valid(target): continue
+		if not hud_indicators.has(key):
+			var overlay: Control = HUD_INDICATOR.instantiate()
+			overlay.style = style
+			overlay.inset_pointer = key.begins_with("piece:") or key == "control:search"
+			target.add_child(overlay)
+			hud_indicators[key] = overlay
+		hud_indicators[key].refresh_availability()
 
 func show_status(text: String) -> void:
 	if build.chosen:

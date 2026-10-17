@@ -39,11 +39,16 @@ Click to select, drag to move, and Shift-click to build a selection. Dragging a 
 | Raise / lower building height | Page Up / Page Down; Shift for finer steps |
 | Save / test or pause | Ctrl+S / Space |
 | Orbit / pan / zoom | Right drag / middle drag / wheel |
-| Vertical pan / keyboard pan | Shift + middle drag / WASD |
+| Pan along the ground | WASD |
+| Focus a surface and orbit | Alt + right drag |
 | Frame selection / whole construction | F / Home |
 | Toggle grid / snapping | G / C |
 
 Settings lets you change keyboard bindings, camera, audio, and graphics options. During a run, click a visible marble or use the camera button to follow it. Stop following to return to your free camera view.
+
+Middle drag pans across the view, including vertically, at the depth of the piece under the pointer (or the current working focus). Shift is no longer needed for vertical pan. Wheel zoom approaches the region under the pointer and slows near its surface. Right drag orbits the selected pieces' combined center, or retains the navigation pivot when nothing is selected. Alt + right drag uses the exact surface under the pointer for that gesture. The pivot stays fixed until the drag ends; beginning an orbit does not recenter the view.
+
+F smoothly fits the selected pieces; with no selection it fits the entire construction. Home always fits the whole construction. Framing keeps the current viewing angle and accounts for tall and wide machines as well as small pieces. Direct dragging interrupts a framing transition immediately. Camera sensitivity, wheel sensitivity, axis inversion, and keyboard bindings remain available in Settings.
 
 ## Development
 

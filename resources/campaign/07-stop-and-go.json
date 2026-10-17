@@ -24,10 +24,19 @@
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "stopper",
-      "text": "Set Timed opening to about 2 seconds, then press Run."
+      "text": "Set Timed opening to about 2 seconds, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -150,7 +159,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -230,10 +239,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "0eb5aa4ebb8805f08d7d4daa7404c7623409d29f09174d3785bdf3774332c2f7",
+    "fingerprint": "de523b225e7f372ab7e95c0aac44c2b860bc2c92aa5015709a2c0f79488869b1",
     "physics_success": true,
     "seconds": 4.78333333333336,
-    "tested_at": "2026-10-15T21:41:04"
+    "tested_at": "2026-10-17T14:23:17"
   },
   "version": 3.0
 }

@@ -7,14 +7,15 @@ instance uniform vec4 highlight : source_color = vec4(1.0, 0.79, 0.35, 1.0);
 instance uniform float focus = 0.0;
 
 void vertex() {
-	VERTEX += NORMAL * (0.055 + focus * 0.004);
+	VERTEX += NORMAL * (0.014 + focus * 0.006);
 }
 
 void fragment() {
 	vec3 tint = mix(source_tint.rgb, target_tint.rgb, smoothstep(0.0, 1.0, UV2.x));
-	tint = mix(tint, highlight.rgb, focus * 0.8);
+	float phase = fract((UV.x - TIME * 0.65) / 0.36);
+	if (phase > 0.46) { discard; }
 	float facing = max(dot(normalize(NORMAL), normalize(VIEW)), 0.0);
 	ALBEDO = tint;
 	// The expanded surface fades to zero at its silhouette; no scene-wide bloom required.
-	ALPHA = pow(facing, 3.0) * (0.16 + focus * 0.05);
+	ALPHA = pow(facing, 3.0) * (0.12 + focus * 0.12);
 }

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dp7yyhbn46wts" path="res://scripts/ui/puzzle_completion.gd" id="Script"]
 [ext_resource type="Theme" uid="uid://cdn7rpeinxafd" path="res://resources/sandbox_theme.tres" id="Theme"]
-[ext_resource type="PackedScene" path="res://scenes/ui/widgets/completion_pulse.tscn" id="Pulse"]
+[ext_resource type="PackedScene" path="res://scenes/guidance/completion_celebration.tscn" id="Celebration"]
 
 [sub_resource type="Gradient" id="Gradient"]
 offsets = PackedFloat32Array(0, 0.55, 1)
@@ -26,7 +26,7 @@ theme = ExtResource("Theme")
 script = ExtResource("Script")
 
 ; Prepare the effect's surface pipeline at startup, before its first celebration.
-[node name="PulseWarmup" parent="." instance=ExtResource("Pulse")]
+[node name="CelebrationWarmup" parent="." instance=ExtResource("Celebration")]
 visible = false
 
 [node name="Shade" type="TextureRect" parent="."]

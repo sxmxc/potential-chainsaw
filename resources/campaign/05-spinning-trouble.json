@@ -24,10 +24,19 @@
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "paddle",
-      "text": "Set a negative speed to push toward the finish, then press Run."
+      "text": "Set a negative speed to push toward the finish, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -142,7 +151,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -219,10 +228,10 @@
   "time_limit": 30.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "84395564e2908388aebf4c7f62c2881bafa3b19cd414a2a55361da4090365b63",
+    "fingerprint": "baca4d3e6e98b20e61d31aa4f70ae03c8ff9d3fb720d3b7bc5dc9bd585cea1cd",
     "physics_success": true,
     "seconds": 2.94999999999999,
-    "tested_at": "2026-10-15T21:40:49"
+    "tested_at": "2026-10-17T14:23:01"
   },
   "version": 3.0
 }

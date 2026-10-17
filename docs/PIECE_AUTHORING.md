@@ -16,6 +16,8 @@ Robot arms, piston details, screens, gears, warning props, gutters, and small pi
 
 The asset pass inspected all 79 Building and 143 Factory GLBs, including node hierarchies, transformed vertices, pivots, and triangle geometry. It retained existing uses, kept guidance icons outside construction, and omitted redundant conveyor paint variants, alternate door poses, duplicate barricades/gears, inert control lookalikes, and the unrelated mascot. Original imported assets are unchanged.
 
+The short and tall factory support frames also retain the ordinary construction IDs `factory-structure-short` and `factory-structure-tall`, used by the menu machine example and personal tracks. They share the models and placement geometry of their `environment:` counterparts, which remain authoring-only puzzle scenery. Keep both identities registered; personal-track decoding excludes authoring-only definitions.
+
 ## Start from a working piece
 
 Open a suitable definition under `resources/pieces/` and follow its Model reference. Functional wrappers live under `scenes/mechanisms/`. The sensor is a small example: its scene combines track collision, a detection area, an animated indicator, and a behavior script. The gate and launcher demonstrate moving collision and exported node references; the elevator and supports demonstrate adjustable assemblies.

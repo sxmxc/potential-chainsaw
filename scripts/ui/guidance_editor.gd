@@ -3,9 +3,25 @@ extends VBoxContainer
 var session: ConstructionSession
 var selected_step: int = -1
 var refreshing: bool = false
+var ui_targets: Array = []
 
 func configure(value: ConstructionSession) -> void:
 	session = value
+	for target: String in WorldGuidance.UI_ACTIONS:
+		%HUDTarget.add_item(WorldGuidance.UI_ACTIONS[target])
+		%HUDTarget.set_item_metadata(%HUDTarget.item_count - 1, target)
+	for definition in session.catalog.query({}):
+		if not definition.library_visible or definition.authoring_only: continue
+		%HUDTarget.add_item("Piece card: " + definition.display_name)
+		%HUDTarget.set_item_metadata(%HUDTarget.item_count - 1, "piece:" + String(definition.id))
+	%AddHUDTarget.pressed.connect(func():
+		var target: String = %HUDTarget.get_item_metadata(%HUDTarget.selected)
+		if target not in ui_targets and ui_targets.size() < 4: ui_targets.append(target)
+		refresh_hud_targets())
+	%RemoveHUDTarget.pressed.connect(func():
+		var selected: PackedInt32Array = %HUDTargets.get_selected_items()
+		if not selected.is_empty(): ui_targets.remove_at(selected[0])
+		refresh_hud_targets())
 	for kind in ["Point here", "Destination", "Direction", "Interact", "Blocked"]: %MarkerKind.add_item(kind)
 	for condition in ["Player selects this piece", "Player connects this track end", "Player starts a run", "Objective receives a marble or activates", "Player presses Next"]: %StepComplete.add_item(condition)
 	for context in ["While building", "During run", "Always"]: %StepAppear.add_item(context)
@@ -71,6 +87,10 @@ func refresh() -> void:
 func new_step() -> void:
 	if not session or not session.is_authoring: return
 	selected_step = -1
+	ui_targets = []
+	refresh_hud_targets()
+	%HUDStyle.select(0)
+	%ShowWorld.button_pressed = true
 	%StepList.deselect_all()
 	%StepText.text = ""
 	%MarkerKind.select(0)
@@ -117,7 +137,20 @@ func refresh_connectors() -> void:
 	%PointFields.visible = uid.is_empty()
 
 func fields() -> Dictionary:
-	return {"kind": WorldGuidance.KINDS[%MarkerKind.selected], "target": %StepTarget.get_item_metadata(%StepTarget.selected), "connector": %StepConnector.selected - 1, "position": [%PointX.value, %PointY.value, %PointZ.value], "text": %StepText.text, "appear": ["build", "run", "always"][%StepAppear.selected], "complete": WorldGuidance.CONDITIONS[%StepComplete.selected]}
+	var step := {"kind": WorldGuidance.KINDS[%MarkerKind.selected], "target": %StepTarget.get_item_metadata(%StepTarget.selected), "connector": %StepConnector.selected - 1, "position": [%PointX.value, %PointY.value, %PointZ.value], "text": %StepText.text, "appear": ["build", "run", "always"][%StepAppear.selected], "complete": WorldGuidance.CONDITIONS[%StepComplete.selected]}
+	if not ui_targets.is_empty():
+		step.ui_targets = ui_targets.duplicate()
+		step.ui_style = WorldGuidance.UI_STYLES[%HUDStyle.selected]
+	if not %ShowWorld.button_pressed: step.show_world = false
+	return step
+
+func refresh_hud_targets() -> void:
+	%HUDTargets.clear()
+	for target: String in ui_targets:
+		var caption := target
+		for index in %HUDTarget.item_count:
+			if %HUDTarget.get_item_metadata(index) == target: caption = %HUDTarget.get_item_text(index)
+		%HUDTargets.add_item(caption)
 
 func save_step() -> void:
 	if not session.is_authoring: return
@@ -138,6 +171,10 @@ func save_step() -> void:
 func edit_step(index: int) -> void:
 	selected_step = index
 	var step: Dictionary = session.puzzle.guidance[index]
+	ui_targets = step.get("ui_targets", []).duplicate()
+	refresh_hud_targets()
+	%HUDStyle.select(WorldGuidance.UI_STYLES.find(step.get("ui_style", "pointer")))
+	%ShowWorld.button_pressed = step.get("show_world", true)
 	%MarkerKind.select(WorldGuidance.KINDS.find(step.kind))
 	%StepText.text = step.get("text", "")
 	%StepComplete.select(WorldGuidance.CONDITIONS.find(step.complete))

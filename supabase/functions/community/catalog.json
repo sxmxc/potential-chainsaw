@@ -2018,6 +2018,26 @@
 			"settings": {},
 			"surface_mounted": false
 		},
+		"factory-structure-short": {
+			"collector": false,
+			"connectors": 0,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {},
+			"surface_mounted": false
+		},
+		"factory-structure-tall": {
+			"collector": false,
+			"connectors": 0,
+			"inputs": {},
+			"outputs": {},
+			"release": false,
+			"scenery": false,
+			"settings": {},
+			"surface_mounted": false
+		},
 		"factory-structure-wall": {
 			"collector": false,
 			"connectors": 0,
@@ -3973,7 +3993,7 @@
 			"surface_mounted": false
 		}
 	},
-	"compatibility": "64ae2d04c0a8ce70affe9b500a28da0133de5366982e8b49da72d1d2d5c29a08",
+	"compatibility": "5697c5b8881462b99afad16e63c5d2c5ae509e2c9f5def72c7651e5c03915123",
 	"format": 1,
 	"game_version": "0.0.1"
 }

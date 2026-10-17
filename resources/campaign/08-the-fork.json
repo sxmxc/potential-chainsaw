@@ -24,10 +24,19 @@
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "goal",
-      "text": "Turn off Route left to send the marble to this finish, then press Run."
+      "text": "Turn off Route left to send the marble to this finish, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -147,7 +156,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -235,10 +244,10 @@
   "time_limit": 25.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "662288d1d549c12481b2e46fadc1e8aa348a4e1903446ad82db453524cb36366",
+    "fingerprint": "30c255bf53fbf7989714fddfcece3ea1690e0bcf219cea4ac97f0397b598d1db",
     "physics_success": true,
     "seconds": 5.38333333333339,
-    "tested_at": "2026-10-15T21:41:10"
+    "tested_at": "2026-10-17T14:23:23"
   },
   "version": 3.0
 }

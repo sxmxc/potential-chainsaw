@@ -1,8 +1,8 @@
 class_name WiringConduit
 extends MeshInstance3D
 
-## One cached, world-space tube. Both rendering and hit testing use this centerline.
-const RADIUS := 0.024
+## One cached signal path. Rendering and hit testing share its rounded centerline.
+const RADIUS := 0.009
 const SEGMENTS := 64
 const SIDES := 12
 const MATERIAL: Material = preload("res://resources/wiring_conduit_material.tres")
@@ -20,16 +20,43 @@ func route(start: Vector3, finish: Vector3, lane: int = 0) -> void:
 	if signature == next_signature: return
 	signature = next_signature
 	var span := Vector2(finish.x - start.x, finish.z - start.z).length()
-	var lift := clampf(span * 0.22, 0.35, 1.8) + lane * 0.12
+	var lift := 0.24 + lane * 0.08
 	var side := (finish - start).cross(Vector3.UP).normalized() * lane * 0.16
-	if Vector2(finish.x - start.x, finish.z - start.z).length() < RADIUS * 4:
-		# Stacked terminals need a lateral bow rather than a tube doubling back on itself.
-		side = Vector3.FORWARD * (lift * 0.5 + lane * 0.16)
-	var first := start + Vector3.UP * lift + side
-	var second := finish + Vector3.UP * lift + side
+	var height := maxf(start.y, finish.y) + lift
+	var first := Vector3(start.x, height, start.z) + side
+	var second := Vector3(finish.x, height, finish.z) + side
+	if span < 0.08:
+		# Route stacked terminals around the side instead of doubling back vertically.
+		side = Vector3.FORWARD * (0.24 + lane * 0.16)
+		first = start + side
+		second = finish + side
+	var path := PackedVector3Array([start])
+	var corners: Array[Vector3] = [start, first, second, finish]
+	for corner in range(1, 3):
+		var incoming := corners[corner - 1] - corners[corner]
+		var outgoing := corners[corner + 1] - corners[corner]
+		var radius := minf(0.12, minf(incoming.length(), outgoing.length()) * 0.4)
+		var entry := corners[corner] + incoming.normalized() * radius
+		var exit := corners[corner] + outgoing.normalized() * radius
+		path.append(entry)
+		for step in range(1, 9):
+			var t := step / 8.0
+			path.append(entry.lerp(corners[corner], t).lerp(corners[corner].lerp(exit, t), t))
+	path.append(finish)
+	# Uniform distance samples keep picking and animation consistent along straight legs and bends.
+	var lengths := PackedFloat32Array([0.0])
+	for i in range(1, path.size()):
+		lengths.append(lengths[-1] + path[i - 1].distance_to(path[i]))
 	points.clear()
+	var segment := 1
 	for i in SEGMENTS + 1:
-		points.append(start.bezier_interpolate(first, second, finish, i / float(SEGMENTS)))
+		var along := lengths[-1] * i / float(SEGMENTS)
+		while segment < path.size() - 1 and lengths[segment] < along:
+			segment += 1
+		var fraction := (along - lengths[segment - 1]) / maxf(lengths[segment] - lengths[segment - 1], 0.000001)
+		points.append(path[segment - 1].lerp(path[segment], fraction))
+	points[0] = start
+	points[-1] = finish
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var distance := 0.0

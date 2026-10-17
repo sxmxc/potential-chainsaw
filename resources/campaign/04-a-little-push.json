@@ -24,10 +24,19 @@
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "air",
-      "text": "Enable airflow, then press Run. Adjust power if the marble stalls."
+      "text": "Enable airflow, then press Run. Adjust power if the marble stalls.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -134,7 +143,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {
@@ -202,10 +211,10 @@
   "time_limit": 30.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "ed1b0c7a6ec5474c97c2610bd4785ed81e2cda42ff4ec0e89c346a15be377595",
+    "fingerprint": "f42a72f719ecef0444f4261c6146082d216fa01161f4318f8b4f9d403f08760e",
     "physics_success": true,
     "seconds": 2.89166666666666,
-    "tested_at": "2026-10-15T21:40:46"
+    "tested_at": "2026-10-17T14:22:57"
   },
   "version": 3.0
 }

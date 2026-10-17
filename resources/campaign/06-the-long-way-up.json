@@ -16,18 +16,36 @@
     {
       "appear": "build",
       "complete": "connected",
-      "connector": 0.0,
+      "connector": 0,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "elevator-demo-1",
-      "text": "Attach a Bucket Elevator inlet here. Keep its rise at 4 m."
+      "text": "Attach a Bucket Elevator inlet here. Keep its rise at 4 m.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "piece:bucket-elevator"
+      ]
     },
     {
       "appear": "build",
       "complete": "run_started",
-      "connector": -1.0,
+      "connector": -1,
       "kind": "attention",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "target": "elevator-demo-3",
-      "text": "Join the elevator outlet to the upper track, then press Run."
+      "text": "Join the elevator outlet to the upper track, then press Run.",
+      "ui_style": "pointer",
+      "ui_targets": [
+        "action:run"
+      ]
     },
     {
       "appear": "run",
@@ -90,7 +108,7 @@
     }
   ],
   "restricted_zones": [],
-  "revision": 2.0,
+  "revision": 3,
   "solution": [
     {
       "config": {},
@@ -144,10 +162,10 @@
   "time_limit": 60.0,
   "validation": {
     "engine": "4.7.2-stable (official)",
-    "fingerprint": "2c5985b52a8bdede76e4bdc63642e46d0600c239c7017dd58161e643e12a4b76",
+    "fingerprint": "3b8bd32bb4cdec2d0dc833d824ea85dd90d8a85c360d8e413873e1fbaf76dd65",
     "physics_success": true,
     "seconds": 10.1750000000001,
-    "tested_at": "2026-10-15T21:40:59"
+    "tested_at": "2026-10-17T14:23:12"
   },
   "version": 3.0
 }

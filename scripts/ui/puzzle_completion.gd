@@ -3,14 +3,14 @@ extends Control
 signal levels_requested
 signal presentation_requested
 
-const PULSE = preload("res://scenes/ui/widgets/completion_pulse.tscn")
+const CELEBRATION = preload("res://scenes/guidance/completion_celebration.tscn")
 const REVEAL_TIME: float = 0.48
 var session: ConstructionSession
 var sequence: Tween
 var closing: bool = false
 var acknowledged: bool = false
 var chapter_completed: int = 0
-var pulses: Array[Node3D] = []
+var celebrations: Array[Node3D] = []
 var return_focus: Control
 
 func _ready() -> void:
@@ -111,7 +111,7 @@ func present() -> void:
 	%Dock.offset_transform_position_ratio = Vector2(0, 0.24)
 	%Accent.offset_transform_scale = Vector2(0.05, 1)
 	%Progress.value = 0
-	_objective_pulses()
+	_objective_celebrations()
 	# One timeline: target response, title sweep, dock arrival, chapter fill.
 	sequence = create_tween().set_parallel().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	sequence.tween_property(%Reveal, "modulate:a", 1.0, 0.22).set_delay(0.10)
@@ -120,29 +120,33 @@ func present() -> void:
 	sequence.tween_property(%Dock, "modulate:a", 1.0, 0.20).set_delay(0.24)
 	sequence.tween_property(%Dock, "offset_transform_position_ratio", Vector2.ZERO, REVEAL_TIME).set_delay(0.24)
 	sequence.tween_property(%Progress, "value", chapter_completed, 0.55).set_delay(0.48)
-	for pulse: Node3D in pulses:
-		sequence.tween_property(pulse, "scale", Vector3.ONE * 2.6, 0.85)
-		sequence.tween_property(pulse.get_node("Ring"), "transparency", 1.0, 0.55).set_delay(0.3)
-	sequence.chain().tween_callback(_clear_pulses)
 	# Actions are available immediately; their hit areas follow the native transforms.
 	for button: Button in [%Next, %Preserve, %LevelSelection]:
 		if button.visible:
 			button.grab_focus()
 			break
 
-func _objective_pulses() -> void:
+func _objective_celebrations() -> void:
 	var targets: Array[String] = []
 	for objective: Dictionary in session.puzzle.get("objectives", []):
 		var target: String = objective.get("target", "")
 		if target in targets: continue
+		if targets.size() >= 4: break
 		targets.append(target)
 		var piece := session.world.build.find_piece(target)
 		if not piece: continue
-		var pulse: Node3D = PULSE.instantiate()
-		session.world.add_child(pulse)
+		var celebration: Node3D = CELEBRATION.instantiate()
+		session.world.add_child(celebration)
 		var bounds: AABB = piece.definition.bounds
-		pulse.global_position = piece.global_transform * (bounds.get_center() + Vector3.UP * (bounds.size.y * 0.5 + 0.04))
-		pulses.append(pulse)
+		celebration.global_position = piece.global_transform * (bounds.get_center() + Vector3.UP * (bounds.size.y * 0.5 + 0.04))
+		# Keep a readable footprint around the objective at normal camera distances.
+		celebration.scale = Vector3.ONE * clampf(maxf(bounds.size.x, bounds.size.z) * 0.65, 1.0, 1.6)
+		var animation: AnimationPlayer = celebration.get_node("Sequence")
+		animation.animation_finished.connect(func(_name):
+			celebrations.erase(celebration)
+			celebration.queue_free())
+		animation.play("celebrate")
+		celebrations.append(celebration)
 
 func dismiss(action: Callable = Callable()) -> void:
 	if closing or not visible: return
@@ -161,12 +165,12 @@ func dismiss(action: Callable = Callable()) -> void:
 func _stop_sequence() -> void:
 	if sequence: sequence.kill()
 	sequence = null
-	_clear_pulses()
+	_clear_celebrations()
 
-func _clear_pulses() -> void:
-	for pulse: Node3D in pulses:
-		if is_instance_valid(pulse): pulse.queue_free()
-	pulses.clear()
+func _clear_celebrations() -> void:
+	for celebration: Node3D in celebrations:
+		if is_instance_valid(celebration): celebration.queue_free()
+	celebrations.clear()
 
 func _visibility_changed() -> void:
 	if is_visible_in_tree(): return

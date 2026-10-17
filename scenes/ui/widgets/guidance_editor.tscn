@@ -63,6 +63,51 @@ layout_mode = 2
 theme_type_variation = &"QuietButton"
 text = "Use selected piece"
 
+[node name="HUDHeading" type="Label" parent="."]
+layout_mode = 2
+theme_type_variation = &"SmallMutedLabel"
+text = "Also highlight in the interface (up to four)"
+
+[node name="HUDTarget" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+fit_to_longest_item = false
+
+[node name="HUDButtons" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="AddHUDTarget" type="Button" parent="HUDButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Add target"
+
+[node name="RemoveHUDTarget" type="Button" parent="HUDButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"QuietButton"
+text = "Remove target"
+
+[node name="HUDTargets" type="ItemList" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+
+[node name="HUDStyle" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "HUD: pointer and glow"
+popup/item_1/text = "HUD: glow only"
+selected = 0
+
+[node name="ShowWorld" type="CheckBox" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Show world marker too"
+
 [node name="StepTextField" type="VBoxContainer" parent="."]
 layout_mode = 2
 theme_type_variation = &"FieldPair"

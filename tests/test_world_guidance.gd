@@ -216,3 +216,115 @@ func test_authored_introduction_sequence_takes_precedence_over_older_hint_text()
 	assert_true(pointer.position.is_zero_approx())
 	await get_tree().create_timer(UIMotion.EXIT_TIME + 0.05).timeout
 	assert_false(workspace.hud.get_node("%Guidance").visible)
+
+func test_hud_targets_share_steps_follow_cards_and_clear_on_context_change() -> void:
+	await setup_workspace()
+	var data := sample()
+	data.guidance[0].ui_targets = ["piece:straight", "action:run"]
+	data.guidance[0].ui_style = "pointer"
+	assert_eq(PuzzleRules.definition_errors(data, workspace.catalog), [])
+	workspace.session.player(data, true)
+	workspace.guidance.request()
+	await wait_seconds(0.25)
+	assert_true(workspace.guidance.marker.visible, "World and HUD guidance coexist")
+	var hud := workspace.hud
+	var card := hud.guidance_control("piece:straight")
+	var overlay: Control = hud.hud_indicators["piece:straight"]
+	assert_same(overlay.get_parent(), card)
+	assert_true(overlay.size.is_equal_approx(card.size), "Anchors follow actual geometry")
+	assert_eq(overlay.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_eq(overlay.mouse_behavior_recursive, Control.MOUSE_BEHAVIOR_DISABLED)
+	assert_eq(overlay.focus_behavior_recursive, Control.FOCUS_BEHAVIOR_DISABLED)
+	var toolbox: Control = hud.get_node("%Toolbox")
+	toolbox.get_node("%Scroll").scroll_vertical = 100
+	await get_tree().process_frame
+	assert_true(overlay.get_global_rect().is_equal_approx(card.get_global_rect()), "Scrolling needs no layout polling")
+	toolbox.hide()
+	assert_false(overlay.is_visible_in_tree())
+	toolbox.show()
+	assert_true(overlay.is_visible_in_tree())
+	toolbox.refresh()
+	var rebuilt := hud.guidance_control("piece:straight")
+	assert_same(hud.hud_indicators["piece:straight"].get_parent(), rebuilt, "Dynamic rebuild rebinds by piece ID")
+	rebuilt.pressed.emit()
+	assert_eq(workspace.world.build.chosen.id, &"straight", "Highlighted cards retain their action")
+	workspace.world.build.cancel()
+	workspace.world.build.set_selection([workspace.world.build.find_piece("approach")])
+	assert_eq(workspace.guidance.step_index, 1)
+	assert_true(hud.hud_indicators.is_empty(), "Advancing removes every HUD target together")
+	workspace.guidance.preview(data.guidance[0])
+	assert_eq(hud.hud_indicators.size(), 2)
+	workspace.guidance.timer.timeout.emit()
+	assert_true(hud.hud_indicators.is_empty())
+	workspace.session.sandbox()
+	assert_true(hud.hud_indicators.is_empty())
+
+func test_hud_authoring_round_trip_ui_only_run_and_validation() -> void:
+	await setup_workspace()
+	var data := sample()
+	data.guidance[0].ui_targets = ["piece:straight", "action:run"]
+	data.guidance[0].ui_style = "halo"
+	data.guidance[0].show_world = false
+	workspace.session.editor(data)
+	var editor: Control = workspace.authoring.get_node("%GuidanceEditor")
+	editor.refresh()
+	editor.edit_step(0)
+	assert_eq(editor.fields().ui_targets, data.guidance[0].ui_targets)
+	assert_eq(editor.fields().ui_style, "halo")
+	assert_false(editor.fields().show_world)
+	editor.preview_step()
+	assert_false(workspace.guidance.marker.visible)
+	assert_eq(workspace.hud.hud_indicators.size(), 2)
+	assert_true(workspace.session.save_draft())
+	var loaded := workspace.session.store.load_puzzle(workspace.session.store.drafts_directory.path_join(data.id + ".json"), "draft")
+	assert_eq(loaded.guidance, JSON.parse_string(JSON.stringify(data.guidance)))
+	data.guidance = [{"kind": "attention", "target": "", "show_world": false, "ui_targets": ["action:run"], "text": "Run the machine.", "appear": "build", "complete": "run_started"}]
+	workspace.session.player(data, true)
+	workspace.guidance.request()
+	assert_eq(workspace.hud.hud_indicators.size(), 1)
+	assert_false(workspace.guidance.marker.visible)
+	workspace.hud.guidance_control("action:run").pressed.emit()
+	assert_eq(workspace.world.simulation.state, SimulationManager.State.RUNNING)
+	assert_true(workspace.hud.hud_indicators.is_empty(), "Run uses the same progression rule")
+	for invalid: Variant in ["action:unknown", "res://evil.tscn", 42]:
+		data.guidance[0].ui_targets = [invalid]
+		assert_false(WorldGuidance.shape_errors(data).is_empty())
+	data.guidance[0].ui_targets = ["piece:missing"]
+	assert_false(WorldGuidance.definition_errors(data, workspace.catalog).is_empty())
+	data.guidance[0].ui_targets = ["action:run", "action:run"]
+	assert_false(WorldGuidance.shape_errors(data).is_empty())
+
+func test_introduction_uses_hud_guidance_for_cards_run_and_connect() -> void:
+	await setup_workspace()
+	var introductions: Array[Dictionary] = workspace.session.store.load_campaign().levels.filter(func(data): return data.campaign.chapter.get("introduction", false))
+	assert_eq(introductions.size(), 10, "Keep all ten optional Introduction puzzles")
+	var placement_cards := {"campaign-01": "straight", "campaign-02": "curve", "campaign-03": "ramp-long-a", "campaign-06": "bucket-elevator", "campaign-10": "bucket-elevator"}
+	for data: Dictionary in introductions:
+		assert_eq(workspace.session.store.publication_errors(data), [], "Current proof covers " + str(data.id))
+		var run_hints: int = 0
+		for step: Dictionary in data.guidance:
+			if step.complete == "run_started":
+				run_hints += 1
+				assert_has(step.get("ui_targets", []), "action:run", data.name + " points at Run")
+			if "Use Connect" in step.text:
+				assert_has(step.get("ui_targets", []), "action:connect", data.name + " points at Connect")
+		assert_eq(run_hints, 1, "Retain the existing run progression in " + str(data.name))
+		if placement_cards.has(data.id):
+			assert_has(data.guidance[0].get("ui_targets", []), "piece:" + placement_cards[data.id], data.name + " points at its inventory card")
+		else:
+			assert_eq(data.guidance[0].complete, "selected", "Select the existing world mechanism")
+			assert_true(data.guidance[0].get("show_world", true))
+	var first: Dictionary = introductions.filter(func(data): return data.id == "campaign-01")[0]
+	workspace.session.player(first, true)
+	assert_has(workspace.hud.hud_indicators, "piece:straight", "The first puzzle highlights its card automatically")
+	workspace.world.build.restore(first.solution)
+	workspace.guidance.refresh()
+	assert_eq(workspace.guidance.step_index, 1)
+	assert_has(workspace.hud.hud_indicators, "action:run", "After bridging the gap, guidance points at Run")
+	assert_false(workspace.guidance.marker.visible, "A pure Run instruction needs only the HUD target")
+	var wiring: Dictionary = introductions.filter(func(data): return data.id == "campaign-09")[0]
+	workspace.session.player(wiring, true)
+	workspace.world.build.set_selection([workspace.world.build.find_piece("detector")])
+	assert_has(workspace.hud.hud_indicators, "action:connect")
+	assert_has(workspace.hud.hud_indicators, "action:run")
+	assert_true(workspace.guidance.marker.visible, "The sensor and toolbar targets coexist")

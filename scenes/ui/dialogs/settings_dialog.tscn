@@ -462,7 +462,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Click / drag to select and move · Shift-click to add
 Right drag to orbit · Middle drag to pan · Wheel to zoom
-Shift + middle drag to pan vertically · Double-click for connected tracks"
+Alt + right drag to focus a surface · F to frame selection · Home to frame all"
 autowrap_mode = 3
 
 [node name="BindingStatus" type="Label" parent="Surface/Contents/Body/Tabs/Controls/ControlsContents" unique_id=929908874]

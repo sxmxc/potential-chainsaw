@@ -1,6 +1,7 @@
 extends PanelContainer
 signal piece_chosen(definition: PieceDefinition)
 signal collapsed
+signal cards_rebuilt
 const CARD=preload("res://scenes/ui/widgets/piece_card.tscn")
 var inventory_editing: bool = false
 var build: BuildManager
@@ -69,6 +70,7 @@ func refresh() -> void:
 	%Category.visible=not small_inventory
 	fit_content.call_deferred()
 	restore_scroll.call_deferred(refresh_generation)
+	cards_rebuilt.emit()
 
 func restore_scroll(generation: int) -> void:
 	# Let the container and scrollbar settle before restoring a previous filter.

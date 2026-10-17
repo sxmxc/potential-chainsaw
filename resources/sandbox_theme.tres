@@ -207,6 +207,20 @@ bg_color = Color(0, 0, 0, 0)
 border_width_bottom = 1
 border_color = Color(0.24, 0.38, 0.4, 0.6)
 
+[sub_resource type="StyleBoxFlat" id="GuidanceHalo"]
+bg_color = Color(0.98, 0.81, 0.39, 0.045)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.81, 0.39, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.98, 0.81, 0.39, 0.22)
+shadow_size = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sckdx"]
 content_margin_left = 4.0
 content_margin_top = 4.0
@@ -817,6 +831,8 @@ FormHeading/fonts/font = ExtResource("Bold")
 FormHeading/styles/normal = SubResource("FormHeading")
 GridContainer/constants/h_separation = 8
 GridContainer/constants/v_separation = 8
+GuidanceHalo/base_type = &"Panel"
+GuidanceHalo/styles/panel = SubResource("GuidanceHalo")
 HBoxContainer/constants/separation = 8
 HFlowContainer/constants/h_separation = 8
 HFlowContainer/constants/v_separation = 8
