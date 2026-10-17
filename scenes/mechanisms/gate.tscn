@@ -48,7 +48,7 @@ size = Vector3(0.48, 0.55, 0.1)
 
 [sub_resource type="BoxShape3D" id="DetectionShape"]
 resource_local_to_scene = true
-size = Vector3(0.5, 0.75, 0.5)
+size = Vector3(0.5, 0.75, 1.1)
 
 [node name="Gate" type="Node3D" unique_id=1719899585 node_paths=PackedStringArray("barrier", "clearance")]
 script = ExtResource("Script")

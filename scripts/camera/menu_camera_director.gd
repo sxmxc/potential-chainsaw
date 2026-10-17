@@ -11,6 +11,8 @@ var remaining: float = 0.0
 var shot: int = 0
 var last_marble_id: int = 0
 var detail_index: int = 0
+var chase_age: float = 0.0
+var unusable_time: float = 0.0
 var random = RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -24,9 +26,10 @@ func set_active(value: bool) -> void:
 	_return_wide()
 
 func _return_wide() -> void:
-	world.simulation_camera.chase.stop()
-	detail.priority = 0
 	shot = 0
+	world.simulation_camera.chase.stop()
+	world.camera._update(1.0)
+	detail.priority = 0
 	remaining = wide_duration
 
 func _simulation_changed(state: SimulationManager.State, _message: String) -> void:
@@ -34,6 +37,28 @@ func _simulation_changed(state: SimulationManager.State, _message: String) -> vo
 
 func _process(delta: float) -> void:
 	if not active: return
+	if shot == 2:
+		var body := world.simulation_camera.chase.marble
+		if not MarbleChase.suitable(body) or body not in world.simulation_camera.available() or body.freeze:
+			_return_wide()
+			return
+		if world.simulation_camera.chase.preparing: return
+		detail.priority = 0
+		chase_age += delta
+		# A collision-compressed spring arm can put the marble outside the view.
+		# Give the host time to finish its blend, then abandon obstructed shots.
+		if chase_age > 1.0:
+			var point := body.get_global_transform_interpolated().origin
+			var camera := world.camera
+			var frame := camera.get_viewport().get_visible_rect()
+			var inset := minf(48.0, minf(frame.size.x, frame.size.y) * 0.05)
+			var framed := not camera.is_position_behind(point) and frame.grow(-inset).has_point(camera.unproject_position(point))
+			var ray := PhysicsRayQueryParameters3D.create(camera.global_position, point, 1)
+			var clear := camera.get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
+			unusable_time = 0.0 if framed and clear and body.linear_velocity.length() > 0.15 else unusable_time + delta
+			if unusable_time > 0.65:
+				_return_wide()
+				return
 	remaining -= delta
 	if remaining > 0.0: return
 	match shot:
@@ -45,6 +70,8 @@ func _process(delta: float) -> void:
 			remaining = detail_duration
 		1:
 			if _choose_marble():
+				chase_age = 0.0
+				unusable_time = 0.0
 				shot = 2
 				remaining = random.randf_range(maxf(8.0, chase_duration-2.0), minf(30.0, chase_duration+2.0))
 			else: _return_wide()

@@ -93,25 +93,29 @@ func _physics_process(delta: float) -> void:
 			emit_output("unloaded", released)
 		elif not bucket.occupied() and pose_data.point.y < 0.22 and pose_data.point.z < 0.48:
 			for body in waiting.duplicate():
-				if not is_instance_valid(body) or body.carried: waiting.erase(body); continue
-				var local_point = to_local(body.global_position)
-				if absf(local_point.x) > 0.25 or local_point.y > 0.72 or local_point.z < -0.35: continue
-				if bucket.capture(body):
+				if not is_instance_valid(body) or not body.carried: waiting.erase(body); continue
+				if bucket.capture(body, true):
 					waiting.erase(body)
 					loaded_count += 1
 					emit_output("loaded", body)
 					break
 
 func _queue_marble(body: Node3D) -> void:
-	if body is Marble and body.collision_layer & 2 and not body in waiting and not body.carried: waiting.append(body)
+	if not active or not enabled or not body is Marble or body in waiting: return
+	# Own the marble as it enters the loading pocket. Letting it wait in contact
+	# with circulating empty buckets can kick it sideways before a bucket arrives.
+	if body.capture(): waiting.append(body)
 
 func _remove_waiting(body: Node3D) -> void:
-	waiting.erase(body)
+	# Capture disables collision and consequently emits body_exited.
+	if not body is Marble or not body.carried: waiting.erase(body)
 
 func reset() -> void:
 	super.reset()
 	phase = 0
 	for bucket in buckets: bucket.reset()
+	for body in waiting:
+		if is_instance_valid(body): body.release_capture()
 	waiting.clear()
 	loaded_count = 0
 	unloaded_count = 0

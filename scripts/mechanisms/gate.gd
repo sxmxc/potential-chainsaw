@@ -14,6 +14,8 @@ var pending_close: bool = false
 var waiting_release: Array[RigidBody3D] = []
 
 func _ready() -> void:
+	clearance.body_entered.connect(func(body: Node3D):
+		if active and open and is_marble(body) and body not in waiting_release: waiting_release.append(body))
 	inputs = {"open": func(_value: Variant): set_open(true), "close": func(_value: Variant): set_open(false), "toggle": func(_value: Variant): set_open(not open), "release": func(_value: Variant): set_open(true)}
 	outputs = ["activated"]
 	outputs.append("opened")
@@ -42,7 +44,9 @@ func _physics_process(delta: float) -> void:
 		for body in waiting_release:
 			if not is_instance_valid(body) or body.freeze or not is_marble(body): continue
 			var point = to_local(body.global_position)
-			if absf(point.z) > 0.45 or absf(point.x) > 0.45: continue
+			# Include a marble resting across the track's inlet seam, not only
+			# centers already inside the one-metre channel.
+			if absf(point.z) > 0.75 or absf(point.x) > 0.45: continue
 			var direction = global_basis * Vector3(0, 0, -signf(point.z))
 			var speed = body.linear_velocity.dot(direction)
 			if speed >= 0.4 or direction.is_zero_approx(): continue

@@ -44,7 +44,7 @@ func _physics_process(delta: float) -> void:
 	var reach = float(config.get("range", 4))
 	var power = float(config.get("power", 1.2))
 	for body in area.get_overlapping_bodies():
-		if not is_marble(body): continue
+		if not is_instance_valid(body) or not body.is_inside_tree() or body.is_queued_for_deletion() or not is_marble(body): continue
 		var distance = maxf(0, (body.global_position - to_global(origin)).dot(direction))
 		body.apply_central_force(direction * power * pow(maxf(0, 1 - distance / reach), 2))
 

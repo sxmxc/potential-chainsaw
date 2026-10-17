@@ -40,9 +40,9 @@ func start_run() -> void:
 
 func _request_release(_value: Variant) -> void:
 	if not bool(config.get("signal_controlled", false)) or not enabled: return
-	if elapsed < next_release_time or released_count >= int(config.get("quantity", 1)): return
+	if elapsed < next_release_time: return
 	pending_releases.append({"index": released_count, "time": elapsed})
-	# Reserve supply and cooldown before outputs can feed back into this input.
+	# Reserve the ordinal and cooldown before outputs can feed back into this input.
 	released_count += 1
 	next_release_time = elapsed + float(config.get("interval", 1))
 	_release_due()

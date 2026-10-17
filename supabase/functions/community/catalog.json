@@ -2519,7 +2519,8 @@
 			},
 			"outputs": {
 				"activated": false,
-				"fired": false
+				"fired": false,
+				"loaded": true
 			},
 			"release": false,
 			"scenery": false,
@@ -2702,7 +2703,7 @@
 				"frequency": {
 					"kind": 0,
 					"maximum": 60.0,
-					"minimum": 0.01
+					"minimum": 0.5
 				},
 				"loop": {
 					"kind": 1,
@@ -3972,7 +3973,7 @@
 			"surface_mounted": false
 		}
 	},
-	"compatibility": "a15c8d6d29fb6a608341ccb9c3b5d5c099835105188350f7c9af601400160662",
+	"compatibility": "64ae2d04c0a8ce70affe9b500a28da0133de5366982e8b49da72d1d2d5c29a08",
 	"format": 1,
 	"game_version": "0.0.1"
 }

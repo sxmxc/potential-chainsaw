@@ -153,6 +153,11 @@ camera_3d_resource = SubResource("Resource_ttlna")
 [node name="SimulationCamera" parent="World/Track" index="9" unique_id=655534682]
 player_selection = false
 
+[node name="MarbleChase" parent="World/Track/SimulationCamera" index="0"]
+transition_duration = 0.0
+height = 0.1
+look_ahead = 0.0
+
 [node name="ChaseA" parent="World/Track/SimulationCamera/MarbleChase" parent_id_path=PackedInt32Array(1565659221, 1781605180) index="2" unique_id=1700862802]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.8)
 tween_resource = SubResource("Resource_dxudb")
@@ -181,13 +186,16 @@ camera_3d_resource = SubResource("DetailLens")
 [node name="Shots" type="Node3D" parent="World/CameraDirector"]
 
 [node name="Crown" type="Marker3D" parent="World/CameraDirector/Shots"]
-transform = Transform3D(0.8775826, 0.0000000, -0.4794255, -0.2213887, 0.8869949, -0.4052494, 0.4252480, 0.4617792, 0.7784113, 12.7059524, 16.5827002, 18.6818706)
+transform = Transform3D(0.8775826, -0.2213887, 0.4252480, 0.0000000, 0.8869949, 0.4617792, -0.4794255, -0.4052494, 0.7784113, 12.7059524, 16.5827002, 18.6818706)
 
 [node name="WestTransport" type="Marker3D" parent="World/CameraDirector/Shots"]
-transform = Transform3D(0.9393727, 0.0000000, -0.3428978, -0.1936147, 0.8253356, -0.5304097, 0.2830058, 0.5646425, 0.7752978, -4.9058961, 12.1635645, 11.9553596)
+transform = Transform3D(0.9393727, -0.1936147, 0.2830058, 0.0000000, 0.8253356, 0.5646425, -0.3428978, -0.5304097, 0.7752978, -4.9058961, 12.1635645, 11.9553596)
 
 [node name="EastTransport" type="Marker3D" parent="World/CameraDirector/Shots"]
-transform = Transform3D(0.8253356, 0.0000000, -0.5646425, -0.3188211, 0.8253356, -0.4660195, 0.4660195, 0.5646425, 0.6811789, 23.3883518, 12.1635645, 14.2612198)
+transform = Transform3D(0.8253356, -0.3188211, 0.4660195, 0.0000000, 0.8253356, 0.5646425, -0.5646425, -0.4660195, 0.6811789, 23.3883518, 12.1635645, 14.2612198)
+
+[node name="ControlIsland" type="Marker3D" parent="World/CameraDirector/Shots"]
+transform = Transform3D(0.7648422, -0.5046331, 0.4004521, 0.0000000, 0.6216100, 0.7833269, -0.6442177, -0.5991215, 0.4754335, 6.5045214, 10.0332691, 4.7543353)
 
 [editable path="World/Track"]
 [editable path="World/Track/SimulationCamera/MarbleChase"]

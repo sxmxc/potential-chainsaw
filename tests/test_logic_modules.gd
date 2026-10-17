@@ -74,7 +74,7 @@ func test_gate_truth_tables_use_states_and_suppress_unchanged_outputs() -> void:
 		behavior.reset()
 		assert_eq(bool(behavior.output_values.result), id == "not")
 
-func test_dropper_signal_supply_cooldown_pause_and_automatic_compatibility() -> void:
+func test_dropper_unlimited_signals_cooldown_pause_and_automatic_compatibility() -> void:
 	var source := release({"signal_controlled": true, "quantity": 2, "interval": 0.6, "start_delay": 0.2})
 	var behavior := source.behaviors[0]
 	assert_true(simulation.start())
@@ -92,7 +92,14 @@ func test_dropper_signal_supply_cooldown_pause_and_automatic_compatibility() -> 
 	behavior.receive("release")
 	behavior.call("_physics_process", 1.0)
 	behavior.receive("release")
-	assert_eq(simulation.marbles.size(), 2, "Quantity is finite")
+	assert_eq(simulation.marbles.size(), 3, "Signal releases continue beyond the saved automatic quantity")
+	for index in 25:
+		behavior.call("_physics_process", 0.61)
+		behavior.receive("release")
+	assert_eq(simulation.marbles.size(), 28, "External pulses have no lifetime cap")
+	var identities: Dictionary = {}
+	for body in simulation.marbles: identities[body.get_meta("marble_id")] = true
+	assert_eq(identities.size(), 28, "Each signal release retains a unique identity")
 	assert_ne(simulation.marbles[0].get_meta("marble_id"), simulation.marbles[1].get_meta("marble_id"))
 	simulation.reset()
 	source.apply_configuration({"quantity": 2, "interval": 0.6})

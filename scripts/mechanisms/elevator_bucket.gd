@@ -4,9 +4,12 @@ var marble: Marble
 var capture_offset: Vector3
 var capture_age: float = 0.0
 
-func capture(body: Marble) -> bool:
+func capture(body: Marble, from_loading_pocket: bool = false) -> bool:
 	if occupied(): return false
-	if not is_instance_valid(body) or not body.capture(): return false
+	if not is_instance_valid(body): return false
+	if from_loading_pocket:
+		if not body.carried: return false
+	elif not body.capture(): return false
 	marble = body
 	capture_offset = to_local(body.global_position)
 	capture_age = 0

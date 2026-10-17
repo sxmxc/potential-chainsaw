@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c5qd1nhullan" path="res://assets/models/build_pieces/GLB format/straight.glb" id="Model"]
 [ext_resource type="Script" uid="uid://cnbkhcrhsub6r" path="res://scripts/mechanisms/launcher.gd" id="Script"]
 [ext_resource type="Script" uid="uid://dckmusaraunpw" path="res://scripts/construction/piece_setting.gd" id="Setting"]
-[ext_resource type="Shape3D" path="res://scenes/mechanisms/collision/straight.tres" id="TrackShape"]
+
 
 [sub_resource type="Resource" id="Setting_strength"]
 script = ExtResource("Setting")
@@ -51,27 +51,14 @@ bounce = 0.02
 
 [sub_resource type="BoxShape3D" id="DetectionShape"]
 resource_local_to_scene = true
-size = Vector3(0.5, 0.65, 0.1)
-
-[sub_resource type="PhysicsMaterial" id="LoadingStopPhysics"]
-friction = 0.05
-
-[sub_resource type="BoxShape3D" id="LoadingStopShape"]
-size = Vector3(0.48, 0.55, 0.1)
-
-[sub_resource type="StandardMaterial3D" id="LoadingStopMaterial"]
-resource_local_to_scene = true
-albedo_color = Color(0.5019608, 0.7254902, 0.6862745, 1)
-
-[sub_resource type="BoxMesh" id="LoadingStopMesh"]
-size = Vector3(0.48, 0.55, 0.1)
+size = Vector3(0.5, 0.55, 0.65)
 
 [sub_resource type="StandardMaterial3D" id="ArrowMaterial"]
 resource_local_to_scene = true
 albedo_color = Color(1, 0.7764706, 0.427451, 1)
 
 [sub_resource type="BoxMesh" id="ArrowMesh"]
-size = Vector3(0.08, 0.08, 0.6)
+size = Vector3(0.56, 0.06, 0.69)
 
 [sub_resource type="Animation" id="Armed"]
 resource_name = "armed"
@@ -91,7 +78,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Fire"]
 resource_name = "fire"
-length = 0.12
+length = 0.18
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -99,15 +86,15 @@ tracks/0/path = NodePath("Arrow/Handle:rotation:x")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.07, 0.12),
+"times": PackedFloat32Array(0, 0.1, 0.18),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.0, -0.9, -0.9]
+"values": [0.0, -0.6860478808414067, -0.6860478808414067]
 }
 
 [sub_resource type="Animation" id="Rearm"]
 resource_name = "rearm"
-length = 0.38
+length = 0.32
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -115,10 +102,10 @@ tracks/0/path = NodePath("Arrow/Handle:rotation:x")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.38),
+"times": PackedFloat32Array(0, 0.32),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [-0.9, 0.0]
+"values": [-0.6860478808414067, 0.0]
 }
 
 [sub_resource type="Animation" id="Unarmed"]
@@ -134,7 +121,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [-0.9]
+"values": [-0.6860478808414067]
 }
 
 [sub_resource type="AnimationLibrary" id="HandleAnimations"]
@@ -145,10 +132,52 @@ _data = {
 &"unarmed": SubResource("Unarmed")
 }
 
-[node name="Launcher" type="Node3D" unique_id=24537666 node_paths=PackedStringArray("area", "loading_stop", "arrow", "handle_animation")]
+[sub_resource type="StandardMaterial3D" id="CradleMetal"]
+albedo_color = Color(0.19, 0.23, 0.29, 1)
+metallic = 0.5
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="CradleAccent"]
+albedo_color = Color(0.87, 0.64, 0.22, 1)
+metallic = 0.35
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="ArmSupport"]
+size = Vector3(0.09, 0.25, 0.2)
+
+[sub_resource type="BoxMesh" id="LaunchFrame"]
+size = Vector3(0.65, 0.09, 0.6)
+
+[sub_resource type="CylinderMesh" id="Pivot"]
+top_radius = 0.095
+bottom_radius = 0.095
+height = 0.12
+radial_segments = 16
+
+[sub_resource type="BoxShape3D" id="TrackFloor"]
+size = Vector3(0.9, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="TrackSide"]
+size = Vector3(0.08, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(0.14, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="InletBridge"]
+size = Vector3(0.56, 0.1, 0.4)
+
+[sub_resource type="BoxMesh" id="SideMesh"]
+size = Vector3(0.08, 0.3, 1)
+
+[sub_resource type="StandardMaterial3D" id="CradlePurple"]
+albedo_color = Color(0.48, 0.29, 0.63, 1)
+roughness = 0.5
+
+[node name="Launcher" type="Node3D" unique_id=24537666 node_paths=PackedStringArray("area", "release_point", "loading_seat", "arrow", "handle_animation")]
 script = ExtResource("Script")
 area = NodePath("Detection")
-loading_stop = NodePath("LoadingStop")
+release_point = NodePath("ReleasePoint")
+loading_seat = NodePath("Arrow/Handle/Seat")
 arrow = NodePath("Arrow")
 handle_animation = NodePath("HandleAnimation")
 configuration_fields = Array[ExtResource("Setting")]([SubResource("Setting_strength"), SubResource("Setting_angle"), SubResource("Setting_enabled"), SubResource("Setting_external"), SubResource("Setting_auto_rearm")])
@@ -158,40 +187,97 @@ collision_mask = 2
 physics_material_override = SubResource("TrackPhysics")
 
 [node name="Model" parent="Track" unique_id=729714436 instance=ExtResource("Model")]
+visible = false
 
 [node name="Collision" type="CollisionShape3D" parent="Track" unique_id=950702499]
-shape = ExtResource("TrackShape")
+position = Vector3(0, 0.2, 0)
+shape = SubResource("TrackFloor")
+
+[node name="LeftWall" type="CollisionShape3D" parent="Track"]
+position = Vector3(-0.44, 0.35, 0)
+shape = SubResource("TrackSide")
+
+[node name="RightWall" type="CollisionShape3D" parent="Track"]
+position = Vector3(0.44, 0.35, 0)
+shape = SubResource("TrackSide")
+
+[node name="Floor" type="MeshInstance3D" parent="Track"]
+position = Vector3(-0.35, 0.2, 0)
+mesh = SubResource("FloorMesh")
+material_override = SubResource("CradleMetal")
+
+[node name="RightFloor" type="MeshInstance3D" parent="Track"]
+position = Vector3(0.35, 0.2, 0)
+mesh = SubResource("FloorMesh")
+material_override = SubResource("CradleMetal")
+
+[node name="Inlet" type="MeshInstance3D" parent="Track"]
+position = Vector3(0, 0.2, 0.3)
+mesh = SubResource("InletBridge")
+material_override = SubResource("CradleMetal")
+
+[node name="LeftCurb" type="MeshInstance3D" parent="Track"]
+position = Vector3(-0.44, 0.35, 0)
+mesh = SubResource("SideMesh")
+material_override = SubResource("CradlePurple")
+
+[node name="RightCurb" type="MeshInstance3D" parent="Track"]
+position = Vector3(0.44, 0.35, 0)
+mesh = SubResource("SideMesh")
+material_override = SubResource("CradlePurple")
+
+[node name="LoadingCradle" type="Node3D" parent="."]
+
+[node name="Frame" type="MeshInstance3D" parent="LoadingCradle"]
+position = Vector3(0, 0.1, -0.1)
+mesh = SubResource("LaunchFrame")
+material_override = SubResource("CradleMetal")
+
+[node name="LeftCheek" type="MeshInstance3D" parent="LoadingCradle"]
+position = Vector3(-0.44, 0.15, -0.59)
+mesh = SubResource("ArmSupport")
+material_override = SubResource("CradleAccent")
+
+[node name="RightCheek" type="MeshInstance3D" parent="LoadingCradle"]
+position = Vector3(0.44, 0.15, -0.59)
+mesh = SubResource("ArmSupport")
+material_override = SubResource("CradleAccent")
+
+[node name="LeftPivot" type="MeshInstance3D" parent="LoadingCradle"]
+position = Vector3(-0.44, 0.22, -0.59)
+rotation = Vector3(0, 0, 1.5707963)
+mesh = SubResource("Pivot")
+material_override = SubResource("CradleMetal")
+
+[node name="RightPivot" type="MeshInstance3D" parent="LoadingCradle"]
+position = Vector3(0.44, 0.22, -0.59)
+rotation = Vector3(0, 0, 1.5707963)
+mesh = SubResource("Pivot")
+material_override = SubResource("CradleMetal")
 
 [node name="Detection" type="Area3D" parent="." unique_id=1089038142]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.55)
+position = Vector3(0, 0.45, -0.225)
 collision_layer = 0
 collision_mask = 2
 
 [node name="Collision" type="CollisionShape3D" parent="Detection" unique_id=1388842911]
 shape = SubResource("DetectionShape")
 
-[node name="LoadingStop" type="AnimatableBody3D" parent="." unique_id=325010571]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.8)
-collision_mask = 2
-physics_material_override = SubResource("LoadingStopPhysics")
-sync_to_physics = false
-
-[node name="Collision" type="CollisionShape3D" parent="LoadingStop" unique_id=359819619]
-shape = SubResource("LoadingStopShape")
-
-[node name="Visual" type="MeshInstance3D" parent="LoadingStop" unique_id=1308891056]
-material_override = SubResource("LoadingStopMaterial")
-mesh = SubResource("LoadingStopMesh")
+[node name="ReleasePoint" type="Marker3D" parent="."]
+position = Vector3(0, 0.55, -0.55)
 
 [node name="Arrow" type="Node3D" parent="." unique_id=190592799]
-transform = Transform3D(1, 0, 0, 0, 0.90630776, -0.42261827, 0, 0.42261827, 0.90630776, 0.4, 0.65, 0.25)
+position = Vector3(0, 0.22, -0.59)
 
 [node name="Handle" type="Node3D" parent="Arrow" unique_id=562285382]
 
 [node name="Visual" type="MeshInstance3D" parent="Arrow/Handle" unique_id=828588764]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+position = Vector3(0, 0, 0.345)
 material_override = SubResource("ArrowMaterial")
 mesh = SubResource("ArrowMesh")
+
+[node name="Seat" type="Marker3D" parent="Arrow/Handle"]
+position = Vector3(0, 0.23, 0.24)
 
 [node name="HandleAnimation" type="AnimationPlayer" parent="." unique_id=1013043616]
 callback_mode_process = 2

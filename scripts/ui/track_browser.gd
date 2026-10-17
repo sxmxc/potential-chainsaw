@@ -43,7 +43,7 @@ func open(show_examples: bool = false) -> void:
 
 func refresh() -> void:
 	%List.clear()
-	rows=[{"id":"first-roll","name":"First Roll · slopes and a sweeping curve","count":7},{"id":"spiral-crossing","name":"Spiral Crossing · two levels and a full helix","count":14},{"id":"bucket-elevator-demo","name":"Bucket Elevator · carry a marble to an upper track","count":4},{"id":"menu-machine","name":"Spiral Works · the looping showcase machine","count":122}] if examples else serializer.list_tracks()
+	rows=[{"id":"first-roll","name":"First Roll · slopes and a sweeping curve","count":7},{"id":"spiral-crossing","name":"Spiral Crossing · two levels and a full helix","count":14},{"id":"bucket-elevator-demo","name":"Bucket Elevator · carry a marble to an upper track","count":4},{"id":"menu-machine","name":"Cascade Foundry · four linked transport banks","count":269}] if examples else serializer.list_tracks()
 	for row in rows: %List.add_item(row.name.split(" · ")[0] if examples else row.name)
 	if not rows.is_empty(): %List.select(0)
 	%Info.text="" if examples else ("No saved tracks yet. Save a machine in Sandbox to find it here." if rows.is_empty() else "Saved on this device")

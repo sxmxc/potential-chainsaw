@@ -18,8 +18,8 @@ unit = "m/s"
 [sub_resource type="Resource" id="Setting_quantity"]
 script = ExtResource("Setting")
 key = &"quantity"
-label = "Marbles"
-description = "Marbles"
+label = "Automatic quantity"
+description = "Automatic release quantity; signal-controlled releases have no lifetime limit"
 default_number = 1.0
 minimum = 1.0
 maximum = 20.0
@@ -54,7 +54,7 @@ kind = 2
 script = ExtResource("Setting")
 key = &"signal_controlled"
 label = "Signal-controlled release"
-description = "Wait for Release pulses. Early or cooldown pulses are ignored; quantity remains the total supply."
+description = "Wait for Release pulses with no lifetime limit. First delay and interval still apply."
 kind = 1
 
 [sub_resource type="PhysicsMaterial" id="Physics"]
