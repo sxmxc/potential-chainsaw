@@ -44,6 +44,20 @@ GameManager owns the dimming backdrop and workspace suspension for shared modals
 
 The [UI review record](UI_AUDIT.md) lists rendered coverage, fixes, and unresolved design issues. A captured layout does not establish that its interaction or live-service flow works.
 
+## Celebrate a working machine
+
+`PuzzleCompletion` is a full-viewport Control, separate from shared modal Windows. Its detached gold Dimitri title and lower achievement dock leave the middle of the construction visible. A bottom gradient supports the dock without dimming the whole machine. Static composition and action groups live in `scenes/ui/puzzle_completion.tscn`; victory typography, dock, and chapter progress styling live in the shared Theme.
+
+The session records authoritative success before presentation reads it. Official puzzle entry refreshes the session's campaign snapshot; completion recording and presentation reuse that snapshot so the success frame does not reread and fingerprint the campaign library. GameManager defers the reveal while navigation or another modal is active, suspends workspace input, and hides the ordinary HUD for the celebration. Closing restores the HUD and the existing input policy. A shared dialog opened over the celebration retains the usual modal backdrop; closing it restores the undimmed celebration. Simulation, objective evaluation, camera return, saves, and campaign routing retain their existing owners.
+
+One cancellable Tween coordinates a collision-free mint ring at each distinct objective target, the title sweep, a growing accent, the dock entrance, and the chapter progress fill. A hidden scene instance prepares the ring's surface pipeline at startup using Godot's [pipeline precompilation](https://docs.godotengine.org/en/stable/tutorials/performance/pipeline_compilations.html#pipeline-precompilation-instancing). Target rings use the scene-authored mesh/material in `widgets/completion_pulse.tscn`, resolve live piece bounds, retain normal depth testing, and disappear after the acknowledgement. They never control mechanisms or marbles. The title starts at 0.10 seconds, the dock at 0.24, and progress at 0.48; actions remain available during the reveal. Native [Control offset transforms](https://docs.godotengine.org/en/latest/classes/class_control.html#class-control-property-offset-transform-enabled) move presentation and hit areas together without moving Container layout. Button press feedback retains its existing visual-only compression.
+
+Campaign results show the existing chapter counts and `CampaignDefinition.next_step()` destination. Completing all puzzles in a chapter reveals the milestone caption, a 'Well built!' title, and a full gold progress bar; Introduction stays optional. Existing authored time/piece awards remain subordinate captions, with no new rewards or rankings. Community completion offers its browser and continued construction. Player Test offers Save solution and Return to editor without campaign progress. Escape dismisses only the presentation; Keep building resets the run and retains the build, as before.
+
+Duplicate success notifications do not restart a reveal. Dismissal blocks descendant input immediately and dispatches one action after a 0.12-second exit. Reopening cancels that action and restores input. Reset, context change, hiding, and freeing cancel the timeline and remove target rings. `tests/test_puzzle_completion.gd` checks these contracts, context-specific actions, solution preservation, and application deferral/HUD/modal ownership with isolated saves. Its injected success states verify presentation contracts, not physical puzzle solutions.
+
+Completion sound remains an asset gap: the repository currently supplies menu/build music but no suitable success or progression effects. Do not substitute music snippets or add a separate audio system. A future authored completion cue should use SoundManager's UI effects path and existing volume settings.
+
 ## Browsers should explain the choice
 
 The campaign browser combines chapter progress, a numbered route, completion/lock symbols, and the selected starting-machine preview beside its goal. `CampaignDefinition` decides availability and the next destination; UI should display those decisions rather than reproduce progression rules.
@@ -66,7 +80,7 @@ Main-menu buttons enter from the left with staggered elastic motion in scene ord
 
 Visibility requests stay with the owner: WorkspaceHUD controls the browser and status, the authoring drawer controls itself, and `modal_window.gd` controls dialog surfaces. Repeated requests replace the active tween from its current presentation. Closing content immediately loses focus and descendant input, while the still-visible surface blocks clicks until hidden. Status duration uses the HUD's one-shot Timer.
 
-For a shared modal, call `present()` to open and `dismiss(action)` to close before running an action. Reopening during dismissal cancels that pending action. The Window stays modal throughout the exit, and focus returns after hiding. Direct `hide()` immediately cancels the lifecycle for a context change. GameManager coordinates application fades, workspace input suspension, and deferred completion dialogs; avoid adding another competing transition owner.
+For a shared modal, call `present()` to open and `dismiss(action)` to close before running an action. Reopening during dismissal cancels that pending action. The Window stays modal throughout the exit, and focus returns after hiding. Direct `hide()` immediately cancels the lifecycle for a context change. GameManager coordinates application fades, workspace input suspension, and deferred completion presentation; avoid adding another competing transition owner.
 
 ## Write and review in context
 

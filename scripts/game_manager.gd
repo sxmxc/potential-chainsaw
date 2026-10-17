@@ -18,7 +18,7 @@ var navigation_tween: Tween
 var navigation_ready: bool = false
 var navigating: bool = false
 var menu_target: bool = true
-var completion_pending: Vector2i = Vector2i.ZERO
+var completion_pending: bool = false
 var modal_motion: UIMotion
 
 func _ready() -> void:
@@ -42,12 +42,17 @@ func _ready() -> void:
 	%PuzzleBrowser.modal_opened.connect(open_modal)
 	%PuzzleBrowser.closed.connect(modal_closed)
 	%PuzzleCompletion.configure(workspace.session)
-	%PuzzleCompletion.presentation_requested.connect(func(minimum):
-		completion_pending = minimum
+	%PuzzleCompletion.presentation_requested.connect(func():
+		completion_pending = true
 		modal_closed())
 	%PuzzleCompletion.visibility_changed.connect(func():
-		if %PuzzleCompletion.visible: open_modal()
-		else: modal_closed())
+		if %PuzzleCompletion.visible:
+			workspace.suspend_input()
+			workspace.hud.hide()
+			modal_motion.set_open(false)
+		else:
+			if workspace.is_visible_in_tree(): workspace.hud.show()
+			modal_closed())
 	%PuzzleCompletion.levels_requested.connect(func(): %PuzzleBrowser.open(false, not PuzzleStore.is_official(workspace.session.puzzle)))
 	show_main_menu()
 	load_settings()
@@ -145,6 +150,7 @@ func show_main_menu() -> void:
 	change_screen(true)
 
 func change_screen(to_menu: bool) -> void:
+	if to_menu: %PuzzleCompletion.hide()
 	if menu_target == to_menu and not navigating:
 		apply_screen(to_menu)
 		return
@@ -233,12 +239,14 @@ func modal_closed() -> void:
 	for dialog in [name_dialog,unsaved_dialog,menu_dialog,settings_dialog,message_dialog,%TrackBrowser,%PuzzleBrowser]:
 		if dialog and dialog.visible: return
 	if workspace.has_modal(): return
-	if %PuzzleCompletion.visible: return
-	if completion_pending != Vector2i.ZERO:
-		var minimum := completion_pending
-		completion_pending = Vector2i.ZERO
+	if %PuzzleCompletion.visible:
+		modal_motion.set_open(false)
+		workspace.suspend_input()
+		return
+	if completion_pending:
+		completion_pending = false
 		if workspace.session.is_playing and workspace.world.simulation.state == SimulationManager.State.SUCCESS:
-			%PuzzleCompletion.present(minimum)
+			%PuzzleCompletion.present()
 			return
 	if %MainMenu.visible and menu_target: %MainMenu.show_actions()
 	modal_motion.set_open(false)

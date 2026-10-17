@@ -676,6 +676,41 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="VictoryDock"]
+content_margin_left = 30.0
+content_margin_top = 24.0
+content_margin_right = 30.0
+content_margin_bottom = 24.0
+bg_color = Color(0.025, 0.075, 0.09, 0.97)
+border_width_left = 4
+border_width_top = 1
+border_color = Color(0.94, 0.77, 0.34, 1)
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+shadow_color = Color(0, 0, 0, 0.22)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="VictoryMilestoneFill"]
+bg_color = Color(0.98, 0.83, 0.4, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="VictoryProgressTrack"]
+bg_color = Color(0.12, 0.23, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="VictoryProgressFill"]
+bg_color = Color(0.47, 0.91, 0.74, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [resource]
 default_font = ExtResource("11_cqjf2")
 default_font_size = 16
@@ -725,9 +760,6 @@ CatalogOption/base_type = &"OptionButton"
 CatalogOption/constants/icon_max_width = 48
 CatalogSearch/base_type = &"LineEdit"
 CatalogSearch/styles/normal = SubResource("InventoryCard")
-CelebrationTitle/base_type = &"DialogTitle"
-CelebrationTitle/colors/font_color = Color(0.973, 0.855, 0.439, 1)
-CelebrationTitle/font_sizes/font_size = 34
 CheckBox/colors/font_disabled_color = Color(0.48, 0.6, 0.62, 1)
 CheckBox/icons/checked = ExtResource("CheckboxChecked")
 CheckBox/icons/checked_disabled = ExtResource("CheckboxChecked")
@@ -985,5 +1017,25 @@ TrackTitle/fonts/font = ExtResource("Bold")
 UnframedPanel/base_type = &"PanelContainer"
 UnframedPanel/styles/panel = SubResource("Unframed")
 VBoxContainer/constants/separation = 8
+VictoryDock/base_type = &"PanelContainer"
+VictoryDock/styles/panel = SubResource("VictoryDock")
+VictoryEyebrow/base_type = &"SuccessLabel"
+VictoryEyebrow/colors/font_shadow_color = Color(0.015, 0.045, 0.05, 1)
+VictoryEyebrow/constants/shadow_offset_y = 2
+VictoryEyebrow/fonts/font = ExtResource("Bold")
+VictoryMilestoneProgress/base_type = &"VictoryProgress"
+VictoryMilestoneProgress/styles/fill = SubResource("VictoryMilestoneFill")
+VictoryName/base_type = &"PanelTitle"
+VictoryName/font_sizes/font_size = 28
+VictoryProgress/base_type = &"ProgressBar"
+VictoryProgress/styles/background = SubResource("VictoryProgressTrack")
+VictoryProgress/styles/fill = SubResource("VictoryProgressFill")
+VictoryTitle/base_type = &"Label"
+VictoryTitle/colors/font_color = Color(0.98, 0.83, 0.4, 1)
+VictoryTitle/colors/font_shadow_color = Color(0.015, 0.045, 0.05, 0.9)
+VictoryTitle/constants/shadow_offset_x = 3
+VictoryTitle/constants/shadow_offset_y = 5
+VictoryTitle/font_sizes/font_size = 88
+VictoryTitle/fonts/font = ExtResource("1_41tqm")
 Window/colors/title_color = Color(0.9019608, 0.9490196, 0.92941177, 1)
 Window/styles/embedded_border = SubResource("Unframed")

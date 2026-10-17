@@ -77,7 +77,7 @@ PieceWiring delivers signals in FIFO order, preserving emission and saved-link o
 
 ## Persistence and distribution
 
-`SaveStorage` resolves save paths, checks identifiers, and writes JSON through a flushed temporary file before replacement. TrackSerializer owns personal-track data; PuzzleStore owns puzzle drafts, publication, and installation; PuzzleProgress owns completion and route state. Settings use ConfigFile separately. Keep domain validation with those owners rather than add it to the generic writer.
+`SaveStorage` resolves save paths, checks identifiers, and writes JSON through a flushed temporary file before replacement. TrackSerializer owns personal-track data; PuzzleStore owns puzzle drafts, publication, and installation; PuzzleProgress owns completion and route state. ConstructionSession refreshes its campaign snapshot when entering an official puzzle and shares it with completion recording and presentation; success does not reload or fingerprint the campaign library. Settings use ConfigFile separately. Keep domain validation with those owners rather than add it to the generic writer.
 
 Official campaign membership comes from the manifest loader, not a field supplied by a puzzle file. Community content has separate completion records and cannot replace an official entry merely by claiming its ID. Publication retains a separate starting layout, solution, and successful-test fingerprint. [Puzzle authoring](PUZZLE_AUTHORING.md#formats-and-storage) covers formats, paths, compatibility, and revision handling.
 

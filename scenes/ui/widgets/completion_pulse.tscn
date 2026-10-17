@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="Mint"]
+shading_mode = 0
+transparency = 1
+albedo_color = Color(0.47, 0.91, 0.74, 1)
+
+[sub_resource type="TorusMesh" id="Ring"]
+inner_radius = 0.44
+outer_radius = 0.48
+rings = 40
+ring_segments = 8
+material = SubResource("Mint")
+
+[node name="CompletionPulse" type="Node3D"]
+
+[node name="Ring" type="MeshInstance3D" parent="."]
+mesh = SubResource("Ring")
+cast_shadow = 0
