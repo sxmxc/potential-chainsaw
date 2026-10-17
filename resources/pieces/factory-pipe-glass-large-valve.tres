@@ -9,7 +9,7 @@
 script = ExtResource("Definition")
 id = &"factory-pipe-glass-large-valve"
 display_name = "Pipe glass large valve"
-category = "Props"
+category = "Pipes"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")

@@ -56,6 +56,7 @@ func configure(manager: BuildManager, simulator: SimulationManager) -> void:
 		if build.edit_link(context_source, context_index): clear_context())
 	%Dismiss.pressed.connect(clear_context)
 	build.changed.connect(clear_interaction)
+	build.selection_changed.connect(func(_piece): clear_interaction())
 	build.options_changed.connect(func():
 		if not build.connect_mode: clear_interaction())
 	simulation.state_changed.connect(func(state, _message):
@@ -152,6 +153,10 @@ func refresh_projection() -> void:
 	var used_conduits: Array[String] = []
 	var used_terminals: Array[String] = []
 	var source := build.find_piece(dragging.get("source", ""))
+	var selected_ids: Array[String] = []
+	for selected_piece in build.selection:
+		if not selected_piece.input_ports.is_empty() or not selected_piece.output_ports.is_empty():
+			selected_ids.append(selected_piece.instance_id)
 	for piece in build.pieces:
 		if build.camera.is_position_behind(anchor(piece)): continue
 		if source and not source.compatible_events(piece).is_empty(): receivers.append(piece)
@@ -167,6 +172,7 @@ func refresh_projection() -> void:
 			var link: Dictionary = links[i]
 			var target := build.find_piece(link.get("target", ""))
 			if not target or target.input_ports.is_empty() or build.camera.is_position_behind(anchor(target)): continue
+			if not selected_ids.is_empty() and piece.instance_id not in selected_ids and target.instance_id not in selected_ids: continue
 			var key := piece.instance_id + ":" + str(i)
 			used_conduits.append(key)
 			if not conduits.has(key):

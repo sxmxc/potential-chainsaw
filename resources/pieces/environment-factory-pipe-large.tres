@@ -9,7 +9,7 @@
 script = ExtResource("Definition")
 id = &"environment:factory-pipe-large"
 display_name = "Pipe"
-category = "Architecture"
+category = "Pipes"
 usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")

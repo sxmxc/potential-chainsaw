@@ -1,5 +1,36 @@
 extends GutTest
 
+func test_puzzle_catalog_filters_inventory_without_exposing_unavailable_pieces() -> void:
+	var build: BuildManager = autofree(BuildManager.new())
+	build.catalog = PieceCatalog.new()
+	build.rules = PuzzleRules.new({"inventory": {
+		"straight": 2, "curve": 1, "slant-a": 1, "gate": 0,
+		"sensor": 1, "logic-and": 1, "support-single": 1, "banner": 1
+	}}, build.catalog)
+	var toolbox = load("res://scenes/ui/toolbox.tscn").instantiate()
+	add_child_autoqfree(toolbox)
+	toolbox.configure(build.catalog, build)
+	assert_eq(toolbox.buttons.size(), 8)
+	assert_true(toolbox.buttons[&"gate"].disabled, "Filtering retains quantity restrictions")
+	var categories := toolbox.get_node("%Category") as OptionButton
+	for index in categories.item_count:
+		if categories.get_item_text(index) == "Mechanisms": categories.select(index)
+	toolbox.refresh()
+	assert_eq(toolbox.buttons.size(), 2)
+	assert_true(toolbox.buttons.has(&"sensor"))
+	assert_true(toolbox.buttons.has(&"gate"))
+	assert_true(toolbox.buttons[&"gate"].disabled)
+	toolbox.get_node("%Search").text = "sensor"
+	toolbox.get_node("%Search").text_changed.emit("sensor")
+	assert_eq(toolbox.buttons.size(), 1, "Search filters the player inventory")
+	assert_true(toolbox.buttons.has(&"sensor"))
+	toolbox.get_node("%Search").text = "Marble release"
+	toolbox.get_node("%Search").text_changed.emit("Marble release")
+	assert_true(toolbox.buttons.is_empty(), "Search cannot expose a piece outside inventory")
+	toolbox.get_node("%Search").clear()
+	toolbox.get_node("%Search").text_changed.emit("")
+	assert_eq(toolbox.buttons.size(), 8, "Clearing search restores the inventory")
+
 func test_catalog_shrinks_after_a_large_viewport_without_retaining_its_height() -> void:
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(1024, 900)

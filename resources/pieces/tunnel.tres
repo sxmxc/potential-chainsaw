@@ -9,7 +9,7 @@
 script = ExtResource("3_7sa2g")
 id = &"tunnel"
 display_name = "Tunnel"
-category = "Props"
+category = "Architecture"
 description = "Scenery · 1.00 × 1.00 m footprint · 0.60 m tall. Physical scenery. Tunnel arches can surround an existing channel."
 usage_hint = "Add a finishing touch to your construction."
 model = ExtResource("2_ir0c0")

@@ -9,7 +9,7 @@
 script = ExtResource("Definition")
 id = &"building-detail-pipe"
 display_name = "Detail pipe"
-category = "Architecture"
+category = "Pipes"
 usage_hint = "A static industrial detail. Selectable, but marbles pass through it."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")

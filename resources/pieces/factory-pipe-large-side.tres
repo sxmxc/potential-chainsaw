@@ -9,7 +9,7 @@
 script = ExtResource("Definition")
 id = &"factory-pipe-large-side"
 display_name = "Pipe large side"
-category = "Props"
+category = "Pipes"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")

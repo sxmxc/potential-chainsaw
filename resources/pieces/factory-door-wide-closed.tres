@@ -9,7 +9,7 @@
 script = ExtResource("Definition")
 id = &"factory-door-wide-closed"
 display_name = "Door wide closed"
-category = "Props"
+category = "Architecture"
 usage_hint = "A physical industrial structure. Align its faces or place on the grid. No track connectors."
 model = ExtResource("Model")
 thumbnail = ExtResource("Preview")

@@ -32,21 +32,20 @@ func refresh() -> void:
 	if build and build.rules:
 		inventory_ids=build.rules.puzzle.inventory.keys()
 		inventory_ids.sort()
-	filter_key=JSON.stringify(inventory_ids) if build and build.rules else "%s:%d:%s" % [build != null and build.authoring,%Category.selected,%Search.text.to_lower()]
+	filter_key="%s:%s:%d:%s" % [JSON.stringify(inventory_ids),build != null and build.authoring,%Category.selected,%Search.text.to_lower()]
 	refresh_generation+=1
 	for child in %Pieces.get_children():
 		%Pieces.remove_child(child)
 		child.queue_free()
 	buttons.clear()
 	var criteria: Dictionary[StringName, Variant] = {}
-	if (not build or not build.rules) and %Category.selected > 0:
+	if %Category.selected > 0:
 		criteria[&"category"] = %Category.get_item_text(%Category.selected)
 	for definition in catalog.query(criteria):
 		if not definition.library_visible: continue
 		if definition.authoring_only and (inventory_editing or not build or not build.authoring): continue
 		if build and build.rules and not build.rules.puzzle.inventory.has(String(definition.id)): continue
-		if not build or not build.rules:
-			if not %Search.text.is_empty() and not (definition.display_name+" "+definition.category).to_lower().contains(%Search.text.to_lower()): continue
+		if not %Search.text.is_empty() and not (definition.display_name+" "+definition.category).to_lower().contains(%Search.text.to_lower()): continue
 		var card=CARD.instantiate()
 		%Pieces.add_child(card)
 		card.bind(definition,definition.id==selected_id)
