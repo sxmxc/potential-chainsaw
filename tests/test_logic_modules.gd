@@ -212,6 +212,11 @@ func test_mount_movement_rotation_duplication_deletion_history_and_save_load() -
 	build.select(support)
 	build.move_selected(true)
 	build.preview.position += Vector3(4, 0, 0)
+	var proposed_support_id: String = build.preview.get_child(0).instance_id
+	var proposed_accessory := build.preview.get_child(1) as BuildingPiece
+	var proposed_accessory_id := proposed_accessory.instance_id
+	assert_eq(proposed_accessory.configuration.mount_target, proposed_support_id, "The duplicate is mounted on its proposed support before validation")
+	assert_eq(build.validate_edit(build.placement_items(), build.preview.transform, []), "")
 	build.valid = true
 	build.apply_preview()
 	build.commit()
@@ -219,6 +224,8 @@ func test_mount_movement_rotation_duplication_deletion_history_and_save_load() -
 	assert_eq(PieceAttachment.validate(build.snapshot(), build.catalog), "")
 	var copies := build.selection
 	var copied_accessory: BuildingPiece = copies.filter(func(piece): return piece.definition.surface_mounted)[0]
+	assert_eq(copied_accessory.instance_id, proposed_accessory_id)
+	assert_eq(copied_accessory.configuration.mount_target, proposed_support_id)
 	assert_ne(copied_accessory.configuration.mount_target, "support", "Duplicate remaps attachment UID")
 	var saved := build.snapshot()
 	var track_id := workspace.session.serializer.save_track("Mounted", saved)

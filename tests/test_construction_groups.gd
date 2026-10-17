@@ -3,6 +3,36 @@ extends "res://tests/support/game_test.gd"
 var game: Node
 var build: BuildManager
 
+func test_saved_ids_and_repeated_placement_use_distinct_committed_identities() -> void:
+	game = load("res://scenes/construction_workspace.tscn").instantiate()
+	add_child_autoqfree(game)
+	await get_tree().process_frame
+	build = game.world.build
+	var data: Dictionary = game.session.store.create()
+	# Saved UIDs are opaque. This one used to collide with validation's fake ID.
+	data.pieces = [{"uid": "preview-new-0", "piece": "straight", "position": [0, 1, 0], "rotation": 0, "config": {}}]
+	data.inventory = {"straight": 2}
+	game.session.player(data, true)
+	build.choose(build.catalog.get_piece("straight"))
+	for index in 2:
+		build.preview.position = Vector3(4 + index * 3, 1, 0)
+		var proposed_id: String = build.preview.get_child(0).instance_id
+		assert_null(build.find_piece(proposed_id), "A new proposal never shares a live identity")
+		assert_eq(build.validate_edit(build.placement_items(), build.preview.transform, []), "")
+		build.valid = true
+		build.apply_preview()
+		build.commit()
+		assert_eq(build.pieces.size(), index + 2)
+		assert_eq(build.pieces[-1].instance_id, proposed_id, "Commit retains the validated identity")
+	build.cancel()
+	var saved := build.snapshot()
+	build.undo()
+	assert_eq(build.pieces.size(), 2)
+	build.redo()
+	assert_eq(build.snapshot(), saved, "History retains the same IDs")
+	var id: String = game.session.serializer.save_track("Placement identities", saved)
+	assert_eq(game.session.serializer.load_track(id).pieces, saved)
+
 func test_group_preview_preserves_relative_transforms_through_cancel_and_commit() -> void:
 	game = load("res://scenes/construction_workspace.tscn").instantiate()
 	add_child_autoqfree(game)

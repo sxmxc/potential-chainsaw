@@ -95,13 +95,17 @@ func restore(data: Array) -> void:
 func spawn(definition: PieceDefinition, placement: Transform3D, uid: String = "", config: Dictionary = {}) -> BuildingPiece:
 	if definition.authoring_only and not authoring: return null
 	var piece=PIECE_SCENE.instantiate() as BuildingPiece
-	piece.instance_id=uid if not uid.is_empty() else "piece-%d-%d" % [Time.get_ticks_usec(),next_uid]
-	next_uid+=1
+	piece.instance_id=uid if not uid.is_empty() else _new_instance_id()
 	add_child(piece)
 	piece.setup(definition,false,config)
 	piece.transform=placement
 	pieces.append(piece)
 	return piece
+
+func _new_instance_id() -> String:
+	var uid := "piece-%d-%d" % [Time.get_ticks_usec(), next_uid]
+	next_uid += 1
+	return uid
 
 func choose(definition: PieceDefinition) -> void:
 	if not enabled or (definition.authoring_only and not authoring): return
@@ -131,7 +135,7 @@ func add_preview_piece(definition: PieceDefinition, local: Transform3D = Transfo
 	preview.add_child(piece)
 	piece.setup(definition, true, config)
 	piece.transform = local
-	piece.instance_id = uid
+	piece.instance_id = uid if not uid.is_empty() else _new_instance_id()
 
 # The scene hierarchy owns preview configuration and relative transforms.
 # Placement validation consumes a fresh view of those nodes, never a second copy.
@@ -340,20 +344,15 @@ func commit() -> void:
 			moving_group[index].configuration = PieceAttachment.transformed_config(item.config, placement.basis)
 			edited.append(moving_group[index])
 		else:
-			var piece=spawn(item.definition,placement,"",PieceAttachment.transformed_config(item.config, placement.basis))
+			var ghost := preview.get_child(index) as BuildingPiece
+			var piece=spawn(ghost.base_definition,placement,item.uid,PieceAttachment.transformed_config(item.config, placement.basis))
 			edited.append(piece)
-	if mode == "duplicate":
-		var duplicated_ids: Dictionary = {}
-		for index in edited.size(): duplicated_ids[items[index].uid] = edited[index].instance_id
-		for piece in edited:
-			if duplicated_ids.has(piece.configuration.get("mount_target", "")):
-				piece.configuration.mount_target = duplicated_ids[piece.configuration.mount_target]
-			for link in piece.configuration.get("links", []):
-				if duplicated_ids.has(link.target): link.target = duplicated_ids[link.target]
 	if mode!="place":
 		cancel()
 		set_selection(edited)
 	else:
+		# Repeated placement is a new proposal; the committed ID stays with its piece.
+		(preview.get_child(0) as BuildingPiece).instance_id = _new_instance_id()
 		forced_target.clear()
 		candidate_key=""
 		candidate_cycled=false
@@ -452,8 +451,18 @@ func move_selected(duplicate_piece: bool = false) -> void:
 	movement_height=pivot.y
 	preview.transform=frame
 	operation="duplicate" if duplicate_piece else "move"
-	for piece in attached_selection():
-		add_preview_piece(piece.base_definition, frame.affine_inverse()*piece.transform, piece.configuration, piece.instance_id)
+	var group := attached_selection()
+	var duplicated_ids: Dictionary[String, String] = {}
+	if duplicate_piece:
+		for piece in group: duplicated_ids[piece.instance_id] = _new_instance_id()
+	for piece in group:
+		var config := piece.configuration.duplicate(true)
+		if duplicate_piece:
+			if duplicated_ids.has(config.get("mount_target", "")):
+				config.mount_target = duplicated_ids[config.mount_target]
+			for link in config.get("links", []):
+				if duplicated_ids.has(link.target): link.target = duplicated_ids[link.target]
+		add_preview_piece(piece.base_definition, frame.affine_inverse()*piece.transform, config, duplicated_ids.get(piece.instance_id, piece.instance_id))
 		if not duplicate_piece:
 			moving_group.append(piece)
 			piece.hide()
@@ -689,22 +698,10 @@ func validate_edit(items: Array, placement: Transform3D, replaced: Array, prune_
 	var result: Array = []
 	for piece in pieces:
 		if piece not in replaced and not piece.definition.authoring_only: result.append(piece.serialize())
-	for index in items.size():
-		var item: Dictionary = items[index]
+	for item: Dictionary in items:
 		if item.definition.authoring_only: continue
 		var transform_value: Transform3D = placement * item.local
-		var original := find_piece(item.get("uid", ""))
-		var uid: String = original.instance_id if original and original in replaced else "preview-new-%d" % index
-		result.append({"uid": uid, "piece": String(item.definition.id), "position": [transform_value.origin.x, transform_value.origin.y, transform_value.origin.z], "rotation": posmod(roundi(transform_value.basis.get_euler().y / (PI / 2)), 4), "config": PieceAttachment.transformed_config(item.config, transform_value.basis)})
-	var proposed_ids: Dictionary = {}
-	for index in items.size():
-		if items[index].get("uid", "").is_empty(): continue
-		var original := find_piece(items[index].get("uid", ""))
-		proposed_ids[items[index].get("uid", "")] = original.instance_id if original and original in replaced else "preview-new-%d" % index
-	for record in result:
-		if record.uid not in proposed_ids.values(): continue
-		if proposed_ids.has(record.config.get("mount_target", "")):
-			record.config.mount_target = proposed_ids[record.config.mount_target]
+		result.append({"uid": item.uid, "piece": String(item.definition.id), "position": [transform_value.origin.x, transform_value.origin.y, transform_value.origin.z], "rotation": posmod(roundi(transform_value.basis.get_euler().y / (PI / 2)), 4), "config": PieceAttachment.transformed_config(item.config, transform_value.basis)})
 	if prune_links:
 		var present: Array = result.map(func(item): return item.uid)
 		for item in result:

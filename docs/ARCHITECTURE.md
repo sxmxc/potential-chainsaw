@@ -29,6 +29,8 @@ Context changes clear the previous run, tools, rules, environment, and history b
 
 During placement, movement, and duplication, `BuildManager/PlacementPreview` is a Node3D assembly containing preview `BuildingPiece` children. Each child holds its configuration and local transform; the parent holds the proposed group transform. Snapping and validation read this assembly through `placement_items()`. This makes an elevator's adjusted height, for example, part of the same proposal the player sees and commits.
 
+Preview children also carry their final instance IDs. Moving retains the original IDs; duplication assigns fresh IDs and remaps internal wires and mounts while preparing the preview. Validation reads those identities and references directly, and commit retains them without another remapping pass. Repeated placement assigns a fresh preview ID after each commit. Saved IDs remain opaque, so no reserved placeholder IDs can collide with an existing construction.
+
 Movement hides the originals while the preview is active. Cancellation restores them. A confirmed group operation produces one history entry containing construction snapshots; stable instance IDs restore selection. Duplicating an assembly remaps links between its members, while deleting targets prunes dangling links. New edit tools should use these operations rather than mutate nodes behind the history system.
 
 ### Snapping and placement geometry

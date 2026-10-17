@@ -66,12 +66,21 @@ func test_campaign_rules() -> void:
 	build.set_selection([source, target])
 	build.move_selected(true)
 	build.preview.position = Vector3(0, 0, 3)
+	var proposed_source := build.preview.get_child(0) as BuildingPiece
+	var proposed_target := build.preview.get_child(1) as BuildingPiece
+	var proposed_source_id := proposed_source.instance_id
+	var proposed_target_id := proposed_target.instance_id
+	assert_eq(proposed_source.configuration.links[0].target, proposed_target_id, "The proposal already wires the copies together")
+	assert_eq(source.configuration.links[0].target, target.instance_id, "Preparing a duplicate leaves original wiring intact")
+	assert_eq(build.validate_edit(build.placement_items(), build.preview.transform, []), "")
 	build.valid = build.snap.validate_group(build.placement_items(), build.preview.transform, build.pieces, build.moving_group).is_empty()
 	assert_true(build.valid, "Proposed edit passes real placement validation")
 	build.apply_preview()
 	build.commit()
 	var duplicate_source = build.pieces[2]
 	var duplicate_target = build.pieces[3]
+	assert_eq(duplicate_source.instance_id, proposed_source_id)
+	assert_eq(duplicate_target.instance_id, proposed_target_id)
 	assert_true(duplicate_source.instance_id != source.instance_id and duplicate_source.configuration.links[0].target == duplicate_target.instance_id, "Duplicate group remaps internal links to fresh IDs")
 	build.select(duplicate_target)
 	build.delete_selected()
